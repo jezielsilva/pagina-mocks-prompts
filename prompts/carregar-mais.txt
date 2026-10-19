@@ -1,0 +1,237 @@
+TAREFA
+Implementar o "CARREGAR MAIS" (paginação incremental) na área de arquivos da página Documentos, igual ao mock "elaw-adv-documentos-redesign.html" (pasta "Digitalizações 2026", com 63 arquivos).
+
+Vale para:
+- modo Lista no desktop (dentro de cada coluna);
+- lista compacta do tablet e do celular;
+- modo Grid.
+
+Faça SOMENTE isto. Não mude mais nada da tela. Siga a ordem: ETAPA A (investigar), ETAPA B (back-end) e ETAPA C (front-end). Não crie testes.
+
+Regras:
+- UI-Kit do projeto;
+- nenhuma cor escrita direto no código;
+- sem !important;
+- sem estilo inline (exceto a largura da progressbar pelo binding do componente de progressbar do sistema);
+- comentários só com //;
+- @if e @for com track pelo id;
+- nada de texto abaixo de 12px;
+- regra de negócio só no back-end.
+
+==================================================================
+COMO FUNCIONA (visão geral, para você entender antes de codar)
+==================================================================
+1. Ao abrir uma pasta, o front pede à API só os PRIMEIROS 20 itens e recebe também o TOTAL de itens da pasta.
+2. Se o total for maior que 20, aparece no fim da lista um rodapé com:
+   - o texto "Mostrando 20 de 63 itens";
+   - uma barrinha de progresso fina (20/63 preenchida);
+   - o botão "Carregar mais 20".
+3. Cada clique no botão pede à API os PRÓXIMOS 20 e ACRESCENTA no fim, sem apagar nem recarregar o que já está na tela.
+4. Quando faltarem menos de 20, o botão mostra a quantidade exata ("Carregar mais 3").
+5. Quando tudo estiver carregado, o botão some e fica só "63 de 63 itens · fim da pasta".
+6. Pastas com 20 itens ou menos não mostram rodapé nenhum.
+
+==================================================================
+ETAPA A — INVESTIGAÇÃO (só leitura; me entregue um relatório curto antes de alterar)
+==================================================================
+A1. Qual endpoint lista o conteúdo de uma pasta hoje? Informe:
+   - a URL, o método, os parâmetros e o DTO de resposta;
+   - se já tem paginação (skip/take, pagina/tamanho, cursor);
+   - se devolve o total.
+A2. Como a ordenação é feita hoje (no back ou no front)? Qual é o critério?
+A3. Como os filtros (Tipo, Autor, Data do documento) são aplicados: no back ou no front?
+A4. Quais índices existem na collection de documentos para "listar por pasta"?
+A5. No front, onde ficam os itens de cada coluna (lista) e da grade (grid)? É um array por pasta, um signal, um store?
+A6. Existe um componente de progressbar no sistema (.progressbar / .progressbar__fill)? Como se passa o percentual para ele?
+
+==================================================================
+ETAPA B — BACK-END (.NET + MongoDB)
+==================================================================
+
+B1. ENDPOINT DE LISTAGEM COM PÁGINA
+Adapte o endpoint que JÁ lista o conteúdo da pasta (o do A1). Não crie um paralelo. Se ele já tiver paginação no padrão do projeto, só garanta tudo o que está abaixo.
+
+GET /api/documentos/pastas/{pastaId}/itens?pagina=1&tamanhoPagina=20&{filtros que já existem}
+- pastaId: id da pasta, ou o identificador da raiz da área, como já é hoje;
+- pagina: inteiro, começa em 1, padrão 1. Se vier menor que 1, use 1;
+- tamanhoPagina: padrão 20. Limite no back: mínimo 1 e máximo 100 (Math.Clamp). O front sempre manda 20;
+- os filtros (tipo, autorId, dataInicial, dataFinal) continuam iguais e valem para os itens E para o total.
+
+B2. RESPOSTA
+{
+  "itens": [ { ...o DTO de item que já existe (id, tipo, nome, tamanho, thumbUrl etc.)... } ],
+  "pagina": 1,
+  "tamanhoPagina": 20,
+  "total": 63,
+  "temMais": true
+}
+- total: quantos itens a pasta tem com os filtros aplicados (pastas + arquivos). É esse número que aparece em "de 63".
+- temMais: true quando pagina * tamanhoPagina < total. O front usa para decidir se mostra o botão.
+- Em todas as páginas, total é sempre o valor atual, calculado de novo a cada requisição.
+
+B3. ORDENAÇÃO ESTÁVEL (obrigatório, senão itens se repetem ou somem entre as páginas)
+1. A ordem é decidida NO BACK-END, nunca no front:
+   a) pastas primeiro, depois arquivos (crie no pipeline um campo calculado ordemTipo: 0 para pasta e 1 para arquivo);
+   b) dentro de cada grupo, nome em ordem alfabética, sem diferenciar maiúsculas de minúsculas nem acentos, com números em ordem natural ("Arquivo 2" antes de "Arquivo 10");
+   c) desempate final pelo _id crescente. Esse é o critério que garante que a ordem nunca muda entre duas requisições.
+2. No MongoDB, use collation em português com ordem numérica:
+   new Collation("pt", strength: CollationStrength.Secondary, numericOrdering: true)
+   e sort: { ordemTipo: 1, nome: 1, _id: 1 }.
+3. Se pastas e arquivos estiverem em collections diferentes, junte com $unionWith ANTES do sort e do skip, para a paginação valer sobre a lista inteira.
+
+B4. CONSULTA
+1. Filtro base: pastaId + permissões do usuário (as mesmas regras de hoje) + filtros da tela + não estar na lixeira.
+2. Itens: o mesmo filtro, Sort (B3), Skip((pagina - 1) * tamanhoPagina) e Limit(tamanhoPagina).
+3. Total: CountDocumentsAsync com o MESMO filtro (sem sort, skip nem limit).
+   - Rode as duas consultas em paralelo (Task.WhenAll).
+   - Se usar aggregation, faça um único $facet com "itens" e "total".
+4. Índice: garanta um índice composto que cubra a consulta, com a MESMA collation:
+   { pastaId: 1, ordemTipo: 1, nome: 1, _id: 1 }
+   - Se ordemTipo não existir como campo gravado, use { pastaId: 1, nome: 1, _id: 1 } e calcule ordemTipo no pipeline.
+   - Criar índice: me avise antes, com o comando, para eu aprovar.
+5. Campos gerados por item (thumbUrl, visualizacaoUrl): gere só para os itens da página, em lote.
+
+B5. ÁREAS AUTOMÁTICAS (Favoritos, Tarefas, Prazos, Lixeira)
+Os endpoints delas seguem EXATAMENTE o mesmo contrato (pagina, tamanhoPagina, total, temMais), cada um com a sua ordenação, sempre terminando com o desempate por _id:
+- Favoritos: ordemTipo, depois nome;
+- Tarefas: data de modificação decrescente;
+- Prazos: prazo crescente;
+- Lixeira: data de exclusão decrescente.
+
+B6. EXEMPLO (adapte aos nomes reais)
+public sealed record PaginaItensDto(IReadOnlyList<ItemDocumentoDto> Itens, int Pagina, int TamanhoPagina, long Total, bool TemMais);
+
+[HttpGet("pastas/{pastaId}/itens")]
+public async Task<ActionResult<PaginaItensDto>> ListarItens(string pastaId, [FromQuery] FiltrosDocumentosDto filtros, [FromQuery] int pagina = 1, [FromQuery] int tamanhoPagina = 20, CancellationToken ct = default)
+{
+    pagina = Math.Max(1, pagina);
+    tamanhoPagina = Math.Clamp(tamanhoPagina, 1, 100);
+    var r = await _documentosService.ListarItensAsync(UsuarioAtualId, pastaId, filtros, pagina, tamanhoPagina, ct);
+    return Ok(r);
+}
+// no service: Task.WhenAll(itensTask, totalTask); TemMais = pagina * tamanhoPagina < total
+
+==================================================================
+ETAPA C — FRONT-END (Angular)
+==================================================================
+
+C1. ESTADO POR PASTA
+Para CADA pasta exibida (cada coluna da lista, a pasta atual do grid e a da lista compacta), guarde:
+- itens: Item[], tudo o que já foi carregado, na ordem da API;
+- total: number, o último total vindo da API;
+- paginaCarregada: number, a última página pedida com sucesso (começa em 0);
+- carregandoPrimeira: boolean, para o skeleton inicial que já existe;
+- carregandoMais: boolean, enquanto busca a próxima página;
+- erroMais: string | null.
+Use o mesmo lugar onde os itens já ficam hoje (A5), acrescentando esses campos.
+Constante: TAMANHO_PAGINA = 20, num arquivo de constantes da página.
+
+C2. PRIMEIRA CARGA (ao abrir pasta, ao trocar de área, ao mudar filtros)
+1. Zere o estado da pasta: itens = [], total = 0, paginaCarregada = 0 e erroMais = null.
+2. carregandoPrimeira = true → mostra o skeleton que já existe.
+3. GET ...?pagina=1&tamanhoPagina=20&filtros.
+4. Na resposta: itens = resposta.itens, total = resposta.total, paginaCarregada = 1 e carregandoPrimeira = false.
+
+C3. CLIQUE EM "CARREGAR MAIS"
+1. Se carregandoMais já for true, ignore o clique (evita requisição dupla).
+2. carregandoMais = true e erroMais = null.
+3. GET ...?pagina={paginaCarregada + 1}&tamanhoPagina=20&{os mesmos filtros}.
+4. Na resposta:
+   a) ACRESCENTE no fim: itens = [...itens, ...novos].
+      - Antes, remova dos novos qualquer id que já exista em itens. Isso acontece se alguém criou ou apagou um arquivo entre as páginas.
+      - Nunca recrie o array inteiro a partir do zero.
+   b) total = resposta.total, porque ele pode ter mudado;
+   c) paginaCarregada = paginaCarregada + 1;
+   d) carregandoMais = false.
+5. Em erro: carregandoMais = false e erroMais = "Não foi possível carregar mais itens.". O rodapé mostra o erro e o botão vira "Tentar novamente" (C6).
+6. Templates com @for (item of itens; track item.id). Assim, os itens que já estavam na tela NÃO são recriados, e a rolagem não pula.
+7. Depois de acrescentar, NÃO mexa na rolagem: nem vertical (coluna ou grid) nem horizontal (colunas). Não chame revelarColuna aqui.
+
+C4. CÁLCULOS DO RODAPÉ (só exibição)
+- carregados = itens.length
+- falta = total - carregados
+- proximo = Math.min(TAMANHO_PAGINA, falta)
+- percentual = total > 0 ? Math.round(carregados / total * 100) : 0
+- mostrarRodape = total > TAMANHO_PAGINA
+- temMais = carregados < total
+
+C5. ONDE O RODAPÉ FICA
+1. Lista do desktop (colunas): DENTRO do corpo que rola da coluna, como último elemento depois das linhas. Cada coluna tem o seu próprio rodapé e a sua própria paginação.
+2. Lista compacta (tablet e celular): no fim da lista, depois da última linha ou e-card.
+3. Grid: como último filho da grade, ocupando a linha inteira (grid-column: 1 / -1), embaixo dos cartões.
+
+C6. VISUAL DO RODAPÉ (idêntico ao mock)
+Elemento: div.load-more.
+- display flex, flex-direction column, align-items center, gap 8px;
+- padding 14px 8px 12px, margin-top 6px, text-align center;
+- border-top 1px dashed var(--border-color) (linha tracejada separando dos itens).
+No grid: sem a linha tracejada, padding 18px 0 8px e margin-top 4px.
+Na lista compacta (tablet e celular): sem a linha tracejada.
+
+Conteúdo, de cima para baixo:
+
+a) TEXTO DO CONTADOR: span.small.text-secondary.tabular-nums (12px, cinza):
+   "Mostrando <b>{carregados}</b> de <b>{total}</b> itens"
+   Os dois números ficam em <b> com font-weight 600 e cor var(--text-color) (um pouco mais escuros que o texto).
+
+b) BARRINHA DE PROGRESSO: o componente de progressbar do sistema (.progressbar com .progressbar__fill):
+   - altura de 4px. Sobrescreva só o token de altura localmente: --progressbar-height: 4px, se o componente usar o token; se não usar, ajuste pela classe de tamanho do próprio componente;
+   - largura 100%, com max-width 200px na lista e 280px no grid;
+   - preenchimento = percentual (C4). A cor e o raio vêm dos tokens --progressbar-*;
+   - atributos: role="progressbar", aria-valuemin="0", aria-valuemax="{total}", aria-valuenow="{carregados}" e aria-label "Itens carregados".
+
+c) BOTÃO, só quando temMais for true e não houver erro:
+   - button type="button" class="btn btn-sm btn-outline-secondary rounded-pill";
+   - min-width 180px, display inline-flex, align-items center, justify-content center, gap 6px;
+   - conteúdo: o ícone expand_more de 15px (centralizado) e o texto "Carregar mais {proximo}" (ex.: "Carregar mais 20", e na última leva "Carregar mais 3");
+   - carregando (carregandoMais = true):
+     - classe .btn-loading e disabled;
+     - no lugar do ícone, o spinner padrão do sistema (14px);
+     - texto "Carregando…";
+     - a largura do botão não muda.
+
+d) SKELETON durante o carregando: imediatamente ANTES do rodapé (logo depois do último item), mostre o placeholder dos itens que estão chegando:
+   - lista do desktop: 3 linhas skeleton com 30px de altura, margin 4px 2px e border-radius 8px;
+   - lista compacta: 3 linhas compactas skeleton (miniatura de 42x54px + duas barras de 12px de altura, com 70% e 40% de largura);
+   - grid: 4 cartões skeleton com 268px de altura e border-radius var(--card-border-radius) (2 no celular).
+   O skeleton some quando os itens chegam. Use o skeleton do sistema.
+
+e) ERRO (erroMais preenchido): no lugar do botão,
+   - span.small.text-danger com o texto do erro;
+   - logo abaixo, button.btn.btn-sm.btn-outline-secondary.rounded-pill "Tentar novamente", com o ícone refresh de 15px, que repete a MESMA página (C3).
+   O texto do contador e a barrinha continuam aparecendo.
+
+f) FIM DA PASTA (temMais false e mostrarRodape true): o rodapé mostra SÓ span.small.text-secondary.tabular-nums com "{total} de {total} itens · fim da pasta". Sem barra e sem botão.
+
+Se mostrarRodape for false (20 itens ou menos), o rodapé não existe no DOM.
+
+C7. INTERAÇÃO COM O RESTO DA TELA (só front, sem regra de negócio)
+1. Seleção:
+   - Ctrl+A, Shift+clique e as setas do teclado agem SÓ sobre os itens já carregados;
+   - a seta ↓ no último item carregado não carrega mais nada sozinha (fica parada).
+2. Criou pasta, enviou arquivo, renomeou, moveu, excluiu ou restaurou nesta pasta: NÃO recarregue tudo.
+   - Atualize o array local com o item que a API devolveu (inserir, trocar ou remover pelo id);
+   - some ou subtraia 1 do total;
+   - item novo vai para a posição devolvida pela API. Se a API não informar a posição, coloque no início, se for pasta, ou logo depois da última pasta, se for arquivo;
+   - o texto "Mostrando X de Y" se atualiza sozinho.
+3. Filtros mudaram: volte à primeira carga (C2).
+4. Abrir e fechar colunas no modo lista: cada pasta guarda o próprio estado. Ao voltar para uma coluna que ainda está aberta, os itens já carregados continuam lá. Ao FECHAR uma coluna (sair dela), descarte o estado dela. Ao abrir de novo, começa na página 1.
+5. Alternar Lista ↔ Grid na mesma pasta: reaproveite os itens já carregados (não peça de novo).
+6. O cabeçalho da coluna continua mostrando o TOTAL vindo da API (63), e não a quantidade carregada.
+
+==================================================================
+CRITÉRIO DE ACEITE (com uma pasta de 63 arquivos)
+==================================================================
+1. Ao abrir: 20 itens e o rodapé "Mostrando 20 de 63 itens", com a barrinha em ~32% e o botão "Carregar mais 20".
+2. Clique: o botão vira "Carregando…" com spinner, aparecem os skeletons logo abaixo dos itens, e depois os itens 21–40 entram no fim, sem a rolagem pular. O texto vira "Mostrando 40 de 63".
+3. Na 3ª vez: "Mostrando 60 de 63", com o botão "Carregar mais 3".
+4. Na 4ª: "63 de 63 itens · fim da pasta", sem botão.
+5. A mesma coisa no grid, com o rodapé ocupando a linha inteira embaixo dos cartões.
+6. Nenhum item duplicado nem faltando. A ordem é sempre a mesma: pastas primeiro, nomes em ordem natural.
+7. Pasta com 15 itens: nenhum rodapé.
+8. Erro de rede no "Carregar mais": aparece a mensagem e o "Tentar novamente", e os itens já carregados continuam na tela.
+
+ENTREGA
+1. O relatório da ETAPA A.
+2. O diff do back-end (endpoint, service, DTO) e o comando do índice, para eu aprovar.
+3. O diff do front-end (estado, service, templates e SCSS da lista, da lista compacta e do grid).

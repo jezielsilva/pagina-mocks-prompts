@@ -1,0 +1,21 @@
+{
+  "atualizado": "2026-10-19T15:40:00-03:00",
+  "itens": [
+    {
+      "id": "documentos-mock-2026-10-19",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Mock — Documentos (63 arquivos + Carregar mais)",
+      "data": "2026-10-19T14:15:00-03:00",
+      "arquivo": "artefatos/documentos-mock-2026-10-19.html"
+    },
+    {
+      "id": "prompt-carregar-mais",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Carregar mais (lista e grid, front + back)",
+      "data": "2026-10-19T14:23:00-03:00",
+      "arquivo": "prompts/carregar-mais.txt"
+    }
+  ]
+}

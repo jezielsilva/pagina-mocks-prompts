@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transferência</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--line:#e2e8f0;--txt:#0f172a;--sub:#64748b;--pri:#70398c;--pri-l:#f6f0fa;--ok:#2e7d5b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#171a21;--line:#2a2f3a;--txt:#e6e8ee;--sub:#94a3b8;--pri:#b48ad0;--pri-l:#2a2034;--ok:#5fc89a}}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+header h1{font-size:16px;margin:0;flex:1}
+header small{color:var(--sub)}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:999px;padding:6px 14px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+button:hover,.btn:hover{border-color:var(--pri)}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+main{flex:1;display:grid;grid-template-columns:320px 1fr;min-height:0}
+aside{border-right:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;min-height:0}
+.tools{padding:12px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--line)}
+.tools input{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--txt);font:inherit}
+.tabs{display:flex;gap:6px}.tabs button{padding:4px 12px;font-size:13px}.tabs button.on{background:var(--pri-l);border-color:var(--pri);color:var(--pri)}
+ul{list-style:none;margin:0;padding:6px;overflow:auto;flex:1}
+li button{width:100%;text-align:left;border-radius:10px;border:1px solid transparent;padding:10px;display:flex;flex-direction:column;align-items:stretch;gap:2px;font-weight:400}
+li button:hover{background:var(--bg);border-color:transparent}
+li button.on{background:var(--pri-l);border-color:var(--pri)}
+li b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:12px;color:var(--sub);display:flex;gap:6px;align-items:center}
+.tag{font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;background:var(--bg);color:var(--sub)}
+.tag.prompt{background:var(--pri-l);color:var(--pri)}
+section{display:flex;flex-direction:column;min-height:0;min-width:0}
+.bar{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+.bar h2{font-size:15px;margin:0;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.view{flex:1;min-height:0;overflow:auto}
+iframe{width:100%;height:100%;border:0;background:#fff;display:block}
+pre{margin:0;padding:20px;white-space:pre-wrap;word-wrap:break-word;font:13px/1.55 ui-monospace,Consolas,monospace}
+.empty{padding:40px;color:var(--sub);text-align:center}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--ok);color:#fff;padding:8px 14px;border-radius:10px;font-weight:600;opacity:0;transition:opacity .2s}
+.toast.on{opacity:1}
+#back{display:none}
+@media (max-width:760px){main{grid-template-columns:1fr}aside.hide{display:none}section.hide{display:none}#back{display:inline-flex}}
+</style>
+</head>
+<body>
+<header><h1>Transferência</h1><small id="upd"></small><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
+<main>
+  <aside id="side">
+    <div class="tools">
+      <input id="q" type="search" placeholder="Buscar…" aria-label="Buscar">
+      <div class="tabs" role="tablist"><button data-f="" class="on">Todos</button><button data-f="prompt">Prompts</button><button data-f="artefato">Artefatos</button></div>
+    </div>
+    <ul id="list"></ul>
+  </aside>
+  <section id="main" class="hide">
+    <div class="bar"><button id="back">← Voltar</button><h2 id="ttl">Selecione um item</h2><span id="acts"></span></div>
+    <div class="view" id="view"><div class="empty">Escolha um prompt ou artefato na lista.</div></div>
+  </section>
+</main>
+<div class="toast" id="toast">Copiado!</div>
+<script>
+// Fonte única: itens.json (gerado/atualizado pelo Claude a cada envio). Arquivos em /prompts e /artefatos.
+const $=s=>document.querySelector(s);
+let ITENS=[],F='',SEL=null;
+const fmt=d=>new Date(d).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+async function load(){
+  try{const r=await fetch('itens.json?t='+Date.now());const j=await r.json();ITENS=j.itens.sort((a,b)=>b.data.localeCompare(a.data));$('#upd').textContent='Atualizado '+fmt(j.atualizado);}
+  catch(e){$('#list').innerHTML='<li class="empty">Não foi possível ler itens.json (abra pelo GitHub Pages).</li>';return;}
+  paint();const h=decodeURIComponent(location.hash.slice(1));open(ITENS.find(i=>i.id===h)||null,false);
+}
+function paint(){
+  const q=$('#q').value.toLowerCase();
+  const l=ITENS.filter(i=>(!F||i.tipo===F)&&(!q||(i.titulo+' '+(i.projeto||'')).toLowerCase().includes(q)));
+  $('#list').innerHTML=l.length?l.map(i=>`<li><button data-id="${i.id}" class="${SEL&&SEL.id===i.id?'on':''}"><b>${i.titulo}</b><span class="meta"><span class="tag ${i.tipo}">${i.tipo==='prompt'?'Prompt':'Artefato'}</span>${i.projeto||''} · ${fmt(i.data)}</span></button></li>`).join(''):'<li class="empty">Nada encontrado.</li>';
+}
+async function open(i,push=true){
+  SEL=i;paint();if(!i)return;
+  if(push)history.replaceState(null,'','#'+encodeURIComponent(i.id));
+  $('#side').classList.add('hide');$('#main').classList.remove('hide');
+  $('#ttl').textContent=i.titulo;
+  if(i.tipo==='artefato'){
+    $('#acts').innerHTML=`<a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Abrir em nova aba</a> <a class="btn pri" href="${i.arquivo}" download>Baixar</a>`;
+    $('#view').innerHTML=`<iframe src="${i.arquivo}" title="${i.titulo}"></iframe>`;
+  }else{
+    $('#acts').innerHTML='<button class="btn pri" id="cp">Copiar prompt</button>';
+    $('#view').innerHTML='<pre id="txt">Carregando…</pre>';
+    const t=await (await fetch(i.arquivo+'?t='+Date.now())).text();$('#txt').textContent=t;
+    $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText(t);}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();}
+      $('#toast').classList.add('on');setTimeout(()=>$('#toast').classList.remove('on'),1400);};
+  }
+}
+$('#list').onclick=e=>{const b=e.target.closest('[data-id]');if(b)open(ITENS.find(i=>i.id===b.dataset.id));};
+$('.tabs').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;F=b.dataset.f;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));paint();};
+$('#q').oninput=paint;$('#reload').onclick=load;
+$('#back').onclick=()=>{$('#side').classList.remove('hide');$('#main').classList.add('hide');};
+load();
+</script>
+</body>
+</html>
