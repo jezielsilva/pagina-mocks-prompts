@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-19T17:25:00-03:00",
+  "atualizado": "2026-10-19T17:40:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,6 +8,14 @@
       "titulo": "Mock — Documentos (versão atual)",
       "data": "2026-10-19T16:49:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
+    },
+    {
+      "id": "prompt-grid-estilo",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Grid igual ao mock + paginação centralizada",
+      "data": "2026-10-19T17:40:00-03:00",
+      "arquivo": "prompts/grid-estilo-mock-e-paginacao.txt"
     }
   ]
 }
