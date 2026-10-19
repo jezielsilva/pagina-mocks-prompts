@@ -1,0 +1,115 @@
+TAREFA
+Corrigir 2 problemas no rodapé "Carregar mais" da página Documentos. Não mude mais nada (a linha tracejada de cima, os textos e a posição continuam como estão). Não crie testes.
+
+PROBLEMAS
+1. Ao clicar em "Carregar mais", aparece um CÍRCULO CINZA ENORME (cerca de 300px) com "Carregando…" dentro, no lugar do botão. O certo é o MESMO botão pílula pequeno (180×30) com um spinner de 14px ao lado do texto "Carregando…".
+2. A barra de progresso fica só como uma linha cinza VAZIA. O certo é ela ir ficando ROXA aos poucos: preenchida na proporção carregados/total (ex.: 40 de 69 = 58% roxo), crescendo suavemente a cada carga e com um brilho correndo dentro enquanto carrega.
+
+ETAPA A — INVESTIGAR (responda em 2 linhas antes de mudar)
+A1. Círculo: no DevTools, com o carregamento ativo, clique no círculo e diga qual elemento ou pseudo-elemento (::before/::after) o desenha e de qual arquivo/classe vem. Suspeitos: a classe global .btn-loading, um mat-spinner/mat-progress-spinner sem [diameter] (padrão de 100px), ou matRipple.
+A2. Barra: no elemento de preenchimento, informe em Computed width, height e background-color. Diga se o percentual está chegando (ex.: width: 58%) e se a altura não é 0.
+
+ETAPA B — SUBSTITUIR POR ESTE CÓDIGO (exatamente)
+Neste rodapé, NÃO use .btn-loading, mat-spinner, matRipple nem o componente de progressbar. Use só o HTML e o SCSS abaixo, com tokens do tema. Se algum token não existir, use o nome real do tema e me diga qual foi.
+
+B1. TEMPLATE (adapte só os nomes das variáveis do seu estado: carregados, total, proximo, percentual, temMais, carregandoMais, erroMais)
+
+@if (mostrarRodape) {
+  <div class="load-more" [class.is-busy]="carregandoMais">
+    @if (temMais) {
+      <span class="load-more-text">Mostrando <b>{{ carregados }}</b> de <b>{{ total }}</b> itens</span>
+      <div class="load-more-track" role="progressbar" aria-label="Itens carregados" aria-valuemin="0" [attr.aria-valuemax]="total" [attr.aria-valuenow]="carregados">
+        <div class="load-more-fill" [style.width.%]="percentual"></div>
+      </div>
+      @if (erroMais) {
+        <span class="load-more-erro">{{ erroMais }}</span>
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill load-more-btn" (click)="carregarMais()">
+          <e-icon nome="refresh" class="load-more-ico"></e-icon>Tentar novamente
+        </button>
+      } @else {
+        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill load-more-btn" [disabled]="carregandoMais" [attr.aria-busy]="carregandoMais" (click)="carregarMais()">
+          @if (carregandoMais) {
+            <span class="load-more-spin" aria-hidden="true"></span>Carregando…
+          } @else {
+            <e-icon nome="expand_more" class="load-more-ico"></e-icon>Carregar mais {{ proximo }}
+          }
+        </button>
+      }
+    } @else {
+      <span class="load-more-text">{{ total }} de {{ total }} itens · fim da pasta</span>
+    }
+  </div>
+}
+
+O [style.width.%] da barra é o único binding de estilo, porque o percentual é dinâmico.
+percentual = total > 0 ? Math.round(carregados / total * 100) : 0 (calcule no componente; atualize a cada carga).
+
+B2. SCSS (local do componente; mantenha as regras atuais de .load-more para a linha tracejada, padding e alinhamento; acrescente/substitua só estas)
+.load-more-text {
+  font-size: 12px;
+  color: var(--text-color-secondary);
+  font-variant-numeric: tabular-nums;
+  b { font-weight: 600; color: var(--text-color); }
+}
+.load-more-track {
+  width: 100%;
+  max-width: 200px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-slate-200); // trilho cinza claro
+  overflow: hidden;
+}
+.load-more-fill {
+  height: 100%; // garante que o preenchimento aparece
+  border-radius: 999px;
+  background: var(--color-primary); // roxo
+  transition: width .45s ease; // cresce suave a cada carga
+}
+.load-more.is-busy .load-more-fill {
+  min-width: 24px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-lighten) 50%, var(--color-primary) 100%);
+  background-size: 200% 100%;
+  animation: barra-carregando 1s linear infinite;
+}
+@keyframes barra-carregando { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.load-more-btn {
+  width: 180px; // tamanho FIXO, igual com e sem loading
+  height: 30px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden; // nada vaza para fora do botão
+  &::before, &::after { content: none; } // anula pseudo-elementos herdados (o círculo)
+  &:disabled { opacity: .7; cursor: progress; }
+}
+.load-more-ico { display: block; width: 15px; height: 15px; font-size: 15px; line-height: 1; }
+.load-more-spin {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: girar .8s linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+.load-more-erro { font-size: 12px; color: var(--input-error-color); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  .load-more.is-busy .load-more-fill, .load-more-spin { animation: none; }
+}
+No grid: .file-grid .load-more-track { max-width: 280px; }
+
+B3. LIMPEZA
+Remova do rodapé: .btn-loading, mat-spinner/mat-progress-spinner, matRipple, componente de progressbar e as classes .progressbar/.progressbar__fill que estavam ali.
+
+COMO CONFERIR (pasta com 69 itens)
+1. Parado: "Mostrando 40 de 69 itens", a barra fina com cerca de 58% em roxo e o botão pílula 180×30 "Carregar mais 20".
+2. Clicando: o MESMO botão 180×30 com spinner pequeno e "Carregando…". Nenhum círculo. A barra roxa com brilho correndo.
+3. Ao terminar: o brilho para e o roxo cresce suave até o novo percentual (ex.: 60 de 69 = 87%).
+
+ENTREGA
+As 2 linhas da ETAPA A e o diff do template e do SCSS.
