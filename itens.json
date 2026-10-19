@@ -2,28 +2,12 @@
   "atualizado": "2026-10-19T16:50:00-03:00",
   "itens": [
     {
-      "id": "documentos-mock-2026-10-19",
+      "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (63 arquivos + Carregar mais)",
-      "data": "2026-10-19T14:15:00-03:00",
-      "arquivo": "artefatos/documentos-mock-2026-10-19.html"
-    },
-    {
-      "id": "prompt-carregar-mais",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Carregar mais (lista e grid, front + back)",
-      "data": "2026-10-19T14:23:00-03:00",
-      "arquivo": "prompts/carregar-mais.txt"
-    },
-    {
-      "id": "documentos-mock-2026-10-19b",
-      "tipo": "artefato",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (ajuste do loading do Carregar mais)",
+      "titulo": "Mock — Documentos (versão atual)",
       "data": "2026-10-19T16:49:00-03:00",
-      "arquivo": "artefatos/documentos-mock-2026-10-19b.html"
+      "arquivo": "artefatos/documentos-mock.html"
     },
     {
       "id": "prompt-carregar-mais-loading",
