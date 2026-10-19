@@ -52,11 +52,16 @@ pre{margin:0;padding:20px;white-space:pre-wrap;word-wrap:break-word;font:13px/1.
 .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .resp{padding:20px;display:flex;flex-direction:column;gap:12px}.resp img{max-width:100%;border-radius:8px;border:1px solid var(--line)}
 .hint{font-size:12px;color:var(--sub)}
+li{position:relative}
+.del{position:absolute;top:8px;right:8px;padding:2px 8px;font-size:13px;opacity:0;border-color:transparent;background:transparent}
+li:hover .del,.del:focus{opacity:1}.del:hover{border-color:#dc2626;color:#dc2626}
+li button.item{padding-right:40px}
+@media (hover:none){.del{opacity:.7}}
 @media (max-width:760px){main{grid-template-columns:1fr}aside.hide{display:none}section.hide{display:none}#back{display:inline-flex}}
 </style>
 </head>
 <body>
-<header><h1>Transferência</h1><small id="upd"></small><a id="novo" class="btn pri" href="https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title=Resposta%3A%20&body=Descreva%20o%20problema%20e%20cole%20os%20prints%20aqui%20(Ctrl%2BV)." target="_blank" rel="noopener">＋ Nova resposta</a><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
+<header><h1>Transferência</h1><small id="upd"></small><a id="novo" class="btn pri" href="https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title=Resposta%3A%20&body=Descreva%20o%20problema%20e%20cole%20os%20prints%20aqui%20(Ctrl%2BV)." target="_blank" rel="noopener">＋ Nova resposta</a><button id="cfg" title="Token do GitHub (para excluir)">⚙</button><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
 <main>
   <aside id="side">
     <div class="tools">
@@ -71,6 +76,12 @@ pre{margin:0;padding:20px;white-space:pre-wrap;word-wrap:break-word;font:13px/1.
   </section>
 </main>
 <div class="toast" id="toast">Copiado!</div>
+<div class="modal" id="mCfg"><div class="box">
+  <h3>Token do GitHub</h3>
+  <span class="hint">Necessário só para EXCLUIR itens. Crie um fine-grained token com acesso só ao repositório <b>pagina-mocks-prompts</b> e permissão <b>Contents: Read and write</b>. Fica salvo só neste navegador.</span>
+  <input id="tok" type="password" placeholder="github_pat_…">
+  <div class="row"><button id="tCan">Fechar</button><button class="btn pri" id="tSal">Salvar</button></div>
+</div></div>
 
 <script>
 // Fonte única: itens.json (gerado/atualizado pelo Claude a cada envio). Arquivos em /prompts e /artefatos.
@@ -85,7 +96,7 @@ async function load(){
 function paint(){
   const q=$('#q').value.toLowerCase();
   const l=ITENS.filter(i=>(!F||i.tipo===F)&&(!q||(i.titulo+' '+(i.projeto||'')).toLowerCase().includes(q)));
-  $('#list').innerHTML=l.length?l.map(i=>`<li><button data-id="${i.id}" class="${SEL&&SEL.id===i.id?'on':''}"><b>${i.titulo}</b><span class="meta"><span class="tag ${i.tipo}">${{prompt:'Prompt',artefato:'Artefato',resposta:'Resposta'}[i.tipo]}</span>${i.projeto||''} · ${fmt(i.data)}</span></button></li>`).join(''):'<li class="empty">Nada encontrado.</li>';
+  $('#list').innerHTML=l.length?l.map(i=>`<li><button data-id="${i.id}" class="item ${SEL&&SEL.id===i.id?'on':''}"><b>${i.titulo}</b><span class="meta"><span class="tag ${i.tipo}">${{prompt:'Prompt',artefato:'Artefato',resposta:'Resposta'}[i.tipo]}</span>${i.projeto||''} · ${fmt(i.data)}</span></button>${i.tipo==='resposta'?'':`<button class="del" data-del="${i.id}" title="Excluir" aria-label="Excluir ${i.titulo}">🗑</button>`}</li>`).join(''):'<li class="empty">Nada encontrado.</li>';
 }
 async function open(i,push=true){
   SEL=i;paint();if(!i)return;
@@ -104,7 +115,7 @@ async function open(i,push=true){
       $('#toast').classList.add('on');setTimeout(()=>$('#toast').classList.remove('on'),1400);};
   }
 }
-$('#list').onclick=e=>{const b=e.target.closest('[data-id]');if(b)open(ITENS.find(i=>i.id===b.dataset.id));};
+$('#list').onclick=e=>{const d=e.target.closest('[data-del]');if(d){e.stopPropagation();excluir(d.dataset.del);return;}const b=e.target.closest('[data-id]');if(b)open(ITENS.find(i=>i.id===b.dataset.id));};
 $('.tabs').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;F=b.dataset.f;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));paint();};
 $('#q').oninput=paint;$('#reload').onclick=load;
 $('#back').onclick=()=>{$('#side').classList.remove('hide');$('#main').classList.add('hide');};
@@ -123,6 +134,31 @@ async function openResposta(i){
   $('#acts').innerHTML=`<a class="btn" href="${x.html_url}" target="_blank" rel="noopener">Abrir no GitHub</a>`;
   const r=await fetch(x.url,{headers:{Accept:'application/vnd.github.html+json'}});const j=await r.json().catch(()=>({}));
   $('#view').innerHTML=`<div class="resp">${j.body_html||'<i>Sem texto.</i>'}</div>`;
+}
+
+// ===== Excluir item (prompt/artefato): apaga o arquivo e a entrada no itens.json via API do GitHub =====
+const CAPI='https://api.github.com/repos/jezielsilva/pagina-mocks-prompts/contents/';
+const tk=()=>{try{return localStorage.getItem('gh_token')||'';}catch(e){return '';}};
+const gh=(path,opt={})=>fetch(CAPI+path,{...opt,headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+tk(),'Content-Type':'application/json',...(opt.headers||{})}});
+const toast=t=>{const x=$('#toast');x.textContent=t;x.classList.add('on');setTimeout(()=>{x.classList.remove('on');x.textContent='Copiado!';},2000);};
+$('#cfg').onclick=()=>{$('#tok').value=tk();$('#mCfg').classList.add('on');};
+$('#tCan').onclick=()=>$('#mCfg').classList.remove('on');
+$('#tSal').onclick=()=>{try{localStorage.setItem('gh_token',$('#tok').value.trim());}catch(e){}$('#mCfg').classList.remove('on');};
+async function excluir(id){
+  const it=ITENS.find(i=>i.id===id);if(!it)return;
+  if(!tk()){$('#mCfg').classList.add('on');return;}
+  if(!confirm(`Excluir "${it.titulo}"?`))return;
+  try{
+    const f=await (await gh(it.arquivo)).json();
+    if(f.sha){const r=await gh(it.arquivo,{method:'DELETE',body:JSON.stringify({message:'Excluir '+it.arquivo,sha:f.sha})});if(!r.ok)throw new Error(r.status);}
+    const ij=await (await gh('itens.json?t='+Date.now())).json();
+    const d=JSON.parse(decodeURIComponent(escape(atob(ij.content.replace(/\n/g,'')))));
+    d.itens=d.itens.filter(i=>i.id!==id);d.atualizado=new Date().toISOString();
+    const r2=await gh('itens.json',{method:'PUT',body:JSON.stringify({message:'Remover '+id+' do índice',content:btoa(unescape(encodeURIComponent(JSON.stringify(d,null,2)))),sha:ij.sha})});
+    if(!r2.ok)throw new Error(r2.status);
+    ITENS=ITENS.filter(i=>i.id!==id);if(SEL&&SEL.id===id){SEL=null;$('#view').innerHTML='<div class="empty">Item excluído.</div>';$('#ttl').textContent='';$('#acts').innerHTML='';}
+    paint();toast('Excluído');
+  }catch(e){alert('Não foi possível excluir ('+e.message+'). Confira o token em ⚙.');}
 }
 load();
 </script>
