@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-19T17:08:00-03:00",
+  "atualizado": "2026-10-19T17:25:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -24,6 +24,14 @@
       "titulo": "Prompt — Carregar mais: círculo gigante e barra roxa",
       "data": "2026-10-19T17:08:00-03:00",
       "arquivo": "prompts/carregar-mais-circulo-e-barra.txt"
+    },
+    {
+      "id": "prompt-lista-coluna-unica",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Lista: coluna única esticada (raiz e áreas automáticas)",
+      "data": "2026-10-19T17:25:00-03:00",
+      "arquivo": "prompts/lista-coluna-unica-largura.txt"
     }
   ]
 }

@@ -1,0 +1,45 @@
+TAREFA
+Corrigir a largura da coluna no MODO LISTA quando há só UMA coluna aberta (raiz de uma área, inclusive áreas automáticas como Tarefas, Favoritos, Prazos e Lixeira). Não mude nada além disso. Não crie testes.
+
+PROBLEMA (visto no print, área "Tarefas", raiz, 69 itens)
+1. A única coluna está esticada até a borda direita da moldura. A linha vertical da coluna e o botão ⋮ ficam lá na ponta direita, longe dos nomes.
+2. No cabeçalho da coluna, o contador "69" caiu para uma segunda linha, na ponta direita, em vez de ficar na MESMA linha do nome "Tarefas".
+3. O rodapé "69 de 69 itens · fim da pasta" aparece centralizado na tela inteira, porque a coluna está larga demais.
+Com 2 ou mais colunas abertas, as larguras já estão certas. O erro é só quando existe uma coluna.
+
+COMO DEVE FICAR (igual ao mock)
+1. A coluna única tem a largura do PRÓPRIO conteúdo: a linha vertical da coluna termina logo depois do nome mais largo ("Captura_de_tela_2026-08-19_161647_1.png"), mais o ⋮.
+2. Limites: mínimo 220px e máximo 420px. Acima disso, o nome trunca com reticências e tooltip.
+3. O ⋮ fica colado à direita DENTRO da coluna (no fim da linha do item), aparecendo no hover, como nas outras colunas.
+4. O espaço à direita da coluna fica VAZIO, só com o fundo da moldura.
+5. Cabeçalho em UMA linha: nome "Tarefas" à esquerda e o contador "69" (e o botão de nova pasta, quando existir) à direita, dentro da largura da coluna.
+6. O rodapé do "Carregar mais" fica centralizado DENTRO da coluna, não na tela.
+
+ETAPA A — INVESTIGAR (responda em 3 linhas antes de mudar)
+A1. Existe alguma regra ou condição só para a coluna única ou para área automática? Procure no template e no SCSS por: $first && $last, colunas.length === 1, isRoot, virtual, area automática, .is-single, .is-root, :only-child, :last-child, flex: 1, width: 100%, flex-grow: 1. Diga arquivo, linha e regra.
+A2. No DevTools, na coluna única, informe em Computed: width, flex-grow, flex-shrink, flex-basis, min-width e max-width. Diga de qual seletor vem o valor que estica.
+A3. O cabeçalho da coluna: por que o contador quebra para a linha de baixo (flex-wrap, display block, width 100% no nome)?
+
+ETAPA B — CORRIGIR
+1. A MESMA regra de largura vale para TODA coluna, independente de ser a primeira, a última, a única, raiz ou área automática:
+   flex: 0 0 auto; // não cresce e não encolhe sozinha quando é a única ou a mais nova
+   width: max-content;
+   min-width: 220px;
+   max-width: 420px;
+   Colunas antigas (quando há várias e falta espaço) continuam podendo encolher como já funciona hoje. Não mexa nessa parte.
+2. Remova qualquer regra que faça a coluna crescer quando é única ou é raiz: flex: 1, flex-grow: 1, width: 100%, :only-child, :last-child com flex-grow, .is-last com flex 1, ou condição de área automática.
+3. O contêiner das colunas (.finder ou equivalente) continua display flex, com justify-content flex-start. Nada de stretch ou space-between nos filhos.
+4. Cabeçalho da coluna:
+   - display flex, align-items center, justify-content space-between, gap 8px, flex-wrap nowrap;
+   - nome: flex 1 1 auto, min-width 0, text-truncate;
+   - grupo da direita (contador + botão): flex 0 0 auto, display flex, align-items center, gap 8px.
+5. Linha do item: o nome com flex 1 1 auto e min-width 0. O ⋮ e a seta com flex-shrink 0. Assim o ⋮ fica no fim DA COLUNA.
+6. Rodapé do "Carregar mais": continua dentro do corpo da coluna. Como a coluna agora tem a largura do conteúdo, ele fica centralizado dentro dela.
+
+COMO CONFERIR
+1. Área Tarefas (raiz, 1 coluna): a coluna termina logo depois do nome mais longo, o ⋮ aparece no fim da linha dentro dela, "Tarefas" e "69" ficam na mesma linha, à direita sobra espaço vazio, e o "69 de 69 itens · fim da pasta" fica centralizado dentro da coluna.
+2. O mesmo em Meus documentos, Favoritos, Prazos e Lixeira na raiz.
+3. Abrindo uma pasta (2 colunas), tudo continua como já funciona.
+
+ENTREGA
+As 3 linhas da ETAPA A e o diff do SCSS e do template.
