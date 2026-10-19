@@ -125,7 +125,7 @@ $('#back').onclick=()=>{$('#side').classList.remove('hide');$('#main').classList
 const REPO_API='https://api.github.com/repos/jezielsilva/pagina-mocks-prompts/issues';
 let ISSUES={};
 async function loadRespostas(){
-  try{const r=await fetch(REPO_API+'?state=all&per_page=50');if(!r.ok)return [];const d=(await r.json()).filter(x=>!x.pull_request);
+  try{const r=await fetch(REPO_API+'?state=open&per_page=50');if(!r.ok)return [];const d=(await r.json()).filter(x=>!x.pull_request);
     d.forEach(x=>ISSUES['r-'+x.number]=x);
     return d.map(x=>({id:'r-'+x.number,tipo:'resposta',titulo:`#${x.number} ${x.title}`,projeto:x.state==='open'?'aberta':'resolvida',data:x.created_at}));
   }catch(e){return [];}
