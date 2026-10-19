@@ -1,0 +1,41 @@
+TAREFA
+Ajuste fino no "Carregar mais" (lista e grid) da página Documentos. Só 2 correções visuais no estado de CARREGANDO. Não mude nada além disso. Regras de sempre: UI-Kit, nenhuma cor escrita direto no código, sem !important, sem estilo inline (exceto a largura da progressbar pelo binding do componente), comentários só com //. Não crie testes.
+
+PROBLEMA
+1. A barrinha de progresso fica parada enquanto carrega. Falta o efeito de carregamento dentro dela.
+2. Durante o loading, o botão "Carregar mais" fica gigante (o spinner veio grande e o botão cresceu).
+
+CORREÇÃO 1 — EFEITO DE CARREGAMENTO DENTRO DA BARRA
+1. Quando carregandoMais for true, o rodapé (div.load-more) recebe a classe .is-busy.
+2. Em .load-more.is-busy, o preenchimento da barra (.progressbar__fill) ganha um brilho que corre da direita para a esquerda, sem parar:
+   .load-more.is-busy .progressbar__fill {
+     background: linear-gradient(90deg, var(--progressbar-fill-bg) 0%, var(--color-primary-lighten) 50%, var(--progressbar-fill-bg) 100%);
+     background-size: 200% 100%;
+     animation: barra-carregando 1s linear infinite;
+     min-width: 24px; // o brilho aparece mesmo com pouco preenchimento
+   }
+   @keyframes barra-carregando { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+   Se o token do preenchimento tiver outro nome no tema, use o nome real (o mesmo que a .progressbar__fill usa hoje).
+3. Quando os itens chegam (carregandoMais = false), a classe .is-busy sai e o brilho para. A largura do preenchimento cresce até o novo percentual de forma suave: .load-more .progressbar__fill { transition: width .45s ease; }
+4. Em @media (prefers-reduced-motion: reduce): sem a animação do brilho.
+
+CORREÇÃO 2 — BOTÃO COM TAMANHO FIXO NO LOADING
+1. O botão (btn btn-sm btn-outline-secondary rounded-pill) tem tamanho FIXO, igual com e sem loading:
+   .load-more-btn {
+     width: 180px;
+     height: 30px;
+     padding: 0 12px;
+     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+     white-space: nowrap;
+   }
+2. No loading, o spinner tem 14x14px com borda de 2px. Use o spinner pequeno do sistema. Se for o mat-progress-spinner ou o mat-spinner, passe [diameter]="14" e [strokeWidth]="2". NUNCA use o tamanho padrão (ele tem 100px e é isso que está deixando o botão gigante). Se for spinner por classe CSS (.spinner-border), use a variante pequena (.spinner-border-sm) ou width/height 14px no SCSS local.
+3. Conteúdo no loading: spinner + texto "Carregando…", com a mesma fonte e o mesmo tamanho do texto normal do botão. O botão fica disabled e com .btn-loading.
+4. Nada no loading pode mudar a largura, a altura ou a posição do botão.
+
+COMO CONFERIR
+1. Clique em "Carregar mais": a barra mostra o brilho correndo, e o botão continua com exatamente o mesmo tamanho, com um spinner pequeno ao lado de "Carregando…".
+2. Ao terminar, o brilho para e a barra cresce suavemente até o novo percentual.
+Referência visual: o artefato "Mock — Documentos (ajuste do loading do Carregar mais)" no portal (pasta Digitalizações 2026).
+
+ENTREGA
+Só o diff do SCSS e do template do rodapé.

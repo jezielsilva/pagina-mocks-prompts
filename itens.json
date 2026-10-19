@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-19T15:40:00-03:00",
+  "atualizado": "2026-10-19T16:50:00-03:00",
   "itens": [
     {
       "id": "documentos-mock-2026-10-19",
@@ -16,6 +16,22 @@
       "titulo": "Prompt — Carregar mais (lista e grid, front + back)",
       "data": "2026-10-19T14:23:00-03:00",
       "arquivo": "prompts/carregar-mais.txt"
+    },
+    {
+      "id": "documentos-mock-2026-10-19b",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Mock — Documentos (ajuste do loading do Carregar mais)",
+      "data": "2026-10-19T16:49:00-03:00",
+      "arquivo": "artefatos/documentos-mock-2026-10-19b.html"
+    },
+    {
+      "id": "prompt-carregar-mais-loading",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Carregar mais: efeito na barra e botão fixo (Issue #1)",
+      "data": "2026-10-19T16:50:00-03:00",
+      "arquivo": "prompts/carregar-mais-ajuste-loading.txt"
     }
   ]
 }
