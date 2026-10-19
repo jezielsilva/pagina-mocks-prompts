@@ -56,7 +56,7 @@ pre{margin:0;padding:20px;white-space:pre-wrap;word-wrap:break-word;font:13px/1.
 </style>
 </head>
 <body>
-<header><h1>Transferência</h1><small id="upd"></small><button id="novo" class="btn pri">＋ Nova resposta</button><button id="cfg" title="Token do GitHub">⚙</button><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
+<header><h1>Transferência</h1><small id="upd"></small><a id="novo" class="btn pri" href="https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title=Resposta%3A%20&body=Descreva%20o%20problema%20e%20cole%20os%20prints%20aqui%20(Ctrl%2BV)." target="_blank" rel="noopener">＋ Nova resposta</a><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
 <main>
   <aside id="side">
     <div class="tools">
@@ -71,22 +71,7 @@ pre{margin:0;padding:20px;white-space:pre-wrap;word-wrap:break-word;font:13px/1.
   </section>
 </main>
 <div class="toast" id="toast">Copiado!</div>
-<div class="modal" id="mNovo"><div class="box">
-  <h3>Nova resposta para o Claude</h3>
-  <input id="rTit" placeholder="Título curto (ex.: Lista – coluna cortada)">
-  <textarea id="rTxt" placeholder="Descreva o que aconteceu / o que precisa…"></textarea>
-  <div class="drop" id="drop" tabindex="0">Cole imagens aqui (Ctrl+V), arraste ou clique para escolher</div>
-  <input type="file" id="rFile" accept="image/*" multiple hidden>
-  <div class="thumbs" id="thumbs"></div>
-  <span class="hint" id="rSt"></span>
-  <div class="row"><button id="rCan">Cancelar</button><button class="btn pri" id="rEnv">Enviar</button></div>
-</div></div>
-<div class="modal" id="mCfg"><div class="box">
-  <h3>Token do GitHub</h3>
-  <span class="hint">Fine-grained token com acesso só ao repositório <b>pagina-mocks-prompts</b> e permissão <b>Contents: Read and write</b>. Fica salvo só neste navegador.</span>
-  <input id="tok" type="password" placeholder="github_pat_…">
-  <div class="row"><button id="tCan">Fechar</button><button class="btn pri" id="tSal">Salvar</button></div>
-</div></div>
+
 <script>
 // Fonte única: itens.json (gerado/atualizado pelo Claude a cada envio). Arquivos em /prompts e /artefatos.
 const $=s=>document.querySelector(s);
@@ -124,53 +109,20 @@ $('.tabs').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;F=b.dat
 $('#q').oninput=paint;$('#reload').onclick=load;
 $('#back').onclick=()=>{$('#side').classList.remove('hide');$('#main').classList.add('hide');};
 
-// ===== Respostas: o usuário cola imagens + texto; a página grava no repositório pela API do GitHub =====
-const OWNER='jezielsilva',REPO='pagina-mocks-prompts',API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
-const tk=()=>{try{return localStorage.getItem('gh_token')||'';}catch(e){return '';}};
-const gh=(path,opt={})=>fetch(API+path,{...opt,headers:{Accept:'application/vnd.github+json',...(tk()?{Authorization:'Bearer '+tk()}:{}),...(opt.headers||{})}});
-let IMGS=[];
-const b64=f=>new Promise((r,j)=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.onerror=j;fr.readAsDataURL(f);});
-async function addImgs(files){for(const f of files){if(!f.type.startsWith('image/'))continue;IMGS.push({nome:f.name||'colada.png',url:await b64(f)});}drawThumbs();}
-function drawThumbs(){$('#thumbs').innerHTML=IMGS.map((x,i)=>`<div><img src="${x.url}" alt=""><button data-rm="${i}" aria-label="Remover">×</button></div>`).join('');}
-$('#thumbs').onclick=e=>{const b=e.target.closest('[data-rm]');if(b){IMGS.splice(+b.dataset.rm,1);drawThumbs();}};
-$('#drop').onclick=()=>$('#rFile').click();
-$('#rFile').onchange=e=>addImgs([...e.target.files]);
-$('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over');};
-$('#drop').ondragleave=()=>$('#drop').classList.remove('over');
-$('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');addImgs([...e.dataTransfer.files]);};
-document.addEventListener('paste',e=>{if(!$('#mNovo').classList.contains('on'))return;const f=[...e.clipboardData.items].filter(i=>i.type.startsWith('image/')).map(i=>i.getAsFile());if(f.length){e.preventDefault();addImgs(f);}});
-$('#novo').onclick=()=>{if(!tk()){$('#mCfg').classList.add('on');return;}IMGS=[];drawThumbs();$('#rTit').value='';$('#rTxt').value='';$('#rSt').textContent='';$('#mNovo').classList.add('on');$('#rTit').focus();};
-$('#rCan').onclick=()=>$('#mNovo').classList.remove('on');
-$('#cfg').onclick=()=>{$('#tok').value=tk();$('#mCfg').classList.add('on');};
-$('#tCan').onclick=()=>$('#mCfg').classList.remove('on');
-$('#tSal').onclick=()=>{try{localStorage.setItem('gh_token',$('#tok').value.trim());}catch(e){}$('#mCfg').classList.remove('on');};
-const put=(path,b64data,msg)=>gh(path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,content:b64data})}).then(r=>{if(!r.ok)throw new Error('GitHub '+r.status);return r;});
-const utf8b64=s=>btoa(unescape(encodeURIComponent(s)));
-$('#rEnv').onclick=async()=>{
-  const tit=$('#rTit').value.trim()||'Resposta',txt=$('#rTxt').value.trim();
-  if(!txt&&!IMGS.length){$('#rSt').textContent='Escreva algo ou cole uma imagem.';return;}
-  const id=new Date().toISOString().replace(/[:.]/g,'-'),dir=`respostas/${id}/`;
-  $('#rEnv').disabled=true;
-  try{
-    const nomes=[];
-    for(let i=0;i<IMGS.length;i++){const ext=(IMGS[i].url.match(/^data:image\/(\w+)/)||[,'png'])[1];const n=`img-${i+1}.${ext}`;$('#rSt').textContent=`Enviando imagem ${i+1} de ${IMGS.length}…`;await put(dir+n,IMGS[i].url.split(',')[1],`Resposta: ${tit} (${n})`);nomes.push(n);}
-    $('#rSt').textContent='Salvando texto…';
-    await put(dir+'resposta.json',utf8b64(JSON.stringify({titulo:tit,texto:txt,imagens:nomes,data:new Date().toISOString()},null,2)),`Resposta: ${tit}`);
-    $('#mNovo').classList.remove('on');$('#toast').textContent='Enviado! Avise o Claude.';$('#toast').classList.add('on');setTimeout(()=>{$('#toast').classList.remove('on');$('#toast').textContent='Copiado!';},2200);load();
-  }catch(e){$('#rSt').textContent='Erro ao enviar: '+e.message+' (confira o token).';}
-  $('#rEnv').disabled=false;
-};
+// ===== Respostas = Issues do repositório (sem token: o usuário abre a Issue logado no GitHub e cola os prints) =====
+const REPO_API='https://api.github.com/repos/jezielsilva/pagina-mocks-prompts/issues';
+let ISSUES={};
 async function loadRespostas(){
-  try{const r=await gh('respostas?t='+Date.now());if(!r.ok)return [];const d=await r.json();
-    return d.filter(x=>x.type==='dir').map(x=>({id:'r-'+x.name,tipo:'resposta',titulo:'Resposta '+x.name.slice(0,16).replace('T',' '),projeto:'enviada por você',data:x.name.slice(0,10)+'T'+x.name.slice(11,19).replace(/-/g,':')+'Z',dir:x.path}));
+  try{const r=await fetch(REPO_API+'?state=all&per_page=50');if(!r.ok)return [];const d=(await r.json()).filter(x=>!x.pull_request);
+    d.forEach(x=>ISSUES['r-'+x.number]=x);
+    return d.map(x=>({id:'r-'+x.number,tipo:'resposta',titulo:`#${x.number} ${x.title}`,projeto:x.state==='open'?'aberta':'resolvida',data:x.created_at}));
   }catch(e){return [];}
 }
 async function openResposta(i){
-  $('#acts').innerHTML='';$('#view').innerHTML='<div class="resp">Carregando…</div>';
-  const j=await (await fetch(`${i.dir}/resposta.json?t=`+Date.now())).json().catch(()=>null);
-  if(!j){$('#view').innerHTML='<div class="resp">Ainda publicando… tente em 1 minuto.</div>';return;}
-  $('#ttl').textContent=j.titulo;
-  $('#view').innerHTML=`<div class="resp"><pre style="padding:0">${(j.texto||'').replace(/[&<]/g,c=>({'&':'&amp;','<':'&lt;'}[c]))}</pre>${j.imagens.map(n=>`<a href="${i.dir}/${n}" target="_blank"><img src="${i.dir}/${n}" alt=""></a>`).join('')}</div>`;
+  const x=ISSUES[i.id];
+  $('#acts').innerHTML=`<a class="btn" href="${x.html_url}" target="_blank" rel="noopener">Abrir no GitHub</a>`;
+  const r=await fetch(x.url,{headers:{Accept:'application/vnd.github.html+json'}});const j=await r.json().catch(()=>({}));
+  $('#view').innerHTML=`<div class="resp">${j.body_html||'<i>Sem texto.</i>'}</div>`;
 }
 load();
 </script>
