@@ -38,16 +38,30 @@ pre{margin:0;padding:20px;white-space:pre-wrap;word-wrap:break-word;font:13px/1.
 .toast{position:fixed;bottom:16px;right:16px;background:var(--ok);color:#fff;padding:8px 14px;border-radius:10px;font-weight:600;opacity:0;transition:opacity .2s}
 .toast.on{opacity:1}
 #back{display:none}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.on{display:flex}
+.box{background:var(--card);border-radius:14px;width:min(640px,100%);max-height:92vh;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+.box h3{margin:0;font-size:16px}
+.box textarea,.box input{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--txt);font:inherit}
+.box textarea{min-height:110px;resize:vertical}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;color:var(--sub);cursor:pointer}
+.drop.over{border-color:var(--pri);color:var(--pri)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumbs div{position:relative}.thumbs img{width:110px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.thumbs button{position:absolute;top:2px;right:2px;padding:0 7px;font-size:12px}
+.row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.resp{padding:20px;display:flex;flex-direction:column;gap:12px}.resp img{max-width:100%;border-radius:8px;border:1px solid var(--line)}
+.hint{font-size:12px;color:var(--sub)}
 @media (max-width:760px){main{grid-template-columns:1fr}aside.hide{display:none}section.hide{display:none}#back{display:inline-flex}}
 </style>
 </head>
 <body>
-<header><h1>Transferência</h1><small id="upd"></small><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
+<header><h1>Transferência</h1><small id="upd"></small><button id="novo" class="btn pri">＋ Nova resposta</button><button id="cfg" title="Token do GitHub">⚙</button><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
 <main>
   <aside id="side">
     <div class="tools">
       <input id="q" type="search" placeholder="Buscar…" aria-label="Buscar">
-      <div class="tabs" role="tablist"><button data-f="" class="on">Todos</button><button data-f="prompt">Prompts</button><button data-f="artefato">Artefatos</button></div>
+      <div class="tabs" role="tablist"><button data-f="" class="on">Todos</button><button data-f="prompt">Prompts</button><button data-f="artefato">Artefatos</button><button data-f="resposta">Respostas</button></div>
     </div>
     <ul id="list"></ul>
   </aside>
@@ -57,26 +71,43 @@ pre{margin:0;padding:20px;white-space:pre-wrap;word-wrap:break-word;font:13px/1.
   </section>
 </main>
 <div class="toast" id="toast">Copiado!</div>
+<div class="modal" id="mNovo"><div class="box">
+  <h3>Nova resposta para o Claude</h3>
+  <input id="rTit" placeholder="Título curto (ex.: Lista – coluna cortada)">
+  <textarea id="rTxt" placeholder="Descreva o que aconteceu / o que precisa…"></textarea>
+  <div class="drop" id="drop" tabindex="0">Cole imagens aqui (Ctrl+V), arraste ou clique para escolher</div>
+  <input type="file" id="rFile" accept="image/*" multiple hidden>
+  <div class="thumbs" id="thumbs"></div>
+  <span class="hint" id="rSt"></span>
+  <div class="row"><button id="rCan">Cancelar</button><button class="btn pri" id="rEnv">Enviar</button></div>
+</div></div>
+<div class="modal" id="mCfg"><div class="box">
+  <h3>Token do GitHub</h3>
+  <span class="hint">Fine-grained token com acesso só ao repositório <b>pagina-mocks-prompts</b> e permissão <b>Contents: Read and write</b>. Fica salvo só neste navegador.</span>
+  <input id="tok" type="password" placeholder="github_pat_…">
+  <div class="row"><button id="tCan">Fechar</button><button class="btn pri" id="tSal">Salvar</button></div>
+</div></div>
 <script>
 // Fonte única: itens.json (gerado/atualizado pelo Claude a cada envio). Arquivos em /prompts e /artefatos.
 const $=s=>document.querySelector(s);
 let ITENS=[],F='',SEL=null;
 const fmt=d=>new Date(d).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
 async function load(){
-  try{const r=await fetch('itens.json?t='+Date.now());const j=await r.json();ITENS=j.itens.sort((a,b)=>b.data.localeCompare(a.data));$('#upd').textContent='Atualizado '+fmt(j.atualizado);}
+  try{const r=await fetch('itens.json?t='+Date.now());const j=await r.json();ITENS=[...j.itens,...await loadRespostas()].sort((a,b)=>b.data.localeCompare(a.data));$('#upd').textContent='Atualizado '+fmt(j.atualizado);}
   catch(e){$('#list').innerHTML='<li class="empty">Não foi possível ler itens.json (abra pelo GitHub Pages).</li>';return;}
   paint();const h=decodeURIComponent(location.hash.slice(1));open(ITENS.find(i=>i.id===h)||null,false);
 }
 function paint(){
   const q=$('#q').value.toLowerCase();
   const l=ITENS.filter(i=>(!F||i.tipo===F)&&(!q||(i.titulo+' '+(i.projeto||'')).toLowerCase().includes(q)));
-  $('#list').innerHTML=l.length?l.map(i=>`<li><button data-id="${i.id}" class="${SEL&&SEL.id===i.id?'on':''}"><b>${i.titulo}</b><span class="meta"><span class="tag ${i.tipo}">${i.tipo==='prompt'?'Prompt':'Artefato'}</span>${i.projeto||''} · ${fmt(i.data)}</span></button></li>`).join(''):'<li class="empty">Nada encontrado.</li>';
+  $('#list').innerHTML=l.length?l.map(i=>`<li><button data-id="${i.id}" class="${SEL&&SEL.id===i.id?'on':''}"><b>${i.titulo}</b><span class="meta"><span class="tag ${i.tipo}">${{prompt:'Prompt',artefato:'Artefato',resposta:'Resposta'}[i.tipo]}</span>${i.projeto||''} · ${fmt(i.data)}</span></button></li>`).join(''):'<li class="empty">Nada encontrado.</li>';
 }
 async function open(i,push=true){
   SEL=i;paint();if(!i)return;
   if(push)history.replaceState(null,'','#'+encodeURIComponent(i.id));
   $('#side').classList.add('hide');$('#main').classList.remove('hide');
   $('#ttl').textContent=i.titulo;
+  if(i.tipo==='resposta')return openResposta(i);
   if(i.tipo==='artefato'){
     $('#acts').innerHTML=`<a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Abrir em nova aba</a> <a class="btn pri" href="${i.arquivo}" download>Baixar</a>`;
     $('#view').innerHTML=`<iframe src="${i.arquivo}" title="${i.titulo}"></iframe>`;
@@ -92,6 +123,55 @@ $('#list').onclick=e=>{const b=e.target.closest('[data-id]');if(b)open(ITENS.fin
 $('.tabs').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;F=b.dataset.f;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));paint();};
 $('#q').oninput=paint;$('#reload').onclick=load;
 $('#back').onclick=()=>{$('#side').classList.remove('hide');$('#main').classList.add('hide');};
+
+// ===== Respostas: o usuário cola imagens + texto; a página grava no repositório pela API do GitHub =====
+const OWNER='jezielsilva',REPO='pagina-mocks-prompts',API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
+const tk=()=>{try{return localStorage.getItem('gh_token')||'';}catch(e){return '';}};
+const gh=(path,opt={})=>fetch(API+path,{...opt,headers:{Accept:'application/vnd.github+json',...(tk()?{Authorization:'Bearer '+tk()}:{}),...(opt.headers||{})}});
+let IMGS=[];
+const b64=f=>new Promise((r,j)=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.onerror=j;fr.readAsDataURL(f);});
+async function addImgs(files){for(const f of files){if(!f.type.startsWith('image/'))continue;IMGS.push({nome:f.name||'colada.png',url:await b64(f)});}drawThumbs();}
+function drawThumbs(){$('#thumbs').innerHTML=IMGS.map((x,i)=>`<div><img src="${x.url}" alt=""><button data-rm="${i}" aria-label="Remover">×</button></div>`).join('');}
+$('#thumbs').onclick=e=>{const b=e.target.closest('[data-rm]');if(b){IMGS.splice(+b.dataset.rm,1);drawThumbs();}};
+$('#drop').onclick=()=>$('#rFile').click();
+$('#rFile').onchange=e=>addImgs([...e.target.files]);
+$('#drop').ondragover=e=>{e.preventDefault();$('#drop').classList.add('over');};
+$('#drop').ondragleave=()=>$('#drop').classList.remove('over');
+$('#drop').ondrop=e=>{e.preventDefault();$('#drop').classList.remove('over');addImgs([...e.dataTransfer.files]);};
+document.addEventListener('paste',e=>{if(!$('#mNovo').classList.contains('on'))return;const f=[...e.clipboardData.items].filter(i=>i.type.startsWith('image/')).map(i=>i.getAsFile());if(f.length){e.preventDefault();addImgs(f);}});
+$('#novo').onclick=()=>{if(!tk()){$('#mCfg').classList.add('on');return;}IMGS=[];drawThumbs();$('#rTit').value='';$('#rTxt').value='';$('#rSt').textContent='';$('#mNovo').classList.add('on');$('#rTit').focus();};
+$('#rCan').onclick=()=>$('#mNovo').classList.remove('on');
+$('#cfg').onclick=()=>{$('#tok').value=tk();$('#mCfg').classList.add('on');};
+$('#tCan').onclick=()=>$('#mCfg').classList.remove('on');
+$('#tSal').onclick=()=>{try{localStorage.setItem('gh_token',$('#tok').value.trim());}catch(e){}$('#mCfg').classList.remove('on');};
+const put=(path,b64data,msg)=>gh(path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,content:b64data})}).then(r=>{if(!r.ok)throw new Error('GitHub '+r.status);return r;});
+const utf8b64=s=>btoa(unescape(encodeURIComponent(s)));
+$('#rEnv').onclick=async()=>{
+  const tit=$('#rTit').value.trim()||'Resposta',txt=$('#rTxt').value.trim();
+  if(!txt&&!IMGS.length){$('#rSt').textContent='Escreva algo ou cole uma imagem.';return;}
+  const id=new Date().toISOString().replace(/[:.]/g,'-'),dir=`respostas/${id}/`;
+  $('#rEnv').disabled=true;
+  try{
+    const nomes=[];
+    for(let i=0;i<IMGS.length;i++){const ext=(IMGS[i].url.match(/^data:image\/(\w+)/)||[,'png'])[1];const n=`img-${i+1}.${ext}`;$('#rSt').textContent=`Enviando imagem ${i+1} de ${IMGS.length}…`;await put(dir+n,IMGS[i].url.split(',')[1],`Resposta: ${tit} (${n})`);nomes.push(n);}
+    $('#rSt').textContent='Salvando texto…';
+    await put(dir+'resposta.json',utf8b64(JSON.stringify({titulo:tit,texto:txt,imagens:nomes,data:new Date().toISOString()},null,2)),`Resposta: ${tit}`);
+    $('#mNovo').classList.remove('on');$('#toast').textContent='Enviado! Avise o Claude.';$('#toast').classList.add('on');setTimeout(()=>{$('#toast').classList.remove('on');$('#toast').textContent='Copiado!';},2200);load();
+  }catch(e){$('#rSt').textContent='Erro ao enviar: '+e.message+' (confira o token).';}
+  $('#rEnv').disabled=false;
+};
+async function loadRespostas(){
+  try{const r=await gh('respostas?t='+Date.now());if(!r.ok)return [];const d=await r.json();
+    return d.filter(x=>x.type==='dir').map(x=>({id:'r-'+x.name,tipo:'resposta',titulo:'Resposta '+x.name.slice(0,16).replace('T',' '),projeto:'enviada por você',data:x.name.slice(0,10)+'T'+x.name.slice(11,19).replace(/-/g,':')+'Z',dir:x.path}));
+  }catch(e){return [];}
+}
+async function openResposta(i){
+  $('#acts').innerHTML='';$('#view').innerHTML='<div class="resp">Carregando…</div>';
+  const j=await (await fetch(`${i.dir}/resposta.json?t=`+Date.now())).json().catch(()=>null);
+  if(!j){$('#view').innerHTML='<div class="resp">Ainda publicando… tente em 1 minuto.</div>';return;}
+  $('#ttl').textContent=j.titulo;
+  $('#view').innerHTML=`<div class="resp"><pre style="padding:0">${(j.texto||'').replace(/[&<]/g,c=>({'&':'&amp;','<':'&lt;'}[c]))}</pre>${j.imagens.map(n=>`<a href="${i.dir}/${n}" target="_blank"><img src="${i.dir}/${n}" alt=""></a>`).join('')}</div>`;
+}
 load();
 </script>
 </body>
