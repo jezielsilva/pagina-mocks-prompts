@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-19T17:40:00-03:00",
+  "atualizado": "2026-10-19T17:58:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -16,6 +16,14 @@
       "titulo": "Prompt — Grid igual ao mock + paginação centralizada",
       "data": "2026-10-19T17:40:00-03:00",
       "arquivo": "prompts/grid-estilo-mock-e-paginacao.txt"
+    },
+    {
+      "id": "prompt-grid-cards-esmagados",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Grid: cards esmagados (altura fixa dividida entre linhas)",
+      "data": "2026-10-19T17:58:00-03:00",
+      "arquivo": "prompts/grid-cards-esmagados.txt"
     }
   ]
 }
