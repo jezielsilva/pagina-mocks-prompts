@@ -1,0 +1,105 @@
+[Área: Frontend (SCSS + template do card + tema) | Skills: UI-Kit]
+
+TAREFA
+Ajustes no módulo Documentos depois do último prompt. O mock atualizado (portal → "Mock — Documentos (versão atual)") já mostra o resultado esperado em 1366×768: abra-o e compare antes de mudar. Só front. NÃO crie testes.
+
+O QUE JÁ ESTÁ CERTO (NÃO MEXER)
+- Os cards menores do grid (184px de largura, miniatura de 120px), com mais itens por tela.
+- grid-auto-rows: max-content no grid e min-height no card (nada de esmagar).
+- A sidebar com borda arredondada.
+
+AJUSTE 1 — RESTAURAR O ESPAÇO ENTRE O HEADER GLOBAL E O CONTEÚDO
+O último ajuste removeu o espaçamento padrão do projeto entre o header global (Documentos ⓘ | busca | usuário) e o conteúdo. Agora o cartão da toolbar e a sidebar encostam no header.
+A1. Abra 2 outras páginas do sistema (ex.: Clientes, Processos) e descubra o espaçamento padrão: qual wrapper/classe/token aplica esse respiro (padding do container de página, margin, $page-padding, --page-gap etc.)? Informe arquivo e valor.
+A2. Restaure no módulo Documentos usando EXATAMENTE esse mesmo token/classe. Não invente valor.
+Resultado: o topo do cartão da toolbar e o topo da sidebar ficam na mesma linha, com o mesmo respiro das outras páginas.
+
+AJUSTE 2 — TUDO EM UMA TELA (a página NÃO pode rolar)
+Hoje o conteúdo passa do fim da tela: a sidebar e o cartão do grid ficam cortados embaixo. O pedido era ocupar a altura disponível, NUNCA ultrapassar.
+A3. No DevTools: qual elemento está maior que a viewport? Para cada nível (:host da página → layout → coluna do conteúdo → cartão do grid; e layout → sidebar), informe height, min-height e flex. Algum usa 100vh SEM descontar o header, ou soma padding fora do cálculo?
+Correção:
+- Layout do módulo (conteúdo + sidebar):
+  height: calc(100dvh - var(--header-height) - <respiro de cima do A1> - <respiro de baixo>);
+  ou, melhor, se o container de página do projeto já tiver altura definida: height 100% + box-sizing border-box, para o padding ficar DENTRO da altura.
+- Use box-sizing: border-box onde houver padding com altura calculada.
+- Coluna do conteúdo: display flex, flex-direction column, gap 16px, min-height 0, height 100%.
+  - Toolbar e filtros: flex 0 0 auto.
+  - Cartão do grid: flex 1 1 auto, min-height 0, display flex, flex-direction column.
+  - O .file-grid ou o corpo do cartão: flex 1 1 auto, min-height 0, overflow-y auto.
+- Sidebar: height 100% da linha do layout, min-height 0, overflow hidden.
+- Scrollbar do grid visível e fina:
+  scrollbar-width: thin; scrollbar-color: <token slate-300> transparent; scrollbar-gutter: stable;
+  ::-webkit-scrollbar 8px; thumb arredondado com o token.
+Critério: em 1366×768 e 1920×1080, a base da sidebar e a base do cartão do grid ficam na mesma linha, com o mesmo respiro de baixo, e não existe scroll na página.
+
+AJUSTE 3 — SIDEBAR: "Todos os documentos" abre só no espaço que sobra
+Comportamento (igual ao mock), de cima para baixo:
+1. "Novo arquivo": flex 0 0 auto.
+2. Favoritos e Lixeira: flex 0 0 auto.
+3. Bloco de armazenamento (MB usados, Por categoria/Por tipo, legenda): flex 0 0 auto.
+4. Acordeão "Todos os documentos": fechado = só o cabeçalho (flex 0 1 auto). Aberto = flex 1 1 0 e min-height 64px: ocupa SÓ o espaço que sobrou, e a lista interna (Meus documentos, Processos, Clientes…) rola dentro dele com overflow-y auto e scrollbar fina.
+5. Classificações (se existir) e o card "Amplie o seu armazenamento / Fazer upgrade": flex 0 0 auto, sempre visíveis no rodapé da sidebar.
+Regras:
+- Ao abrir o acordeão, NADA abaixo dele sai da tela: o card de upgrade continua visível.
+- A animação do acordeão (grid-template-rows 0fr → 1fr) continua. O conteúdo interno precisa de min-height 0 e overflow-y auto quando aberto.
+- Compactação para caber em 768px: sidebar com padding 14px e gap 10px; bloco de armazenamento com padding 12px 14px; card de upgrade com padding 12px 14px e gap 10px.
+
+AJUSTE 4 — RODAPÉ DO CARD: AUTOR + DATA (redesenho, ver mock)
+Hoje: "Usuário do escritório · 19/10/2026 15:04 · 88 KB", que trunca e perde a data.
+Novo (uma linha, 12px):
+[avatar 18px com iniciais]  Nome do autor (trunca com …)        19/10/26
+- O avatar é um círculo de 18px com as iniciais do autor (2 letras), em 9px bold, com fundo e cor nos tokens primary-lightest / primary.
+- O nome ocupa flex 1 1 auto, min-width 0 e trunca.
+- A data é curta (dd/MM/yy), fixa à direita (flex-shrink 0, tabular-nums). Ela NUNCA some.
+- Tamanho do arquivo e hora completa vão para o tooltip do rodapé: [title]="autor + ' · ' + (data | date:'dd/MM/yyyy HH:mm') + ' · ' + tamanho".
+- "Você" continua sendo exibido para o usuário logado.
+- As iniciais vêm do back: se o DTO já tiver iniciais ou nome do autor, use o nome. Se não houver campo de iniciais, gere no front a partir do nome (primeira letra do primeiro e do último nome). Isso é formatação de exibição, não regra de negócio.
+
+Template:
+<div class="grid-item-meta" [title]="tooltipMeta">
+  <span class="grid-item-av" aria-hidden="true">{{ iniciaisAutor }}</span>
+  <span class="grid-item-who">{{ nomeAutor }}</span>
+  <time [attr.datetime]="item.dataAlteracao">{{ item.dataAlteracao | date:'dd/MM/yy' }}</time>
+</div>
+
+SCSS:
+.grid-item-meta { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; color: var(--text-color-secondary); }
+.grid-item-av { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; background: var(--color-primary-lightest); color: var(--color-primary); font: 700 9px/1 var(--font-head); }
+.grid-item-who { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.grid-item-meta time { flex-shrink: 0; font-variant-numeric: tabular-nums; }
+(A fonte de 9px só nas iniciais do avatar é exceção visual; o texto legível continua com 12px.)
+
+AJUSTE 5 — TOKENS DO MODO ESCURO
+O sistema já tem o tema escuro configurado, mas o módulo Documentos não usa os tokens dele. No escuro aparecem fundos brancos, cinzas claros e textos sem contraste.
+A4. Ache o arquivo de tema com os valores do modo escuro (seletor do tema escuro, ex.: [data-theme="dark"], .dark-theme, body.theme-dark). Liste os tokens de: fundo de card, borda de card, fundo de página, texto, texto secundário, slate-50/100/200/300 e primary-lightest.
+A5. Faça grep no SCSS do módulo Documentos (página, grid, lista Finder, sidebar, drawer, modais) por: #, rgb(, rgba(, white, black, e tokens fixos de cor clara (ex.: --color-white, --color-slate-50, --color-slate-100) usados como FUNDO. Liste os casos.
+Correção:
+- Troque cada fundo/borda/texto pelo token SEMÂNTICO que já muda no escuro (ex.: --card-bg, --card-border-color, --text-color, --text-color-secondary, --page-bg, --file-list-item-border-color).
+- Miniatura (área cinza do card) e folha A4: fundo da área = token de superfície secundária. A folha continua clara nos dois modos (é a representação de um papel), mas com borda no token de borda.
+- Sidebar: os cards internos (armazenamento, acordeão, atalhos, upgrade) usam tokens que mudam no escuro. O botão roxo e o tanque com ondas são exceção aprovada: mantenha o visual e só ajuste o fundo do card ao redor.
+- Scrollbars: thumb com o token de borda forte do tema.
+- Se faltar um token semântico, crie no arquivo de tema com valor para o modo claro E para o escuro.
+- Não mexa em cor fora do módulo Documentos. Fora dele, só aponte o que achar.
+
+CRITÉRIOS DE ACEITE
+1. O espaço entre o header global e o conteúdo é igual ao das outras páginas.
+2. Em 1366×768 e 1920×1080 não existe scroll na página. Rolam só o grid e a lista do acordeão, as duas com scrollbar fina visível.
+3. As bases da sidebar e do cartão do grid ficam alinhadas.
+4. Com "Todos os documentos" aberto, o armazenamento, as classificações e o card de upgrade continuam visíveis.
+5. O rodapé do card mostra avatar + nome (truncado) + data dd/MM/yy à direita, que nunca some. O tooltip mostra autor, data com hora e tamanho.
+6. No modo escuro, nenhum fundo branco ou cinza claro "estourado" no módulo, e os textos ficam legíveis (contraste).
+7. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+As respostas de A1 a A5 e o diff.
+Linha final: "Tema: tokens usados/criados → <lista>".
+
+PENDÊNCIAS DO PLANO
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Filtros: remover Etiquetas e Ano
+- Menu de ações (z-index no drawer)
+- Busca
+- Classificação completa
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
