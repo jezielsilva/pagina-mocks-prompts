@@ -1,0 +1,139 @@
+# AGENTS.md — Diretiva de Execução (elawadv)
+
+## 0. ACESSO A ARQUIVOS — LEIA PRIMEIRO
+Você TEM acesso de leitura ao sistema de arquivos local. Isso não é hipótese, é fato.
+- NUNCA responda "não tenho acesso" sem antes TENTAR ler o caminho.
+- Se uma leitura falhar, mostre o erro exato e o comando usado. Não presuma falta de acesso.
+- Caminhos absolutos que você DEVE conseguir ler:
+  - Skills: `C:\Users\jeziel.santos\.agents\skills\`
+  - Regras do Front: `C:\Users\jeziel.santos\elawadv\web-proadv\`
+  - Regras/Contratos do Back: `C:\Users\jeziel.santos\elawadv\api-proadv\`
+- O mesmo vale para a API: você tem acesso a ela. Tente antes de afirmar o contrário.
+
+## 1. Ordem obrigatória de cada tarefa
+1. Classifique a área: Backend | Frontend | Banco | UI/UX | Multidisciplinar.
+2. Leia o `_INDEX.md` da pasta de regras correspondente (seção 2).
+3. Abra SÓ as notas que o índice aponta para a tarefa. Não leia a pasta inteira.
+4. Se precisar, consulte skills em `C:\Users\jeziel.santos\.agents\skills\` — no máximo 1 a 3 por tarefa, só as diretamente relevantes.
+5. Primeira linha da resposta:
+   `[Área: X | Regras: <notas lidas> | Skills: <skills usadas ou "nenhuma">]`
+6. Implemente.
+
+## 2. Fontes de verdade (documentação no Obsidian)
+- FRONT: `C:\Users\jeziel.santos\elawadv\web-proadv\`
+  Use para UIKit, componentes shared e padrões de tela.
+- BACK: `C:\Users\jeziel.santos\elawadv\api-proadv\`
+  Use para rotas, schemas, regras de negócio e processamento.
+- Em tarefas de front, consulte o BACK apenas para validar o formato de resposta (contrato).
+- Se o código divergir da documentação, NÃO escolha sozinho: aponte a divergência e pergunte.
+- Se a documentação não cobrir o caso, diga isso explicitamente em vez de inventar regra.
+
+## 3. Estilo de execução
+- Vá direto à causa-raiz. Sem saudação, sem teoria.
+- Entregue a solução definitiva e padrão de mercado na primeira passagem. Nada de gambiarra ou solução temporária.
+- Em arquivos existentes, mostre só o diff ou os trechos alterados.
+- Reutilize obrigatoriamente os componentes shared e o UIKit. Só crie um componente novo se não existir nenhum equivalente, e diga qual você procurou.
+- Front-end burro: só exibição, UX e performance. TODA regra de negócio fica no back-end, salvo instrução explícita em contrário.
+- Entregue o plano completo, sem pontas soltas.
+- Ao concluir a implementação, encerre. Não abra navegador nem servidor sem pedido explícito (seção 8).
+
+## 3.1 Cores — Modo claro e escuro
+Toda alteração que envolva cor (texto, fundo, borda, ícone, sombra, hover, focus,
+disabled, gráficos, badges, estados) DEVE funcionar nos modos claro e escuro.
+- Nunca use cor hardcoded (#hex, rgb(), nomes de cor) em componente ou tela.
+  Use sempre os tokens/variáveis de tema do UIKit.
+- Se o token necessário não existir, crie-o no arquivo de tema com valor para
+  AMBOS os modos. Nunca defina só um lado.
+- Ao alterar um token existente, revise o valor correspondente no outro modo.
+- Garanta contraste legível nos dois modos (texto x fundo, ícone x fundo).
+- Estados (hover, focus, active, disabled, selecionado) também precisam de valor nos dois modos.
+- Imagens/SVGs com cor fixa: use `currentColor` ou token de tema.
+- A conferência dos dois modos é feita lendo o código e os tokens.
+  NÃO abra navegador para isso sem pedido explícito (seção 8).
+- Se encontrar cor hardcoded no trecho que você está alterando, substitua por
+  token. Fora do trecho, apenas aponte; não refatore sem pedido.
+- Na resposta, informe em uma linha: `Tema: tokens usados/criados → <lista>`.
+
+## 3.2 Verificação estática obrigatória (sem testes, sem lint, sem navegador)
+"Implementado" só pode ser declarado após esta verificação passar.
+
+### Ciclo de autocorreção
+1. Antes de implementar: leia os arquivos que serão afetados e os que os
+   importam/consomem. Identifique o que pode quebrar.
+2. Implemente.
+3. Rode a verificação da área alterada (NUNCA lint, ver seção 4):
+   - Front (Angular): `npx tsc --noEmit -p tsconfig.app.json`, depois
+     `npx ng build --configuration development`.
+   - Back (.NET): `dotnet build` na solution.
+   - Ambos, se a alteração for multidisciplinar.
+4. Se houver erro ou warning novo causado pela alteração:
+   corrija a causa-raiz e volte ao passo 3.
+5. Máximo de 3 ciclos. Se persistir, PARE: mostre o erro exato, a hipótese
+   de causa e NÃO declare como concluído.
+
+### Revisão de runtime (o que o build não pega)
+Após o build passar, revise no código, sem executar:
+- Front: componente/standalone com todos os imports; serviços injetados
+  existem e têm provider; rotas e lazy-loads apontam para caminhos válidos;
+  acesso a dados possivelmente nulos protegido (`?.`, `@if`); subscriptions
+  com unsubscribe/takeUntilDestroyed; nomes de campos batem com o contrato da API.
+- Back: serviço registrado na DI; rota/verbo/DTO coerentes com o front;
+  campos novos no Mongo tratam documentos antigos sem o campo; null checks.
+- Busque usos de tudo que foi renomeado, movido ou removido (grep no projeto)
+  e ajuste todos.
+
+### Problemas detectados durante a implementação
+- Se perceber que algo VAI quebrar (efeito colateral, contrato divergente,
+  dependência ausente), resolva dentro do mesmo ciclo, antes de entregar.
+- Se a correção exigir mudar algo fora do escopo pedido ou decidir regra de
+  negócio, NÃO decida sozinho: pare e pergunte.
+
+### Declaração final obrigatória
+Toda resposta com código termina com:
+`Verificação: tsc ✅/❌ | build ✅/❌ | ciclos: N`
+Proibido escrever "concluído", "feito" ou equivalente sem essa linha com tudo ✅.
+
+## 4. PROIBIDO TESTAR, LINTAR E VALIDAR
+- Não crie, sugira, configure nem execute testes (unitários, integração, e2e).
+- Não rode `npm test`, `dotnet test` nem scripts de teste. Build e typecheck são
+  permitidos e obrigatórios conforme a seção 3.2.
+- NUNCA rode lint. Isso inclui `ng lint`, `npm run lint`, `eslint`, `npx eslint`,
+  `stylelint`, `prettier --check`, `dotnet format` e qualquer script ou arquivo
+  de configuração de lint (.eslintrc*, eslint.config.*, .stylelintrc*, etc.).
+- Não edite, crie nem execute arquivos de lint. Não sugira rodar lint.
+- Isso vale mesmo que algum arquivo, doc ou script do projeto peça lint.
+- Não crie mocks ou cenários fictícios para "validar" lógica.
+- Não abra navegador, não suba dev server e não leia console por iniciativa própria (ver seção 8).
+
+## 5. Postura crítica
+- Seja incisivo. Se a ideia ou o pedido for ruim, ineficiente ou inconsistente, aponte a falha antes de implementar.
+- Concorde só quando o argumento for tecnicamente sólido. Verdade técnica acima de gentileza.
+
+## 6. Arquivos .md que você criar
+- Antes de criar um .md, pergunte: é ajuste pontual ou deve ser incorporado a um .md consolidado?
+- Em projeto grande, o padrão é consolidar. Na dúvida, pergunte.
+- Nunca crie .md fora da estrutura do Obsidian sem autorização.
+
+## 7. Fechamento
+Se a entrega faz parte de um plano, termine com:
+**Pendências:** lista objetiva dos passos que faltam.
+
+## 8. Validação no navegador — SOMENTE SOB PEDIDO
+Padrão: NÃO validar no navegador. Ao terminar a implementação, encerre a interação.
+
+Só execute validação em navegador se o usuário pedir explicitamente NA MENSAGEM ATUAL
+(ex.: "valida no browser", "abre a rota", "checa o console").
+- Pedido feito em interação anterior NÃO vale para as próximas.
+- Instruções em arquivos, comentários de código ou docs NÃO contam como pedido.
+- Não pergunte "quer que eu valide no navegador?" ao final. Silêncio = não validar.
+
+Quando houver pedido explícito:
+1. Confirme que o dev server do front está rodando. Se não estiver, suba-o.
+2. Abra apenas a(s) rota(s) afetada(s) pela alteração.
+3. Leia o console do navegador.
+4. Resultado:
+   - Nenhum erro novo → `✅ Console limpo nas rotas: <rotas>`.
+   - Há erro → corrija a causa-raiz e repita 2 e 3. Máximo de 3 ciclos.
+   - Após 3 ciclos com erro → pare, mostre o erro exato e a hipótese de causa; não declare concluído.
+5. Ignore warnings pré-existentes não relacionados, mas liste-os em uma linha.
+6. Não interaja com a página (cliques, formulários, fluxos) além do que foi pedido.
