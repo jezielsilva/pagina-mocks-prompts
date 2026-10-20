@@ -63,7 +63,26 @@ ETAPA D — CONTEÚDO (remover scroll duplo)
 - Modo lista: o contêiner .finder ocupa height 100% e min-height 0 (REMOVER qualquer min-height fixo, ex.: 480px, que gera scroll externo). Rolam só as colunas internas do Finder e o painel de preview.
 - Remova scrollbar-gutter: stable, se tiver sido adicionado.
 
+ETAPA E — MODO GRADE: CARDS UM POUCO MENORES E CARTÃO SEMPRE DENTRO DA TELA
+Cards (desktop):
+.file-grid {
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));   // antes 184px
+  grid-auto-rows: max-content;    // manter
+  align-content: start;           // manter
+  gap: 12px;
+  padding: 12px;
+}
+.grid-item-thumb { flex: 0 0 104px; height: 104px; padding-top: 10px; }   // antes 120px
+.grid-item-paper { width: 50%; }
+Nome 13px, rodapé (avatar + nome + data) 12px: manter. Celular: thumb 104px, 2 colunas.
+
+Altura do cartão da grade:
+- O cartão que envolve os cards ocupa a altura que SOBRA na tela (flex 1 1 auto; min-height 0) e NUNCA passa do fim da área visível.
+- Com 20, 100 ou 500 arquivos, o cartão tem a MESMA altura. Só o .file-grid rola por dentro (uma única barra fina), e o "Carregar mais" fica no fim do conteúdo rolável.
+- Nenhum height/min-height fixo em px no cartão ou no grid. Nada de calc(100vh) solto sem descontar o header global e o espaçamento padrão da página.
+
 CRITÉRIOS DE ACEITE (1366×620, 1366×768 e 1920×1080)
+0. Grade: cards menores (168px / miniatura 104px), legíveis, e o cartão da grade com a base dentro da tela em qualquer quantidade de arquivos.
 1. Com "Todos os documentos" aberto, o card de upgrade fica sempre visível, colado na base da sidebar.
 2. A sidebar tem só uma barra de rolagem, e só quando o conteúdo de cima não cabe.
 3. O acordeão não tem barra própria.
