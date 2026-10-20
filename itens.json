@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-20T13:30:00-03:00",
+  "atualizado": "2026-10-20T17:25:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -48,6 +48,14 @@
       "titulo": "AGENTS.md — Diretiva de Execução (elawadv)",
       "data": "2026-10-20T13:30:00-03:00",
       "arquivo": "prompts/agents-md-elawadv.txt"
+    },
+    {
+      "id": "prompt-grid-altura-scroll",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Grid: esticar o cartão até o fim + scrollbar vertical",
+      "data": "2026-10-20T17:25:00-03:00",
+      "arquivo": "prompts/grid-altura-e-scroll.txt"
     }
   ]
 }
