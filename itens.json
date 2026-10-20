@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-20T18:12:00-03:00",
+  "atualizado": "2026-10-20T18:35:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,6 +8,14 @@
       "titulo": "Mock — Documentos (versão atual)",
       "data": "2026-10-19T16:49:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
+    },
+    {
+      "id": "prompt-layout-pos-rebase",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Pós-rebase: sidebar alinhada e arredondada + grid menor cabendo na tela",
+      "data": "2026-10-20T18:35:00-03:00",
+      "arquivo": "prompts/layout-pos-rebase-sidebar-grid.txt"
     }
   ]
 }
