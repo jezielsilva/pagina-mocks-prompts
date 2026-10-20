@@ -269,7 +269,7 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .doc-alerts:empty{display:none}
 .alert-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 /* Lista em colunas (Finder) */
-.finder{display:flex;height:100%;min-height:480px;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;outline:none}
+.finder{display:flex;height:100%;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;outline:none}
 .finder-col{flex:0 0 260px;display:flex;flex-direction:column;min-height:0}
 .finder-col-head{padding:10px 14px;display:flex;justify-content:space-between;gap:8px}
 .finder-col-body{overflow-y:auto;padding:6px;flex:1;display:flex;flex-direction:column;gap:2px}
@@ -474,19 +474,22 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 #device:not(.t) .doc-app{height:calc(100vh - var(--app-header-height));overflow:hidden}
 #device:not(.t) .doc-main{height:100%;overflow:hidden}
 #device:not(.t) .doc-view-card{display:flex;flex-direction:column}
-#device:not(.t) .doc-view{flex:1 1 auto;scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent;scrollbar-gutter:stable}
+#device:not(.t) .doc-view{flex:1 1 auto;scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent;}
 #device:not(.t) .doc-view::-webkit-scrollbar{width:8px}
 #device:not(.t) .doc-view::-webkit-scrollbar-thumb{background:var(--color-slate-300);border-radius:999px;border:2px solid transparent;background-clip:padding-box}
 #device:not(.t) .doc-head,#device:not(.t) #banner{flex-shrink:0}
 #device:not(.t) .doc-view{overflow:auto}
 #device:not(.t) .doc-side{overflow:hidden}
-#device:not(.t) .acc{flex:0 1 auto;min-height:64px}
-#device:not(.t) .acc.open{flex:1 1 0;min-height:64px}
+.side-scroll{display:flex;flex-direction:column;gap:inherit;min-height:0}
+/* Desktop: a sidebar tem UM scroll só (topo). O card de upgrade fica fixo no rodapé visível. */
+#device:not(.t) .side-scroll{flex:1 1 auto;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent;margin:0 -6px;padding:0 6px}
+#device:not(.t) .side-scroll>*{flex-shrink:0}
+#device:not(.t) .acc,#device:not(.t) .acc.open{flex:0 0 auto;min-height:0}
+#device:not(.t) .acc.open .acc-b>div{overflow:visible}
 #device:not(.t) .doc-side{gap:10px;padding:14px}
 #device:not(.t) .stc{padding:12px 14px}
 #device:not(.t) .cta{padding:12px 14px;gap:10px}
-#device:not(.t) .acc.open .acc-b>div{scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent}
-#device:not(.t) .new-btn,#device:not(.t) .quick,#device:not(.t) .cta,#device:not(.t) #cls-slot{flex-shrink:0}
+#device:not(.t) .cta{flex-shrink:0;margin-top:auto}
 #device:not(.t) .stc{flex-shrink:0}
 
 /* =====================================================================
@@ -630,6 +633,7 @@ body.framed #device.t:not(.m){width:820px}
 
   <!-- ================= SIDEBAR (direita) ================= -->
   <aside class="doc-side" aria-label="Navegação de documentos">
+    <div class="side-scroll">
     <button type="button" class="new-btn" data-act="create-menu" aria-haspopup="menu"><span class="pc" id="new-ic"></span>Novo arquivo</button>
     <div class="quick" id="fav-slot"></div>
     <div class="stc" id="stc">
@@ -643,6 +647,7 @@ body.framed #device.t:not(.m){width:820px}
     </div>
     <section class="acc" id="acc"></section>
     <div id="cls-slot"></div>
+    </div><!-- /.side-scroll -->
     <div class="cta lv-ok" id="cta">
       <div class="tank" aria-hidden="true"><svg class="wave" viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0 8 Q25 0 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 V16 H0Z"/></svg><svg class="wave w2" viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0 8 Q25 16 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 V16 H0Z"/></svg></div>
       <div class="ct"><span class="ci" id="cta-ic"></span><span><b id="cta-tx">Amplie o seu armazenamento</b><small id="cta-sub"></small></span></div>

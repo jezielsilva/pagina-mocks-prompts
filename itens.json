@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-20T19:20:00-03:00",
+  "atualizado": "2026-10-20T19:15:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
-      "data": "2026-10-20T19:20:00-03:00",
+      "data": "2026-10-20T19:15:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
     },
     {
@@ -24,6 +24,14 @@
       "titulo": "Prompt — Espaço do header, tudo em uma tela, sidebar, autor+data e modo escuro",
       "data": "2026-10-20T19:20:00-03:00",
       "arquivo": "prompts/ajustes-pos-rebase-v2.txt"
+    },
+    {
+      "id": "prompt-sidebar-um-scroll",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Sidebar: upgrade fixo na base + um scroll por coluna",
+      "data": "2026-10-20T19:15:00-03:00",
+      "arquivo": "prompts/sidebar-upgrade-fixo-um-scroll.txt"
     }
   ]
 }
