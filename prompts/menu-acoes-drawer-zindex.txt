@@ -1,0 +1,43 @@
+[Área: Frontend (Angular + SCSS) | Skills: UI-Kit]
+
+TAREFA
+O componente app-menu-acoes (dropdown dos ⋮) abre DENTRO do drawer lateral, mas as opções não são clicáveis: algo fica por cima delas. Corrigir de forma definitiva para o sistema todo. NÃO crie testes.
+
+POR QUE "SÓ AUMENTAR O Z-INDEX" NÃO RESOLVE
+- O z-index só compete dentro do mesmo "stacking context". O drawer quase certamente cria um contexto próprio (transform/translate da animação, position + z-index, will-change, filter ou opacity < 1). Um menu dentro dele com z-index 999999 continua preso abaixo de tudo que está acima do drawer, como o backdrop ou o overlay container.
+- "Aparece, mas não clica" = existe uma camada transparente por cima (backdrop do drawer ou cdk-overlay-backdrop) ou pointer-events: none herdado.
+- z-index dinâmico (calcular o maior da página) é gambiarra: quebra com a próxima camada que alguém criar.
+
+ETAPA A — INVESTIGAR (responda antes de mudar)
+A1. Como o app-menu-acoes renderiza a lista: inline dentro do componente (position absolute) ou via overlay (CDK Overlay, MatMenu, appendTo body)? Arquivo e trecho.
+A2. Com o menu aberto no drawer, no DevTools rode no console:
+    document.elementFromPoint(X, Y)
+    (X, Y = coordenadas de uma opção do menu; pegue clicando com o inspector). Qual elemento retorna? Esse é quem está por cima.
+A3. No drawer (painel e seus pais), qual propriedade cria stacking context: transform, z-index + position, will-change, filter, opacity?
+A4. Liste os z-index existentes de: drawer, backdrop do drawer, .cdk-overlay-container, header, modais e toasts. Existe um arquivo de tokens de z-index (ex.: $z-*, --z-*)?
+
+ETAPA B — CORREÇÃO DEFINITIVA
+1. Renderizar o menu FORA da árvore do drawer, num overlay no body:
+   - Se já usa CDK Overlay/MatMenu: garanta que o painel vai para o .cdk-overlay-container (não use um overlay container customizado dentro do drawer).
+   - Se é inline: migre a lista para CDK Overlay (Overlay + FlexibleConnectedPositionStrategy ancorado no botão ⋮; scrollStrategy reposition; fechar em backdropClick ou Escape). Mantenha inputs, outputs e o visual atual. Os componentes que usam o app-menu-acoes não devem precisar mudar.
+2. Escala ÚNICA de z-index em tokens (um arquivo, ex.: _z-index.scss / variáveis CSS), em ordem crescente:
+   --z-header: 100;
+   --z-drawer-backdrop: 1000;
+   --z-drawer: 1010;
+   --z-modal-backdrop: 1040;
+   --z-modal: 1050;
+   --z-overlay (cdk-overlay-container: menus, selects, tooltips): 1100;
+   --z-toast: 1200;
+   Aplique o drawer, o modal e o .cdk-overlay-container nesses tokens. Ajuste os valores às camadas que você listou em A4, sempre com overlay > drawer e modal.
+3. Remova z-index "mágicos" que conflitem (999, 9999, 99999) nas camadas acima, trocando pelos tokens.
+4. Se o elemento achado em A2 for um backdrop com pointer-events ativo cobrindo o drawer, corrija a camada dele com os tokens (ele deve ficar ABAIXO do painel do drawer).
+
+CRITÉRIOS DE ACEITE
+1. No drawer: abrir o ⋮ mostra as opções e todas são clicáveis. document.elementFromPoint em uma opção retorna o próprio item do menu.
+2. Fora do drawer (listas, grid, colunas) o menu continua funcionando igual.
+3. Menu perto da borda da tela reposiciona sem cortar.
+4. Modal aberto por uma opção do menu aparece acima do drawer.
+5. Selects e tooltips dentro do drawer também ficam acima dele.
+
+ENTREGA
+As respostas de A1 a A4 e o diff.
