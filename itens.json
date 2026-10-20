@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-20T17:25:00-03:00",
+  "atualizado": "2026-10-20T18:12:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,54 +8,6 @@
       "titulo": "Mock — Documentos (versão atual)",
       "data": "2026-10-19T16:49:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
-    },
-    {
-      "id": "prompt-grid-estilo",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Grid igual ao mock + paginação centralizada",
-      "data": "2026-10-19T17:40:00-03:00",
-      "arquivo": "prompts/grid-estilo-mock-e-paginacao.txt"
-    },
-    {
-      "id": "prompt-grid-cards-esmagados",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Grid: cards esmagados (altura fixa dividida entre linhas)",
-      "data": "2026-10-19T17:58:00-03:00",
-      "arquivo": "prompts/grid-cards-esmagados.txt"
-    },
-    {
-      "id": "prompt-grid-max-content",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Grid: correção definitiva dos cards esmagados (max-content)",
-      "data": "2026-10-19T18:08:00-03:00",
-      "arquivo": "prompts/grid-linhas-max-content.txt"
-    },
-    {
-      "id": "prompt-menu-acoes-zindex",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Geral",
-      "titulo": "Prompt — app-menu-acoes não clicável dentro do drawer (z-index)",
-      "data": "2026-10-20T08:35:00-03:00",
-      "arquivo": "prompts/menu-acoes-drawer-zindex.txt"
-    },
-    {
-      "id": "prompt-agents-md",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Geral",
-      "titulo": "AGENTS.md — Diretiva de Execução (elawadv)",
-      "data": "2026-10-20T13:30:00-03:00",
-      "arquivo": "prompts/agents-md-elawadv.txt"
-    },
-    {
-      "id": "prompt-grid-altura-scroll",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Grid: esticar o cartão até o fim + scrollbar vertical",
-      "data": "2026-10-20T17:25:00-03:00",
-      "arquivo": "prompts/grid-altura-e-scroll.txt"
     }
   ]
 }
