@@ -1,0 +1,61 @@
+[Área: Multidisciplinar (Frontend da modal de Logs + ajuste pontual no texto do back) | Skills: UI-Kit]
+
+TAREFA
+Refinos na modal de LOGS (já no padrão BsModal do Financeiro). Prints no portal, aba "Prints": 2026-10-21 175540 e 175550. Referência visual da lista: o mock no portal (botão Logs). NÃO crie testes.
+
+========================================================================
+1. FUNDO CINZA NA LISTA
+========================================================================
+A lista inteira está sobre um bloco cinza (dentro do card branco), o que deixa tudo pesado.
+A1. Qual seletor pinta esse cinza (.list-group, .card-body, wrapper .logs-list, --list-group-bg, bg-light)? Informe arquivo:linha.
+Correção:
+- O fundo da lista é o MESMO do card (branco no claro / token de card no escuro). Sem bloco cinza.
+- Cada log é um item com separador fino entre eles (border-bottom com o token de borda), padding 12px 4px e sem fundo próprio. Hover opcional, bem sutil, com o token de hover de lista.
+- Use o list-group do UI-Kit sem override de fundo. Se o UI-Kit pintar o list-group de cinza dentro do card, use a variante "flush"/sem fundo do próprio UI-Kit.
+
+========================================================================
+2. ÍCONES LARANJAS
+========================================================================
+Os ícones das ações estão em quadrado laranja (cor de alerta/warning), o que passa a ideia de erro.
+Correção: section-icon no padrão do módulo (fundo primary-lightest, ícone primary), como no mock. Cores semânticas só onde fizer sentido: excluir/mover para lixeira → negative-lightest/negative; restaurar → positive-lightest/positive; o resto em primary. Tamanho 32×32, ícone 16px, alinhado ao topo da primeira linha do texto.
+
+========================================================================
+3. TEXTO DO LOG: ID NO LUGAR DO NOME E TEXTO DUPLICADO
+========================================================================
+- "Você enviou 69d661db1a1e9407de8c8ba3 · Os arquivos X foram cadastrados." O link mostra um ObjectId em vez do nome do arquivo.
+- "Você alterou Nova pasta · JEZIEL SILVA — criou a pasta: Nova pasta" mistura verbo errado, nome do usuário em maiúsculas e repetição.
+A2. Para os tipos de log de upload e criação de pasta, de onde vem o "documentoNome"? O log de develop grava o id do lote/upload em vez do id/nome do arquivo? A descrição (texto livre gravado no log) está sendo concatenada ao texto da ação?
+Correção (sem mudar o que é gravado no banco; é só montagem da resposta no back):
+- O back monta, por log: usuarioNome, acao (verbo curto: enviou, moveu para a lixeira, renomeou, criou a pasta, restaurou, baixou, visualizou…), alvoNome (nome do arquivo/pasta) e alvoId (para o link). detalhe só quando agrega (ex.: renomeou → "de X para Y"; enviou vários → "3 arquivos").
+- Upload com o id de lote: resolver os nomes dos arquivos do lote. 1 arquivo → alvoNome = nome do arquivo; vários → "N arquivos" e detalhe com os nomes (até 3 + "e mais N").
+- Não repetir no detalhe o que a frase já diz ("foi movido para a lixeira" depois de "moveu").
+- Ação "alterou" + "criou a pasta" → acao = "criou a pasta", alvoNome = nome da pasta.
+- Front exibe: **Usuário** acao [alvoNome como link, se o alvo ainda existir] · detalhe (texto secundário, só se houver) e, na linha de baixo, a data/hora. Nunca exibir ObjectId.
+- Nome do usuário com a capitalização padrão do sistema; "Você" para o logado.
+
+========================================================================
+4. PAGINAÇÃO FIXA NO RODAPÉ DA MODAL
+========================================================================
+Hoje a paginação só aparece depois de rolar até o fim, e está quebrada (botões de navegação em outra linha, campo "Itens por página" desalinhado).
+Correção:
+- Estrutura do body:
+  .modal-body (display flex; flex-direction column; max-height: min(72vh, 640px); padding padrão)
+    .card (display flex; flex-direction column; min-height 0; flex 1 1 auto)
+      .logs-lista  (flex 1 1 auto; min-height 0; overflow-y auto)   ← SÓ a lista rola
+      .logs-paginacao (flex 0 0 auto; border-top 1px token borda; padding 12px 16px; fundo do card) ← SEMPRE visível embaixo
+- Paginação: o MESMO componente de Clientes, com a MESMA configuração e layout de lá (não reestilizar). Se lá o layout é "Ir para página | Itens por página | Mostrando X–Y de Z | navegação", deixe tudo em UMA linha, como em Clientes. Se o componente quebrar por falta de largura dentro da modal, use a variante/compacta que Clientes usa em telas menores, ou aumente a modal para a mesma largura de Clientes/Financeiro (modal-width-1200 se for o padrão). Não crie CSS que deforme o componente shared.
+- Trocar de página: rola .logs-lista para o topo e mostra skeleton nas linhas.
+- Itens por página: opções do padrão de Clientes (ex.: 10/20/50), limitadas ao máximo do back.
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Lista sem fundo cinza, com separadores finos, igual ao mock.
+2. Ícones em roxo (primary), e vermelho/verde só para excluir/restaurar.
+3. Nenhum ObjectId na tela. Frases curtas e sem repetição ("Você enviou contrato.pdf", "Aline Ribeiro moveu para a lixeira qa-anexo.txt", "Você renomeou a.txt · de a.txt para b.txt").
+4. Paginação sempre visível no rodapé da modal, numa linha, igual a Clientes. Só a lista rola.
+5. Modos claro e escuro com tokens. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+A1, A2 e o diff (front e back).
+Verificação: tsc ✅/❌ | build ✅/❌ | dotnet build ✅/❌ | ciclos: N

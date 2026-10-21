@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T17:56:00-03:00",
+  "atualizado": "2026-10-21T18:05:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,6 +8,14 @@
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
       "data": "2026-10-20T22:20:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
+    },
+    {
+      "id": "prompt-logs-fundo-paginacao",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Logs: sem fundo cinza, ícones roxos, texto sem ID e paginação fixa embaixo",
+      "data": "2026-10-21T18:05:00-03:00",
+      "arquivo": "prompts/modal-logs-fundo-paginacao-fixa.txt"
     }
   ]
 }
