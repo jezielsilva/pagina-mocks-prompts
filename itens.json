@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T17:28:00-03:00",
+  "atualizado": "2026-10-21T17:32:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -32,6 +32,14 @@
       "titulo": "Prompt — Modal de Logs: aplicar (BsModalService igual ao Financeiro)",
       "data": "2026-10-21T17:28:00-03:00",
       "arquivo": "prompts/modal-logs-aplicar.txt"
+    },
+    {
+      "id": "prompt-filtros-alinhamento",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Filtros: alinhar Autor (rótulo na borda em todos, igual a Tarefas)",
+      "data": "2026-10-21T17:32:00-03:00",
+      "arquivo": "prompts/filtros-alinhamento-autor.txt"
     }
   ]
 }

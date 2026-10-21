@@ -1,0 +1,36 @@
+[Área: Frontend (filtros do módulo Documentos) | Skills: UI-Kit]
+
+TAREFA
+Os 4 filtros (Tipo, Autor, Classificação, Data) já têm a mesma altura, mas estão DESALINHADOS. Print no portal: aba "Prints" → image.png. NÃO crie testes.
+
+O QUE O PRINT MOSTRA
+- Tipo, Classificação e Data começam na mesma linha (topo ≈108px) e mostram o nome DENTRO do campo, como placeholder ("Tipo", "Classificação", "Data").
+- Autor começa ≈13px mais abaixo (topo ≈121px), porque o componente dele reserva espaço em cima para o rótulo flutuante "Autor" (que fica na borda). O texto "Selecione..." também tem outro tamanho e outra posição.
+- Ou seja: são dois padrões diferentes de rótulo na mesma linha.
+
+PADRÃO A SEGUIR = TAREFAS
+Em Tarefas, TODOS os campos têm o rótulo flutuando na borda (Status, Lista de Tarefas, Período, Usuários, Andamento) e o valor/placeholder dentro, alinhados na mesma linha. Copiar isso.
+
+ETAPA A — INVESTIGAR (uma linha cada)
+A1. Componente de cada filtro (Tipo, Autor, Classificação, Data) e de onde vem o deslocamento do Autor: margin-top/padding-top do wrapper, label posicionada fora do form-field, floatLabel diferente ou appearance diferente.
+A2. Em Tarefas: os campos usam floatLabel="always"? appearance="outline"? Qual densidade/subscriptSizing? O app-auto-complete de Usuários tem algum @Input de label/aparência?
+
+CORREÇÃO
+1. Todos os 4 campos com o MESMO padrão de rótulo de Tarefas:
+   - rótulo na borda, sempre visível (floatLabel="always" ou o equivalente que Tarefas usa): "Tipo", "Autor", "Classificação", "Data";
+   - placeholder dentro do campo: Tipo "Todos"; Autor "Selecione..."; Classificação "Em breve"; Data "dd/mm/aaaa - dd/mm/aaaa" (ou vazio, como o Período de Tarefas).
+2. Alinhamento: o contêiner da linha com display flex (ou grid), align-items flex-start e o mesmo gap de Tarefas. Remova margin-top/padding-top próprios do Autor, ou ajuste os outros 3 para reservar o MESMO espaço do rótulo. O resultado: as bordas superiores dos 4 campos na mesma linha e as inferiores também.
+3. Tipografia igual: o texto de valor/placeholder com o mesmo font-size, font-family e cor nos 4 (o do Autor hoje é menor). Use a mesma configuração de Tarefas, não um override só no Autor. Se o app-auto-complete tiver estilo interno diferente, use o @Input/classe de aparência que Tarefas usa. Se precisar mudar o shared, informe antes.
+4. Ícones à direita (setas e calendário) com o mesmo tamanho e centralizados verticalmente. A seta do Autor (chevron) igual à do Tipo (triângulo) ou o contrário: siga Tarefas.
+5. Remova o rótulo "Tarefas" solto acima dos filtros se ele for o nome da área atual repetido (o nome já aparece nas abas). Se for intencional (breadcrumb/título), mantenha, mas com o espaçamento de Tarefas.
+6. Sem hex, sem !important, sem style inline.
+
+CRITÉRIOS DE ACEITE
+1. As 4 bordas superiores e as 4 inferiores alinhadas na mesma linha.
+2. Os 4 campos com rótulo na borda, igual a Tarefas.
+3. Mesma fonte, tamanho e cor do texto interno nos 4.
+4. Ícones à direita alinhados e do mesmo tamanho.
+
+ENTREGA
+A1, A2 e o diff.
+Verificação: tsc ✅/❌ | build ✅/❌ | ciclos: N
