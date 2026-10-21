@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T11:07:00-03:00",
+  "atualizado": "2026-10-21T12:05:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,6 +8,14 @@
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
       "data": "2026-10-20T22:20:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
+    },
+    {
+      "id": "prompt-refinos-1145",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Autor do filtro, calendário pt-BR, ⋮ centralizado, cores do gráfico, nome do autor e prévia da lista",
+      "data": "2026-10-21T12:05:00-03:00",
+      "arquivo": "prompts/refinos-filtros-kebab-grafico-autor-lista.txt"
     }
   ]
 }
