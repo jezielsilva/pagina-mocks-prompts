@@ -1,0 +1,79 @@
+[Área: Multidisciplinar (Frontend Angular + Backend .NET/Mongo) | Skills: UI-Kit]
+
+TAREFA
+Padronizar os FILTROS do módulo Documentos com os filtros da página de TAREFAS e garantir que funcionem de ponta a ponta (front + back). NÃO crie testes.
+
+FILTROS HOJE EM DOCUMENTOS → COMO DEVEM FICAR
+1. Tipo (PDF, Documento, Planilha, Imagem…) → continua "Tipo". Só conferir se o campo é o mesmo usado em Tarefas para seleção de opções fixas. Se for, não mexer. Se não for, trocar.
+2. Autor → mesmo campo de USUÁRIOS do filtro de Tarefas (com busca), usando a MESMA chamada ao back que Tarefas faz para listar os usuários do sistema.
+3. Etiquetas → vira "Classificação". SÓ VISUAL por enquanto: campo presente e desabilitado (disabled), placeholder "Em breve", sem chamada ao back e sem enviar parâmetro. A implementação vem depois.
+4. Ano → vira "Data", com o MESMO campo de intervalo de datas (range: de / até) usado em Tarefas.
+
+========================================================================
+ETAPA A — INVESTIGAR TAREFAS (responda antes de mudar)
+========================================================================
+A1. Componente/template dos filtros de Tarefas: arquivo e seletor de CADA campo:
+    - seleção de opções fixas (equivalente ao Tipo): mat-select? app-select? multiselect com checkbox?
+    - usuários (responsável/autor): app-auto-complete? app-select-usuarios? Tem busca? É múltiplo?
+    - data em intervalo: mat-date-range-input? app-date-range? Qual o formato enviado (ISO, dd/MM/yyyy, início do dia / fim do dia)?
+    - "autor e réu" ou outros campos com busca: qual componente?
+A2. Serviço e endpoint que Tarefas chama para listar os usuários: método, URL, parâmetros (busca por nome, paginação, ativos), formato da resposta (id, nome, avatar…).
+A3. Como Tarefas guarda e aplica os filtros: form reativo? Debounce na busca? Botão "Limpar filtros"? Os filtros vão na query string da rota? Quantos selecionados aparecem como chip/contador?
+A4. Filtros de Documentos hoje: quais componentes usam para Tipo, Autor, Etiquetas e Ano? Compare com A1 campo a campo e diga quais JÁ são iguais (não mexer) e quais precisam trocar.
+
+========================================================================
+ETAPA B — INVESTIGAR O BACK DE DOCUMENTOS
+========================================================================
+B1. Endpoint de listagem de documentos (o mesmo usado na lista/grade com "Carregar mais"): quais parâmetros de filtro ele aceita hoje? (tipo, autorId/autores, etiquetas, ano, dataInicio/dataFim…)
+B2. Para cada filtro (Tipo, Autor, Data), ele está implementado na consulta do Mongo? Qual campo do documento é usado?
+    - Tipo: por extensão/mimeType? Os grupos (PDF, Documento, Planilha, Imagem) estão mapeados no back?
+    - Autor: campo de quem enviou (ex.: criadoPor / autorId).
+    - Data: qual data? Use a "data do documento" se existir; senão, a data de criação/envio. Informe qual campo existe.
+B3. Existe índice que cubra os filtros mais usados (tenant + pasta + data; tenant + autor)?
+
+========================================================================
+ETAPA C — IMPLEMENTAR
+========================================================================
+Front (filtros de Documentos):
+- Tipo: componente igual ao de opções fixas de Tarefas (A1), múltipla escolha se Tarefas for múltipla. Opções vindas do back se Tarefas fizer assim; senão, a lista fixa atual.
+- Autor: o MESMO componente de usuários de Tarefas, com busca e a mesma chamada (A2), o mesmo debounce e múltipla escolha, se Tarefas permitir. Envia ids.
+- Classificação: o mesmo tipo de campo de opções, disabled, label "Classificação", placeholder "Em breve". Não envia nada.
+- Data: o MESMO range de Tarefas, label "Data". Envia dataInicio (início do dia) e dataFim (fim do dia) no mesmo formato que Tarefas envia. Aceita só "de" ou só "até".
+- Remover Etiquetas e Ano (campos, form controls, parâmetros e tipos/interfaces que ficarem sem uso).
+- Mesmo comportamento de Tarefas para: limpar filtros, contador/chips, debounce, query string (se Tarefas usa).
+- Ao mudar qualquer filtro: recarrega a pasta/área atual a partir da página 1 (reinicia o "Carregar mais"), cancelando a requisição anterior (switchMap).
+- Layout: mesma ordem e espaçamento de Tarefas. Ordem: Tipo | Autor | Classificação | Data | Limpar.
+
+Back (endpoint de listagem):
+- Parâmetros: tipos[] (grupos: pdf, documento, planilha, imagem…), autores[] (ids), dataInicio, dataFim. Mantenha os nomes que o endpoint já usa, se já existirem.
+- Mapeamento de tipo por grupo FEITO NO BACK (extensões/mimeTypes de cada grupo numa única constante/enum). O front manda só o grupo.
+- Data: filtro no campo definido em B2, com dataInicio <= campo <= dataFim e datas em UTC.
+- Todos combinam com AND, com pasta/área atual e permissão do usuário.
+- A contagem total (usada no "Mostrando X de Y") respeita os filtros.
+- Remover os parâmetros etiquetas e ano do contrato se ninguém mais usar. Se outro consumidor usar, mantenha e informe.
+- Índice: se faltar, criar índice composto que cubra tenant + pastaId + data e tenant + autorId, na mesma estratégia de índices do projeto.
+- Classificação: NÃO implementar agora.
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Os campos de Tipo, Autor e Data são os MESMOS componentes de Tarefas (visual e comportamento).
+2. Autor lista os usuários pela mesma chamada de Tarefas, com busca.
+3. Classificação aparece desabilitada com "Em breve" e não afeta a busca.
+4. Etiquetas e Ano não existem mais (nem no front, nem no contrato, se não houver outro uso).
+5. Filtrar por Tipo, Autor e Data (separados e combinados) retorna o resultado correto, o "Mostrando X de Y" bate e o "Carregar mais" respeita os filtros.
+6. Limpar filtros volta à listagem completa.
+7. Funciona nas áreas comuns e nas automáticas (Tarefas, Favoritos, Prazos, Lixeira), quando aplicável.
+8. Modos claro e escuro com tokens. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+- Respostas de A1 a A4 e de B1 a B3.
+- Diff do front e do back.
+
+PENDÊNCIAS DO PLANO
+- Implementar Classificação (filtro + cadastro)
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE

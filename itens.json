@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-20T22:10:00-03:00",
+  "atualizado": "2026-10-20T22:15:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -48,6 +48,14 @@
       "titulo": "Prompt — Logs: por que não carrega + modal padrão + lista sem IP paginada (front + back)",
       "data": "2026-10-20T22:10:00-03:00",
       "arquivo": "prompts/logs-carregar-padrao-paginado.txt"
+    },
+    {
+      "id": "prompt-filtros-padrao-tarefas",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Filtros no padrão de Tarefas (Tipo, Autor, Classificação, Data) front + back",
+      "data": "2026-10-20T22:15:00-03:00",
+      "arquivo": "prompts/filtros-padrao-tarefas.txt"
     }
   ]
 }
