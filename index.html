@@ -21,14 +21,14 @@ aside{border-right:1px solid var(--line);background:var(--card);display:flex;fle
 .tools input{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--txt);font:inherit}
 .tabs{display:flex;gap:6px}.tabs button{padding:4px 12px;font-size:13px}.tabs button.on{background:var(--pri-l);border-color:var(--pri);color:var(--pri)}
 ul{list-style:none;margin:0;padding:10px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:6px}
-li button.item{width:100%;text-align:left;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:10px 40px 10px 12px;display:grid;grid-template-columns:34px 1fr;column-gap:10px;row-gap:3px;align-items:center;font-weight:400;transition:border-color .15s,box-shadow .15s}
+li button.item{white-space:normal;width:100%;text-align:left;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:10px 40px 10px 12px;display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:10px;row-gap:3px;align-items:center;font-weight:400;transition:border-color .15s,box-shadow .15s}
 li button.item:hover{border-color:var(--pri);box-shadow:0 2px 8px rgba(112,57,140,.12)}
 li button.item.on{background:var(--pri-l);border-color:var(--pri)}
 li button.item.novo{border-left:3px solid var(--pri)}
 .ic{grid-row:span 2;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:var(--bg)}
 .ic.prompt{background:var(--pri-l)}
-li b{font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
-.meta{font-size:12px;color:var(--sub);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+li b{min-width:0;overflow-wrap:anywhere;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.meta{min-width:0;font-size:12px;color:var(--sub);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .novo-tag{font-size:10px;font-weight:800;letter-spacing:.04em;border-radius:999px;padding:1px 7px;background:var(--pri);color:#fff}
 .tag{font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;background:var(--bg);color:var(--sub)}
 .tag.prompt{background:var(--pri-l);color:var(--pri)}
@@ -60,16 +60,43 @@ li{position:relative}
 .del{position:absolute;top:10px;right:8px;padding:2px 8px;font-size:13px;opacity:0;border-color:transparent;background:transparent}
 li:hover .del,.del:focus{opacity:1}.del:hover{border-color:#dc2626;color:#dc2626}
 @media (hover:none){.del{opacity:.7}}
-@media (max-width:760px){main{grid-template-columns:1fr}aside.hide{display:none}section.hide{display:none}#back{display:inline-flex}}
+/* Lista recolhível (desktop) */
+main{transition:grid-template-columns .2s}
+main.wide{grid-template-columns:0 1fr}main.wide aside{visibility:hidden;border:0}
+/* Barra do item sempre visível */
+.bar{position:sticky;top:0;z-index:5}
+/* Prompt legível */
+pre{max-width:960px;margin:0 auto;overflow-wrap:anywhere}
+/* Palco do mock com tamanho de dispositivo */
+.stage{height:100%;overflow:hidden;position:relative;background:var(--bg)}
+.stage.fill iframe{width:100%;height:100%}
+.stage:not(.fill) .frame{position:absolute;left:50%;top:12px;transform-origin:top center;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 12px 32px rgba(0,0,0,.18);background:#fff}
+.stage:not(.fill) iframe{width:100%;height:100%}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:5px 12px;font-size:13px}
+.seg button.on{background:var(--pri-l);color:var(--pri)}
+/* Prints */
+.ic img{width:34px;height:34px;object-fit:cover;border-radius:10px;display:block}
+.tag.print{background:#e0f2fe;color:#0369a1}
+.shot{padding:16px;display:flex;justify-content:center}.shot img{max-width:100%;height:auto;border-radius:10px;border:1px solid var(--line)}
+.howto{padding:24px;max-width:640px;margin:0 auto;color:var(--sub);line-height:1.6}.howto b{color:var(--txt)}
+.tabs{flex-wrap:wrap}
+@media (max-width:760px){
+  main{grid-template-columns:1fr}main.wide{grid-template-columns:1fr}aside.hide{display:none}section.hide{display:none}#back{display:inline-flex}
+  header{flex-wrap:wrap;gap:8px;padding:10px 12px}header h1{flex:1 1 auto}#upd,#tgl{display:none}
+  header .btn,header button{padding:5px 10px;font-size:13px}
+  .bar{padding:8px 12px}.bar h2{min-width:0;flex:1 1 100%;order:2;white-space:normal}#back{order:1}#acts{order:3;display:flex;gap:6px;flex-wrap:wrap}
+  pre{padding:14px;font-size:12.5px}
+}
 </style>
 </head>
 <body>
-<header><h1>Transferência</h1><small id="upd"></small><a id="novo" class="btn pri" href="https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title=Resposta%3A%20&body=Descreva%20o%20problema%20e%20cole%20os%20prints%20aqui%20(Ctrl%2BV)." target="_blank" rel="noopener">＋ Nova resposta</a><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
+<header><button id="tgl" title="Mostrar/ocultar lista" aria-label="Mostrar ou ocultar lista">☰</button><h1>Transferência</h1><small id="upd"></small><a id="novo" class="btn pri" href="https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title=Resposta%3A%20&body=Descreva%20o%20problema%20e%20cole%20os%20prints%20aqui%20(Ctrl%2BV)." target="_blank" rel="noopener">＋ Nova resposta</a><button id="reload" title="Recarregar lista">↻ Atualizar</button></header>
 <main>
   <aside id="side">
     <div class="tools">
       <input id="q" type="search" placeholder="Buscar…" aria-label="Buscar">
-      <div class="tabs" role="tablist"><button data-f="" class="on">Todos</button><button data-f="prompt">Prompts</button><button data-f="artefato">Artefatos</button><button data-f="resposta">Respostas</button></div>
+      <div class="tabs" role="tablist"><button data-f="" class="on">Todos</button><button data-f="prompt">Prompts</button><button data-f="artefato">Artefatos</button><button data-f="resposta">Respostas</button><button data-f="print">Prints</button></div>
     </div>
     <ul id="list"></ul>
   </aside>
@@ -88,16 +115,17 @@ let ITENS=[],F='',SEL=null;
 const ls=(k,v)=>{try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');localStorage.setItem(k,JSON.stringify(v));}catch(e){return null;}};
 let VISTOS=ls('vistos')||{},OCULT=ls('ocultos')||[];
 const novo=i=>VISTOS[i.id]!==i.data;
-const fmt=d=>new Date(d).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+const TIPO={prompt:['📝','Prompt'],artefato:['🖼','Artefato'],resposta:['💬','Resposta'],print:['📷','Print']};
+const fmt=d=>{const x=new Date(d);return isNaN(x)?'':x.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});};
 async function load(){
-  try{const r=await fetch('itens.json?t='+Date.now());const j=await r.json();ITENS=[...j.itens,...await loadRespostas()].sort((a,b)=>b.data.localeCompare(a.data));$('#upd').textContent='Atualizado '+fmt(j.atualizado);}
+  try{const r=await fetch('itens.json?t='+Date.now());const j=await r.json();ITENS=[...j.itens,...await loadRespostas(),...await loadPrints()].sort((a,b)=>b.data.localeCompare(a.data));$('#upd').textContent='Atualizado '+fmt(j.atualizado);}
   catch(e){$('#list').innerHTML='<li class="empty">Não foi possível ler itens.json (abra pelo GitHub Pages).</li>';return;}
   paint();const h=decodeURIComponent(location.hash.slice(1));open(ITENS.find(i=>i.id===h)||null,false);
 }
 function paint(){
   const q=$('#q').value.toLowerCase();
   const l=ITENS.filter(i=>!OCULT.includes(i.id)&&(!F||i.tipo===F)&&(!q||(i.titulo+' '+(i.projeto||'')).toLowerCase().includes(q)));
-  $('#list').innerHTML=l.length?l.map(i=>`<li><button data-id="${i.id}" class="item ${SEL&&SEL.id===i.id?'on':''} ${novo(i)?'novo':''}"><span class="ic ${i.tipo}">${{prompt:'📝',artefato:'🖼',resposta:'💬'}[i.tipo]}</span><b>${i.titulo}</b><span class="meta">${novo(i)?'<span class="novo-tag">NOVO</span>':''}<span class="tag ${i.tipo}">${{prompt:'Prompt',artefato:'Artefato',resposta:'Resposta'}[i.tipo]}</span>${i.projeto||''} · ${fmt(i.data)}</span></button>${i.tipo==='resposta'?'':`<button class="del" data-del="${i.id}" title="Excluir" aria-label="Excluir ${i.titulo}">🗑</button>`}</li>`).join(''):'<li class="empty">Nada encontrado.</li>';
+  $('#list').innerHTML=l.length?l.map(i=>`<li><button data-id="${i.id}" class="item ${SEL&&SEL.id===i.id?'on':''} ${novo(i)?'novo':''}"><span class="ic ${i.tipo}">${i.tipo==='print'?`<img src="${i.arquivo}" alt="" loading="lazy">`:TIPO[i.tipo][0]}</span><b>${i.titulo}</b><span class="meta">${novo(i)?'<span class="novo-tag">NOVO</span>':''}<span class="tag ${i.tipo}">${TIPO[i.tipo][1]}</span>${[i.projeto,fmt(i.data)].filter(Boolean).join(' · ')}</span></button>${i.tipo==='resposta'?'':`<button class="del" data-del="${i.id}" title="Excluir" aria-label="Excluir ${i.titulo}">🗑</button>`}</li>`).join(''):(F==='print'?'<li class="empty">Nenhum print. Suba imagens na pasta <b>prints/</b> do repositório.</li>':'<li class="empty">Nada encontrado.</li>');
 }
 async function open(i,push=true){
   SEL=i;if(i){VISTOS[i.id]=i.data;ls('vistos',VISTOS);}paint();if(!i)return;
@@ -105,9 +133,11 @@ async function open(i,push=true){
   $('#side').classList.add('hide');$('#main').classList.remove('hide');
   $('#ttl').textContent=i.titulo;
   if(i.tipo==='resposta')return openResposta(i);
+  if(i.tipo==='print'){$('#acts').innerHTML=`<a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Abrir em nova aba</a>`;$('#view').innerHTML=`<div class="shot"><img src="${i.arquivo}" alt="${i.titulo}"></div>`;return;}
   if(i.tipo==='artefato'){
-    $('#acts').innerHTML=`<a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Abrir em nova aba</a> <a class="btn pri" href="${i.arquivo}" download>Baixar</a>`;
-    $('#view').innerHTML=`<iframe src="${i.arquivo}" title="${i.titulo}"></iframe>`;
+    $('#acts').innerHTML=`<span class="seg" role="group" aria-label="Tamanho da tela">${Object.keys(DEV).map(k=>`<button data-dev="${k}" class="${k===DV?'on':''}">${DEV[k].n}</button>`).join('')}</span> <a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Nova aba</a> <a class="btn pri" href="${i.arquivo}" download>Baixar</a>`;
+    $('#view').innerHTML=`<div class="stage" id="stage"><div class="frame" id="frame"><iframe src="${i.arquivo}" title="${i.titulo}"></iframe></div></div>`;
+    fit();
   }else{
     $('#acts').innerHTML='<button class="btn pri" id="cp">Copiar prompt</button>';
     $('#view').innerHTML='<pre id="txt">Carregando…</pre>';
@@ -118,7 +148,28 @@ async function open(i,push=true){
 }
 $('#list').onclick=e=>{const d=e.target.closest('[data-del]');if(d){e.stopPropagation();excluir(d.dataset.del);return;}const b=e.target.closest('[data-id]');if(b)open(ITENS.find(i=>i.id===b.dataset.id));};
 $('.tabs').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;F=b.dataset.f;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));paint();};
-$('#q').oninput=paint;$('#reload').onclick=load;
+$('#q').oninput=paint;
+// ===== Mock em tamanho de dispositivo: a moldura tem o tamanho real e é reduzida para caber, sem vazar =====
+const DEV={fill:{n:'Ajustar'},pc:{n:'PC',w:1366,h:768},tab:{n:'Tablet',w:820,h:1180},cel:{n:'Celular',w:390,h:844}};
+let DV=ls('dev')||'fill';
+function fit(){
+  const st=$('#stage'),fr=$('#frame');if(!st||!fr)return;
+  st.classList.toggle('fill',DV==='fill');
+  if(DV==='fill'){fr.style.cssText='';return;}
+  const d=DEV[DV],aw=st.clientWidth-24,ah=st.clientHeight-24,k=Math.min(1,aw/d.w,ah/d.h);
+  fr.style.cssText=`width:${d.w}px;height:${d.h}px;transform:translateX(-50%) scale(${k})`;
+}
+new ResizeObserver(fit).observe(document.body);
+$('#acts').onclick=e=>{const b=e.target.closest('[data-dev]');if(!b)return;DV=b.dataset.dev;ls('dev',DV);document.querySelectorAll('[data-dev]').forEach(x=>x.classList.toggle('on',x===b));fit();};
+// ===== Lista recolhível =====
+if(ls('wide'))document.querySelector('main').classList.add('wide');
+$('#tgl').onclick=()=>{const m=document.querySelector('main');m.classList.toggle('wide');ls('wide',m.classList.contains('wide'));setTimeout(fit,220);};
+// ===== Prints = imagens da pasta prints/ do repositório (API pública, sem token) =====
+async function loadPrints(){
+  try{const r=await fetch('https://api.github.com/repos/jezielsilva/pagina-mocks-prompts/contents/prints?t='+Date.now());if(!r.ok)return [];
+    return (await r.json()).filter(f=>/\.(png|jpe?g|gif|webp)$/i.test(f.name)).map(f=>{const m=f.name.match(/(\d{4})[-_]?(\d{2})[-_]?(\d{2})/);return {id:'p-'+f.sha,tipo:'print',titulo:f.name,projeto:'prints/',data:m?`${m[1]}-${m[2]}-${m[3]}T12:00:00`:'',arquivo:'prints/'+encodeURIComponent(f.name)};});
+  }catch(e){return [];}
+}$('#reload').onclick=load;
 $('#back').onclick=()=>{$('#side').classList.remove('hide');$('#main').classList.add('hide');};
 
 // ===== Respostas = Issues do repositório (sem token: o usuário abre a Issue logado no GitHub e cola os prints) =====
