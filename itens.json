@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T10:55:00-03:00",
+  "atualizado": "2026-10-21T11:07:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,22 +8,6 @@
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
       "data": "2026-10-20T22:20:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
-    },
-    {
-      "id": "prompt-barra-selecao-tarefas",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Tarefas + Documentos",
-      "titulo": "Prompt — Barra de seleção: padrão único (ícone + texto) também em Tarefas",
-      "data": "2026-10-21T10:40:00-03:00",
-      "arquivo": "prompts/barra-selecao-tarefas-padrao-unico.txt"
-    },
-    {
-      "id": "prompt-espaco-kebab-grafico-filtros",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos + layout admin",
-      "titulo": "Prompt — Espaço do header (igual develop), ⋮ achatado, cores do gráfico e filtros iguais a Tarefas",
-      "data": "2026-10-21T10:55:00-03:00",
-      "arquivo": "prompts/espaco-kebab-grafico-filtros.txt"
     }
   ]
 }
