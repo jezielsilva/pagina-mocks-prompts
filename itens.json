@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T15:32:00-03:00",
+  "atualizado": "2026-10-21T17:28:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -24,6 +24,14 @@
       "titulo": "Prompt — Modal de Logs no padrão do Financeiro (sem brilho, header roxo, X branco, padding)",
       "data": "2026-10-21T15:32:00-03:00",
       "arquivo": "prompts/modal-logs-padrao-financeiro.txt"
+    },
+    {
+      "id": "prompt-modal-logs-aplicar",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Modal de Logs: aplicar (BsModalService igual ao Financeiro)",
+      "data": "2026-10-21T17:28:00-03:00",
+      "arquivo": "prompts/modal-logs-aplicar.txt"
     }
   ]
 }
