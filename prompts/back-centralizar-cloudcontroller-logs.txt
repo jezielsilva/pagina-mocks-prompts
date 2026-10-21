@@ -1,0 +1,73 @@
+[Área: Backend (.NET + MongoDB) com ajuste de contrato no Frontend | Skills: nenhuma]
+
+TAREFA
+Corrigir a estrutura do back do módulo Documentos (Nova Cloud):
+1. Já existia o CloudController. Foi criado sem necessidade um CloudExploradorController. Centralizar TUDO no CloudController e remover o CloudExploradorController.
+2. Foi criado sem necessidade um DocumentosLogsController. A estrutura de logs que vale é a que JÁ EXISTE em develop (produção). Voltar para ela e remover o DocumentosLogsController.
+Não criar testes. Verificação: dotnet build da solution + tsc/build do front (se o front for ajustado).
+
+========================================================================
+ETAPA A — COMPARAR COM DEVELOP (worktree só para leitura)
+========================================================================
+1. git fetch origin
+2. git worktree add ../api-proadv-develop origin/develop   (front, se precisar: ../web-proadv-develop)
+3. Em develop, responda:
+A1. CloudController: rotas (atributo [Route]), actions (verbo + rota + DTO de entrada e saída), serviços injetados e políticas [Authorize].
+A2. Logs em develop: como são GRAVADOS (serviço, método, onde é chamado: upload, renomear, mover, excluir, visualizar, baixar…) e como são LIDOS (qual controller e action expõe os logs, rota, filtros, paginação, DTO). Coleção do Mongo, classe do documento e índices.
+A3. Na nossa branch: liste tudo que o CloudExploradorController e o DocumentosLogsController têm (actions, rotas, serviços, DTOs, repositórios, registros na DI, coleções novas, índices novos).
+A4. Matriz de decisão (uma linha por action da nossa branch):
+    action | existe equivalente no CloudController de develop? (sim/não) | ação: REMOVER (duplicada) / MOVER para o CloudController (funcionalidade nova necessária) / VOLTAR AO ORIGINAL (logs)
+A5. Quem consome as rotas desses dois controllers no front (grep pelas URLs nos services Angular)?
+
+========================================================================
+ETAPA B — CENTRALIZAR NO CloudController
+========================================================================
+- Actions do CloudExploradorController que já existem no CloudController (mesma função): REMOVER a duplicada e apontar o front para a rota do CloudController.
+- Actions que são funcionalidade NOVA do redesign (ex.: listagem paginada com "Carregar mais", jobs de unir/comprimir, miniaturas, URL inline de PDF, classificação, filtros): MOVER para o CloudController, seguindo o padrão de rotas, nomes, DTOs, [Authorize] e tratamento de erro que o CloudController já usa.
+  - Lógica de negócio fica nos serviços (Application/Service), não no controller.
+  - Reaproveite os serviços e repositórios existentes. Se o CloudExploradorController criou serviço próprio que duplica um existente, junte no existente.
+- Apague o CloudExploradorController, os DTOs e serviços que ficarem sem uso e os registros na DI (Program.cs / Startup / extensions).
+- Não mude o comportamento das actions que já existiam em develop no CloudController (mesma rota e mesmo contrato). O front de produção não pode quebrar.
+
+========================================================================
+ETAPA C — LOGS: VOLTAR À ESTRUTURA DE DEVELOP
+========================================================================
+- A gravação e a leitura dos logs ficam EXATAMENTE como em develop: mesmo serviço, mesma coleção, mesma classe, mesmos campos e mesma action de leitura (no controller onde ela está em develop, provavelmente o CloudController).
+- Remova o DocumentosLogsController e tudo que foi criado só para ele (serviço, repositório, DTO, coleção/índice novos, DI). Se ele criou uma coleção NOVA e gravou dados nela, NÃO apague a coleção nem migre dados: informe e pare nessa parte.
+- Se o redesign precisa de algo que a action de develop não tem (ex.: paginação no padrão de Clientes, ocultar IP na resposta, texto da ação pronto), ADICIONE na action existente de develop de forma retrocompatível:
+  - parâmetros opcionais (pagina, tamanhoPagina) com padrão que mantenha a resposta atual para quem já usa;
+  - IP fora do DTO de resposta da tela (continua gravado);
+  - sem renomear campos já existentes no contrato.
+  Se não for possível sem quebrar o contrato, crie uma NOVA action no MESMO controller de develop (ex.: GET .../logs/paginado) e informe.
+- Ajuste o front (serviço da modal de Logs) para chamar a rota de develop.
+
+========================================================================
+ETAPA D — FRONT
+========================================================================
+- Atualize os services Angular que chamavam rotas do CloudExploradorController ou do DocumentosLogsController para as rotas do CloudController/rota original de logs (lista de A5).
+- Ajuste os nomes de campos dos DTOs se mudaram (interfaces TypeScript).
+- Nada de regra de negócio no front.
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Não existem mais CloudExploradorController nem DocumentosLogsController (nem seus serviços/DTOs/DI sem uso).
+2. Todas as funcionalidades do redesign continuam funcionando, agora via CloudController.
+3. Logs gravados e lidos exatamente pela estrutura de develop (mesma coleção, serviço e action). Os registros antigos aparecem na modal de Logs.
+4. As actions que já existiam em develop mantêm a rota e o contrato (produção não quebra).
+5. dotnet build OK, front build OK, sem referências quebradas (grep pelos nomes removidos = 0).
+6. Ao final: git worktree remove ../api-proadv-develop (e a do front, se criada).
+
+ENTREGA
+- Respostas de A1 a A5 (com a matriz de decisão).
+- Diff do back e do front.
+- Lista do que foi removido.
+- Verificação: dotnet build ✅/❌ | tsc ✅/❌ | build ✅/❌ | ciclos: N
+
+PENDÊNCIAS DO PLANO
+- Classificação (filtro, cadastro, ação da barra)
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE

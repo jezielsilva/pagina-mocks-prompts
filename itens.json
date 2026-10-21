@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T12:05:00-03:00",
+  "atualizado": "2026-10-21T15:25:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -10,12 +10,12 @@
       "arquivo": "artefatos/documentos-mock.html"
     },
     {
-      "id": "prompt-refinos-1145",
+      "id": "prompt-back-centralizar-cloud",
       "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Autor do filtro, calendário pt-BR, ⋮ centralizado, cores do gráfico, nome do autor e prévia da lista",
-      "data": "2026-10-21T12:05:00-03:00",
-      "arquivo": "prompts/refinos-filtros-kebab-grafico-autor-lista.txt"
+      "projeto": "elaw adv · Documentos (back)",
+      "titulo": "Prompt — Back: centralizar no CloudController e logs como em develop",
+      "data": "2026-10-21T15:25:00-03:00",
+      "arquivo": "prompts/back-centralizar-cloudcontroller-logs.txt"
     }
   ]
 }
