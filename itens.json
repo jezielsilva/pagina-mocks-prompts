@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T17:32:00-03:00",
+  "atualizado": "2026-10-21T17:56:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,38 +8,6 @@
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
       "data": "2026-10-20T22:20:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
-    },
-    {
-      "id": "prompt-back-centralizar-cloud",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos (back)",
-      "titulo": "Prompt — Back: centralizar no CloudController e logs como em develop",
-      "data": "2026-10-21T15:25:00-03:00",
-      "arquivo": "prompts/back-centralizar-cloudcontroller-logs.txt"
-    },
-    {
-      "id": "prompt-modal-logs-padrao",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Modal de Logs no padrão do Financeiro (sem brilho, header roxo, X branco, padding)",
-      "data": "2026-10-21T15:32:00-03:00",
-      "arquivo": "prompts/modal-logs-padrao-financeiro.txt"
-    },
-    {
-      "id": "prompt-modal-logs-aplicar",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Modal de Logs: aplicar (BsModalService igual ao Financeiro)",
-      "data": "2026-10-21T17:28:00-03:00",
-      "arquivo": "prompts/modal-logs-aplicar.txt"
-    },
-    {
-      "id": "prompt-filtros-alinhamento",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Filtros: alinhar Autor (rótulo na borda em todos, igual a Tarefas)",
-      "data": "2026-10-21T17:32:00-03:00",
-      "arquivo": "prompts/filtros-alinhamento-autor.txt"
     }
   ]
 }
