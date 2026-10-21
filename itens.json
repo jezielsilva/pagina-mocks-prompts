@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-20T22:30:00-03:00",
+  "atualizado": "2026-10-21T10:00:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,70 +8,6 @@
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
       "data": "2026-10-20T22:20:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
-    },
-    {
-      "id": "prompt-layout-pos-rebase",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Pós-rebase: sidebar alinhada e arredondada + grid menor cabendo na tela",
-      "data": "2026-10-20T18:35:00-03:00",
-      "arquivo": "prompts/layout-pos-rebase-sidebar-grid.txt"
-    },
-    {
-      "id": "prompt-ajustes-pos-rebase-v2",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Espaço do header, tudo em uma tela, sidebar, autor+data e modo escuro",
-      "data": "2026-10-20T19:20:00-03:00",
-      "arquivo": "prompts/ajustes-pos-rebase-v2.txt"
-    },
-    {
-      "id": "prompt-sidebar-um-scroll",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Sidebar: upgrade fixo + um scroll por coluna + grade compacta na tela",
-      "data": "2026-10-20T19:22:00-03:00",
-      "arquivo": "prompts/sidebar-upgrade-fixo-um-scroll.txt"
-    },
-    {
-      "id": "prompt-refino-tema-menu-espaco-rodape",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Tema claro/escuro, menu de ações padrão, espaço do header e rodapé completo",
-      "data": "2026-10-20T21:55:00-03:00",
-      "arquivo": "prompts/refino-tema-menu-espaco-rodape.txt"
-    },
-    {
-      "id": "prompt-logs-paginado",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Logs: por que não carrega + modal padrão + lista sem IP paginada (front + back)",
-      "data": "2026-10-20T22:10:00-03:00",
-      "arquivo": "prompts/logs-carregar-padrao-paginado.txt"
-    },
-    {
-      "id": "prompt-filtros-padrao-tarefas",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Filtros no padrão de Tarefas (Tipo, Autor, Classificação, Data) front + back",
-      "data": "2026-10-20T22:15:00-03:00",
-      "arquivo": "prompts/filtros-padrao-tarefas.txt"
-    },
-    {
-      "id": "prompt-sidebar-grafico-percentual",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Sidebar: gráfico de armazenamento igual ao mock + percentual nunca 0%",
-      "data": "2026-10-20T22:20:00-03:00",
-      "arquivo": "prompts/sidebar-grafico-e-percentual.txt"
-    },
-    {
-      "id": "prompt-barra-selecao-generica",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Barra de seleção genérica (shared) para Tarefas e Documentos",
-      "data": "2026-10-20T22:30:00-03:00",
-      "arquivo": "prompts/barra-selecao-generica.txt"
     }
   ]
 }
