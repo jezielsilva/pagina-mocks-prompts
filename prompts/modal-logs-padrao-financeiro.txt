@@ -1,0 +1,48 @@
+[Área: Frontend (modal de Logs do módulo Documentos) | Skills: UI-Kit]
+
+TAREFA
+Deixar a modal de LOGS igual ao padrão de modal do sistema. A referência é a modal "Dados da Movimentação" do FINANCEIRO. Prints no portal, aba "Prints":
+- "Captura de tela 2026-10-21 151642.png" = modal de Logs atual (Documentos);
+- "Captura de tela 2026-10-21 152318.png" = modal do Financeiro (padrão).
+Só front, só visual. NÃO crie testes. A falha "Não foi possível carregar os logs" é resolvida no prompt de centralização do back (CloudController + logs de develop). Aqui é só o layout.
+
+ETAPA A — INVESTIGAR (responda antes de mudar)
+A1. Abra a modal do Financeiro (Movimentações → abrir uma movimentação). Qual componente/serviço abre essa modal (MatDialog com panelClass? componente de modal do UI-Kit? DialogService próprio)? Quais classes e estrutura ela usa no header, body e footer? Informe arquivo e seletor.
+A2. Na modal de Logs: qual componente/serviço abre, quais classes e qual CSS próprio ela tem (box-shadow, filter, outline, wrapper .card, section-icon no header, backdrop custom)?
+A3. De onde vem o "brilho" em volta da modal de Logs (sombra clara/halo ao redor do painel)? Informe o seletor e a propriedade.
+
+AJUSTES (copiar o padrão do Financeiro, sem CSS paralelo)
+1. Abrir a modal de Logs com o MESMO mecanismo e a mesma configuração da modal do Financeiro (mesmo serviço, panelClass, largura padrão e backdrop). Remova a configuração própria da modal de Logs que fuja disso.
+2. Sem brilho: remova o box-shadow/filter/outline extra (o halo claro em volta). Fica só a elevação padrão que a modal do Financeiro tem.
+3. Header no padrão:
+   - fundo com o mesmo degradê roxo do Financeiro (mesma classe/token, nada de hex);
+   - título "Logs" no mesmo tamanho, peso e cor (branco, bold) do "Dados da Movimentação";
+   - REMOVER o quadrado de ícone (section-icon com o relógio) do header. O Financeiro não tem ícone. Se o padrão do UI-Kit permitir ícone no header, use exatamente o formato de lá; senão, só o título;
+   - botão X BRANCO, no mesmo componente/estilo, tamanho e posição do X do Financeiro (alinhado à direita, centralizado verticalmente), com aria-label "Fechar".
+4. Body: o mesmo padding do Financeiro. Se o Financeiro usa um card interno (fundo cinza claro com borda arredondada) envolvendo o conteúdo, use a mesma estrutura para a lista de logs + paginação. Estados de carregando (skeleton), vazio e erro ficam dentro desse mesmo body, com o mesmo espaçamento.
+   - Erro: e-alert negative e o botão "Tentar novamente" com 12px de espaço entre eles, centralizados.
+5. Footer / botão Fechar:
+   - o botão está colado no canto inferior direito. Dê o padding do padrão (o mesmo espaçamento interno do body, ex.: 16px 24px), com o botão alinhado à direita;
+   - botão no padrão do UI-Kit (btn-outline-secondary rounded-pill, mesma altura dos outros botões do sistema);
+   - se o padrão do Financeiro NÃO tiver footer (fecha só pelo X), remova o footer e o "Fechar" e mantenha só o X. Siga o Financeiro.
+6. Modos claro e escuro com os tokens do padrão. Sem hex, sem !important, sem style inline.
+
+CRITÉRIOS DE ACEITE
+1. Lado a lado, a modal de Logs e a do Financeiro têm o mesmo header (degradê roxo, título branco bold, X branco), a mesma borda/raio/sombra e o mesmo padding.
+2. Sem brilho/halo em volta da modal.
+3. Sem o quadrado de ícone no header (a não ser que o padrão do UI-Kit tenha).
+4. Botão Fechar com respiro, não colado na borda (ou footer removido, se o padrão não tiver).
+5. Lista, paginação, vazio e erro dentro do body com espaçamento correto.
+
+ENTREGA
+Respostas de A1 a A3 e o diff.
+Verificação: tsc ✅/❌ | build ✅/❌ | ciclos: N
+
+PENDÊNCIAS DO PLANO
+- Back: centralizar no CloudController e logs como em develop (prompt já publicado)
+- Classificação
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
