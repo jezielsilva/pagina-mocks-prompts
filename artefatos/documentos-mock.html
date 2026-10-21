@@ -268,6 +268,14 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .doc-alerts{display:flex;flex-direction:column;gap:12px}
 .doc-alerts:empty{display:none}
 .alert-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+/* Logs paginados */
+.log-list .list-group-item{display:flex;gap:10px;align-items:flex-start}
+.log-pager{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px;margin-top:12px;border-top:1px solid var(--card-border-color)}
+.pagination{display:flex;gap:4px;list-style:none;padding:0;margin:0}
+.page-link{min-width:32px;height:32px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--card-border-color);border-radius:8px;background:var(--card-bg);color:var(--text-color);font:500 13px var(--font-body);cursor:pointer}
+.page-item.active .page-link{background:var(--color-primary);border-color:var(--color-primary);color:var(--color-white)}
+.page-item.disabled .page-link{opacity:.45;cursor:default}
+.min-w-0{min-width:0}
 /* Lista em colunas (Finder) */
 .finder{display:flex;height:100%;min-height:0;overflow-x:auto;overflow-y:hidden;scroll-behavior:smooth;outline:none}
 .finder-col{flex:0 0 260px;display:flex;flex-direction:column;min-height:0}
@@ -728,7 +736,7 @@ const ICP={
   star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
   trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',
   more:'<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',
-  chev:'<path d="M9 18l6-6-6-6"/>', chevDown:'<path d="M6 9l6 6 6-6"/>',
+  chev:'<path d="M9 18l6-6-6-6"/>', chevLeft:'<path d="M15 18l-6-6 6-6"/>', chevDown:'<path d="M6 9l6 6 6-6"/>',
   x:'<path d="M18 6L6 18M6 6l12 12"/>', check:'<path d="M20 6L9 17l-5-5"/>', plus:'<path d="M12 5v14M5 12h14"/>',
   eye:'<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
   open:'<path d="M14 3h7v7M10 14L21 3M21 14v7H3V3h7"/>',
@@ -2147,9 +2155,32 @@ document.addEventListener('click',e=>{
   const fl=e.target.closest('[data-filter]');if(fl){openFilter(fl.dataset.filter,fl);return;}
   const bt=e.target.closest('[data-batch]');if(bt){const items=selItems();({merge:()=>dlgMerge(items),compress:()=>dlgCompress(items),move:()=>dlgMove(items),classify:()=>dlgSetTipo(items),download:()=>doDownload(items),trash:()=>doTrash(items),restore:()=>doRestore(items),purge:()=>doPurge(items),clear:()=>{S.sel.clear();S.selFile=null;S.selMode=false;render();}})[bt.dataset.batch]?.();}
 });
-function dlgLogs(){const all=[];allFiles().forEach(f=>f.access.forEach(a=>all.push({f,a})));all.sort((x,y)=>y.a.date-x.a.date);
-  dialog({title:'Registro de acessos (LGPD)',icon:'shield',wide:true,body:eAlert('info',{icone:'shield',html:'Visualizações e downloads de todos os documentos. Downloads da área Financeiro aparecem marcados para auditoria.'})+accessList(all.slice(0,40),true),
-    actions:[{label:'Fechar',fn:x=>x.close()}],onMount:x=>x.body.addEventListener('click',e=>{const l=e.target.closest('[data-logopen]');if(l){x.close();openPanel(NODES.get(l.dataset.logopen));}})});}
+/* Logs do módulo: tudo que aconteceu (eventos + visualizações/downloads), mesmo layout do antigo registro LGPD, SEM IP, paginado (produção: paginação igual à de Clientes, dados paginados no back) */
+const LOG_PAGE=10;
+function logRows(){
+  const r=[];
+  EVENTS.forEach(e=>r.push({date:e.date,user:e.user,ic:EVT[e.tipo].ic,txt:EVT[e.tipo].v,item:e.item,extra:e.extra}));
+  allFiles().forEach(f=>f.access.forEach(x=>r.push({date:x.date,user:x.user,ic:x.tipo==='baixado'?'download':'eye',txt:x.tipo==='baixado'?'baixou':'visualizou',item:f,audit:x.audit})));
+  return r.sort((x,y)=>y.date-x.date);
+}
+const logItem=l=>`<div class="list-group-item"><span class="section-icon">${ic(l.ic,15)}</span><div class="flex-fill min-w-0"><b>${esc(userName(l.user))}</b> ${l.txt} ${l.item&&NODES.get(l.item.id)?`<button type="button" class="btn btn-link btn-sm p-0" data-logopen="${l.item.id}">${esc(l.item.name)}</button>`:`<span>${esc(l.item?l.item.name:'')}</span>`}${l.audit?' '+badge('info','Auditoria financeira'):''}<span class="d-block small text-secondary tabular-nums">${fmtDate(l.date)}</span></div></div>`;
+function logPager(pg,total){
+  const pages=Math.max(1,Math.ceil(total/LOG_PAGE)),from=total?(pg-1)*LOG_PAGE+1:0,to=Math.min(total,pg*LOG_PAGE);
+  const nums=[];for(let i=1;i<=pages;i++){if(i===1||i===pages||Math.abs(i-pg)<=1)nums.push(i);else if(nums[nums.length-1]!=='…')nums.push('…');}
+  return `<nav class="log-pager" aria-label="Paginação dos logs"><span class="small text-secondary tabular-nums">Mostrando ${from}–${to} de ${total}</span><ul class="pagination pagination-sm mb-0">
+    <li class="page-item ${pg===1?'disabled':''}"><button type="button" class="page-link" data-lpg="${pg-1}" aria-label="Anterior">${ic('chevLeft',14)}</button></li>
+    ${nums.map(n=>n==='…'?`<li class="page-item disabled"><span class="page-link">…</span></li>`:`<li class="page-item ${n===pg?'active':''}"><button type="button" class="page-link" data-lpg="${n}" ${n===pg?'aria-current="page"':''}>${n}</button></li>`).join('')}
+    <li class="page-item ${pg===pages?'disabled':''}"><button type="button" class="page-link" data-lpg="${pg+1}" aria-label="Próxima">${ic('chev',14)}</button></li></ul></nav>`;
+}
+function dlgLogs(){
+  const all=logRows();let pg=1;
+  const body=()=>all.length?`<div class="list-group log-list">${all.slice((pg-1)*LOG_PAGE,pg*LOG_PAGE).map(logItem).join('')}</div>${logPager(pg,all.length)}`:`<div class="grid-empty text-secondary">${ic('history',36)}<span class="card-title">Nenhum registro</span></div>`;
+  dialog({title:'Logs',icon:'history',wide:true,body:`<div id="log-body">${body()}</div>`,
+    actions:[{label:'Fechar',fn:x=>x.close()}],
+    onMount:x=>x.body.addEventListener('click',e=>{
+      const p=e.target.closest('[data-lpg]');if(p&&!p.closest('.disabled')){pg=+p.dataset.lpg;$('#log-body').innerHTML=body();$('#log-body').scrollIntoView({block:'start'});return;}
+      const l=e.target.closest('[data-logopen]');if(l){x.close();openPanel(NODES.get(l.dataset.logopen));}})});
+}
 $('#btn-logs').onclick=dlgLogs;
 
 /* Filtros (produção: mat-select para listas curtas; app-auto-complete para processo/autor, que têm muitas opções e busca) */
@@ -2278,7 +2309,7 @@ function mFolderMenu(x,y){
   const items=S.area==='lix'?[{ic:'trash',t:'Esvaziar lixeira',danger:true,dis:!TRASH.length,fn:()=>emptyTrash()}]:[
     {ic:S.view==='list'?'grid':'list',t:S.view==='list'?'Ver em grade':'Ver em lista',fn:()=>{S.view=S.view==='list'?'grid':'list';store.set('view',S.view);render();}},
     {ic:'check',t:'Selecionar itens',fn:()=>{S.selMode=true;S.sel.clear();render();}},{ic:'tag',t:'Classificações',fn:()=>dlgTipos()},'-',
-    {ic:'shield',t:'Registro de acessos',fn:dlgLogs}];
+    {ic:'history',t:'Logs',fn:dlgLogs}];
   openMenu(items,f.isRoot?areaOf(S.area).nome:f.name,x,y);
 }
 document.addEventListener('click',e=>{
@@ -2318,7 +2349,7 @@ $$('.pv [data-pv]').forEach(b=>b.onclick=()=>{PREVIEW=b.dataset.pv;$$('.pv [data
    ===================================================================== */
 (function init(){
   $('#ico-search').innerHTML=ic('search',17);$('#q-clear').innerHTML=ic('x',14);$('#btn-menu').innerHTML=ic('menu',20);
-  $('#new-ic').innerHTML=ic('plus',13,3);$('#btn-logs').innerHTML=ic('shield',15)+'Registro de acessos';$('#dfx-ic').innerHTML=ic('upload',20);
+  $('#new-ic').innerHTML=ic('plus',13,3);$('#btn-logs').innerHTML=ic('history',15)+'Logs';$('#dfx-ic').innerHTML=ic('upload',20);
   applyDevice();
   const mod=ROOT.meus.children.find(c=>c.name==='Modelos de peças');
   const civ=mod.children.find(c=>c.name==='Cível'),cob=civ.children.find(c=>c.name==='Cobrança');

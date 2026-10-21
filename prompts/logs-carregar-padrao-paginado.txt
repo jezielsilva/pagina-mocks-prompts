@@ -1,0 +1,88 @@
+[Área: Multidisciplinar (Backend .NET + MongoDB + Frontend Angular) | Skills: UI-Kit]
+
+TAREFA
+Janela de LOGS do módulo Documentos (botão "Logs" na toolbar). Três coisas:
+1. Descobrir e corrigir por que os registros NÃO carregam mais (antes carregavam). Os logs continuam sendo gravados no banco.
+2. Colocar o modal no padrão do UI-Kit (hoje tem sombreamento extra, fora do padrão).
+3. Listar os registros no layout do mock (portal → "Mock — Documentos" → botão Logs), SEM IP, PAGINADO com a MESMA paginação da página de Clientes.
+NÃO crie testes.
+
+========================================================================
+ETAPA A — INVESTIGAR POR QUE NÃO CARREGA (responda antes de mudar)
+========================================================================
+A1. Front: qual serviço/método o modal chama ao abrir? URL, verbo e parâmetros. Abra o Network do DevTools: a requisição sai? Qual status (200 vazio, 4xx, 5xx, CORS) e qual corpo?
+A2. Se não sai requisição: o subscribe existe? Algum @if/flag impede? O componente do modal recebe os dados por input que ficou undefined depois do rebase? Há erro no console?
+A3. Back: controller e rota do endpoint de logs. A rota mudou no rebase (prefixo, versão, [Authorize], policy)? O DTO de resposta mudou de nome de campo (camelCase × PascalCase, "itens" × "items", "data" × "resultado")?
+A4. Mongo: nome da coleção onde os logs são gravados HOJE e o nome que a consulta lê. São iguais? O filtro da consulta (escritório/tenant, área, documentoId, intervalo de datas, tipo) bate com os campos gravados? Pegue 1 documento real da coleção e compare campo a campo com o filtro e com o mapeamento da classe.
+A5. Conclusão em 1 linha: a causa-raiz exata.
+Corrija a causa-raiz (front, back ou os dois). Não crie coleção nova. Não altere o formato de gravação dos logs existentes. Se a correção exigir migração de dados, pare e informe.
+
+========================================================================
+ETAPA B — BACK: ENDPOINT PAGINADO
+========================================================================
+GET /api/documentos/logs?pagina=1&tamanhoPagina=10[&documentoId=][&pastaId=][&area=]
+- Use o MESMO contrato de paginação que o endpoint de Clientes usa (descubra em A6 abaixo) e o mesmo nome de campos. Se Clientes usa outro nome (ex.: page/pageSize/totalItems), use o de Clientes.
+- Resposta (se não houver padrão): { itens: LogDto[], pagina, tamanhoPagina, total }
+- LogDto: { id, tipo, acao (texto pronto: "enviou", "renomeou", "visualizou", "baixou"…), usuarioId, usuarioNome, documentoId, documentoNome, pastaId, data (ISO, UTC), auditoria (bool, ex.: download do Financeiro), detalhe (opcional, ex.: nome antigo → novo) }
+- NÃO retorne IP no DTO (o IP pode continuar gravado no banco por exigência legal; só não vai para a tela).
+- Ordenação estável: data desc, _id desc.
+- tamanhoPagina: padrão 10, máximo 50 (validar no back).
+- Escopo de segurança: só logs do escritório/usuário com permissão (mesma regra que já existe hoje para ver documentos).
+- Índice no Mongo: confira se existe índice composto para (tenant/escritório, data desc). Se não existir, crie na inicialização ou na migração de índices que o projeto já usa.
+- Textos de ação montados no back (front burro).
+
+========================================================================
+ETAPA C — FRONT: MODAL NO PADRÃO DO UI-KIT
+========================================================================
+A6. Abra a página de Clientes e ache o componente de PAGINAÇÃO que ela usa (seletor, inputs/outputs: página atual, tamanho, total, evento de troca). Informe arquivo e seletor.
+A7. Ache no UI-Kit o padrão de modal (componente/serviço de dialog, classes de header/body/footer, sombra e raio oficiais). Informe qual sombra/estilo extra o modal de logs tem hoje que NÃO é do padrão (box-shadow próprio, backdrop custom, wrapper .card dentro do modal etc.).
+
+Modal:
+- Usa o dialog padrão do UI-Kit SEM estilos próprios de sombra/borda/fundo. Remova box-shadow, filter, wrapper .card extra e backdrop customizado que você listou em A7.
+- Header: section-icon com ícone "history" + título "Logs" + botão fechar padrão.
+- Body: lista + paginação.
+- Footer: botão "Fechar" (btn-outline-secondary, padrão).
+- Largura: modal-lg do padrão.
+- Celular: DrawerService (bottom drawer), como os outros modais do módulo.
+
+Lista (layout do mock; é o antigo "Registro de acessos LGPD", sem IP):
+Cada item é um list-group-item com:
+  [section-icon com ícone da ação]  **Usuário** ação [link com o nome do documento] [badge info "Auditoria financeira", se auditoria]
+                                     data e hora (texto secundário, 12px, tabular-nums)
+- Ícones por tipo: upload → upload; renomeado → edit; movido → move; status → status; unido → merge; comprimido → compress; excluído → trash; restaurado → restore; tipado/classificado → tag; pasta criada → folder-plus; OCR → spark; visualizou → eye; baixou → download. Use os ícones do e-icon que já existem; sem equivalente, use history.
+- "Você" para o usuário logado.
+- Clicar no nome do documento fecha o modal e abre o drawer do documento. Se o documento foi excluído definitivamente, mostrar o nome como texto, sem link.
+- Data: "hoje, 08:40", "ontem, 20:30" ou "dd/MM/yyyy HH:mm", com o mesmo helper de data relativa que o módulo já usa.
+- Sem IP em lugar nenhum.
+
+Paginação:
+- Use o componente de A6 (o mesmo de Clientes), no rodapé da lista dentro do body, com o texto "Mostrando X–Y de Z" se o componente de Clientes tiver. Tamanho 10.
+- Trocar de página: chama o back com a nova página, mostra skeleton das linhas (o skeleton padrão do UI-Kit) e rola o body para o topo.
+- Estado vazio: ícone history + "Nenhum registro".
+- Estado de erro: e-alert negative "Não foi possível carregar os logs." + botão "Tentar novamente".
+- Cancelar requisição pendente ao trocar de página ou fechar (switchMap / takeUntilDestroyed).
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Abrir "Logs" carrega os registros existentes (os já gravados no banco aparecem).
+2. O modal é idêntico ao padrão do UI-Kit: sem sombra extra e com header, body e footer padrão.
+3. Itens no layout do mock: ícone, usuário, ação, documento (link), badge de auditoria, data/hora. Nenhum IP.
+4. A paginação é a mesma de Clientes, com 10 por página, e troca de página com skeleton.
+5. Vazio e erro tratados.
+6. Funciona nos modos claro e escuro, só com tokens.
+7. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+- Respostas de A1 a A7 (com a causa-raiz).
+- Diff do back (controller, serviço/repositório, DTO, índice).
+- Diff do front (serviço, modal, template, SCSS).
+
+PENDÊNCIAS DO PLANO
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Filtros: remover Etiquetas e Ano
+- Busca
+- Classificação completa
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
