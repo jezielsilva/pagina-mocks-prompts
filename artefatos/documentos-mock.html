@@ -119,7 +119,7 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .btn-danger{background:var(--btn-danger-bg-color);color:var(--btn-danger-text-color)}.btn-danger:hover:not(:disabled){background:var(--btn-danger-hover-bg-color)}
 .btn-outline-secondary{border-color:var(--btn-secondary-border-color);color:var(--btn-secondary-text-color);background:var(--card-bg)}.btn-outline-secondary:hover:not(:disabled){background:var(--btn-secondary-hover-bg-color)}.btn-outline-secondary.active{background:var(--btn-secondary-active-bg-color)}
 .btn-link{color:var(--link-color);padding:4px 6px;font-weight:600}.btn-link:hover:not(:disabled){text-decoration:underline}
-.btn-icon{padding:0;width:36px;height:36px;border-radius:50%}.btn-icon:not([class*="btn-primary"]):not([class*="btn-success"]):not([class*="btn-danger"]):not([class*="btn-outline"]){color:var(--text-color-secondary)}.btn-icon:not([class*="btn-primary"]):not([class*="btn-success"]):not([class*="btn-danger"]):not([class*="btn-outline"]):hover:not(:disabled){background:var(--btn-icon-hover-bg-color)}.btn-icon.text-primary{color:var(--text-color-readable)}.btn-icon.btn-sm{width:28px;height:28px}
+.btn-icon{padding:0;width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:0;flex-shrink:0}.btn-icon svg{display:block;flex-shrink:0}.btn-icon:not([class*="btn-primary"]):not([class*="btn-success"]):not([class*="btn-danger"]):not([class*="btn-outline"]){color:var(--text-color-secondary)}.btn-icon:not([class*="btn-primary"]):not([class*="btn-success"]):not([class*="btn-danger"]):not([class*="btn-outline"]):hover:not(:disabled){background:var(--btn-icon-hover-bg-color)}.btn-icon.text-primary{color:var(--text-color-readable)}.btn-icon.btn-sm{width:28px;height:28px}
 .btn-close{width:32px;height:32px;border:none;border-radius:50%;background:transparent;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-color-secondary);transition:background-color .15s;flex-shrink:0}.btn-close:hover{background:var(--btn-icon-hover-bg-color)}
 .btn-loading{pointer-events:none}
 .dropdown-toggle::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-2px,-2px);margin-left:2px}
@@ -299,10 +299,14 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .grid-item:hover .grid-item-quicklook,.grid-item:focus-within .grid-item-quicklook{opacity:1;transform:translate(-50%,0)}
 .grid-item-foot{padding:8px 10px 10px;display:flex;flex-direction:column;gap:6px;min-width:0}
 /* Autor + data: avatar com iniciais, nome trunca, data curta fixa à direita (tamanho vai no tooltip) */
-.grid-item-meta{display:flex;align-items:center;gap:6px;min-width:0;font-size:12px;color:var(--text-color-secondary)}
+.grid-item-meta{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:12px;line-height:16px;color:var(--text-color-secondary)}
+.grid-item-meta .l1,.grid-item-meta .l2{display:flex;align-items:center;gap:6px;min-width:0}
+.grid-item-meta .l1 .who{color:var(--text-color);font-weight:500}
+.grid-item-meta .l2{justify-content:space-between;font-variant-numeric:tabular-nums}
+.grid-item-meta .l2 .sz{flex-shrink:0;color:var(--text-color-secondary)}
 .grid-item-meta .av{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;background:var(--color-primary-lightest);color:var(--color-primary);font:700 9px/1 var(--font-head);letter-spacing:.02em}
 .grid-item-meta .who{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.grid-item-meta time{flex-shrink:0;font-variant-numeric:tabular-nums}
+.grid-item-meta time{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .grid-empty{padding:56px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
 .badge-list{display:flex;flex-wrap:wrap;gap:4px}
 /* Carregar mais (paginação incremental) */
@@ -1241,7 +1245,7 @@ function cardHTML(it){
   const dl=deadlineInfo(it.deadline);
   return `<div class="file-list-item grid-item ${sel?'active':''}" tabindex="0" data-id="${it.id}" draggable="${drag}" role="gridcell" aria-selected="${sel}">${head}${chk}
     <div class="grid-item-thumb file-list-item-thumb border-top border-bottom">${dl?`<span class="grid-item-flag">${badge(SEV_BADGE[dl.sev],dl.curto,'clock')}</span>`:''}${thumb(it)}<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill grid-item-quicklook" data-act="ql">${ic('eye',14)}Visualizar</button></div>
-    <div class="grid-item-foot">${badges(it)}<div class="grid-item-meta" title="${esc(userName(it.author))} · ${fmtDate(it.mtime)} · ${fmtSize(it.size)}"><span class="av" aria-hidden="true">${it.author===ME?USERS.me.ini:USERS[it.author].ini}</span><span class="who">${userName(it.author)}</span><time datetime="${new Date(it.mtime).toISOString()}">${new Date(it.mtime).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'})}</time></div></div></div>`;
+    <div class="grid-item-foot">${badges(it)}<div class="grid-item-meta"><div class="l1"><span class="av" aria-hidden="true">${it.author===ME?USERS.me.ini:USERS[it.author].ini}</span><span class="who">${userName(it.author)}</span></div><div class="l2"><time datetime="${new Date(it.mtime).toISOString()}">${new Date(it.mtime).toLocaleDateString('pt-BR')} ${new Date(it.mtime).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</time><span class="sz">${fmtSize(it.size)}</span></div></div></div></div>`;
 }
 function emptyBlock(folder,big=40){
   const total=childrenOf(folder).length;

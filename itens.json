@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-20T19:22:00-03:00",
+  "atualizado": "2026-10-20T21:55:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
-      "data": "2026-10-20T19:22:00-03:00",
+      "data": "2026-10-20T21:55:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
     },
     {
@@ -32,6 +32,14 @@
       "titulo": "Prompt — Sidebar: upgrade fixo + um scroll por coluna + grade compacta na tela",
       "data": "2026-10-20T19:22:00-03:00",
       "arquivo": "prompts/sidebar-upgrade-fixo-um-scroll.txt"
+    },
+    {
+      "id": "prompt-refino-tema-menu-espaco-rodape",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Tema claro/escuro, menu de ações padrão, espaço do header e rodapé completo",
+      "data": "2026-10-20T21:55:00-03:00",
+      "arquivo": "prompts/refino-tema-menu-espaco-rodape.txt"
     }
   ]
 }
