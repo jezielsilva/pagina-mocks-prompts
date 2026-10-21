@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-20T22:15:00-03:00",
+  "atualizado": "2026-10-20T22:20:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
-      "data": "2026-10-20T22:10:00-03:00",
+      "data": "2026-10-20T22:20:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
     },
     {
@@ -56,6 +56,14 @@
       "titulo": "Prompt — Filtros no padrão de Tarefas (Tipo, Autor, Classificação, Data) front + back",
       "data": "2026-10-20T22:15:00-03:00",
       "arquivo": "prompts/filtros-padrao-tarefas.txt"
+    },
+    {
+      "id": "prompt-sidebar-grafico-percentual",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Sidebar: gráfico de armazenamento igual ao mock + percentual nunca 0%",
+      "data": "2026-10-20T22:20:00-03:00",
+      "arquivo": "prompts/sidebar-grafico-e-percentual.txt"
     }
   ]
 }

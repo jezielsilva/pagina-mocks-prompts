@@ -1,0 +1,67 @@
+[Área: Multidisciplinar (Frontend + Backend) | Skills: UI-Kit]
+
+TAREFA
+Dois ajustes no bloco de ARMAZENAMENTO da sidebar do módulo Documentos. Referência visual e de comportamento: o mock publicado no portal ("Mock — Documentos"), sidebar à direita, bloco "44,5 MB de 1,00 GB". NÃO crie testes.
+
+========================================================================
+AJUSTE 1 — GRÁFICO "POR CATEGORIA / POR TIPO" FICOU FINO DEMAIS
+========================================================================
+Nas últimas alterações (compactação da sidebar) a barra do gráfico ficou fina. Ela deve voltar EXATAMENTE ao padrão do mock.
+
+Padrão do mock (ECharts, exceção visual aprovada):
+- Contêiner do gráfico: width 100%; height 26px; margin 6px 0 8px.
+- Barra única horizontal empilhada (estilo Google Drive), um segmento por categoria/tipo:
+  - type 'bar', stack 'uso', barWidth 14 (espessura da barra = 14px);
+  - grid { left: 0, right: 0, top: 4, bottom: 4 };
+  - xAxis { type: 'value', max: total, show: false }; yAxis { type: 'category', data: ['uso'], show: false };
+  - cada segmento com degradê vertical da sua cor (LinearGradient 0,0,0,1: cor → cor com ~80% de opacidade);
+  - separação entre segmentos: borderColor = token do fundo do bloco (primary-lightest), borderWidth 1.5;
+  - cantos: borderRadius 7 nas pontas (primeiro segmento [7,0,0,7], último [0,7,7,0]; um só segmento = 7);
+  - hover: emphasis focus 'series' + leve sombra; tooltip "Categoria / tamanho · %", com os tokens de tooltip do gráfico;
+  - animação: entrada de 900ms cubicOut, atraso de 110ms por segmento.
+- Cores: as do tema de gráficos (chart-color-N / tokens), nada de hex no código.
+- ResizeObserver no contêiner chamando chart.resize(). O gráfico NÃO pode ser recriado a cada render, só setOption.
+
+A1. Encontre o que deixou a barra fina: height do contêiner reduzido (ex.: 10px), barWidth menor, grid top/bottom diferentes, ou CSS sobrescrevendo o canvas. Informe arquivo:linha.
+A2. Restaure os valores acima. A compactação da sidebar continua valendo para o resto (paddings e gaps). O gráfico volta ao tamanho do mock.
+A3. Confira nos modos claro e escuro: a borda entre os segmentos usa o token de fundo do bloco no modo atual.
+
+========================================================================
+AJUSTE 2 — PERCENTUAL "0% USADO" COM ARQUIVOS EXISTENTES
+========================================================================
+Com 3,26 MB de 20 GB, a tag mostra "0% usado". Se há qualquer uso, a tag NÃO pode mostrar 0%.
+
+Regra de exibição (igual ao mock):
+- uso = 0 → "0% usado"
+- 0 < uso < 0,01% → "<0,01% usado"
+- 0,01% ≤ uso < 1% → 2 casas decimais ("0,02% usado")
+- 1% ≤ uso < 10% → 1 casa decimal ("4,3% usado")
+- uso ≥ 10% → inteiro ("43% usado")
+- Separador decimal: vírgula (pt-BR).
+
+B1. De onde vem o percentual hoje: o back manda pronto (ex.: percentualUsado) ou o front calcula? Mostre o trecho.
+B2. Se o back manda: está arredondando para inteiro (Math.Round sem casas, (int), divisão inteira long/long)? Corrija para mandar o valor decimal (double/decimal com precisão total, ex.: usadoBytes / limiteBytes * 100) sem arredondar. Arredondamento é exibição.
+B3. Se o front calcula: confira se usadoBytes e limiteBytes estão na mesma unidade (bytes × MB × GB) e se não há divisão inteira ou pipe "percent" com 0 casas.
+Implementação:
+- Back: entrega usadoBytes, limiteBytes e percentualUsado (decimal, sem arredondar). Se já entrega bytes, não precisa de campo novo.
+- Front: um pipe/helper de exibição (ex.: percentualUsoPipe) com a regra acima, usado na tag "X% usado", no texto do card de upgrade ("Você já usou X do espaço") e em qualquer outro lugar do módulo que mostre esse percentual.
+- O nível do "tanque" (altura do líquido e cor ok/atenção/crítico) usa o valor DECIMAL, não o texto.
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. A barra do gráfico tem a mesma espessura, cantos, separações, degradê e hover do mock, nos modos claro e escuro.
+2. Com 3,26 MB de 20 GB, a tag mostra "0,02% usado". Com valores menores que 0,01%, mostra "<0,01% usado". Nunca mostra 0% se houver uso.
+3. O card de upgrade e o tanque continuam coerentes com o percentual.
+4. Sem hex, sem !important, sem style inline (exceto o necessário da lib de gráfico).
+
+ENTREGA
+Respostas de A1 e de B1 a B3 e o diff (front e, se houver, back).
+
+PENDÊNCIAS DO PLANO
+- Classificação (filtro + cadastro)
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE

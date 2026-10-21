@@ -717,7 +717,7 @@ function fmtSize(b){
   if(b<1073741824)return (b/1048576).toFixed(1).replace('.',',')+' MB';
   return (b/1073741824).toFixed(2).replace('.',',')+' GB';
 }
-function fmtPct(p){const v=p>0&&p<1?p.toFixed(2):p<10?p.toFixed(1):String(Math.round(p));return v.replace('.',',')+'%';}
+function fmtPct(p){if(p>0&&p<0.01)return '<0,01%';const v=p>0&&p<1?p.toFixed(2):p<10?p.toFixed(1):String(Math.round(p));return v.replace('.',',')+'%';}
 const store={get(k,d){try{const v=localStorage.getItem('elaw.docs.'+k);return v===null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem('elaw.docs.'+k,v);}catch(e){}}};
 
 /* Ícones (traço 2px, estilo Lucide — na implementação usar a biblioteca de ícones do sistema) */
