@@ -1,0 +1,115 @@
+[Área: Multidisciplinar (Frontend + ajuste pontual no Backend) | Skills: UI-Kit]
+
+TAREFA
+7 refinos no módulo Documentos. Os prints estão no portal, aba "Prints" (2026-10-21 11:45 a 11:47). NÃO crie testes. Faça a verificação estática (tsc + build).
+
+========================================================================
+1. FILTRO "AUTOR" MAIOR QUE OS OUTROS (print 114541)
+========================================================================
+Tipo, Classificação e Data têm a mesma altura. O Autor é mais alto (≈56px contra ≈44px), com o texto e a seta desalinhados.
+A1. Qual componente o Autor usa (app-auto-complete? mat-form-field com mat-autocomplete?) e que regra deixa ele mais alto: densidade diferente, subscriptSizing, padding interno, wrapper com min-height, chip-list ou ícone de 24px?
+Correção: mesma aparência do campo de usuários de Tarefas, com a MESMA altura, densidade, padding e posição de rótulo dos outros 3 campos. Placeholder alinhado verticalmente ao dos vizinhos; seta igual à do Tipo (mesmo ícone e tamanho). Todos os 4 com a base alinhada na mesma linha. Não crie CSS só para "forçar altura": use a mesma configuração de Tarefas.
+
+========================================================================
+2. CALENDÁRIO EM INGLÊS (print 114625)
+========================================================================
+O seletor de período mostra "October/November", "Sun Mon Tue…" e o campo "dd/MM/aaaa".
+A2. Qual lib/componente é (mat-date-range-picker? ngx-daterangepicker-material? componente próprio)? Como Tarefas exibe o Período em português? Copie a MESMA configuração.
+Correção:
+- Meses e dias em pt-BR: "outubro", "novembro" com a capitalização do padrão de Tarefas; "Dom Seg Ter Qua Qui Sex Sáb"; a semana começa no domingo, igual a Tarefas.
+- Formato dd/MM/yyyy e exibição do intervalo "dd/MM/yyyy - dd/MM/yyyy" dentro do campo, igual a "Período" de Tarefas.
+- Configurar no lugar certo:
+  - Angular Material: MAT_DATE_LOCALE 'pt-BR' + DateAdapter.setLocale('pt-BR') + registerLocaleData(localePt) + MatDatepickerIntl em português;
+  - ngx-daterangepicker: [locale]="{ format, daysOfWeek, monthNames, firstDay, applyLabel, cancelLabel… }" em pt-BR + moment.locale('pt-br').
+  Se Tarefas já usar um provider/objeto de locale compartilhado, REUSE (não duplique).
+- Números de semana (coluna 40, 41…): mostrar só se Tarefas mostrar. O padrão é igual a Tarefas.
+- Botões e textos do picker (Aplicar, Cancelar, Limpar), se existirem, em português.
+
+========================================================================
+3. ÍCONE ⋮ AINDA ACHATADO E FORA DO CENTRO (prints 114634 e 114732: grid e lista)
+========================================================================
+Os três pontos aparecem deslocados para baixo/direita e achatados dentro do círculo de hover.
+A3. Inspecione o botão e diga: tag do ícone (mat-icon "more_vert"? e-icon? svg?), computed do ícone (width, height, font-size, line-height, vertical-align, display) e do botão (width, height, padding, display, line-height). Qual regra global interfere (ex.: .mat-icon { height: 24px } com font-size menor, svg { height: 1em }, line-height herdado, vertical-align: middle)?
+Correção definitiva (escopo dos botões de ação do módulo):
+.<botao-acoes> {
+  width: 28px; height: 28px; padding: 0;
+  display: inline-grid; place-items: center;     // centraliza em X e Y
+  line-height: 0; border-radius: 50%;
+}
+// mat-icon (fonte):
+.<botao-acoes> .mat-icon { width: 18px; height: 18px; font-size: 18px; line-height: 18px; display: block; margin: 0; }
+// e-icon / svg:
+.<botao-acoes> e-icon, .<botao-acoes> svg { width: 16px; height: 16px; display: block; flex: none; }
+- SVG com viewBox correto, sem preserveAspectRatio="none" e com width igual a height.
+- O círculo de hover/foco tem o MESMO tamanho do botão (28×28) e é centrado nele.
+- Vale no grid, na lista (Finder), no drawer e no app-menu-acoes, se o botão for dele. Se a causa estiver no componente shared, corrija lá e informe.
+
+========================================================================
+4. CORES DO GRÁFICO ≠ CORES DA LEGENDA (print 114646)
+========================================================================
+A barra continua azul/marinho, mas a legenda é roxo, azul-claro, laranja, verde, lilás…
+A4. Mostre o código que monta a legenda (de onde vem a cor de cada item) e o que monta as séries do ECharts (de onde vem itemStyle.color). Por que divergem? Possíveis causas: o ECharts ignora var(--token) e cai na paleta padrão; color global no option sobrescrevendo; cor por índice com ordem diferente; tema do ECharts registrado.
+Correção:
+- Cada item (categoria/tipo) tem UM campo de cor resolvido (ex.: corHex resolvido de getComputedStyle(document.documentElement).getPropertyValue('--chart-color-N') ou a cor que vem do back).
+- A legenda usa esse valor e a série desse item usa EXATAMENTE o mesmo valor em itemStyle.color (no degradê, as duas paradas derivam dele).
+- Remova color: [...] global e o tema que sobrescreva.
+- Releia as cores ao trocar Por categoria/Por tipo e ao trocar o tema claro/escuro.
+- Conferência: o segmento de "Meus documentos" é do mesmo roxo do quadradinho, o de "Tarefas" do mesmo azul-claro, e assim por diante.
+
+========================================================================
+5. AUTOR APARECE COMO "UE · Usuário do escritório" (print 114714)
+========================================================================
+O rodapé do card (e a lista) deve mostrar o NOME REAL de quem enviou. O drawer do mesmo arquivo mostra "JEZIEL SILVA", então o dado existe.
+A5. De onde vem o nome no card? O DTO da listagem traz autorNome? Se vem vazio/nulo, o front cai num fallback "Usuário do escritório"? O back preenche o nome na listagem (join/lookup na coleção de usuários pelo autorId) ou só no endpoint de detalhe?
+Correção:
+- Back: a listagem (lista e grade, inclusive "Carregar mais" e áreas automáticas) retorna autorId e autorNome resolvidos, com a mesma fonte do drawer. Fazer o lookup em LOTE (buscar os usuários dos ids da página de uma vez, ou $lookup), nunca um por item. Usuário removido/inexistente: autorNome = null.
+- Front:
+  - nome = autorId === usuário logado ? "Você" : autorNome; formatar com a mesma capitalização usada no resto do sistema (ex.: "Jeziel Silva", se o padrão for nome próprio);
+  - iniciais a partir do nome real (primeira letra do primeiro e do último nome) → "JS";
+  - só se autorNome for null: "Usuário removido" (texto secundário) e iniciais "?";
+  - remover o fallback fixo "Usuário do escritório".
+- Tooltip: quando o nome estiver truncado (reticências), mostrar o nome completo no tooltip padrão do sistema (matTooltip ou equivalente), só quando truncado (scrollWidth > clientWidth). O tooltip do rodapé inteiro (autor · data · tamanho) continua.
+
+========================================================================
+6. MODO LISTA: ÍCONES DESCENTRALIZADOS (print 114732)
+========================================================================
+Na linha do Finder, o ⋮ (e o chevron, quando houver) não está centrado no círculo nem alinhado com o texto.
+Correção: a linha do Finder usa display flex e align-items center. Ícone do tipo 16px e o nome com flex 1 e min-width 0. O botão de ações segue o item 3 (28×28, place-items center). O chevron fica num contêiner de 16×16 com display block. Tudo centralizado verticalmente na altura da linha.
+
+========================================================================
+7. MODO LISTA: PAINEL DE PRÉVIA CORTA O BOTÃO "ABRIR" (print 114741)
+========================================================================
+A coluna de prévia (miniatura + nome + badge + tabela Tipo/Tamanho/Modificado/Autor/Local + botão Abrir) não cabe na altura e o botão fica cortado.
+Correção (as duas coisas):
+a) Miniatura menor e responsiva à altura: altura da miniatura = clamp(120px, 26vh, 220px), largura proporcional A4 (aspect-ratio 210/297), centralizada.
+b) Painel com rolagem só quando precisar e botão sempre visível:
+   .<painel-previa> { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+   .<painel-previa-corpo> { flex: 1 1 auto; min-height: 0; overflow-y: auto; }      // miniatura + nome + badge + tabela
+   .<painel-previa-acoes> { flex: 0 0 auto; padding-top: 12px; border-top: 1px solid <token borda>; }   // botão Abrir FORA do scroll, fixo na base
+- Scrollbar fina no padrão do módulo.
+- Na tabela de detalhes: linhas de 36px e valores com text-overflow ellipsis + tooltip quando truncados. O Local (link) também trunca.
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Os 4 filtros têm a mesma altura e alinhamento, e o Autor fica igual ao de Tarefas.
+2. Calendário 100% em português, igual ao Período de Tarefas.
+3. ⋮ redondo, sem distorção e exatamente no centro do círculo (grid, lista e drawer).
+4. Cada segmento do gráfico tem a cor do seu quadradinho na legenda, nos dois agrupamentos e nos dois temas.
+5. Cards e lista mostram o nome real do autor com iniciais corretas, "Você" para o usuário logado e tooltip quando truncado. Sem "Usuário do escritório".
+6. Linhas do Finder com ícones e ⋮ centralizados.
+7. Prévia da lista: botão "Abrir" sempre visível e o conteúdo rola só se precisar.
+8. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+- Respostas de A1 a A5.
+- Diff do front e do back (lookup do autor).
+- Verificação: tsc ✅/❌ | build ✅/❌ | dotnet build ✅/❌ | ciclos: N
+
+PENDÊNCIAS DO PLANO
+- Classificação (filtro, cadastro, ação da barra)
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
