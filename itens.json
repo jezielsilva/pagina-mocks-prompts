@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-21T10:00:00-03:00",
+  "atualizado": "2026-10-21T10:40:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -8,6 +8,14 @@
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
       "data": "2026-10-20T22:20:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
+    },
+    {
+      "id": "prompt-barra-selecao-tarefas",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Tarefas + Documentos",
+      "titulo": "Prompt — Barra de seleção: padrão único (ícone + texto) também em Tarefas",
+      "data": "2026-10-21T10:40:00-03:00",
+      "arquivo": "prompts/barra-selecao-tarefas-padrao-unico.txt"
     }
   ]
 }

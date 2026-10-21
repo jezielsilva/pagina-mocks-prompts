@@ -1,0 +1,66 @@
+[Área: Frontend (componente shared + Tarefas) | Skills: UI-Kit]
+
+TAREFA
+Ajuste no prompt anterior da BARRA DE SELEÇÃO GENÉRICA (app-barra-selecao, em shared, na pasta do app-menu-acoes). Antes, Tarefas usaria o modo "só ícone". Agora a regra é UM PADRÃO SÓ: Tarefas usa a barra EXATAMENTE como Documentos, com contador no início, cada ação com ÍCONE + TEXTO, hover suave e X para limpar no fim. A cor continua o roxo padrão de hoje. NÃO crie testes. Faça a verificação estática (tsc + build) e confira no código que nenhuma ação de Tarefas foi perdida.
+
+========================================================================
+ETAPA A — INVESTIGAR AS AÇÕES DE TAREFAS (responda antes de mudar)
+========================================================================
+A1. Liste TODOS os botões que a barra de Tarefas tem hoje, na ordem em que aparecem. Para cada um: ícone, tooltip/aria-label atual, método chamado e condição de exibição ou de desabilitado (permissão, status das tarefas selecionadas etc.).
+    Referência do print atual (da esquerda para a direita): desmarcar/limpar seleção (ícone de seleção riscada), filtrar, cancelar (X), atribuir responsável (pessoa +), concluir (check verde) e excluir (lixeira vermelha). Confirme no código o que cada um faz de verdade.
+A2. Algum desses botões é a mesma coisa que o X de "limpar seleção" da barra genérica? (Ex.: "desmarcar todos" = limpar seleção.) Se for, ele vira o X do fim da barra, sem duplicar.
+
+========================================================================
+ETAPA B — COMPONENTE GENÉRICO: UM MODO SÓ
+========================================================================
+- Remova o @Input() modo ('icone' | 'icone-texto') e todo o CSS do modo ícone. A barra só tem o layout ícone + texto.
+- Mantenha as variantes:
+  - 'padrao': texto branco;
+  - 'sucesso': ícone e texto em positive-lightest (verde claro sobre o roxo);
+  - 'perigo': ícone e texto em negative-lightest (vermelho claro sobre o roxo).
+  Sem fundo colorido por botão: o destaque é a cor do texto, como no mock.
+- Tudo o mais do prompt anterior continua: contador "N selecionado(s)" no início em 700 14px, botões 600 13px com padding 8px 10px e raio 8px, hover branco 12% (token), focus-visible, disabled com opacity .4 + tooltip do motivo, X de limpar 36×36 no fim, cantos 16px, roxo padrão, aparece em desktop e tablet e não aparece no celular.
+- Se a largura não couber (tablet, muitas ações): overflow-x auto na barra, sem quebrar em duas linhas. Os textos NÃO somem.
+
+========================================================================
+ETAPA C — TAREFAS NO PADRÃO ÚNICO
+========================================================================
+rotuloSingular 'selecionada', rotuloPlural 'selecionadas'.
+Ações (use os textos e ícones abaixo, confirmando com o que A1 mostrou; se o tooltip atual for melhor, use o tooltip atual):
+1. Filtrar (ícone filter): "Filtrar selecionadas". O texto final deve dizer o que a ação faz de verdade (ex.: "Mostrar só selecionadas").
+2. Atribuir responsável (ícone user-plus): "Atribuir responsável"
+3. Concluir (ícone check-circle, variante sucesso): "Concluir"
+4. Cancelar (ícone x-circle ou ban): "Cancelar tarefa". SÓ se o X atual for a ação de CANCELAR a tarefa (status). Se o X atual for "fechar a barra/limpar seleção", ele vira o X do fim e não entra aqui.
+5. Excluir (ícone trash, variante perigo): "Excluir"
++ X no fim = limpar seleção (substitui o botão "desmarcar todos", conforme A2).
+Ordem: ações neutras primeiro, Concluir, depois as destrutivas (Cancelar, Excluir) e por fim o X. Se o produto exigir outra ordem, mantenha a atual e informe.
+- Mesmas condições, permissões e handlers de hoje (passar desabilitado + motivo, ou filtrar o array no componente de Tarefas).
+- Nenhuma lógica de Tarefas dentro do componente shared.
+
+========================================================================
+ETAPA D — DOCUMENTOS
+========================================================================
+Sem mudança além de remover o input "modo" (se tiver sido passado). Ações: Unir PDFs, Comprimir, Mover, Classificar, Baixar, Excluir (perigo) e o X. Na Lixeira: Restaurar e Excluir definitivamente.
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Tarefas e Documentos usam a MESMA barra, com o mesmo visual: roxo, cantos 16px, contador, ícone + texto, hover, X no fim.
+2. Tarefas mantém todas as ações e comportamentos de antes (nenhuma perdida, nenhuma duplicada).
+3. Concluir em verde claro e Excluir/Cancelar em vermelho claro, só pela cor do texto.
+4. Sem o modo "só ícone" no código.
+5. Desktop e tablet: sim. Celular: não aparece.
+6. Tokens nos modos claro e escuro. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+- Respostas de A1 e A2 (tabela das ações de Tarefas: antes → depois).
+- Diff do componente shared, de Tarefas e de Documentos.
+- Verificação: tsc ✅/❌ | build ✅/❌ | ciclos: N
+
+PENDÊNCIAS DO PLANO
+- Classificação (filtro, cadastro e ação "Classificar" da barra)
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
