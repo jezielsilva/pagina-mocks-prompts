@@ -1,0 +1,136 @@
+[Área: Frontend (componente shared + Tarefas + Documentos) | Skills: UI-Kit]
+
+TAREFA
+Tornar GENÉRICA a barra de ações em lote que hoje existe em TAREFAS (aparece embaixo ao marcar o checkbox de uma ou mais tarefas: "1 selecionada" + botões redondos) e usá-la no módulo DOCUMENTOS quando houver arquivos selecionados, como no mock (portal → "Mock — Documentos": selecione arquivos na grade ou na lista para ver a barra). NÃO crie testes. Faça a verificação estática (tsc + build) e confira no código que Tarefas não quebrou.
+
+========================================================================
+ETAPA A — INVESTIGAR (responda antes de mudar)
+========================================================================
+A1. Componente da barra em Tarefas: arquivo, seletor, se já é standalone e quais inputs/outputs tem. Hoje ele é específico de Tarefas (ações e serviços de Tarefas dentro dele) ou já recebe as ações de fora?
+A2. Como Tarefas usa a barra: quantidade selecionada, texto "selecionada(s)", botões (desmarcar todos, filtrar, cancelar, atribuir responsável, concluir, excluir), cores (verde, vermelho, roxo) e o que cada um chama.
+A3. Onde está o app-menu-acoes (o menu de ações shared usado em Tarefas e Clientes)? Informe a pasta. É NESSA MESMA pasta de componentes shared que a barra genérica vai morar.
+A4. Em quais breakpoints a barra aparece hoje em Tarefas (desktop, tablet, celular)? Qual a regra (media query, BreakpointObserver, serviço de dispositivo)?
+A5. Complexidade: diga em 2 linhas se a barra já é praticamente genérica (só mover e parametrizar) ou se a lógica de Tarefas está acoplada (precisa extrair). Liste o que precisa ser extraído.
+
+========================================================================
+ETAPA B — COMPONENTE GENÉRICO (shared, na pasta do app-menu-acoes)
+========================================================================
+Nome sugerido: app-barra-selecao (standalone). Se o projeto já usar outro padrão de nome em shared, siga o padrão.
+
+API:
+- @Input() quantidade: number                                  // nº de itens selecionados
+- @Input() rotuloSingular = 'selecionado'; @Input() rotuloPlural = 'selecionados'   // Tarefas passa 'selecionada'/'selecionadas'
+- @Input() acoes: AcaoBarraSelecao[]
+- @Input() modo: 'icone' | 'icone-texto' = 'icone-texto'      // Tarefas usa 'icone' (como hoje); Documentos usa 'icone-texto'
+- @Input() mostrarLimpar = true
+- @Output() acao = new EventEmitter<string>()                  // emite o id da ação
+- @Output() limpar = new EventEmitter<void>()
+
+interface AcaoBarraSelecao {
+  id: string;
+  rotulo: string;              // texto (modo icone-texto) e tooltip/aria-label (modo icone)
+  icone: string;               // nome do e-icon
+  variante?: 'padrao' | 'sucesso' | 'perigo';
+  desabilitado?: boolean;
+  motivoDesabilitado?: string; // tooltip quando desabilitado
+}
+
+Regras:
+- O componente é SÓ exibição: não conhece Tarefas nem Documentos e não chama serviço. Quem usa decide as ações e trata o (acao).
+- Aparece só quando quantidade > 0 (o @if fica no componente ou no pai, siga o que Tarefas faz hoje).
+- Só desktop e tablet: no celular não renderiza (mesma regra de breakpoint de A4, centralizada no componente).
+- role="toolbar", aria-label "Ações em lote"; cada botão com aria-label; ação desabilitada com disabled e tooltip do motivo.
+- Entrada com a animação suave do mock (fade/slide de baixo, 200ms). Respeitar prefers-reduced-motion.
+
+Visual (o roxo de hoje + o estilo do mock):
+.barra-selecao {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: <o MESMO token roxo que a barra de Tarefas usa hoje>;   // NÃO mudar a cor
+  color: <token de texto sobre primary>;
+  border-radius: 16px;                 // antes: oval/pill. Agora cantos arredondados como no mock
+  padding: 8px 8px 8px 16px;
+  box-shadow: <a sombra de elevação de overlay do UI-Kit, a mesma de hoje se já tiver>;
+}
+.barra-selecao-qtd {                   // contador no início, como no mock
+  font: 700 14px var(--font-head);
+  white-space: nowrap;
+  margin-right: 8px;
+}
+.barra-selecao button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: 600 13px var(--font-body);
+  padding: 8px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s;
+}
+.barra-selecao button:hover:not(:disabled) { background: <token: branco a 12% sobre o roxo, ex.: --batch-bar-hover-bg; se não existir, criar com valor no claro e no escuro> }
+.barra-selecao button:focus-visible { outline: 2px solid <token texto sobre primary>; outline-offset: 2px; }
+.barra-selecao button:disabled { opacity: .4; cursor: not-allowed; }
+.barra-selecao .is-perigo { color: <token negative-lightest (texto vermelho claro sobre roxo)> }
+.barra-selecao .is-sucesso { color: <token positive-lightest> }
+.barra-selecao-limpar { width: 36px; height: 36px; padding: 0; border-radius: 8px; margin-left: 4px; }   // X de fechar no fim, como no mock
+// modo 'icone' (Tarefas): botões só com ícone, 36×36, hover igual. As variantes sucesso/perigo podem manter o fundo verde/vermelho que Tarefas usa hoje (usar tokens positive/negative), mas com border-radius 8px em vez de círculo, para combinar com a barra.
+
+Posição:
+- position: fixed; bottom: 24px; centralizada na ÁREA DE CONTEÚDO (não na tela toda quando houver sidebar fixa). Aceitar @Input() deslocamentoDireita (px) ou uma classe do pai para descontar a sidebar. Em Documentos, desconte a largura da sidebar (como no mock).
+- z-index: o token de overlay da escala de z-index (abaixo de modal e menu).
+- Largura: auto (conteúdo); max-width: calc(100% - 32px); overflow-x auto se faltar espaço no tablet.
+- Modos claro e escuro com tokens. Nada de hex.
+
+========================================================================
+ETAPA C — TAREFAS USANDO O GENÉRICO (sem perder nada)
+========================================================================
+- Substitua a barra atual de Tarefas pelo app-barra-selecao, com modo 'icone', rotulos 'selecionada'/'selecionadas' e as MESMAS ações, ícones, ordem, cores e handlers de hoje (desmarcar todos, filtrar, cancelar, atribuir responsável, concluir, excluir).
+- Mudanças visuais aceitas em Tarefas: SÓ o formato (oval → cantos 16px; botões redondos → 8px) e o hover novo. A cor roxa continua.
+- Remova o componente antigo de Tarefas SÓ depois que nada mais o referenciar (grep). Se outro lugar usar, migre também e informe.
+- Revise no código: todos os handlers ligados, a seleção limpa ao clicar no X, permissões/condições que escondiam botões continuam valendo (passar desabilitado ou filtrar o array de ações no pai).
+
+========================================================================
+ETAPA D — DOCUMENTOS USANDO O GENÉRICO
+========================================================================
+Quando houver seleção (checkbox no grid, seleção múltipla na lista), mostrar a barra no modo 'icone-texto', rótulos 'selecionado'/'selecionados', com as ações na ordem do mock:
+1. Unir PDFs (icone merge): habilitada só com 2+ itens e todos PDF/imagem; motivo: "Disponível para 2 ou mais PDFs/imagens"
+2. Comprimir (compress): só PDF/imagem; motivo: "Disponível para PDFs/imagens"
+3. Mover (move)
+4. Classificar (tag): só arquivos; motivo: "Disponível só para arquivos". Enquanto Classificação não estiver implementada: desabilitado com motivo "Em breve".
+5. Baixar (download)
+6. Excluir (trash, variante perigo)
++ X para limpar a seleção.
+Na Lixeira: só "Restaurar" (restore) e "Excluir definitivamente" (trash, perigo).
+- Cada ação chama o fluxo que JÁ existe no módulo (dialogs de unir/comprimir com jobs no servidor, mover, baixar, excluir). Não reimplementar.
+- As regras de habilitação (tipos permitidos, permissões) vêm do back se o módulo já tiver esse dado. Se forem apenas checagens de extensão para habilitar o botão, ficam no componente da página, não na barra.
+- Celular: a barra NÃO aparece (mesma regra de A4).
+- A barra não pode cobrir o "Carregar mais" nem o último card: quando ela estiver visível, adicionar padding-bottom igual à altura da barra + 24px no contêiner rolável (grid/lista).
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Existe um único componente de barra em shared (na pasta do app-menu-acoes), sem lógica de Tarefas ou Documentos.
+2. Tarefas: as mesmas ações e comportamentos de antes, a cor roxa mantida, o formato com cantos 16px e o hover novo. Nada quebrado.
+3. Documentos: a barra aparece ao selecionar, com contador "N selecionado(s)", ações com ícone e texto, hover suave, Excluir em vermelho claro e X no fim, como no mock (mas roxa).
+4. Desabilitados com tooltip de motivo.
+5. Aparece em desktop e tablet, e não aparece no celular.
+6. Modos claro e escuro com tokens. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+- Respostas de A1 a A5.
+- Diff: componente shared, Tarefas e Documentos.
+- Verificação: tsc ✅/❌ | build ✅/❌ | ciclos: N
+
+PENDÊNCIAS DO PLANO
+- Classificação (filtro, cadastro e ação "Classificar" da barra)
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
