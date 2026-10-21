@@ -1,0 +1,95 @@
+[Área: Frontend (layout global admin + Documentos) | Skills: UI-Kit]
+
+TAREFA
+4 ajustes. Os prints de referência estão no portal, aba "Prints":
+- "Captura de tela 2026-10-21 103630.png" = PRODUÇÃO (branch develop);
+- "Captura de tela 2026-10-21 103645.png" = nossa branch atual;
+- "Captura de tela 2026-10-21 104130.png" = filtros de TAREFAS (o padrão a copiar).
+NÃO crie testes. Faça a verificação estática (tsc + build).
+
+========================================================================
+AJUSTE 1 — RESTAURAR O ESPAÇAMENTO ORIGINAL ENTRE O HEADER E O CONTEÚDO (TODAS AS PÁGINAS)
+========================================================================
+No rebase, o espaço entre o header global (título da página, busca, criação rápida, notificações, usuário) e o conteúdo ficou MUITO maior, em todas as páginas do admin. Medindo nos prints (1656px de largura):
+- produção: base do header ≈ 72px → topo do conteúdo ≈ 107px (≈ 35px de respiro);
+- nossa branch: base do header ≈ 69px → topo do conteúdo ≈ 146px (≈ 77px de respiro).
+Restaurar o valor de PRODUÇÃO.
+
+Como fazer (worktree, sem mexer na sua branch para comparar):
+1. git fetch origin
+2. git worktree add ../web-proadv-develop origin/develop
+   (só leitura, para comparar. Não commitar nada nela.)
+3. Na worktree de develop, ache o que define o espaço entre o header e o conteúdo: layout do admin (ex.: admin.component / layout / shell), container de página (ex.: .page-content, .main-content, .container-fluid), padding-top/margin-top, tokens/variáveis ($page-padding, --page-gap, --header-height) e o próprio header (altura, margin-bottom).
+4. Faça o diff do MESMO arquivo entre develop e a nossa branch: git diff origin/develop -- <arquivos de layout/header/tokens>. Liste exatamente o que o rebase mudou (valor antigo → valor novo).
+5. Restaure na nossa branch os valores de develop. A mudança é GLOBAL (layout do admin), então vale para todas as páginas, como em produção. Não crie exceção só para Documentos.
+6. Se a mudança do rebase veio de um commit de produção que ALGUÉM fez de propósito (está em develop também), NÃO reverta: informe e pare. O alvo é ficar IGUAL a develop.
+7. Remova também, no módulo Documentos, qualquer espaço extra que tenhamos colocado para "compensar" (padding-top/margin-top do layout do módulo). O módulo usa o container padrão e mais nada.
+8. Ao final: git worktree remove ../web-proadv-develop
+Resultado: o topo do conteúdo de Documentos fica a ≈35px do header, igual a produção e às outras páginas. O layout do módulo (conteúdo + sidebar na altura da tela) ganha esse espaço: os cartões ficam mais altos, mantendo proporções e sem rolar a página.
+
+========================================================================
+AJUSTE 2 — ÍCONE ⋮ (OPÇÕES DO ARQUIVO) ACHATADO
+========================================================================
+No grid e na lista, os três pontos aparecem achatados ou distorcidos.
+A1. Qual ícone e componente é usado (e-icon more-vertical? mat-icon? SVG inline)? Inspecione: o <svg> tem width e height diferentes? viewBox ausente ou errado? preserveAspectRatio="none"? A fonte de ícone tem line-height/height cortando? CSS global (ex.: svg { height: 1em }) ou height fixo sem width?
+Correção:
+- Ícone quadrado de 16×16: width e height iguais, viewBox correto ("0 0 24 24" no padrão do e-icon), sem preserveAspectRatio="none".
+- Botão: btn btn-icon btn-sm 28×28; display inline-flex, align-items center, justify-content center, padding 0, line-height 0; svg/e-icon com display block e flex-shrink 0.
+- Use o mesmo ícone more-vertical do app-menu-acoes de Tarefas e Clientes (o mesmo visual).
+- Confira em grid, lista (Finder) e drawer.
+
+========================================================================
+AJUSTE 3 — CORES DO GRÁFICO DE ARMAZENAMENTO = CORES DA LEGENDA
+========================================================================
+A barra está em azul e preto alternados, mas a legenda abaixo tem outras cores (Meus documentos roxo, Tarefas azul-claro, Outros laranja, Pré-processos azul, Processos roxo escuro, Clientes laranja, Financeiro verde, Fornecedores lilás). Cada segmento tem que ter EXATAMENTE a cor do quadradinho da sua legenda, em "Por categoria" e em "Por tipo".
+A2. De onde vêm as cores da legenda (classe chart-color-N, campo cor vindo do back, mapa por categoria)? De onde vêm as cores da barra (array fixo no ECharts, tema padrão do ECharts, índice errado)?
+Correção:
+- Uma ÚNICA fonte de cor por item: o mesmo valor (token chart-color-N ou a cor da categoria) alimenta o segmento e o quadradinho da legenda.
+- No ECharts, cada série recebe itemStyle.color com a cor do item, lida do token via getComputedStyle (o ECharts não entende var(--x)). Nada de paleta padrão do ECharts e nada de cor por índice que possa divergir da ordem da legenda.
+- Mantenha o degradê vertical (cor → cor ~80%), a borda de separação no token do fundo do bloco, os cantos e o hover já ajustados.
+- A ordem dos segmentos = ordem da legenda (maior → menor).
+- Ao trocar "Por categoria" / "Por tipo" e ao trocar o tema claro/escuro, as cores são relidas.
+
+========================================================================
+AJUSTE 4 — FILTROS IGUAIS AOS DE TAREFAS (CAMPOS FECHADOS, UMA LINHA)
+========================================================================
+Print de Tarefas: TODOS os filtros são o mesmo tipo de campo, um input FECHADO com borda (outline) e rótulo flutuante na borda (Status, Lista de Tarefas, Período, Usuários, Andamento), com a mesma altura e alinhados numa linha só. O "Período" é UM campo só com o intervalo dentro ("01/10/2026 - 31/10/2026") e um X para limpar.
+Problemas em Documentos (print 103645):
+- "Tipo" e "Em breve" estão vazados (sem borda, só sublinhado ou texto solto);
+- "Data" virou dois campos separados (De / Até) com rótulo em cima;
+- os campos estão desalinhados (Tipo numa altura, Autor em outra, Em breve mais abaixo, Data mais abaixo ainda);
+- o prefixo "Filtros" fica na mesma linha, empurrando o Tipo.
+
+A3. Em Tarefas, qual é o componente/aparência de cada campo (mat-form-field appearance="outline"? classe do UI-Kit? app-select? app-date-range-picker?). Informe o seletor do campo Período (range).
+Correção (copiar o padrão de Tarefas):
+- Tipo: o mesmo campo de seleção de Tarefas (outline, rótulo "Tipo", placeholder "Todos"), múltipla escolha como Status.
+- Autor: já está quase no padrão. Garanta a mesma aparência e altura (rótulo "Autor", placeholder "Selecione...").
+- Classificação: o mesmo campo de seleção, rótulo "Classificação", desabilitado, placeholder "Em breve" (fechado, com borda, aparência de disabled do UI-Kit).
+- Data: o MESMO componente de "Período" de Tarefas, um campo só com rótulo "Data", o intervalo "dd/MM/yyyy - dd/MM/yyyy" dentro e um X para limpar. Envia dataInicio/dataFim como no prompt de filtros.
+- Remova o rótulo solto "Filtros" com ícone. Se quiser manter a indicação, use o mesmo padrão de Tarefas (que não tem).
+- Layout: uma linha (display flex ou grid, align-items flex-end/center, gap igual ao de Tarefas). Todos os campos com a mesma altura e o mesmo subscriptSizing/densidade de Tarefas, para não criar espaço de hint embaixo e desalinhar.
+- Larguras proporcionais como em Tarefas (Tipo, Autor, Classificação e Data dividem a linha). Em telas menores: quebra para a linha de baixo mantendo os campos inteiros, nunca desalinhados na mesma linha.
+- A linha de filtros fica no cartão da toolbar, abaixo de Lista/Grade/Tarefas, com o mesmo espaçamento interno de Tarefas.
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. O espaço entre o header e o conteúdo é igual ao de develop/produção em TODAS as páginas (≈35px na referência), e o módulo Documentos aproveita o espaço ganho.
+2. ⋮ com os três pontos redondos, centralizados e sem distorção (grid, lista e drawer).
+3. Cada segmento do gráfico tem a mesma cor da sua legenda, nos dois agrupamentos e nos dois temas.
+4. Filtros: todos fechados (outline), mesma altura, numa linha, Data como um campo de período só, Classificação desabilitada com "Em breve". Visual idêntico ao de Tarefas.
+5. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+- Ajuste 1: os arquivos e valores (develop → branch antes → branch depois).
+- Respostas de A1, A2 e A3.
+- Diff.
+- Verificação: tsc ✅/❌ | build ✅/❌ | ciclos: N
+
+PENDÊNCIAS DO PLANO
+- Classificação (filtro, cadastro, ação da barra)
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
