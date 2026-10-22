@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T16:00:00-03:00",
+  "atualizado": "2026-10-22T16:50:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -11,12 +11,12 @@
       "principal": true
     },
     {
-      "id": "prompt-chat-correcoes-review",
+      "id": "prompt-clientes-contatos",
       "tipo": "prompt",
-      "projeto": "elaw adv · Chat (Clientes + Portal)",
-      "titulo": "Prompt — Chat: correções do code-review (adicional, índice, badge, notas internas, leitura, padrões)",
-      "data": "2026-10-22T16:00:00-03:00",
-      "arquivo": "prompts/chat-correcoes-code-review.txt"
+      "projeto": "elaw adv · Clientes",
+      "titulo": "Prompt — Contatos do cliente: vários de uma vez com Salvar, remover por contato, WhatsApp e Próprio (bloco e modal)",
+      "data": "2026-10-22T16:50:00-03:00",
+      "arquivo": "prompts/clientes-contatos-multiplos-whatsapp-proprio.txt"
     }
   ]
 }
