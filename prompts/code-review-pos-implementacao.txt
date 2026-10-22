@@ -1,0 +1,28 @@
+[Área: Revisão de código (sem alterar código) | Skills: code-review]
+
+Use a skill code-review (pasta `code-review` dentro de C:\Users\jeziel.santos\.agents\skills\).
+Rode numa sessão NOVA (não a mesma que implementou). Se o ambiente permitir subagentes, rode cada eixo num subagente separado, em paralelo.
+
+Ponto fixo: <commit/branch de antes da implementação — ex.: develop ou o hash do último commit antes de começar>
+Diff: git diff <ponto fixo>...HEAD  (e git log <ponto fixo>..HEAD --oneline)
+Spec: o prompt colado abaixo (é a fonte do eixo Spec; NÃO procure issue tracker).
+Padrões: AGENTS.md + regras do Obsidian (_INDEX.md do front e do back e as notas que ele apontar) + seção 3.0 (código legível) do AGENTS.md.
+
+REGRAS
+- NÃO altere código: só o relatório.
+- Não crie nem rode testes ou lint. Build/tsc só se precisar confirmar um achado.
+- Confirme antes que o ponto fixo existe (git rev-parse) e que o diff não está vazio.
+
+ENTREGA
+## Spec
+(a) pedido e não implementado / parcial; (b) feito sem ter sido pedido (escopo extra); (c) parece feito, mas está errado.
+Cada achado com arquivo/trecho e a linha do pedido citada.
+
+## Padrões
+(a) violações das regras do projeto (cite a regra e o arquivo da regra); (b) cheiros de código como alerta (nome misterioso, duplicação, Feature Envy, Data Clumps, obsessão por primitivo, switch repetido, Shotgun Surgery, generalidade especulativa, cadeia de mensagens, Middle Man). A regra do projeto sempre vence o cheiro.
+
+## Resumo
+Total de achados por eixo e o pior problema DE CADA eixo (não misture os eixos).
+
+---- PROMPT USADO NA IMPLEMENTAÇÃO ----
+<cole aqui>

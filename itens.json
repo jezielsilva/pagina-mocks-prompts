@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T15:40:00-03:00",
+  "atualizado": "2026-10-22T15:35:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -17,6 +17,14 @@
       "titulo": "AGENTS.md v2 — Diretiva de Execução com skills do Matt Pocock (alinhar, glossário, design, revisão em 2 eixos)",
       "data": "2026-10-22T15:40:00-03:00",
       "arquivo": "prompts/AGENTS-v2-elawadv.md.txt"
+    },
+    {
+      "id": "prompt-code-review",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Revisão pós-implementação (code-review em 2 eixos)",
+      "data": "2026-10-22T15:35:00-03:00",
+      "arquivo": "prompts/code-review-pos-implementacao.txt"
     }
   ]
 }
