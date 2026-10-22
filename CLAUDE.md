@@ -1,7 +1,11 @@
 # Portal de transferência — regras para o Claude
 
-- Prints: a CADA prompt publicado, apagar as imagens de `prints/` no mesmo commit (manter só `prints/LEIA-ME.txt`). Ler os prints ANTES de apagar.
-- NÃO apagar itens automaticamente (exceto os prints, regra acima): o usuário exclui pelo ícone 🗑 da página.
+- A CADA publicação (prompt novo e/ou mock), no mesmo commit:
+  - apagar as imagens de `prints/` (manter só `prints/LEIA-ME.txt`), depois de lê-las;
+  - apagar os prompts anteriores (arquivos em `prompts/` + entradas no `itens.json`), deixando SÓ o(s) prompt(s) gerado(s) agora;
+  - manter só o mock PRINCIPAL (`"principal": true` no `itens.json`). O mock publicado/atualizado agora passa a ser o principal; os outros mocks (de outros projetos) são apagados (arquivo + entrada).
+- "Tornar principal": a página abre uma Issue "Tornar principal: <id>". Ao ler essa Issue: marcar esse mock como principal, apagar os outros mocks, fechar a Issue e avisar no chat. Os mocks ficam guardados no histórico do git e na pasta de trabalho do Claude (podem ser republicados).
+- Fora as regras acima, NÃO apagar itens automaticamente: o usuário exclui pelo ícone 🗑 da página.
   - Artefato: um arquivo por projeto, sempre sobrescrito (ex.: `artefatos/documentos-mock.html`), com a data atualizada no `itens.json`.
   - Prompt: cada prompt novo é um arquivo novo em `prompts/` + entrada no `itens.json`.
   - Antes de editar `itens.json`, dar `git pull` (a página também altera esse arquivo ao excluir).
