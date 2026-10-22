@@ -38,41 +38,65 @@ Objetivo: o painel se adapta à altura da tela e NÃO precisa de scroll em 768px
 - A área do meio (miniatura + nome + badge + tabela) só rola se a tela for menor que 768px de altura. Nesse caso, scrollbar fina.
 
 ========================================================================
-4. MINIATURAS: SEM ENDPOINT DE MINIATURA (resolve o 404)
+4. MINIATURA PADRÃO DE IMAGEM (LISTA E GRADE) — sem endpoint de miniatura (resolve o 404)
 ========================================================================
-Decisão: NÃO gerar nem armazenar miniaturas (nada no Mongo, nada novo no S3, nada em memória no servidor). Remover a chamada de miniatura que hoje dá 404.
+Decisão: NÃO gerar, armazenar nem baixar miniaturas. Todo arquivo de IMAGEM (png, jpg, jpeg, gif, webp, bmp, svg, heic) mostra a ILUSTRAÇÃO PADRÃO abaixo, com uma versão para o tema claro e outra para o escuro. A imagem real só aparece quando o usuário clica em "Abrir" (URL temporária do S3, como já é hoje).
 
-4.1 GRADE: prévia padrão por tipo, sem baixar nada
-- Nenhum card da grade baixa o arquivo nem chama endpoint de miniatura.
-- A área da miniatura mostra uma "folha" padrão (aspect-ratio 210/297, fundo do token de superfície, borda do token de borda, raio 3px), com:
-  - ícone do tipo no centro (e-icon 28px): imagem, pdf, documento, planilha, apresentação, texto, compactado, outro;
-  - etiqueta da extensão no canto superior direito (PNG, JPG, PDF, DOCX, XLSX, PPTX, TXT…), 10px bold, fundo no token da categoria do tipo;
-  - cor de destaque por tipo via tokens de tema (ex.: pdf → negative, planilha → positive, documento → info, imagem → primary, outros → slate), fundo suave (-lightest) + ícone na cor. Sem hex. Tokens que faltarem: criar no tema com valor claro e escuro.
-- Pastas continuam com o ícone de pasta.
-- Remover do front o serviço/método de miniatura e qualquer *ngIf/estado de "carregando miniatura" da grade.
+4.1 ASSETS (estão no portal, itens "Miniatura de imagem — tema claro/escuro"; copie o SVG exato)
+- src/assets/images/documentos/miniatura-imagem-claro.svg
+- src/assets/images/documentos/miniatura-imagem-escuro.svg
+(Se o projeto tiver outra pasta padrão de assets/ilustrações, use a pasta padrão e informe.)
 
-4.2 PRÉVIA (painel do modo lista e drawer): imagem REAL só para imagens, um arquivo por vez
-- Ao selecionar UM arquivo cujo tipo é imagem (jpg, jpeg, png, gif, webp, bmp, svg): pedir ao back a MESMA URL temporária (pré-assinada do S3) que o botão "Abrir" já usa e exibir com <img [src]="url" decoding="async" alt="">, dentro da caixa da prévia com tamanho fixo (a miniatura definida no item 3), object-fit: contain, fundo do token de superfície. A imagem vem direto do S3 para o navegador, sem passar pelo servidor.
-  - Enquanto carrega: skeleton do UI-Kit no lugar.
-  - (error) no <img>: mostrar a folha padrão do tipo (4.1) e não tentar de novo.
-  - Trocar de arquivo antes de carregar: cancelar (trocar o src) sem empilhar requisições. Usar switchMap para a chamada da URL.
-- Para tipos que NÃO são imagem (pdf, docx, xlsx, txt…): a prévia mostra a folha padrão do tipo (4.1). Não baixa nada.
-- Reaproveitar o endpoint EXISTENTE que gera a URL temporária do "Abrir". Não criar endpoint novo. Se o endpoint do "Abrir" retorna a URL com Content-Disposition attachment (força download), verificar se ele aceita um parâmetro para inline. Se não aceitar, adicionar parâmetro opcional inline=true na MESMA action (retrocompatível), gerando a URL com ResponseContentDisposition "inline" e o ResponseContentType correto. Sem mudar o comportamento atual do "Abrir".
-- A URL expira (ex.: 5–15 min, o mesmo do "Abrir"). Não guardar em cache além do arquivo selecionado.
+SVG tema claro:
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Imagem">
+  <rect width="210" height="297" rx="6" fill="#F6F0FA"/>
+  <rect x="45" y="92" width="120" height="90" rx="10" fill="none" stroke="#70398C" stroke-width="2"/>
+  <clipPath id="f"><rect x="46" y="93" width="118" height="88" rx="9"/></clipPath>
+  <g clip-path="url(#f)">
+    <circle cx="139" cy="117" r="9" fill="#B48AD0" opacity=".7"/>
+    <path d="M58 182 L100 132 Q105 126 110 132 L150 182Z" fill="#B48AD0" opacity=".5"/>
+    <path d="M38 182 L78 140 Q84 134 90 140 L132 182Z" fill="#B48AD0"/>
+  </g>
+  <rect x="70" y="204" width="70" height="6" rx="3" fill="#70398C" opacity=".35"/>
+  <rect x="82" y="218" width="46" height="6" rx="3" fill="#70398C" opacity=".35"/>
+</svg>
 
-4.3 BACK
-- Remover a action/rota de miniatura que dá 404 (e serviço/DI sem uso), se existir só para isso. Se outra tela usar, informe e mantenha.
+SVG tema escuro:
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Imagem">
+  <rect width="210" height="297" rx="6" fill="#221B2B"/>
+  <rect x="45" y="92" width="120" height="90" rx="10" fill="none" stroke="#B48AD0" stroke-width="2"/>
+  <clipPath id="f"><rect x="46" y="93" width="118" height="88" rx="9"/></clipPath>
+  <g clip-path="url(#f)">
+    <circle cx="139" cy="117" r="9" fill="#8E5BB0" opacity=".7"/>
+    <path d="M58 182 L100 132 Q105 126 110 132 L150 182Z" fill="#8E5BB0" opacity=".5"/>
+    <path d="M38 182 L78 140 Q84 134 90 140 L132 182Z" fill="#8E5BB0"/>
+  </g>
+  <rect x="70" y="204" width="70" height="6" rx="3" fill="#B48AD0" opacity=".35"/>
+  <rect x="82" y="218" width="46" height="6" rx="3" fill="#B48AD0" opacity=".35"/>
+</svg>
+
+4.2 COMPONENTE
+- Crie um componente pequeno e standalone, app-miniatura-imagem, na pasta de componentes do módulo Documentos. Se houver componente de "folha por tipo", use-o nele como o caso "imagem".
+- Ele exibe <img [src]="srcPorTema" alt="" aria-hidden="true" class="miniatura-imagem"> + a etiqueta da extensão (PNG, JPG…) no canto superior direito, que já existe.
+- srcPorTema: claro ou escuro conforme o tema ATIVO do sistema. Use o mesmo serviço/sinal de tema que o resto do app usa (ThemeService, classe no body etc.) e reaja à troca de tema sem recarregar. Não use prefers-color-scheme se o sistema tiver tema próprio.
+- CSS: width 100%; height 100%; object-fit contain; display block. Mesmas dimensões e raio da "folha" dos outros tipos (aspect-ratio 210/297).
+
+4.3 ONDE USAR
+- GRADE: área da miniatura do card de todo arquivo de imagem → app-miniatura-imagem. Nenhum download.
+- LISTA (painel de prévia) e DRAWER: no lugar da miniatura do arquivo de imagem → app-miniatura-imagem, no mesmo tamanho definido no item 3. Nenhum download.
+- Os outros tipos (pdf, docx, xlsx, txt…) continuam com a folha padrão do tipo, com ícone e etiqueta coloridos.
+- REMOVER do front toda chamada de miniatura (service, método, estados de loading/erro de miniatura) e do back a action/rota de miniatura que dá 404, com serviço e DI sem uso. Se outra tela usar a rota, informe e mantenha.
 - Nenhuma gravação nova no Mongo ou no S3.
 
 CRITÉRIOS DE ACEITE
 1. Logs: sem barras entre os itens, 10 itens visíveis sem scroll em 768px+, paginação fixa embaixo.
 2. ⋮ da grade idêntico ao da lista, centralizado.
 3. Prévia da lista sem scroll em 768px+ de altura, com "Local" visível e "Abrir" fixo.
-4. Sem 404 de miniatura. Grade com folha padrão por tipo (zero download). Prévia mostra a imagem real só para imagens (URL temporária do S3, um arquivo por vez); outros tipos mostram a folha padrão.
+4. Sem 404 de miniatura. Arquivos de imagem mostram a ilustração padrão (claro/escuro conforme o tema) na grade, na prévia da lista e no drawer, sem nenhum download. Os outros tipos mostram a folha padrão.
 5. Sem hex, sem !important, sem style inline.
 
 ENTREGA
-- A1, a rota do "Abrir" reaproveitada e o que foi removido da miniatura.
+- A1, onde os assets e o componente ficaram e o que foi removido da miniatura.
 - Diff do front e do back.
 - Verificação: tsc ✅/❌ | build ✅/❌ | dotnet build ✅/❌ | ciclos: N
 

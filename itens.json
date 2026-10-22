@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T10:50:00-03:00",
+  "atualizado": "2026-10-22T11:00:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -11,12 +11,30 @@
       "principal": true
     },
     {
-      "id": "prompt-logs-kebab-previa-imagem",
+      "id": "asset-miniatura-imagem-claro",
+      "tipo": "artefato",
+      "asset": true,
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Miniatura de imagem — tema claro (SVG)",
+      "data": "2026-10-22T11:00:00-03:00",
+      "arquivo": "assets/miniatura-imagem-claro.svg"
+    },
+    {
+      "id": "asset-miniatura-imagem-escuro",
+      "tipo": "artefato",
+      "asset": true,
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Miniatura de imagem — tema escuro (SVG)",
+      "data": "2026-10-22T11:00:00-03:00",
+      "arquivo": "assets/miniatura-imagem-escuro.svg"
+    },
+    {
+      "id": "prompt-logs-kebab-previa-miniatura-padrao",
       "tipo": "prompt",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Logs sem barras (10 itens), ⋮ da grade, prévia sem scroll e imagem real só na prévia (sem miniatura)",
-      "data": "2026-10-22T10:40:00-03:00",
-      "arquivo": "prompts/logs-kebab-previa-imagem-sem-miniatura.txt"
+      "titulo": "Prompt — Logs (10 itens), ⋮ da grade, prévia sem scroll e miniatura padrão de imagem (claro/escuro)",
+      "data": "2026-10-22T11:00:00-03:00",
+      "arquivo": "prompts/logs-kebab-previa-miniatura-padrao.txt"
     }
   ]
 }

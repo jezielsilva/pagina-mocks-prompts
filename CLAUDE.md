@@ -4,6 +4,7 @@
   - apagar as imagens de `prints/` (manter só `prints/LEIA-ME.txt`), depois de lê-las;
   - apagar os prompts anteriores (arquivos em `prompts/` + entradas no `itens.json`), deixando SÓ o(s) prompt(s) gerado(s) agora;
   - manter só o mock PRINCIPAL (`"principal": true` no `itens.json`). O mock publicado/atualizado agora passa a ser o principal; os outros mocks (de outros projetos) são apagados (arquivo + entrada).
+- Assets (imagens/SVG para o sistema) são publicados em `assets/` como artefato com `"asset": true`; não contam como mock e são apagados junto com os prompts na publicação seguinte.
 - "Tornar principal": a página abre uma Issue "Tornar principal: <id>". Ao ler essa Issue: marcar esse mock como principal, apagar os outros mocks, fechar a Issue e avisar no chat. Os mocks ficam guardados no histórico do git e na pasta de trabalho do Claude (podem ser republicados).
 - Fora as regras acima, NÃO apagar itens automaticamente: o usuário exclui pelo ícone 🗑 da página.
   - Artefato: um arquivo por projeto, sempre sobrescrito (ex.: `artefatos/documentos-mock.html`), com a data atualizada no `itens.json`.
