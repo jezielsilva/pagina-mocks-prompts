@@ -88,12 +88,55 @@ SVG tema escuro:
 - REMOVER do front toda chamada de miniatura (service, método, estados de loading/erro de miniatura) e do back a action/rota de miniatura que dá 404, com serviço e DI sem uso. Se outra tela usar a rota, informe e mantenha.
 - Nenhuma gravação nova no Mongo ou no S3.
 
+========================================================================
+5. MODO ESCURO: ITEM SELECIONADO (LISTA E GRADE)
+========================================================================
+No escuro, o item selecionado/ativo usa fundo roxo cheio, o que fica pesado e prejudica a leitura.
+Correção (só no tema escuro; o claro continua como está):
+- Linha do Finder e card da grade selecionados: fundo = o mesmo do item normal (ou o token de hover de superfície, bem sutil), BORDA de 1.5px no token primary (roxo claro do tema escuro, ex.: primary-lighten) e texto/ícone no token de texto principal (branco).
+- Hover (não selecionado): fundo com o token de hover de superfície do tema escuro. Hoje não há feedback.
+- Foco por teclado: outline 2px no token primary com offset 2px.
+- Use tokens de estado (selecionado/hover/foco) do tema. Se faltarem, criar com valor no claro E no escuro.
+
+========================================================================
+6. BOTÃO "NOVA PASTA" NO CABEÇALHO DA COLUNA (lista/Finder)
+========================================================================
+Hoje, no escuro: quando a coluna não está ativa, o botão aparece branco/apagado e o tracejado roxo quase não aparece; quando ativo, fica roxo com texto/ícone escuro (sem leitura); e não há hover.
+Correção (nos dois temas, com mais atenção ao escuro):
+- Estado normal: botão de ícone 28×28, borda tracejada de 1.5px (antes ~1px) no token primary com contraste mínimo de 3:1 sobre o fundo da coluna, ícone no token primary.
+- Hover: fundo primary-lightest (claro) / superfície de hover (escuro), borda sólida primary, ícone primary.
+- Ativo/selecionado (fundo roxo): ícone e texto no token "texto sobre primary" (branco). Nunca escuro sobre roxo.
+- Foco: outline padrão de foco.
+- Disabled (áreas automáticas): opacity .4, sem hover.
+
+========================================================================
+7. PRÉVIA: RESPIRO ENTRE A MINIATURA E O TÍTULO
+========================================================================
+No painel de prévia (lista) e no drawer: margin-top de 12px entre a miniatura e o nome do arquivo (hoje encostados). O resto do espaçamento do item 3 continua.
+
+========================================================================
+8. CHECKBOX DA GRADE: SEMPRE VISÍVEL E REDONDO
+========================================================================
+Hoje ele só aparece no hover e, no escuro, é um quadrado escuro quase invisível com brilho roxo.
+Correção:
+- Sempre visível em todos os cards (sem depender de hover), posição atual (canto superior esquerdo da área da miniatura).
+- Redondo: 20×20, border-radius 50%.
+- Não marcado: fundo do token de superfície do card, borda 1.5px no token de borda forte (contraste mínimo de 3:1 nos dois temas).
+- Marcado: fundo primary, check branco (token "texto sobre primary").
+- Hover: borda primary. Foco: outline padrão. Sem glow/box-shadow roxo.
+- Use o checkbox do UI-Kit com a variante redonda, se existir. Se não existir, estilize o form-check-input só no escopo do card, com tokens.
+- Celular: mantém a regra atual (aparece no modo de seleção).
+
 CRITÉRIOS DE ACEITE
 1. Logs: sem barras entre os itens, 10 itens visíveis sem scroll em 768px+, paginação fixa embaixo.
 2. ⋮ da grade idêntico ao da lista, centralizado.
 3. Prévia da lista sem scroll em 768px+ de altura, com "Local" visível e "Abrir" fixo.
 4. Sem 404 de miniatura. Arquivos de imagem mostram a ilustração padrão (claro/escuro conforme o tema) na grade, na prévia da lista e no drawer, sem nenhum download. Os outros tipos mostram a folha padrão.
 5. Sem hex, sem !important, sem style inline.
+
+5. Modo escuro: selecionado = borda roxa + texto branco; hover visível; botão Nova pasta legível em todos os estados.
+6. Respiro de 12px entre a miniatura e o título na prévia.
+7. Checkbox da grade sempre visível, redondo, legível no claro e no escuro.
 
 ENTREGA
 - A1, onde os assets e o componente ficaram e o que foi removido da miniatura.
