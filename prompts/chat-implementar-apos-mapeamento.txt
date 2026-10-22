@@ -21,7 +21,11 @@ DECISÕES (implementar exatamente assim)
 2) CONVERSA RASCUNHO (clique em "Chat" na linha do cliente)
 Back (ConversasInternasController + ConversaBusiness):
 - GET /api/internal/conversas/direta?clienteId={id}
-  Retorna a conversa ATIVA (não arquivada) mais recente em que o usuário logado (titular ou adicional, conforme a regra de visibilidade que já existe) e o cliente são participantes. Se não houver: 204 No Content. Só leitura, nada é gravado.
+  Retorna a conversa ATIVA (não arquivada) mais recente em que o USUÁRIO LOGADO é participante DIRETO junto com o cliente (titular OU adicional, cada um com as suas). Se não houver: 204 No Content. Só leitura, nada é gravado.
+  REGRA TITULAR × ADICIONAL (já existe, manter):
+  - Conversa do ADICIONAL com o cliente: o titular pode VER e LER, mas ela NÃO conta nas não lidas do titular (nem sidebar, nem card, nem drawer). As não lidas contam só para os participantes diretos.
+  - Titular clica em "Chat" no cliente: se existir conversa em que ELE é participante direto com esse cliente, abre essa. Se só existir conversa do adicional, NÃO abre a do adicional: inicia rascunho novo do titular. O mesmo vale ao contrário para o adicional.
+  - Por isso a chaveDireta é por usuário: {tenantId}:{usuarioId}:{clienteId}.
 - POST /api/internal/conversas/direta/mensagens
   body: { clienteId, texto, anexos?, clientMessageId }
   Fluxo em ConversaBusiness:
@@ -37,6 +41,12 @@ Front admin (ConversasComponent no drawer filtrado por cliente):
 - Abrir: chama o GET /direta. Com conversa → abre normal. Com 204 → MODO RASCUNHO: mesmo layout de conversa (cabeçalho do cliente, participantes = cliente + usuário logado), lista vazia com "Envie uma mensagem para iniciar a conversa com {Cliente}", composer e anexos habilitados. Sem id, sem marcar lida, sem entrar em nada.
 - Fechar sem enviar → descarta. Nenhuma chamada.
 - Enviar a 1ª: POST /direta/mensagens com clientMessageId (GUID) gerado no front; mensagem otimista "enviando"; no retorno, troca o estado para a conversa real (id) e segue o fluxo normal. Erro → "falhou · tentar de novo", reenviando com o MESMO clientMessageId.
+- ANEXO NA 1ª MENSAGEM (rascunho sem conversa): o usuário pode selecionar anexos no rascunho (ficam só no front). No clique de ENVIAR:
+    1) chama POST /direta/mensagens com o texto (ou sem texto, se for só anexo; nesse caso o back cria a conversa e NÃO grava mensagem vazia: use um parâmetro somenteCriar=true ou equivalente e retorne { conversa });
+    2) com o conversaId retornado, segue o fluxo de upload de anexos que JÁ existe (mesmo endpoint, mesmo progresso via `uploadProgresso`), sem alterar a lógica do upload;
+    3) se o texto e os anexos foram enviados juntos, a ordem é: cria conversa + mensagem de texto → envia os anexos na mesma conversa, como no fluxo atual com conversa existente.
+  - Nada é criado ao SELECIONAR o arquivo, só ao ENVIAR. Cancelar/fechar o rascunho com anexos selecionados → descarta tudo, sem chamada.
+  - Falha no upload após a conversa criada: a conversa fica (sem mensagem, se era só anexo) e o anexo mostra "falhou · tentar de novo", reenviando para o MESMO conversaId.
 - Remover desse fluxo qualquer chamada a POST /api/internal/conversas (a encontrada em P1).
 - A tela "Conversas" (nova conversa por lá) continua com o fluxo atual. Só informe se ela também cria conversas vazias, sem alterar agora.
 
@@ -53,6 +63,8 @@ Front admin (ConversasComponent no drawer filtrado por cliente):
     - Ao abrir a conversa (admin e portal) e quando chega mensagem com ela aberta e a aba visível: o front zera o contador local NA HORA (otimista) e chama o POST /lida em lote (debounce de 300ms, uma chamada por vez). Pare de chamar o POST por mensagem nesse fluxo (o endpoint antigo continua existindo).
 4.2 Novo evento SignalR `leituraAtualizada` { conversaId, tipoEvento: 'lida' }, emitido após o POST /lida em lote para o grupo do PRÓPRIO participante (sincroniza outras abas e os outros pontos do mesmo usuário). Se o modelo tiver "visto por", emita também para os outros participantes.
 4.3 ConversaRealtimeService: expor `leituraAtualizada$`. O ConversaNotificacaoService (admin) e o cliente-sidebar (portal) reagem a `novaMensagem`, `leituraAtualizada` e `reconectado$` com a MESMA reconciliação HTTP de indicadores (debounce de 150ms já existe; mantenha).
+4.3b CONVERSA DESCONHECIDA NA LISTA: quando chegar `novaMensagem` (ou `leituraAtualizada`) de um conversaId que NÃO está na lista carregada (ex.: o advogado acabou de criar a conversa pelo rascunho e o cliente está com o portal aberto; ou o mesmo usuário está com outra aba aberta), recarregar a LISTA de conversas (GET de listagem, com debounce de 150ms) para a conversa nova aparecer no topo, com o contador. Vale para o drawer do admin e para a lista do portal.
+4.3c MARCAR COMO LIDA SÓ COM A ABA VISÍVEL: só zera/chama o POST /lida se document.visibilityState === 'visible' E a conversa estiver aberta na tela. Com a aba em segundo plano, a mensagem conta como não lida. Ao voltar para a aba (evento visibilitychange) com a conversa aberta, marca como lida. Vale no admin e no portal.
 4.4 FONTE ÚNICA DE CONTADOR no admin: o ConversaNotificacaoService é a fonte para: badge da sidebar (P1), card "Mensagens não lidas" da página Clientes (P2) e contadores do drawer (P3). Verifique o card: se ele busca sozinho ou só uma vez, troque para assinar o ConversaNotificacaoService. Exponha { total, porConversa } por signal/observable e use detecção de mudança correta (OnPush + signal/async pipe; eventos do SignalR rodando dentro da NgZone ou com markForCheck).
     Portal (P4): o mesmo papel fica num serviço do portal (ou no cliente-sidebar, se já centraliza), usado pela lista e pelo contador.
 4.5 Notifier: mantenha a publicação APÓS salvar. Continue não falhando a requisição se o SignalR falhar, mas logue com conversaId e participanteId (nível Warning) para rastrear perdas.
@@ -65,6 +77,10 @@ CRITÉRIOS DE ACEITE
 1. Sidebar recolhida sem badge. Expandida com o valor certo e em tempo real.
 2. "Chat" sem conversa → drawer em rascunho, nada gravado ao fechar. 1ª mensagem → conversa + mensagem criadas uma única vez (índice chaveDireta + ClientMessageId).
 3. Cliente sem permissão recebe (portal aberto: na hora; fechado: ao abrir) e responde. Não consegue iniciar.
+4a. Anexo na 1ª mensagem: conversa criada só no ENVIAR e anexos enviados em seguida, com o progresso normal.
+4b. Conversa nova aparece sozinha na lista de quem não tinha (portal do cliente e outras abas).
+4c. Conversa do adicional não soma nas não lidas do titular. Titular abre a própria conversa ou inicia rascunho novo.
+4d. Com a aba em segundo plano, não marca como lida.
 4. Abrir conversa zera o contador dela imediatamente em sidebar, card, drawer e outras abas (admin), e no portal (cliente). Advogado e usuário adicional se comportam igual.
 5. dotnet build, tsc, ng build admin e portal OK.
 

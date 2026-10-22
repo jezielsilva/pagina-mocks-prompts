@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T14:40:00-03:00",
+  "atualizado": "2026-10-22T15:00:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -14,8 +14,8 @@
       "id": "prompt-chat-implementar",
       "tipo": "prompt",
       "projeto": "elaw adv · Chat (Clientes + Portal)",
-      "titulo": "Prompt — Chat: implementar após mapeamento (rascunho, leitura em lote, tempo real)",
-      "data": "2026-10-22T14:40:00-03:00",
+      "titulo": "Prompt — Chat: implementar (rascunho + anexo, titular × adicional, leitura em lote, tempo real)",
+      "data": "2026-10-22T15:00:00-03:00",
       "arquivo": "prompts/chat-implementar-apos-mapeamento.txt"
     }
   ]
