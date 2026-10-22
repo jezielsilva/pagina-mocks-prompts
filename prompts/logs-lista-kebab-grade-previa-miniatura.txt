@@ -27,7 +27,7 @@ Correção: a GRADE usa EXATAMENTE o mesmo botão/classe/tamanho da LISTA (28×2
 ========================================================================
 3. MODO LISTA: PAINEL DE PRÉVIA SEM SCROLL
 ========================================================================
-Print (portal → Prints → image.png): miniatura + nome + badge + tabela (Tipo, Tamanho, Modificado, Autor, Local) + botão Abrir. A tabela ganhou rolagem e o "Local" fica cortado.
+Hoje o painel tem: miniatura + nome + badge + tabela (Tipo, Tamanho, Modificado, Autor, Local) + botão Abrir. A tabela ganhou rolagem e o "Local" fica cortado.
 Objetivo: o painel se adapta à altura da tela e NÃO precisa de scroll em 768px de altura ou mais.
 - Miniatura: altura clamp(110px, 22vh, 200px), aspect-ratio 210/297, centralizada.
 - Nome: 13px, semibold, até 2 linhas com reticências e tooltip.
