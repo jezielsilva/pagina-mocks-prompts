@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T15:35:00-03:00",
+  "atualizado": "2026-10-22T15:36:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -25,6 +25,14 @@
       "titulo": "Prompt — Revisão pós-implementação (code-review em 2 eixos)",
       "data": "2026-10-22T15:35:00-03:00",
       "arquivo": "prompts/code-review-pos-implementacao.txt"
+    },
+    {
+      "id": "prompt-chat-implementar",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Chat (Clientes + Portal)",
+      "titulo": "Prompt — Chat: implementar (rascunho + anexo, titular × adicional, leitura em lote, tempo real)",
+      "data": "2026-10-22T15:36:00-03:00",
+      "arquivo": "prompts/chat-implementar-apos-mapeamento.txt"
     }
   ]
 }
