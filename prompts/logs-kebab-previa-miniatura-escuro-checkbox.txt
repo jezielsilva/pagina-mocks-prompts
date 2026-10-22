@@ -89,35 +89,40 @@ SVG tema escuro:
 - Nenhuma gravação nova no Mongo ou no S3.
 
 ========================================================================
-5. MODO ESCURO: ITEM SELECIONADO (LISTA E GRADE)
+5. MODO ESCURO: ITEM SELECIONADO, HOVER E RENOMEAR (prints 120646, 120708, 120736)
 ========================================================================
-No escuro, o item selecionado/ativo usa fundo roxo cheio, o que fica pesado e prejudica a leitura.
+O que os prints mostram no tema escuro:
+- Item SELECIONADO/ativo (ex.: "Sub QA Validada…" na 2ª coluna): fundo quase BRANCO/lilás claro com texto e ícones brancos, ou seja, ilegível.
+- Item em HOVER (ex.: "teste 3"): fundo cinza médio. Funciona, mas destoa.
+- Linha em modo RENOMEAR (print 120736): o campo de edição aparece como uma barra branca sem texto visível.
 Correção (só no tema escuro; o claro continua como está):
-- Linha do Finder e card da grade selecionados: fundo = o mesmo do item normal (ou o token de hover de superfície, bem sutil), BORDA de 1.5px no token primary (roxo claro do tema escuro, ex.: primary-lighten) e texto/ícone no token de texto principal (branco).
-- Hover (não selecionado): fundo com o token de hover de superfície do tema escuro. Hoje não há feedback.
-- Foco por teclado: outline 2px no token primary com offset 2px.
-- Use tokens de estado (selecionado/hover/foco) do tema. Se faltarem, criar com valor no claro E no escuro.
+- Selecionado/ativo (linha do Finder e card da grade): fundo transparente ou o token de superfície elevada, bem sutil; BORDA de 1.5px no token primary do tema escuro (roxo claro); texto e ícones no token de texto principal (branco). Nada de fundo claro.
+- Hover (não selecionado): fundo com o token de hover de superfície do escuro (cinza levemente mais claro que a coluna), sem borda.
+- Foco por teclado: outline 2px primary com offset 2px.
+- Input de renomear: fundo do token de input do tema escuro, borda primary, texto branco, caret visível, texto selecionado com o token de seleção. Nada de fundo branco.
+- A causa provável é token/cor do tema claro usada direto (ex.: --color-white, --color-primary-lightest) no estado ativo/rename. Troque pelos tokens de ESTADO do tema. Se não existirem, crie com valor no claro E no escuro.
 
 ========================================================================
-6. BOTÃO "NOVA PASTA" NO CABEÇALHO DA COLUNA (lista/Finder)
+6. BOTÃO "NOVA PASTA" NO CABEÇALHO DA COLUNA (prints 120715 e 120722)
 ========================================================================
-Hoje, no escuro: quando a coluna não está ativa, o botão aparece branco/apagado e o tracejado roxo quase não aparece; quando ativo, fica roxo com texto/ícone escuro (sem leitura); e não há hover.
-Correção (nos dois temas, com mais atenção ao escuro):
-- Estado normal: botão de ícone 28×28, borda tracejada de 1.5px (antes ~1px) no token primary com contraste mínimo de 3:1 sobre o fundo da coluna, ícone no token primary.
-- Hover: fundo primary-lightest (claro) / superfície de hover (escuro), borda sólida primary, ícone primary.
-- Ativo/selecionado (fundo roxo): ícone e texto no token "texto sobre primary" (branco). Nunca escuro sobre roxo.
+Hoje, no escuro: em repouso é um círculo preenchido de lilás claro com o ícone roxo e uma borda tracejada fininha que quase não aparece (120715); no hover vira um círculo lilás cheio e o ícone SOME (120722).
+Correção (nos dois temas, com foco no escuro):
+- Repouso: botão de ícone 28×28 redondo, fundo TRANSPARENTE, borda TRACEJADA de 1.5px (antes ~1px) no token primary (roxo claro no escuro), com contraste mínimo de 3:1 sobre o fundo da coluna; ícone 16px no token primary.
+- Hover: fundo primary (roxo), borda sólida primary, ícone no token "texto sobre primary" (BRANCO). O ícone nunca some.
+- Ativo/pressionado: igual ao hover, um tom mais escuro (primary-darken).
 - Foco: outline padrão de foco.
 - Disabled (áreas automáticas): opacity .4, sem hover.
+- Escopo: o botão do cabeçalho de coluna e o equivalente na barra (Nova pasta do topo), se usar o mesmo estilo.
 
 ========================================================================
 7. PRÉVIA: RESPIRO ENTRE A MINIATURA E O TÍTULO
 ========================================================================
-No painel de prévia (lista) e no drawer: margin-top de 12px entre a miniatura e o nome do arquivo (hoje encostados). O resto do espaçamento do item 3 continua.
+No painel de prévia (lista) e no drawer: margin-top de 12px entre a miniatura e o nome do arquivo (hoje encostados, print 120827). Também 8px entre o nome e o badge. O resto do espaçamento do item 3 continua.
 
 ========================================================================
 8. CHECKBOX DA GRADE: SEMPRE VISÍVEL E REDONDO
 ========================================================================
-Hoje ele só aparece no hover e, no escuro, é um quadrado escuro quase invisível com brilho roxo.
+Hoje ele só aparece no hover e, no escuro, é um quadrado escuro quase invisível com brilho roxo (print 120852).
 Correção:
 - Sempre visível em todos os cards (sem depender de hover), posição atual (canto superior esquerdo da área da miniatura).
 - Redondo: 20×20, border-radius 50%.
@@ -134,7 +139,7 @@ CRITÉRIOS DE ACEITE
 4. Sem 404 de miniatura. Arquivos de imagem mostram a ilustração padrão (claro/escuro conforme o tema) na grade, na prévia da lista e no drawer, sem nenhum download. Os outros tipos mostram a folha padrão.
 5. Sem hex, sem !important, sem style inline.
 
-5. Modo escuro: selecionado = borda roxa + texto branco; hover visível; botão Nova pasta legível em todos os estados.
+5. Modo escuro: selecionado = borda roxa + texto branco (sem fundo claro); hover sutil; input de renomear legível; botão Nova pasta com tracejado visível em repouso e roxo com ícone branco no hover.
 6. Respiro de 12px entre a miniatura e o título na prévia.
 7. Checkbox da grade sempre visível, redondo, legível no claro e no escuro.
 
