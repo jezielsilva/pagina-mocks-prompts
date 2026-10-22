@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T12:25:00-03:00",
+  "atualizado": "2026-10-22T12:30:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -11,12 +11,12 @@
       "principal": true
     },
     {
-      "id": "prompt-refinos-escuro-checkbox",
+      "id": "prompt-escuro-novapasta-previa-checkbox",
       "tipo": "prompt",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Logs, ⋮ da grade, prévia, miniatura padrão, modo escuro (seleção e Nova pasta) e checkbox redondo",
-      "data": "2026-10-22T12:25:00-03:00",
-      "arquivo": "prompts/logs-kebab-previa-miniatura-escuro-checkbox.txt"
+      "titulo": "Prompt — Modo escuro (seleção, hover, renomear), botão Nova pasta, respiro da prévia e checkbox redondo",
+      "data": "2026-10-22T12:30:00-03:00",
+      "arquivo": "prompts/modo-escuro-novapasta-previa-checkbox.txt"
     }
   ]
 }
