@@ -1,6 +1,7 @@
 # Portal de transferência — regras para o Claude
 
-- NÃO apagar itens automaticamente: o usuário exclui pelo ícone 🗑 da página.
+- Prints: a CADA prompt publicado, apagar as imagens de `prints/` no mesmo commit (manter só `prints/LEIA-ME.txt`). Ler os prints ANTES de apagar.
+- NÃO apagar itens automaticamente (exceto os prints, regra acima): o usuário exclui pelo ícone 🗑 da página.
   - Artefato: um arquivo por projeto, sempre sobrescrito (ex.: `artefatos/documentos-mock.html`), com a data atualizada no `itens.json`.
   - Prompt: cada prompt novo é um arquivo novo em `prompts/` + entrada no `itens.json`.
   - Antes de editar `itens.json`, dar `git pull` (a página também altera esse arquivo ao excluir).
