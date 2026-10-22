@@ -38,31 +38,41 @@ Objetivo: o painel se adapta à altura da tela e NÃO precisa de scroll em 768px
 - A área do meio (miniatura + nome + badge + tabela) só rola se a tela for menor que 768px de altura. Nesse caso, scrollbar fina.
 
 ========================================================================
-4. INVESTIGAÇÃO BACK-END: MINIATURA DÁ 404 (DOWNLOAD FUNCIONA)
+4. MINIATURAS: SEM ENDPOINT DE MINIATURA (resolve o 404)
 ========================================================================
-No modo lista, ao clicar num arquivo, a prévia deveria mostrar a miniatura, mas aparece o ícone genérico. No Network: 404 Not Found na requisição da miniatura. O DOWNLOAD do mesmo arquivo funciona.
-Investigue (responda cada item antes de corrigir):
-B1. Front: qual URL exata a prévia chama para a miniatura (copie do Network: método, URL completa, query, headers)? Qual service/método monta essa URL?
-B2. Back: existe action com essa rota EXATA? Liste as rotas de miniatura/thumbnail/preview/inline do back (grep por "thumb", "miniatura", "preview", "inline" nos controllers). Depois da centralização no CloudController, a rota da miniatura mudou de controller/prefixo e o front ficou apontando para a antiga? (404 de rota inexistente × 404 retornado pela action por não achar o arquivo: diferencie pelo corpo da resposta e pelo log do back.)
-B3. Download (que funciona): action, rota e como ela localiza o arquivo (id do documento → registro no Mongo → chave/caminho no S3 → bucket). Copie a sequência.
-B4. Miniatura: faça a mesma sequência. Em que passo diverge? (Ex.: usa outro id, como o do lote/upload em vez do documento; monta a chave S3 com prefixo diferente, como thumbs/ ou a pasta antiga; busca uma miniatura pré-gerada que não existe para arquivos antigos; bucket/região diferentes; exige permissão diferente.)
-B5. A miniatura é GERADA no upload (job) ou SOB DEMANDA? Para os arquivos que já existem, ela foi gerada? Se for pré-gerada e não existir, o que a action faz: 404 ou gera?
-Correção:
-- Rota: o front chama a rota correta do CloudController (mesmo prefixo/padrão das outras actions).
-- Localização do arquivo: a miniatura usa o MESMO caminho de resolução do download (mesmo id do documento, mesma chave S3 base, mesmo bucket e mesma checagem de permissão). Reaproveite o método do download para obter o arquivo original, sem duplicar.
-- Miniatura inexistente (arquivos antigos): gerar SOB DEMANDA na primeira requisição (imagem: redimensionar com SkiaSharp; PDF: primeira página, conforme o prompt de miniaturas), salvar no S3 no caminho de miniaturas e retornar. Próximas chamadas servem a salva. Tipos sem miniatura (txt, xlsx, docx…): responder 204 No Content (não 404), e o front mostra a folha com o ícone do tipo.
-- Cache: Cache-Control adequado e ETag, se o padrão do projeto tiver.
-- Front: tratar erro da miniatura mostrando o fallback, sem quebrar o painel, e sem chamar de novo em loop.
+Decisão: NÃO gerar nem armazenar miniaturas (nada no Mongo, nada novo no S3, nada em memória no servidor). Remover a chamada de miniatura que hoje dá 404.
+
+4.1 GRADE: prévia padrão por tipo, sem baixar nada
+- Nenhum card da grade baixa o arquivo nem chama endpoint de miniatura.
+- A área da miniatura mostra uma "folha" padrão (aspect-ratio 210/297, fundo do token de superfície, borda do token de borda, raio 3px), com:
+  - ícone do tipo no centro (e-icon 28px): imagem, pdf, documento, planilha, apresentação, texto, compactado, outro;
+  - etiqueta da extensão no canto superior direito (PNG, JPG, PDF, DOCX, XLSX, PPTX, TXT…), 10px bold, fundo no token da categoria do tipo;
+  - cor de destaque por tipo via tokens de tema (ex.: pdf → negative, planilha → positive, documento → info, imagem → primary, outros → slate), fundo suave (-lightest) + ícone na cor. Sem hex. Tokens que faltarem: criar no tema com valor claro e escuro.
+- Pastas continuam com o ícone de pasta.
+- Remover do front o serviço/método de miniatura e qualquer *ngIf/estado de "carregando miniatura" da grade.
+
+4.2 PRÉVIA (painel do modo lista e drawer): imagem REAL só para imagens, um arquivo por vez
+- Ao selecionar UM arquivo cujo tipo é imagem (jpg, jpeg, png, gif, webp, bmp, svg): pedir ao back a MESMA URL temporária (pré-assinada do S3) que o botão "Abrir" já usa e exibir com <img [src]="url" decoding="async" alt="">, dentro da caixa da prévia com tamanho fixo (a miniatura definida no item 3), object-fit: contain, fundo do token de superfície. A imagem vem direto do S3 para o navegador, sem passar pelo servidor.
+  - Enquanto carrega: skeleton do UI-Kit no lugar.
+  - (error) no <img>: mostrar a folha padrão do tipo (4.1) e não tentar de novo.
+  - Trocar de arquivo antes de carregar: cancelar (trocar o src) sem empilhar requisições. Usar switchMap para a chamada da URL.
+- Para tipos que NÃO são imagem (pdf, docx, xlsx, txt…): a prévia mostra a folha padrão do tipo (4.1). Não baixa nada.
+- Reaproveitar o endpoint EXISTENTE que gera a URL temporária do "Abrir". Não criar endpoint novo. Se o endpoint do "Abrir" retorna a URL com Content-Disposition attachment (força download), verificar se ele aceita um parâmetro para inline. Se não aceitar, adicionar parâmetro opcional inline=true na MESMA action (retrocompatível), gerando a URL com ResponseContentDisposition "inline" e o ResponseContentType correto. Sem mudar o comportamento atual do "Abrir".
+- A URL expira (ex.: 5–15 min, o mesmo do "Abrir"). Não guardar em cache além do arquivo selecionado.
+
+4.3 BACK
+- Remover a action/rota de miniatura que dá 404 (e serviço/DI sem uso), se existir só para isso. Se outra tela usar, informe e mantenha.
+- Nenhuma gravação nova no Mongo ou no S3.
 
 CRITÉRIOS DE ACEITE
 1. Logs: sem barras entre os itens, 10 itens visíveis sem scroll em 768px+, paginação fixa embaixo.
 2. ⋮ da grade idêntico ao da lista, centralizado.
 3. Prévia da lista sem scroll em 768px+ de altura, com "Local" visível e "Abrir" fixo.
-4. Miniaturas aparecem para imagens e PDFs (antigos e novos). Sem 404. Tipos sem miniatura retornam 204 e mostram o fallback.
+4. Sem 404 de miniatura. Grade com folha padrão por tipo (zero download). Prévia mostra a imagem real só para imagens (URL temporária do S3, um arquivo por vez); outros tipos mostram a folha padrão.
 5. Sem hex, sem !important, sem style inline.
 
 ENTREGA
-- A1 e B1 a B5 (com a causa-raiz do 404).
+- A1, a rota do "Abrir" reaproveitada e o que foi removido da miniatura.
 - Diff do front e do back.
 - Verificação: tsc ✅/❌ | build ✅/❌ | dotnet build ✅/❌ | ciclos: N
 

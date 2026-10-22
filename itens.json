@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T10:35:00-03:00",
+  "atualizado": "2026-10-22T10:40:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -11,12 +11,12 @@
       "principal": true
     },
     {
-      "id": "prompt-logs-kebab-previa-miniatura",
+      "id": "prompt-logs-kebab-previa-imagem",
       "tipo": "prompt",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Logs sem barras (10 itens), ⋮ da grade, prévia sem scroll e miniatura 404 (back)",
-      "data": "2026-10-22T10:30:00-03:00",
-      "arquivo": "prompts/logs-lista-kebab-grade-previa-miniatura.txt"
+      "titulo": "Prompt — Logs sem barras (10 itens), ⋮ da grade, prévia sem scroll e imagem real só na prévia (sem miniatura)",
+      "data": "2026-10-22T10:40:00-03:00",
+      "arquivo": "prompts/logs-kebab-previa-imagem-sem-miniatura.txt"
     }
   ]
 }
