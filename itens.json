@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-21T18:05:00-03:00",
+  "atualizado": "2026-10-22T10:30:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (versão atual · header global, sidebar e grid compacto)",
-      "data": "2026-10-20T22:20:00-03:00",
+      "data": "2026-10-22T10:30:00-03:00",
       "arquivo": "artefatos/documentos-mock.html"
     },
     {
@@ -16,6 +16,14 @@
       "titulo": "Prompt — Logs: sem fundo cinza, ícones roxos, texto sem ID e paginação fixa embaixo",
       "data": "2026-10-21T18:05:00-03:00",
       "arquivo": "prompts/modal-logs-fundo-paginacao-fixa.txt"
+    },
+    {
+      "id": "prompt-logs-kebab-previa-miniatura",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Logs sem barras (10 itens), ⋮ da grade, prévia sem scroll e miniatura 404 (back)",
+      "data": "2026-10-22T10:30:00-03:00",
+      "arquivo": "prompts/logs-lista-kebab-grade-previa-miniatura.txt"
     }
   ]
 }

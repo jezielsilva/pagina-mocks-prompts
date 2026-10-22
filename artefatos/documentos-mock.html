@@ -269,7 +269,9 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .doc-alerts:empty{display:none}
 .alert-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 /* Logs paginados */
-.log-list .list-group-item{display:flex;gap:10px;align-items:flex-start}
+.log-list .list-group-item{display:flex;gap:12px;align-items:flex-start;border-bottom:none;padding:4px 0}
+.log-list .list-group-item .section-icon{width:32px;height:32px;flex-shrink:0}
+.modal-dialog:has(.log-list){max-height:none}.modal-body:has(.log-list){max-height:none;overflow:visible}
 .log-pager{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px;margin-top:12px;border-top:1px solid var(--card-border-color)}
 .pagination{display:flex;gap:4px;list-style:none;padding:0;margin:0}
 .page-link{min-width:32px;height:32px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--card-border-color);border-radius:8px;background:var(--card-bg);color:var(--text-color);font:500 13px var(--font-body);cursor:pointer}
@@ -2176,7 +2178,7 @@ function dlgLogs(){
   const all=logRows();let pg=1;
   const body=()=>all.length?`<div class="list-group log-list">${all.slice((pg-1)*LOG_PAGE,pg*LOG_PAGE).map(logItem).join('')}</div>${logPager(pg,all.length)}`:`<div class="grid-empty text-secondary">${ic('history',36)}<span class="card-title">Nenhum registro</span></div>`;
   dialog({title:'Logs',icon:'history',wide:true,body:`<div id="log-body">${body()}</div>`,
-    actions:[{label:'Fechar',fn:x=>x.close()}],
+    actions:[],
     onMount:x=>x.body.addEventListener('click',e=>{
       const p=e.target.closest('[data-lpg]');if(p&&!p.closest('.disabled')){pg=+p.dataset.lpg;$('#log-body').innerHTML=body();$('#log-body').scrollIntoView({block:'start'});return;}
       const l=e.target.closest('[data-logopen]');if(l){x.close();openPanel(NODES.get(l.dataset.logopen));}})});

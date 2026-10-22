@@ -1,0 +1,77 @@
+[Área: Multidisciplinar (Frontend + investigação de Backend) | Skills: UI-Kit]
+
+TAREFA
+4 ajustes. O mock no portal ("Mock — Documentos") foi atualizado com a lista de Logs no layout novo. NÃO crie testes.
+
+========================================================================
+1. MODAL DE LOGS: SEM SEPARADORES E ALTURA PARA 10 ITENS
+========================================================================
+O header e o padrão da modal já estão certos (não mexer). Ajustar só o conteúdo, igual ao mock:
+- REMOVER as linhas/barras que separam cada item (border-bottom/divider entre os logs). Os itens ficam separados só pelo espaçamento.
+- Cada item: ícone (section-icon 32×32, ícone 16px) + texto (linha 1: **Usuário** ação [arquivo como link] · detalhe; linha 2: data/hora em texto secundário 12px). gap 12px; padding vertical 4px por item.
+- Altura: a modal mostra os 10 itens de uma página INTEIROS, sem rolagem, com a paginação fixa embaixo, em telas a partir de 768px de altura.
+  - Remover o max-height que hoje força o scroll na lista. A lista cresce até o conteúdo de 10 itens.
+  - Só se a tela for menor que isso (notebook pequeno/zoom), a lista rola dentro do card e a paginação continua fixa no rodapé (regra do prompt anterior).
+  - A modal fica centralizada verticalmente, com margem mínima de 24px em cima e embaixo.
+- Itens com texto longo (2 linhas) são permitidos. Ajuste o padding para 10 itens caberem em ~560px de lista.
+
+========================================================================
+2. ⋮ NO MODO GRADE AINDA FORA DO CENTRO
+========================================================================
+No modo LISTA o ⋮ ficou bom. No modo GRADE (cabeçalho do card, inclusive com o card selecionado/aberto) os três pontos ainda não estão centralizados no círculo.
+A1. Compare no DevTools o botão ⋮ da LISTA (que está certo) com o da GRADE: classes, width/height, padding, display, align-items/justify-content, line-height, e o computed do ícone. Liste as diferenças.
+Correção: a GRADE usa EXATAMENTE o mesmo botão/classe/tamanho da LISTA (28×28, display inline-grid, place-items center, line-height 0, ícone 16px display block). Remova os estilos próprios do cabeçalho do card que alteram o botão (padding, margin-right negativo, height do header aplicada ao botão, align-self, font-size herdado).
+- O cabeçalho do card: display flex, align-items center, gap 6px; o botão com flex-shrink 0 e margin 0.
+- Conferir com o card normal, selecionado e com hover.
+
+========================================================================
+3. MODO LISTA: PAINEL DE PRÉVIA SEM SCROLL
+========================================================================
+Print (portal → Prints → image.png): miniatura + nome + badge + tabela (Tipo, Tamanho, Modificado, Autor, Local) + botão Abrir. A tabela ganhou rolagem e o "Local" fica cortado.
+Objetivo: o painel se adapta à altura da tela e NÃO precisa de scroll em 768px de altura ou mais.
+- Miniatura: altura clamp(110px, 22vh, 200px), aspect-ratio 210/297, centralizada.
+- Nome: 13px, semibold, até 2 linhas com reticências e tooltip.
+- Badge: modo compacto (.badge-sm).
+- Tabela de detalhes: linhas de 30px (antes ~38px), rótulo e valor em 12px, padding horizontal 10px, valores com ellipsis + tooltip.
+- Espaçamentos verticais do painel: 8px entre blocos (antes ~12–16px).
+- Botão "Abrir": fixo na base (fora da área rolável), como já está.
+- A área do meio (miniatura + nome + badge + tabela) só rola se a tela for menor que 768px de altura. Nesse caso, scrollbar fina.
+
+========================================================================
+4. INVESTIGAÇÃO BACK-END: MINIATURA DÁ 404 (DOWNLOAD FUNCIONA)
+========================================================================
+No modo lista, ao clicar num arquivo, a prévia deveria mostrar a miniatura, mas aparece o ícone genérico. No Network: 404 Not Found na requisição da miniatura. O DOWNLOAD do mesmo arquivo funciona.
+Investigue (responda cada item antes de corrigir):
+B1. Front: qual URL exata a prévia chama para a miniatura (copie do Network: método, URL completa, query, headers)? Qual service/método monta essa URL?
+B2. Back: existe action com essa rota EXATA? Liste as rotas de miniatura/thumbnail/preview/inline do back (grep por "thumb", "miniatura", "preview", "inline" nos controllers). Depois da centralização no CloudController, a rota da miniatura mudou de controller/prefixo e o front ficou apontando para a antiga? (404 de rota inexistente × 404 retornado pela action por não achar o arquivo: diferencie pelo corpo da resposta e pelo log do back.)
+B3. Download (que funciona): action, rota e como ela localiza o arquivo (id do documento → registro no Mongo → chave/caminho no S3 → bucket). Copie a sequência.
+B4. Miniatura: faça a mesma sequência. Em que passo diverge? (Ex.: usa outro id, como o do lote/upload em vez do documento; monta a chave S3 com prefixo diferente, como thumbs/ ou a pasta antiga; busca uma miniatura pré-gerada que não existe para arquivos antigos; bucket/região diferentes; exige permissão diferente.)
+B5. A miniatura é GERADA no upload (job) ou SOB DEMANDA? Para os arquivos que já existem, ela foi gerada? Se for pré-gerada e não existir, o que a action faz: 404 ou gera?
+Correção:
+- Rota: o front chama a rota correta do CloudController (mesmo prefixo/padrão das outras actions).
+- Localização do arquivo: a miniatura usa o MESMO caminho de resolução do download (mesmo id do documento, mesma chave S3 base, mesmo bucket e mesma checagem de permissão). Reaproveite o método do download para obter o arquivo original, sem duplicar.
+- Miniatura inexistente (arquivos antigos): gerar SOB DEMANDA na primeira requisição (imagem: redimensionar com SkiaSharp; PDF: primeira página, conforme o prompt de miniaturas), salvar no S3 no caminho de miniaturas e retornar. Próximas chamadas servem a salva. Tipos sem miniatura (txt, xlsx, docx…): responder 204 No Content (não 404), e o front mostra a folha com o ícone do tipo.
+- Cache: Cache-Control adequado e ETag, se o padrão do projeto tiver.
+- Front: tratar erro da miniatura mostrando o fallback, sem quebrar o painel, e sem chamar de novo em loop.
+
+CRITÉRIOS DE ACEITE
+1. Logs: sem barras entre os itens, 10 itens visíveis sem scroll em 768px+, paginação fixa embaixo.
+2. ⋮ da grade idêntico ao da lista, centralizado.
+3. Prévia da lista sem scroll em 768px+ de altura, com "Local" visível e "Abrir" fixo.
+4. Miniaturas aparecem para imagens e PDFs (antigos e novos). Sem 404. Tipos sem miniatura retornam 204 e mostram o fallback.
+5. Sem hex, sem !important, sem style inline.
+
+ENTREGA
+- A1 e B1 a B5 (com a causa-raiz do 404).
+- Diff do front e do back.
+- Verificação: tsc ✅/❌ | build ✅/❌ | dotnet build ✅/❌ | ciclos: N
+
+PENDÊNCIAS DO PLANO
+- Back: centralizar no CloudController e logs de develop
+- Filtros: alinhar Autor
+- Classificação
+- Coluna única no modo lista
+- Cabeçalho do módulo
+- Busca
+- Mobile e tablet
+- Atualizar SPEC-MESTRE
