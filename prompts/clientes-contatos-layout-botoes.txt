@@ -1,0 +1,73 @@
+[Área: Frontend (form-cliente + app-cadastrar-telefone) | Porte: M | Skills: nenhuma]
+
+TAREFA
+Corrigir o layout do bloco "Contatos" no cadastro/edição de cliente (form-cliente). Só front, só layout e disposição de botões. A regra de salvar contatos (back) não muda. NÃO crie testes nem rode lint.
+
+PROBLEMAS (prints em "Novo Cliente")
+1. Ao adicionar um contato na coluna da direita, TODAS as linhas do formulário da esquerda (Dados Pessoais, Financeiro, Dados Bancários) ganham espaço vertical e ficam espaçadas. As duas colunas estão presas à mesma grade de linhas. Elas devem ser INDEPENDENTES.
+2. Botão "+ + Adicionar outro contato": ícone "+" duplicado (ícone + texto com "+").
+3. "Cancelar" ao lado de "Salvar" é desnecessário, porque cada contato já tem o botão de excluir.
+4. Botões de excluir vermelhos e grandes em cada card: pesados visualmente.
+5. "Nenhum contato adicionado" continua aparecendo embaixo mesmo com contatos sendo preenchidos.
+6. Campos espremidos: "(00) 00000-000" e "Nome Contat..." cortados, e mensagens de erro truncadas ("Informe o", "Informe um").
+7. "+ Novo" no cabeçalho fica desabilitado e sem função durante a edição (poluição visual).
+
+ETAPA A — INVESTIGAR (1 linha cada)
+A1. Estrutura do layout de duas colunas do form-cliente: é um único CSS grid (ou row/col do Bootstrap) em que os campos da esquerda e os cards da direita compartilham as mesmas LINHAS? Qual seletor/elemento? (Causa do problema 1.)
+A2. No modo edição de cliente existente, há um botão principal de salvar o cliente (como o "Cadastrar" no modo novo)? Qual o texto e o método?
+
+========================================================================
+CORREÇÃO 1 — COLUNAS INDEPENDENTES
+========================================================================
+- O formulário vira DUAS colunas independentes, cada uma com o próprio fluxo vertical:
+  .form-cliente-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 24px; align-items: start; }
+  .form-cliente-principal { display: flex; flex-direction: column; gap: <o gap atual entre linhas> ; min-width: 0; }   // Dados Pessoais, Financeiro, Dados Bancários, Representante Legal
+  .form-cliente-lateral   { display: flex; flex-direction: column; gap: 16px; min-width: 0; }                      // Envio de andamentos, Permissão, Aniversário, Visualizar processos, Contatos
+- Nenhum campo da esquerda pode estar na mesma linha de grade que um card da direita (nada de grid-row compartilhada, nem row do Bootstrap com as duas colunas por linha).
+- A altura da coluna da direita crescer NÃO pode alterar o espaçamento da esquerda.
+- Abaixo de 992px: uma coluna só (lateral embaixo do principal), mantendo a ordem.
+- O botão principal ("Cadastrar"/salvar cliente) fica no fim da coluna principal, como hoje.
+
+========================================================================
+CORREÇÃO 2 — DISPOSIÇÃO DOS BOTÕES E DOS CARDS DE CONTATO
+========================================================================
+Decisão de fluxo:
+- NO CADASTRO DE CLIENTE NOVO e NA EDIÇÃO DO CLIENTE (form-cliente): os contatos fazem parte do formulário do cliente. NÃO existe botão "Salvar" nem "Cancelar" dentro do bloco Contatos. Os contatos são gravados junto com o botão principal do cliente ("Cadastrar" / salvar cliente), na mesma requisição de hoje (PUT Cliente/Atualizar ou o cadastro). Se A2 mostrar que na edição não existe salvar principal, mantenha UM botão "Salvar contatos" (ver variação abaixo).
+- A modal "Cadastrar Contato" (fora do form, na tela do cliente) continua com o próprio Salvar.
+
+Layout do bloco "Contatos":
+┌ Contatos (2) ─────────────────── [＋ Adicionar] ┐   ← cabeçalho: título com a contagem; botão e-button outline pequeno, ícone "plus" + texto "Adicionar" (um único "+", sem duplicar)
+│ ┌ Contato 1 ───────────────────────────── 🗑 ┐ │   ← lixeira: e-button de ícone 28×28, fundo transparente, ícone cinza (texto secundário); hover: fundo negative-lightest e ícone negative; aria-label "Remover contato 1"
+│ │ [Número*                                  ] │ │   ← linha inteira
+│ │ [Tipo*            ] [Vínculo*             ] │ │   ← 2 colunas
+│ │ [Nome do contato                          ] │ │   ← linha inteira
+│ │ [E-mail                                   ] │ │   ← linha inteira
+│ └─────────────────────────────────────────────┘ │
+│ ┌ Contato 2 ... ┐                               │
+│ [＋ Adicionar outro contato]                    │   ← e-button "link"/ghost, ícone plus UMA vez, alinhado à esquerda, só aparece quando há ≥ 1 card
+└─────────────────────────────────────────────────┘
+- Sem contatos: estado vazio "Nenhum contato adicionado" + o botão do cabeçalho. Com ≥ 1 card (em edição ou salvo): o estado vazio NÃO aparece.
+- Contatos já salvos aparecem como itens compactos (nome/vínculo, número com ícone do tipo, e-mail), cada um com os ícones "editar" e "remover" (mesmo estilo discreto). "Editar" transforma o item no card de edição.
+- Cards: padding 12px, borda e raio do UI-Kit, 12px entre cards, título "Contato N" em 13px semibold.
+- Campos com largura total do card (como no desenho), para nada ficar cortado. Mensagens de erro em linha completa abaixo do campo ("Informe o número", "Informe um e-mail válido"), sem truncar.
+- Remover um card com dados digitados: sem confirmação (é só remover da lista do formulário). Remover um contato JÁ SALVO no modo edição: confirmação curta ("Remover este contato?"), e a remoção só é efetivada ao salvar o cliente.
+- Ao clicar em "Adicionar": cria o card no fim da lista e põe o foco no Número.
+- Remover o "+ Novo" desabilitado do cabeçalho e o "Cancelar" do rodapé.
+
+Variação (SÓ se A2 mostrar que não há salvar principal na edição):
+- No fim do bloco, à direita: um único e-button primary "Salvar contatos", visível só quando há alteração pendente. Sem "Cancelar".
+
+========================================================================
+CRITÉRIOS DE ACEITE
+========================================================================
+1. Adicionar 1, 2 ou 5 contatos não muda em nada o espaçamento dos campos da coluna da esquerda.
+2. Nenhum ícone duplicado. Sem "Cancelar" no bloco. Lixeiras discretas que ficam vermelhas só no hover.
+3. "Nenhum contato adicionado" só aparece quando não há nenhum contato.
+4. Nenhum campo ou mensagem de erro cortado na coluna de 360px.
+5. No cadastro, os contatos são gravados com o "Cadastrar". Na edição, com o salvar do cliente (ou com "Salvar contatos", na variação).
+6. UI-Kit (e-button, tokens), modos claro e escuro, sem hex, !important ou style inline.
+
+ENTREGA
+A1, A2 e o diff.
+Revisão: Padrões <N / ok> | Spec <N / ok>
+Verificação: tsc ✅/❌ | ng build ✅/❌ | ciclos: N

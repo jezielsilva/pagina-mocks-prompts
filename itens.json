@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T16:50:00-03:00",
+  "atualizado": "2026-10-22T17:25:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -11,12 +11,12 @@
       "principal": true
     },
     {
-      "id": "prompt-clientes-contatos",
+      "id": "prompt-contatos-layout",
       "tipo": "prompt",
       "projeto": "elaw adv · Clientes",
-      "titulo": "Prompt — Contatos do cliente: vários de uma vez com Salvar, remover por contato, WhatsApp e Próprio (bloco e modal)",
-      "data": "2026-10-22T16:50:00-03:00",
-      "arquivo": "prompts/clientes-contatos-multiplos-whatsapp-proprio.txt"
+      "titulo": "Prompt — Contatos: colunas independentes e nova disposição de botões",
+      "data": "2026-10-22T17:25:00-03:00",
+      "arquivo": "prompts/clientes-contatos-layout-botoes.txt"
     }
   ]
 }
