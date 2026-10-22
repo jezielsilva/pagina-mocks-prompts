@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-22T12:30:00-03:00",
+  "atualizado": "2026-10-22T13:20:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -11,12 +11,12 @@
       "principal": true
     },
     {
-      "id": "prompt-escuro-novapasta-previa-checkbox",
+      "id": "prompt-chat-tempo-real",
       "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Modo escuro (seleção, hover, renomear), botão Nova pasta, respiro da prévia e checkbox redondo",
-      "data": "2026-10-22T12:30:00-03:00",
-      "arquivo": "prompts/modo-escuro-novapasta-previa-checkbox.txt"
+      "projeto": "elaw adv · Chat (Clientes + Portal)",
+      "titulo": "Prompt — Chat: contador da sidebar, conversa rascunho (grava só na 1ª mensagem), permissão do cliente e overview do tempo real",
+      "data": "2026-10-22T13:20:00-03:00",
+      "arquivo": "prompts/chat-clientes-tempo-real-conversa-rascunho.txt"
     }
   ]
 }
