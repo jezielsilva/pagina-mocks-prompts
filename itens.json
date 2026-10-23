@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T18:23",
+  "atualizado": "2026-10-23T18:38",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes-correcoes",
+      "id": "prompt-classificacoes-aprovacao",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Classificações: review + contagem + layout (aviso, sidebar, central, fila, seletor)",
-      "data": "2026-10-23T18:23",
-      "arquivo": "prompts/classificacoes-correcoes-layout.txt"
+      "titulo": "Prompt — Aprovação da mini-spec + contagem com fonte única",
+      "data": "2026-10-23T18:38",
+      "arquivo": "prompts/classificacoes-aprovacao-contagem.txt"
     }
   ]
 }

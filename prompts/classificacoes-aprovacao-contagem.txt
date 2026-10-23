@@ -1,0 +1,46 @@
+[Área: Backend (.NET/Mongo) + Frontend (Angular) | Skills: as de Backend e Frontend do projeto]
+
+MINI-SPEC APROVADA — COM UM AJUSTE OBRIGATÓRIO NA CONTAGEM. PODE IMPLEMENTAR TUDO.
+
+1. CONTAGEM: A CONTA NÃO BATE, CORRIGIR NA RAIZ
+- Fatos: a base tem 102 arquivos, a lixeira tem só 3 e nenhum arquivo está classificado. Então o esperado é 99 sem classificação, não 72. "Lixeira explica a diferença" está descartado. Faltam ~27 arquivos em algum filtro.
+- Investigue de verdade, comparando as consultas lado a lado:
+  - a contagem de `ContarClassificacoesAsync`;
+  - a consulta da fila;
+  - a consulta que gera o total de arquivos mostrado na sidebar/explorador (quantidade por área, "Todos os documentos").
+  Pontos a checar: pastas consideradas (só as do titular x todas, inclusive raiz e áreas virtuais/Processos/Clientes/Financeiro), arquivos sem pasta, usuário adicional, filtro de autor, campo da lixeira (nulo x false), tipo/extensão e publicação pendente. Rode a lógica mentalmente sobre os dados e diga QUAL consulta está errada e POR QUÊ.
+- Correção: UMA ÚNICA FONTE DE VERDADE NO BACK.
+  - Criar um único método no Business/Repository que monta o filtro de "arquivos do escritório" (mesmo escopo do total de arquivos do explorador, fora da lixeira). Ele deriva "sem classificação" = esse filtro + classificacao.tipoId ausente/nulo.
+  - Esse mesmo método serve a TODOS: total da central, aviso, badge da sidebar e fila (a fila só acrescenta paginação e, para o adicional, a restrição de permissão, que também deve existir na contagem quando o usuário logado for adicional, para o número do aviso sempre bater com a fila).
+  - Contexto de pasta: o mesmo método com pastaId opcional (pasta + subpastas).
+  - Garantia: contagem global sem classificação + classificados = total de arquivos fora da lixeira do mesmo escopo. Descrever na entrega os números esperados pra conferência manual.
+- Se mesmo assim não conseguir explicar a divergência pelo código, NÃO chute: deixe a fonte única implementada e escreva na entrega exatamente quais consultas/campos eu devo inspecionar no banco (eu debugo depois). Nada de script de validação.
+
+2. DEMAIS PONTOS DA MINI-SPEC: APROVADOS COMO ESTÃO
+- Arquivos na lixeira fora; ocultar padrão nunca persiste; sem alterar coleção/índices; separar central, seletor e formulário "Novo tipo".
+- Seguir TODO o prompt anterior de correções:
+  - achados do review;
+  - aviso fino dentro do header, sem X e contextual por pasta;
+  - card da sidebar em uma linha;
+  - central refeita igual ao mock;
+  - fila refeita igual ao mock, com a paginação de Clientes;
+  - seletor abrindo com o padrão visível e estado vazio com mensagem + formulário "Novo tipo" já aberto.
+- Busca: usar o MESMO componente/padrão do campo de busca da listagem de Meus documentos (confirmado).
+- Atualizar `docs` com a regra da contagem única.
+
+3. ENTREGA
+- Diagnóstico final: qual consulta divergia e por quê (ou o roteiro de inspeção, se não fechar).
+- Arquivos alterados (trechos relevantes), seção "Explicações" e pendências.
+- Seguir o bloco ESTILO DE CÓDIGO abaixo (sem testes, sem lint).
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
