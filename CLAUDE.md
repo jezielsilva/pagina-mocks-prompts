@@ -10,6 +10,7 @@
 - Perfil de código do usuário: `perfil/PERFIL-DE-CODIGO.md` (item FIXO no portal, `"fixo": true`; NUNCA apagar na limpeza de prompts). Todo prompt de implementação para o Codex/Luna DEVE incluir o bloco "ESTILO DE CÓDIGO" da seção 10 desse arquivo (copiado inteiro) e pedir a seção "Explicações" na entrega.
 - Treino diário: página `treino/index.html?d=AAAA-MM-DD` + dados `treino/AAAA-MM-DD.json` (item `"tipo":"artefato"`, `"treino": true`, `"fixo": true` até ser respondido). Respostas chegam como Issue "Treino AAAA-MM-DD — respostas". Progresso em `perfil/PROGRESSO-TREINO.md`.
 - "Tornar principal": a página abre uma Issue "Tornar principal: <id>". Ao ler essa Issue: marcar esse mock como principal, apagar os outros mocks, fechar a Issue e avisar no chat. Os mocks ficam guardados no histórico do git e na pasta de trabalho do Claude (podem ser republicados).
+- Itens com `"principal"` ou `"fixo"` (mock principal, perfil, treino) NÃO mostram o 🗑 na página: só saem por ordem explícita do usuário no chat.
 - Fora as regras acima, NÃO apagar itens automaticamente: o usuário exclui pelo ícone 🗑 da página.
   - Artefato: um arquivo por projeto, sempre sobrescrito (ex.: `artefatos/documentos-mock.html`), com a data atualizada no `itens.json`.
   - Prompt: cada prompt novo é um arquivo novo em `prompts/` + entrada no `itens.json`.

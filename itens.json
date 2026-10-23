@@ -8,7 +8,8 @@
       "titulo": "Mock — Documentos (drawer e visualização rápida padronizados)",
       "data": "2026-10-23T10:05:00-03:00",
       "arquivo": "artefatos/documentos-mock.html",
-      "principal": true
+      "principal": true,
+      "fixo": true
     },
     {
       "id": "prompt-urgente-clientes",
