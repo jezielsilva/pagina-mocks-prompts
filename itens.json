@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T11:35:00-03:00",
+  "atualizado": "2026-10-23T11:50:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -19,13 +19,13 @@
       "arquivo": "prompts/URGENTE-clientes-endereco-tipopessoa.txt"
     },
     {
-      "id": "form-perfil-codigo",
-      "tipo": "artefato",
-      "formulario": true,
-      "projeto": "Jeziel · Perfil de código",
-      "titulo": "Formulário — Perfil de código (como você escreve e lê código)",
-      "data": "2026-10-23T11:35:00-03:00",
-      "arquivo": "formularios/perfil-de-codigo.html"
+      "id": "perfil-codigo",
+      "tipo": "prompt",
+      "fixo": true,
+      "projeto": "Jeziel · Perfil",
+      "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
+      "data": "2026-10-23T11:50:00-03:00",
+      "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     }
   ]
 }
