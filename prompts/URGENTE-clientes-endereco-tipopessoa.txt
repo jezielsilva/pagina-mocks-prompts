@@ -1,0 +1,64 @@
+[Área: Multidisciplinar (Backend .NET + MongoDB + Frontend Angular) | Porte: G | Skills: diagnosing-bugs (adaptada, sem testes)]
+
+URGENTE — INVESTIGAÇÃO DE PERDA DE DADOS EM CLIENTES (PRODUÇÃO)
+Depois do update da tela de Clientes (front repaginado, back com algumas mudanças), um cliente relata que os ENDEREÇOS cadastrados dos clientes SUMIRAM. Além disso, ao clicar em EDITAR, TODOS os clientes aparecem como PESSOA JURÍDICA.
+Não há log. O objetivo é: (1) descobrir se o dado SUMIU DO BANCO ou se só NÃO APARECE; (2) achar a causa exata; (3) parar a perda; (4) dizer se e como é possível recuperar.
+
+REGRAS DESTA TAREFA
+- PRIMEIRO investigar e responder. NÃO altere código nem dados antes de entregar o diagnóstico (Etapas A a D). Só depois, a correção (Etapa E).
+- NÃO execute nenhum comando de escrita no Mongo (update/delete/replace). Só leitura. Consultas de escrita/recuperação: entregue prontas, sem executar.
+- Use o git para comparar: a branch/commit de ANTES do update de Clientes × o que está em produção (develop/main atual). Use worktree para ler a versão antiga sem mexer na atual.
+- Sem testes, sem lint.
+
+========================================================================
+ETAPA A — O DADO ESTÁ NO BANCO? (responder primeiro)
+========================================================================
+A1. Modelo do cliente no Mongo (ClienteModel / documento da coleção de clientes): como o ENDEREÇO é armazenado HOJE (objeto aninhado "Endereco"? campos soltos Cep, Rua, Numero, Bairro, Cidade, Estado, Complemento? lista "Enderecos"?) e como era ANTES do update. Mostre os dois (git diff/worktree) com os atributos [BsonElement], [BsonIgnore], [BsonIgnoreIfNull], [BsonIgnoreExtraElements].
+A2. O mesmo para o TIPO DE PESSOA (TipoPessoa / Pessoa / IsJuridica? enum? string "F"/"J"? int 0/1? bool?): hoje × antes.
+A3. Houve RENOMEAÇÃO de propriedade ou de [BsonElement], mudança de tipo (enum ↔ string ↔ int) ou mudança de aninhamento? Se sim: os documentos antigos ainda têm o dado no NOME/FORMATO ANTIGO (o C# só não lê mais). Isso significa dado RECUPERÁVEL. Diga claramente.
+A4. Entregue consultas de LEITURA (mongo shell) para eu rodar em produção e confirmar:
+    - contar clientes com endereço no formato antigo e no novo;
+    - contar clientes sem endereço em nenhum dos formatos;
+    - listar 5 _id de exemplo de cada grupo;
+    - distribuição do campo de tipo de pessoa (valores distintos e contagem) e se há documentos sem o campo;
+    - se houver campo de data de atualização (DataAlteracao/UpdatedAt): quantos clientes foram alterados depois da data do deploy, e quantos destes estão sem endereço.
+
+========================================================================
+ETAPA B — POR QUE O "JURÍDICA" APARECE PARA TODOS
+========================================================================
+Trace o caminho completo e diga onde falha:
+B1. Back: o GET usado pela tela de editar (rota, método, DTO de saída). O DTO tem o campo de tipo de pessoa? Com qual nome/serialização (camelCase, enum como número ou string)? A projeção/mapeamento (AutoMapper/manual) preenche esse campo? Algum .Ignore(), projeção parcial (Project/Builders.Projection) ou DTO "resumido" usado por engano?
+B2. Front: o formulário de edição (form-cliente): qual control guarda o tipo de pessoa, qual o VALOR DEFAULT, e como ele é preenchido (patchValue/setValue)? O nome do campo bate com o do DTO? O tipo bate (string "F" × número 0 × enum)? Comparação estrita falhando ('1' !== 1)?
+B3. Ordem de preenchimento: ao setar o tipo de pessoa, há valueChanges/subscribe que LIMPA/RESETA campos (CPF/CNPJ, endereço, RG, data de nascimento) ou troca validadores? Se o tipo é setado DEPOIS do patch dos outros campos, ou se o default "Jurídica" dispara reset, os campos são apagados no formulário. Mostre o trecho.
+B4. Conclusão B em 1 linha.
+
+========================================================================
+ETAPA C — POR QUE O ENDEREÇO "SUMIU" (exibição × gravação)
+========================================================================
+C1. Exibição: o GET traz o endereço? O formulário/visualização lê do caminho certo (ex.: cliente.endereco.cep × cliente.cep)? O CEP aciona busca automática (ViaCEP) que SOBRESCREVE os campos ao carregar?
+C2. GRAVAÇÃO (o mais crítico): o PUT de atualizar cliente (Cliente/Atualizar/{ClienteAdvId} ou equivalente) faz ReplaceOne/substituição do documento inteiro ou $set só dos campos enviados? Se substitui ou faz $set de TODOS os campos do DTO, então: ao abrir o cliente (com endereço não carregado no form, ou apagado pelo reset de B3) e SALVAR, o endereço é gravado VAZIO/NULO no banco. Isso é PERDA REAL. Confirme ou descarte com o código.
+C3. O mesmo para outras rotas novas que gravam no cliente: PUT Contato/Editar (substitui a lista de contatos), permissões (AtualizarPermissaoContatoEscritorio), envio de andamentos, aniversário, visualizar processos. Alguma delas grava o documento INTEIRO a partir de um objeto parcial (carrega DTO incompleto → mapeia para o model → ReplaceOne)? Liste cada uma: rota → método → operação Mongo (ReplaceOne / UpdateOne $set campos X,Y / FindOneAndReplace) → campos que podem ser zerados.
+C4. Conclusão C em 1 linha: "só exibição" ou "perda real ao salvar", e em quais rotas.
+
+========================================================================
+ETAPA D — DIAGNÓSTICO E RECUPERAÇÃO (entregar antes de corrigir)
+========================================================================
+D1. Causa-raiz de cada problema (tipo de pessoa e endereço), com arquivo:linha e o commit que introduziu (git log -S / git blame).
+D2. Escopo do dano: quais clientes podem ter perdido dados (critério: alterados via rota X depois da data do deploy) — com a consulta de leitura.
+D3. Recuperação possível, em ordem de preferência:
+    a) dado ainda no documento com nome/formato antigo → script de migração (entregar, não executar) que copia do formato antigo para o novo SEM sobrescrever o que já estiver preenchido;
+    b) backup/snapshot do Mongo (Atlas snapshot, mongodump, point-in-time): o que procurar e um script que restaura SÓ os campos de endereço/tipo de pessoa dos clientes afetados, a partir de uma coleção restaurada à parte (ex.: clientes_backup), sem tocar no resto;
+    c) logs/auditoria de alterações de cliente, se existirem.
+D4. Medida imediata para PARAR a perda (antes da correção completa), ex.: no back, não gravar endereço/tipo de pessoa quando vierem nulos/vazios no PUT (proteção temporária), ou desabilitar o salvar da edição. Recomende a mais segura.
+
+========================================================================
+ETAPA E — CORREÇÃO (só depois do diagnóstico)
+========================================================================
+E1. Tipo de pessoa: GET devolve o valor real; o front preenche o control com o mesmo tipo/valor; sem default "Jurídica" na EDIÇÃO (default só no cadastro novo, e o mesmo default de antes do update); o patch acontece numa ordem que não dispara reset (ex.: patchValue com { emitEvent: false } e depois aplicar validadores/máscaras), e trocar o tipo MANUALMENTE só limpa os campos que realmente não se aplicam (nunca o endereço).
+E2. Endereço: GET e form no mesmo caminho/nome; busca de CEP NÃO sobrescreve ao carregar (só quando o usuário altera o CEP).
+E3. Gravação segura: o PUT de cliente atualiza com $set SÓ dos campos que a tela edita (Builders<ClienteModel>.Update.Set...), nunca ReplaceOne a partir de DTO parcial; campos não enviados permanecem como estão. Aplicar o mesmo nas rotas de C3 que tiverem o problema.
+E4. Compatibilidade de leitura: se houve renomeação (A3), mapear o nome antigo (ex.: [BsonElement] antigo, ou BsonClassMap com alias/leitura dos dois) até a migração rodar.
+
+ENTREGA (em duas partes)
+Parte 1 (antes de alterar): A1–A4, B1–B4, C1–C4, D1–D4, com as consultas de leitura e os scripts de recuperação PRONTOS (não executados).
+Parte 2 (após meu OK): diff da correção + Verificação: dotnet build ✅/❌ | tsc ✅/❌ | ng build ✅/❌ | ciclos: N

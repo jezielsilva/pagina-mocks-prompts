@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T10:05:00-03:00",
+  "atualizado": "2026-10-23T10:25:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -11,12 +11,12 @@
       "principal": true
     },
     {
-      "id": "prompt-drawer-modal-padrao",
+      "id": "prompt-urgente-clientes",
       "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Drawer e visualização rápida: header roxo, imagem real, mesmas ações/favorito/abas nos dois, detalhes, histórico e acessos",
-      "data": "2026-10-23T10:05:00-03:00",
-      "arquivo": "prompts/documentos-drawer-modal-padrao.txt"
+      "projeto": "elaw adv · Clientes (produção)",
+      "titulo": "URGENTE — Clientes: endereços sumiram e tipo de pessoa sempre Jurídica (investigação + recuperação)",
+      "data": "2026-10-23T10:25:00-03:00",
+      "arquivo": "prompts/URGENTE-clientes-endereco-tipopessoa.txt"
     }
   ]
 }
