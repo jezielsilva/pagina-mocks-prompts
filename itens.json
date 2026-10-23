@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-23T10:00:00-03:00",
+  "atualizado": "2026-10-23T10:05:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (drawer e visualização rápida padronizados)",
-      "data": "2026-10-23T10:00:00-03:00",
+      "data": "2026-10-23T10:05:00-03:00",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true
     },
@@ -15,7 +15,7 @@
       "tipo": "prompt",
       "projeto": "elaw adv · Documentos",
       "titulo": "Prompt — Drawer e visualização rápida: header roxo, imagem real, mesmas ações/favorito/abas nos dois, detalhes, histórico e acessos",
-      "data": "2026-10-23T10:00:00-03:00",
+      "data": "2026-10-23T10:05:00-03:00",
       "arquivo": "prompts/documentos-drawer-modal-padrao.txt"
     }
   ]

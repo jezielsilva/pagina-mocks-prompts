@@ -46,7 +46,7 @@ A5. Como a modal de visualização rápida é aberta hoje (MatDialog ou BsModalS
 3. DRAWER: ABAS, CONTEÚDO E AÇÕES
 ========================================================================
 Ordem vertical (igual ao mock): header roxo → visualizador → barra de ações → abas → conteúdo da aba.
-3.1 Barra de ações: UMA linha, logo abaixo do visualizador, com e-buttons pequenos arredondados (outline): Comprimir, Unir com…, Baixar, Mover, Renomear; à direita, Excluir (danger). Comprimir/Unir desabilitados com tooltip quando não for PDF/imagem. Na Lixeira: Restaurar e Excluir definitivamente. Remova o rodapé de ações atual e o ⋮ se ele só repetia essas ações.
+3.1 Barra de ações: UMA linha, logo abaixo do visualizador, com e-buttons pequenos arredondados (outline): Comprimir, Unir com outros PDFs, Baixar, Mover, Renomear; à direita, Excluir (danger). Comprimir/Unir desabilitados com tooltip quando não for PDF/imagem. Na Lixeira: Restaurar e Excluir definitivamente. Remova o rodapé de ações atual e o ⋮ se ele só repetia essas ações.
 3.2 Abas: o MESMO componente/estilo das abas "Lista | Grade" da página (sublinhado roxo na ativa), sem card em volta. Abas: Detalhes | Histórico (N) | Acessos (N), com contador em badge pequeno quando houver itens. Abas fixas no topo ao rolar o conteúdo (sticky).
 3.3 Detalhes: grade de 2 colunas (rótulo pequeno em cinza 12px, valor em 14px semibold):
     Tipo (extensão em maiúsculas) | Tamanho
@@ -65,13 +65,13 @@ Ordem vertical (igual ao mock): header roxo → visualizador → barra de açõe
 Regra: a modal tem as MESMAS funcionalidades do drawer (ações, favorito e as três abas). O que muda é só o arranjo.
 Estrutura (de cima para baixo, igual ao mock):
   [Header roxo: nome · local · tamanho ............................ ☆ favorito  ✕]
-  [Barra de ações (largura total): (Abrir) Comprimir  Unir com…  Baixar  Mover  Renomear ........ (Excluir)]
+  [Barra de ações (largura total): (Abrir) Comprimir  Unir com outros PDFs  Baixar  Mover  Renomear ........ (Excluir)]
   [Visualizador (flex 1)                         | Painel 380px: abas Detalhes | Histórico (N) | Acessos (N) + conteúdo]
 - Largura ~1180px (máx. 94vw); altura do corpo até 86vh menos o header e a barra. Nada de rolagem horizontal.
 - Header: igual ao do drawer (item 1), com a ESTRELA de favorito antes do X (mesmo comportamento do drawer: alterna favorito e atualiza a lista e a área Favoritos).
 - Barra de ações: logo abaixo do header, separada por borda, padding 10px 20px, e-buttons pequenos arredondados (outline), com quebra de linha se faltar espaço (flex-wrap):
   - primeiro "Abrir" (primary): fecha a modal e abre o drawer do arquivo;
-  - depois Comprimir, Unir com…, Baixar, Mover, Renomear (mesmas regras de habilitação e tooltips do drawer);
+  - depois Comprimir, Unir com outros PDFs, Baixar, Mover, Renomear (mesmas regras de habilitação e tooltips do drawer);
   - Excluir (danger) isolado à direita (margin-left: auto);
   - na Lixeira: Restaurar e Excluir definitivamente, como no drawer.
   - Ações que abrem diálogo (Comprimir, Unir, Mover, Renomear, Excluir) fecham a modal e abrem o diálogo correspondente; Baixar e favorito NÃO fecham a modal.
@@ -79,6 +79,12 @@ Estrutura (de cima para baixo, igual ao mock):
 - Painel lateral: SÓ as abas Detalhes | Histórico | Acessos, idênticas às do drawer (3.2 a 3.5), com as abas fixas no topo ao rolar. Só o painel rola verticalmente, se precisar.
 - REMOVER o rodapé antigo do painel (Baixar/Abrir) e as Etiquetas.
 - O Local quebra em quantas linhas precisar, nunca é cortado nem empurra a largura do painel.
+
+TEXTOS COMPLETOS (sem abreviar quando houver espaço):
+- Rótulos de botões por extenso: "Unir com outros PDFs" (não "Unir com…"), "Comprimir", "Renomear" etc.
+- Título do header (nome do arquivo): quebra em até 2 linhas antes de truncar; truncar (com tooltip do nome completo) só a partir da 3ª linha.
+- Subtítulo (local · tamanho) e Local nos Detalhes: quebram linha, sem reticências.
+- Revise o drawer e a modal: nada de text-truncate/ellipsis em textos que cabem com quebra de linha. Truncar só onde a quebra prejudica o layout (ex.: nome dentro do card da grade e da linha da lista, que já têm tooltip).
 
 COMPONENTES COMPARTILHADOS (obrigatório, sem duplicar):
 - Um componente de AÇÕES DO ARQUIVO (ex.: app-documento-acoes) com input mostrarAbrir (false no drawer, true na modal) e a mesma regra de habilitação/Lixeira. Usado no drawer e na modal.
@@ -93,6 +99,7 @@ CRITÉRIOS DE ACEITE
 1. Drawer e modal com header roxo padrão, X branco e sem ícone laranja. Modal sem brilho.
 2. Imagem real no drawer e na modal (com skeleton e fallback). O SVG só aparece nas miniaturas.
 3. Abas do drawer iguais às "Lista | Grade" da página.
+4b. Rótulos por extenso ("Unir com outros PDFs"); título do header quebra em até 2 linhas; nada truncado quando cabe com quebra de linha.
 4a. Local com caminho longo quebra em várias linhas (drawer e modal), sem reticências.
 4. Detalhes só com Tipo, Tamanho, Modificado, Autor, Local, Classificação (Em breve) e Prazo (se houver).
 5. Histórico e Acessos carregando dados reais (sem IP) e com estados vazios.

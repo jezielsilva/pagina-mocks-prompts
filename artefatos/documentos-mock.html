@@ -364,7 +364,8 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .doc-drawer-head{display:flex;align-items:center;gap:12px;padding:14px 18px}
 /* Header roxo padrão (igual ao drawer de Tarefas / modais do sistema) */
 .modal-header-brand{background:linear-gradient(135deg,var(--color-primary),var(--color-primary-darken));color:var(--color-white);border-bottom:none}
-.modal-header-brand .brand-title{font:600 16px var(--font-head);color:var(--color-white)}
+.modal-header-brand .brand-title{font:600 16px/1.3 var(--font-head);color:var(--color-white);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.modal-header-brand .brand-sub{overflow-wrap:anywhere}
 .modal-header-brand .brand-sub{font-size:12px;color:oklch(from var(--color-white) l c h / .8)}
 .modal-header-brand .btn-close,.modal-header-brand .btn-icon{color:var(--color-white)}
 .modal-header-brand .btn-close:hover,.modal-header-brand .btn-icon:hover{background:oklch(from var(--color-white) l c h / .15)}
@@ -1965,7 +1966,7 @@ function fileActionsHTML(f,{abrir=false}={}){
   const b=(k,icn,l,cls='btn-outline-secondary',extra='')=>`<button type="button" class="btn btn-sm rounded-pill ${cls}" data-pa="${k}" ${extra}>${ic(icn,14)}${l}</button>`;
   if(inTrash)return b('restore','restore','Restaurar','btn-success')+b('purge','trash','Excluir definitivamente','btn-danger ms-auto');
   return (abrir?b('open','open','Abrir','btn-primary'):'')
-    +b('compress','compress','Comprimir','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')+b('merge','merge','Unir com…','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')
+    +b('compress','compress','Comprimir','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')+b('merge','merge','Unir com outros PDFs','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')
     +b('download','download','Baixar')+b('move','move','Mover')+b('rename','edit','Renomear')+b('trash','trash','Excluir','btn-danger ms-auto');
 }
 function fileTabsHTML(f,tab){
@@ -1984,7 +1985,7 @@ function renderPanel(){
   const inTrash=TRASH.some(t=>t.item===f),m=isMergeable(f);
   const scroll=$('.doc-drawer-body')?$('.doc-drawer-body').scrollTop:0;
   el.innerHTML=`<div class="drawer-backdrop" data-pclose></div><aside class="drawer drawer-end doc-drawer" role="dialog" aria-modal="true" aria-label="Documento ${esc(f.name)}">
-    <header class="doc-drawer-head modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block text-truncate">${esc(f.name)}</span><span class="brand-sub d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>
+    <header class="doc-drawer-head modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block">${esc(f.name)}</span><span class="brand-sub d-block">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>
     ${inTrash?'':favBtn(f,18)}<button type="button" class="btn-close" id="pnl-x" data-pclose aria-label="Fechar">${ic('x',18)}</button></header>
     <div class="doc-drawer-viewer file-list-item-thumb">${pagesHTML(f)}</div>
     <div class="doc-drawer-actions border-top border-bottom">${fileActionsHTML(f)}</div>
@@ -2013,7 +2014,7 @@ function quickLook(f,tab='detalhes'){
   access(f,'visualizado');
   const b=document.createElement('div');b.className='modal';
   const paint=()=>{const inTrash=TRASH.some(t=>t.item===f);
-    b.innerHTML=`<div class="modal-dialog modal-ql"><div class="modal-content" role="dialog" aria-modal="true" aria-label="Visualização rápida de ${esc(f.name)}"><div class="modal-header modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block text-truncate">${esc(f.name)}</span><span class="brand-sub d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>${inTrash?'':favBtn(f,18)}<button type="button" class="btn-close" data-qx aria-label="Fechar">${ic('x',18)}</button></div>
+    b.innerHTML=`<div class="modal-dialog modal-ql"><div class="modal-content" role="dialog" aria-modal="true" aria-label="Visualização rápida de ${esc(f.name)}"><div class="modal-header modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block">${esc(f.name)}</span><span class="brand-sub d-block">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>${inTrash?'':favBtn(f,18)}<button type="button" class="btn-close" data-qx aria-label="Fechar">${ic('x',18)}</button></div>
     <div class="ql-actions border-bottom">${fileActionsHTML(f,{abrir:true})}</div>
     <div class="quicklook"><div class="quicklook-doc file-list-item-thumb">${pagesHTML(f)}</div>
     <div class="quicklook-side border-start">${fileTabsHTML(f,QL.tab)}</div></div></div></div>`;};
