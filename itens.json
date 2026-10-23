@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T11:50:00-03:00",
+  "atualizado": "2026-10-23T11:45:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -12,14 +12,6 @@
       "fixo": true
     },
     {
-      "id": "prompt-urgente-clientes",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Clientes (produção)",
-      "titulo": "URGENTE — Clientes: endereços sumiram e tipo de pessoa sempre Jurídica (investigação + recuperação)",
-      "data": "2026-10-23T10:25:00-03:00",
-      "arquivo": "prompts/URGENTE-clientes-endereco-tipopessoa.txt"
-    },
-    {
       "id": "perfil-codigo",
       "tipo": "prompt",
       "fixo": true,
@@ -27,6 +19,14 @@
       "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
       "data": "2026-10-23T11:50:00-03:00",
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    },
+    {
+      "id": "prompt-drawer-modal-padrao",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Drawer e visualização rápida: header roxo, imagem real, mesmas ações/favorito/abas nos dois, detalhes, histórico e acessos",
+      "data": "2026-10-23T11:45:00-03:00",
+      "arquivo": "prompts/documentos-drawer-modal-padrao.txt"
     }
   ]
 }
