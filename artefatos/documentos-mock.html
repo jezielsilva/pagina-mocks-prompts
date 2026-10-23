@@ -362,6 +362,29 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 /* Painel do documento (drawer lateral 50%) */
 .doc-drawer{width:50vw;min-width:640px;display:grid;grid-template-rows:auto minmax(0,52%) auto minmax(0,1fr)}
 .doc-drawer-head{display:flex;align-items:center;gap:12px;padding:14px 18px}
+/* Header roxo padrão (igual ao drawer de Tarefas / modais do sistema) */
+.modal-header-brand{background:linear-gradient(135deg,var(--color-primary),var(--color-primary-darken));color:var(--color-white);border-bottom:none}
+.modal-header-brand .brand-title{font:600 16px var(--font-head);color:var(--color-white)}
+.modal-header-brand .brand-sub{font-size:12px;color:oklch(from var(--color-white) l c h / .8)}
+.modal-header-brand .btn-close,.modal-header-brand .btn-icon{color:var(--color-white)}
+.modal-header-brand .btn-close:hover,.modal-header-brand .btn-icon:hover{background:oklch(from var(--color-white) l c h / .15)}
+.modal-header-brand .btn-icon.text-primary{color:var(--color-warning)}
+/* Abas do drawer: as mesmas abas sublinhadas da página (Lista/Grade) */
+.doc-drawer-body{padding:0 18px 18px;overflow:auto;min-height:0}
+.doc-drawer-body .nav-tabs{position:sticky;top:0;background:var(--card-bg);z-index:1}
+.doc-drawer-tab{padding-top:14px}
+.tab-empty{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:28px 12px}
+/* Detalhes em grade 2 colunas, sem tabela */
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;margin:0}
+.kv{min-width:0}.kv.full{grid-column:1/-1}
+.kv dt{font-size:12px;color:var(--text-color-secondary);font-weight:500;margin-bottom:2px}
+.kv dd{margin:0;font-size:14px;color:var(--text-color);font-weight:600;overflow-wrap:anywhere}
+.quicklook-side .kv-grid{grid-template-columns:1fr 1fr}
+/* Imagem real no visualizador */
+.img-view{width:100%;display:flex;justify-content:center;align-items:center;background:var(--color-slate-100);border-radius:8px;min-height:240px}
+.img-view img{max-width:100%;max-height:calc(86vh - 140px);object-fit:contain;display:block;border-radius:4px}
+.doc-drawer-viewer .pages,.doc-drawer-viewer .img-view{height:100%}.doc-drawer-viewer .img-view img{max-height:100%}
+.kv dd .btn-link{padding:0;text-align:left}
 .doc-drawer-viewer{overflow:auto;padding:24px}
 .doc-drawer-actions{display:flex;gap:6px;padding:12px 18px;flex-wrap:wrap}
 .doc-drawer-body{overflow:auto;padding:16px 18px 24px}
@@ -371,10 +394,12 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .meta-value{display:flex;flex-direction:column;align-items:flex-end;gap:4px;max-width:70%;margin-left:auto}
 .picker-trigger{max-width:260px}
 /* Visualização rápida */
-.quicklook{display:grid;grid-template-columns:1fr 300px;height:min(680px,86vh)}
+.modal-ql{width:min(1180px,94vw)}
+.quicklook{display:grid;grid-template-columns:minmax(0,1fr) 360px;height:min(720px,86vh)}
 .quicklook-doc{overflow:auto;padding:28px;display:flex;justify-content:center;align-items:flex-start}
 .quicklook-doc .pg{max-width:420px}
-.quicklook-side{padding:20px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.quicklook-side{padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;overflow-x:hidden;min-width:0}
+.quicklook-actions{margin-top:auto;display:flex;gap:8px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border-color)}
 /* Classificação */
 .classify-list{display:flex;flex-direction:column;max-height:52vh;overflow-y:auto}
 .classify-row{display:flex;align-items:center;gap:12px;padding:10px 4px;transition:opacity .2s,transform .2s}
@@ -1100,8 +1125,7 @@ function thumb(f,real=false){
 /* SIMULAÇÃO das páginas (painel e visualização rápida). Produção: visualizador pdf.js / imagem real. */
 function pagesHTML(f){
   const k=kind(f.ext);
-  if(k==='img')return `<div class="pages"><div class="pg imgpg"><img class="imgpg-real" src="${sampleImg(f)}" alt="${esc(f.name)}" decoding="async">
-      <div class="ocrcap"><span class="d-flex align-items-center gap-1 fw-bold text-primary mb-2">${ic('spark',12)}Texto reconhecido (OCR)</span>${f.ocr==='proc'?'<span class="text-secondary">Processando…</span>':esc(f.text||'Nenhum texto reconhecido.')}</div></div></div>`;
+  if(k==='img')return `<div class="pages"><div class="img-view"><img src="${sampleImg(f)}" alt="${esc(f.name)}" decoding="async"></div></div>`;
   if(k==='xlsx'){
     const rows=[['Honorários contratuais','05/10','3.500,00'],['Custas iniciais','08/10','1.214,32'],['Perícia contábil','12/10','4.800,00'],['Diligência correspondente','15/10','350,00'],['Cópias e autenticações','18/10','86,40'],['Deslocamento','20/10','142,00'],['Honorários êxito','28/10','12.400,00']];
     return `<div class="pages"><div class="pg sheetpg"><table><thead><tr><th>Descrição</th><th>Vencimento</th><th>Valor (R$)</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="n">${r[2]}</td></tr>`).join('')}<tr><th>Total</th><th></th><th class="n">22.492,72</th></tr></tbody></table><div class="pg-n">${esc(f.name)}</div></div></div>`;
@@ -1901,9 +1925,11 @@ function tipoField(f,inTrash){const t=tipoById(f.tipo),s=f.tipo?null:sugerirTipo
   return `<span class="meta-value">${pickerTrigger(t,`data-pa="settipo" ${inTrash?'disabled':''}`)}${s?`<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-sgt="${s.tipo}">${ic('spark',12)}Usar sugestão: ${esc(curto(tipoById(s.tipo).nome))} ${confBadge(s.conf)}</button>`:''}</span>`;}
 const statusSelect=(f,inTrash)=>`<select class="form-select form-select-sm" data-pa-status aria-label="Status" ${inTrash?'disabled':''}><option value="">Sem status</option>${Object.entries(STATUS).map(([k2,v])=>`<option value="${k2}" ${f.status===k2?'selected':''}>${v}</option>`).join('')}</select>`;
 const ocrBadge=f=>f.ocr==='ok'?badge('positive','Concluído'):f.ocr==='proc'?`<span class="badge badge-info"><span class="spinner-border"></span>Processando</span>`:badge('secondary','Não se aplica');
-const detailRows=(f,inTrash)=>`${metaRows(f)}<tr><td>Classificação</td><td>${tipoField(f,inTrash)}</td></tr><tr><td>Processo</td><td>${f.proc?`<span class="tabular-nums">${esc(f.proc)}</span>`:'—'}</td></tr>
-  <tr><td>Status</td><td>${statusSelect(f,inTrash)}</td></tr><tr><td>Prazo</td><td>${f.deadline!=null?badge(SEV_BADGE[deadlineInfo(f.deadline).sev],deadlineInfo(f.deadline).rot):'—'}</td></tr>`;
-const accessList=(rows,withFile)=>`<div class="list-group">${rows.map(({f,a})=>`<div class="list-group-item"><span class="section-icon">${ic(a.tipo==='baixado'?'download':'eye',15)}</span><div class="flex-fill"><b>${esc(USERS[a.user].nome)}</b> ${a.tipo==='baixado'?'baixou':'visualizou'}${withFile?` <button type="button" class="btn btn-link btn-sm p-0" data-logopen="${f.id}">${esc(f.name)}</button>`:''}${a.audit?' '+badge('info','Auditoria financeira'):''}<span class="d-block small text-secondary">${fmtDate(a.date)} · IP ${a.ip}</span></div></div>`).join('')}</div>`;
+/* Detalhes: Tipo, Tamanho, Modificado, Autor, Local, Classificação (em breve) e Prazo só se houver */
+const detailList=f=>{const dl=f.deadline!=null?deadlineInfo(f.deadline):null;const it=(k,v,full='')=>`<div class="kv ${full}"><dt>${k}</dt><dd>${v}</dd></div>`;
+  return `<dl class="kv-grid">${it('Tipo',esc(f.ext.toUpperCase()))}${it('Tamanho',fmtSize(f.size))}${it('Modificado',fmtDate(f.mtime))}${it('Autor',esc(userName(f.author)))}${it('Local',`<button type="button" class="btn btn-link btn-sm p-0 text-start" data-goto="${f.id}">${esc(locationOf(f))}</button>`,'full')}${it('Classificação',badge('secondary','Em breve'))}${dl?it('Prazo',badge(SEV_BADGE[dl.sev],dl.rot)):''}</dl>`;};
+const detailRows=(f)=>`${metaRows(f)}`;
+const accessList=(rows,withFile)=>`<div class="list-group">${rows.map(({f,a})=>`<div class="list-group-item"><span class="section-icon">${ic(a.tipo==='baixado'?'download':'eye',15)}</span><div class="flex-fill"><b>${esc(USERS[a.user].nome)}</b> ${a.tipo==='baixado'?'baixou':'visualizou'}${withFile?` <button type="button" class="btn btn-link btn-sm p-0" data-logopen="${f.id}">${esc(f.name)}</button>`:''}${a.audit?' '+badge('info','Auditoria financeira'):''}<span class="d-block small text-secondary tabular-nums">${fmtDate(a.date)}</span></div></div>`).join('')}</div>`;
 const favBtn=(f,sz)=>`<button type="button" class="btn btn-icon ${f.fav?'text-primary':''}" data-pa="fav" aria-pressed="${f.fav}" aria-label="${f.fav?'Remover dos favoritos':'Adicionar aos favoritos'}">${ic('star',sz)}</button>`;
 /* Tablet/celular: tela cheia, documento primeiro, informações abaixo, ações fixas no rodapé */
 function renderMobileViewer(){
@@ -1921,8 +1947,7 @@ function renderMobileViewer(){
       <div class="doc-viewer-doc file-list-item-thumb">${pagesHTML(f)}<div class="small text-secondary text-center mt-2">Página 1 de ${pages} · role para ver as informações</div></div>
       <div class="doc-viewer-info">
         ${badges(f)}
-        <section class="card"><div class="card-header"><span class="text-secondary d-flex">${ic('file',15)}</span><span class="card-title">Detalhes</span></div><div class="card-body"><table class="table"><tbody>${detailRows(f,inTrash)}</tbody></table></div></section>
-        ${det('spark',`Texto reconhecido (OCR) ${ocrBadge(f)}`,`<div class="ocr-text">${f.ocr==='proc'?'Aguardando processamento…':esc(f.text||'Nenhum texto encontrado neste arquivo.')}</div>`)}
+        <section class="card"><div class="card-header"><span class="text-secondary d-flex">${ic('file',15)}</span><span class="card-title">Detalhes</span></div><div class="card-body">${detailList(f)}</div></section>
         ${det('history',`Histórico (${evs.length})`,eventsHTML(evs,true))}
         ${det('shield',`Acessos (${f.access.length})`,accessList(f.access.slice().sort((a,b)=>b.date-a.date).map(a=>({f,a})),false))}
       </div>
@@ -1939,29 +1964,27 @@ function renderPanel(){
   const scroll=$('.doc-drawer-body')?$('.doc-drawer-body').scrollTop:0;
   const b=(k,icn,l,cls='btn-outline-secondary',extra='')=>`<button type="button" class="btn btn-sm rounded-pill ${cls}" data-pa="${k}" ${extra}>${ic(icn,14)}${l}</button>`;
   const acts=inTrash?b('restore','restore','Restaurar','btn-success')+b('purge','trash','Excluir definitivamente','btn-danger')
-   :b('sign','sign',`Assinar ${badge('secondary','Em breve')}`,'btn-outline-secondary','disabled title="Integração de assinatura em definição"')
-    +b('compress','compress','Comprimir','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')+b('merge','merge','Unir com…','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')
+   :b('compress','compress','Comprimir','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')+b('merge','merge','Unir com…','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')
     +b('download','download','Baixar')+b('move','move','Mover')+b('rename','edit','Renomear')+b('trash','trash','Excluir','btn-danger ms-auto');
   const evs=EVENTS.filter(e=>e.item===f).sort((a,b)=>b.date-a.date);
   let body='';
+  const vazio=(icn,t,s)=>`<div class="tab-empty text-secondary">${ic(icn,28)}<span class="card-title">${t}</span><span class="small">${s}</span></div>`;
   if(PNL.tab==='detalhes'){
-    body=`<table class="table"><tbody>${detailRows(f,inTrash)}</tbody></table>
-      <div class="d-flex align-items-center gap-2 mt-3 mb-2"><span class="card-title">Texto reconhecido (OCR)</span>${ocrBadge(f)}</div>
-      ${f.ocr==='na'?eAlert('light',{html:'O texto de documentos Word/Excel é extraído diretamente do arquivo, sem OCR.'}):''}<div class="ocr-text text-secondary mt-2">${f.ocr==='proc'?'Aguardando processamento…':esc(f.text||'Nenhum texto encontrado neste arquivo.')}</div>`;
+    body=detailList(f);
   }else if(PNL.tab==='historico'){
-    body=evs.length?eventsHTML(evs,true):eAlert('light',{html:'Sem eventos.'});
+    body=evs.length?eventsHTML(evs,true):vazio('history','Sem histórico','Envios, renomeações e movimentações deste arquivo aparecem aqui.');
   }else{
-    const fin=pathOf(f)[0]===ROOT.fin;
-    body=eAlert('info',{icone:'shield',html:`Toda visualização e download é registrado com usuário, data, hora e IP.${fin?' Downloads desta área geram também registro de <b>auditoria financeira</b>.':''}`})+accessList(f.access.slice().sort((a,b)=>b.date-a.date).map(a=>({f,a})),false);
+    const acc=f.access.slice().sort((a,b)=>b.date-a.date);
+    body=acc.length?accessList(acc.map(a=>({f,a})),false):vazio('eye','Nenhum acesso registrado','Visualizações e downloads deste arquivo aparecem aqui.');
   }
   const tabs=[['detalhes','Detalhes'],['historico','Histórico'],['acessos','Acessos']];
   el.innerHTML=`<div class="drawer-backdrop" data-pclose></div><aside class="drawer drawer-end doc-drawer" role="dialog" aria-modal="true" aria-label="Documento ${esc(f.name)}">
-    <header class="doc-drawer-head border-bottom"><span class="section-icon">${ic(KICON[kind(f.ext)],18)}</span><div class="flex-fill"><span class="card-title d-block text-truncate">${esc(f.name)}</span><span class="small text-secondary d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>
-    ${inTrash?'':favBtn(f,18)}<button type="button" class="btn-close" id="pnl-x" data-pclose aria-label="Fechar">${ic('x',16)}</button></header>
+    <header class="doc-drawer-head modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block text-truncate">${esc(f.name)}</span><span class="brand-sub d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>
+    ${inTrash?'':favBtn(f,18)}<button type="button" class="btn-close" id="pnl-x" data-pclose aria-label="Fechar">${ic('x',18)}</button></header>
     <div class="doc-drawer-viewer file-list-item-thumb">${pagesHTML(f)}</div>
     <div class="doc-drawer-actions border-top border-bottom">${acts}</div>
-    <div class="doc-drawer-body"><div class="card"><div class="card-header"><ul class="nav nav-tabs card-header-tabs" role="tablist">${tabs.map(([k2,l])=>`<li class="nav-item" role="presentation"><button type="button" class="nav-link ${PNL.tab===k2?'active':''}" role="tab" aria-selected="${PNL.tab===k2}" data-ptab="${k2}">${l}</button></li>`).join('')}</ul></div>
-    <div class="card-body" role="tabpanel">${body}</div></div></div></aside>`;
+    <div class="doc-drawer-body"><ul class="nav nav-tabs" role="tablist">${tabs.map(([k2,l])=>`<li class="nav-item" role="presentation"><button type="button" class="nav-link ${PNL.tab===k2?'active':''}" role="tab" aria-selected="${PNL.tab===k2}" data-ptab="${k2}">${l}${k2==='historico'&&evs.length?` <span class="badge badge-sm badge-secondary">${evs.length}</span>`:k2==='acessos'&&f.access.length?` <span class="badge badge-sm badge-secondary">${f.access.length}</span>`:''}</button></li>`).join('')}</ul>
+    <div class="doc-drawer-tab" role="tabpanel">${body}</div></div></aside>`;
   const bd=$('.doc-drawer-body');if(bd)bd.scrollTop=scroll;
 }
 $('#panel').addEventListener('click',e=>{
@@ -1985,10 +2008,10 @@ function quickLook(f){
   if(!f||f.type!=='file')return;closeQL();closeMenu();
   access(f,'visualizado');
   const b=document.createElement('div');b.className='modal';
-  b.innerHTML=`<div class="modal-dialog modal-xl"><div class="modal-content" role="dialog" aria-modal="true" aria-label="Visualização rápida de ${esc(f.name)}"><div class="modal-header"><span class="modal-title text-truncate">${esc(f.name)}</span><button type="button" class="btn-close" data-qx aria-label="Fechar">${ic('x',16)}</button></div>
+  b.innerHTML=`<div class="modal-dialog modal-ql"><div class="modal-content" role="dialog" aria-modal="true" aria-label="Visualização rápida de ${esc(f.name)}"><div class="modal-header modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block text-truncate">${esc(f.name)}</span><span class="brand-sub d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div><button type="button" class="btn-close" data-qx aria-label="Fechar">${ic('x',18)}</button></div>
     <div class="quicklook"><div class="quicklook-doc file-list-item-thumb">${pagesHTML(f)}</div>
-    <div class="quicklook-side border-start">${badges(f)}${metaHTML(f)}
-    <div class="d-flex flex-column gap-2 mt-3"><button type="button" class="btn btn-primary rounded-pill" data-qo>${ic('open',14)}Abrir</button><button type="button" class="btn btn-outline-secondary rounded-pill" data-qd>${ic('download',14)}Baixar</button></div></div></div></div></div>`;
+    <div class="quicklook-side border-start"><span class="card-title">Detalhes</span>${detailList(f)}
+    <div class="quicklook-actions"><button type="button" class="btn btn-outline-secondary rounded-pill" data-qd>${ic('download',14)}Baixar</button><button type="button" class="btn btn-primary rounded-pill" data-qo>${ic('open',14)}Abrir</button></div></div></div></div></div>`;
   b.addEventListener('mousedown',e=>{if(e.target===b)closeQL();});
   b.addEventListener('click',e=>{if(e.target.closest('[data-qx]'))closeQL();else if(e.target.closest('[data-qo]')){closeQL();openPanel(f);}else if(e.target.closest('[data-qd]'))doDownload([f]);else if(e.target.closest('[data-goto]')){closeQL();revealFile(f);}});
   $('#layer').appendChild(b);QL={el:b,prev:document.activeElement};$('[data-qx]',b).focus();
