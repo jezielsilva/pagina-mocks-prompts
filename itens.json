@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T17:57",
+  "atualizado": "2026-10-23T18:18",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-code-review-classificacoes",
+      "id": "prompt-classificacoes-correcoes",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Code review das Classificações (rodar em sessão nova)",
-      "data": "2026-10-23T17:57",
-      "arquivo": "prompts/code-review-classificacoes.txt"
+      "titulo": "Prompt — Classificações: correções do review + contagem + tapa no layout",
+      "data": "2026-10-23T18:18",
+      "arquivo": "prompts/classificacoes-correcoes-layout.txt"
     }
   ]
 }
