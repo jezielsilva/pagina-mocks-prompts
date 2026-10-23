@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T15:05:00-03:00",
+  "atualizado": "2026-10-23T15:20:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -27,6 +27,14 @@
       "titulo": "Script Mongo — classificacoesArquivos (collection, índices e padrão do sistema: 3 categorias, 22 subcategorias, 150 tipos)",
       "data": "2026-10-23T15:05:00-03:00",
       "arquivo": "prompts/classificacoes-arquivos.mongo.js"
+    },
+    {
+      "id": "prompt-classificacoes-ajuste",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Classificações: ajustar front e back à collection classificacoesArquivos (modelagem final)",
+      "data": "2026-10-23T15:20:00-03:00",
+      "arquivo": "prompts/classificacoes-ajuste-modelagem.txt"
     }
   ]
 }
