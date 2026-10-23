@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-23T16:09",
+  "atualizado": "2026-10-23T16:17",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (drawer e visualização rápida padronizados)",
-      "data": "2026-10-23T16:09",
+      "data": "2026-10-23T16:17",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true
