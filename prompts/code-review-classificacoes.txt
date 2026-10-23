@@ -14,7 +14,7 @@ SPEC (fonte do eixo Spec; NÃO procure issue tracker). Leia nesta ordem; o promp
 1. Prompt "Classificações completas":
    https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/12654a0/prompts/classificacoes-completo.txt
 2. Prompt de AJUSTE (modelagem final — prevalece):
-   https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/main/prompts/classificacoes-ajuste-modelagem.txt
+   https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/73d3fb2/prompts/classificacoes-ajuste-modelagem.txt
 Se não conseguir abrir os links, PARE e peça para o usuário colar os dois textos.
 Modelagem final do banco (já criada pelo usuário; confira se o código bate EXATAMENTE):
 - collection classificacoesArquivos, documentos achatados em 3 níveis: categoria → subcategoria → tipo;
