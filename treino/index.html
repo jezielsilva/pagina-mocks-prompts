@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Treino diário</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--line:#e2e8f0;--txt:#0f172a;--sub:#64748b;--pri:#70398c;--pri-l:#f6f0fa;--ok:#2e7d5b;--ok-l:#e8f5ee;--warn:#9a6700;--warn-l:#fff6dd;--code-bg:#f8fafc}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#171a21;--line:#2a2f3a;--txt:#e6e8ee;--sub:#94a3b8;--pri:#b48ad0;--pri-l:#2a2034;--ok:#5fc89a;--ok-l:#15291f;--warn:#e3b341;--warn-l:#2b2410;--code-bg:#11141a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 110px}
+h1{font-size:22px;margin:0}.sub{color:var(--sub);margin:4px 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.fb{border-left:4px solid var(--ok);background:var(--ok-l)}.fb h2{font-size:15px;margin:0 0 6px}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--pri-l);color:var(--pri);margin-right:6px}
+.q h3{font-size:15px;margin:6px 0 8px}
+pre{margin:8px 0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px;font:12.5px/1.5 ui-monospace,Consolas,monospace;overflow:auto;white-space:pre}
+.opts{display:grid;gap:6px;margin:8px 0}label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer}
+label:has(input:checked){border-color:var(--pri);background:var(--pri-l)}
+textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);color:var(--txt);font:inherit;resize:vertical}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:999px;padding:8px 16px;cursor:pointer}
+button.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+.empty{padding:40px;text-align:center;color:var(--sub)}
+</style></head><body>
+<div class="wrap" id="w"><div class="empty">Carregando…</div></div>
+<div class="bar" id="bar" hidden><span id="prog" style="align-self:center;color:var(--sub);font-size:13px"></span><button id="copy">Copiar respostas</button><button class="pri" id="send">Enviar respostas (Issue)</button></div>
+<script>
+// O treino do dia vem de treino/AAAA-MM-DD.json (gerado pela rotina). Respostas voltam como Issue "Treino AAAA-MM-DD — respostas".
+const d=new URLSearchParams(location.search).get('d');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let T=null,A={};const KEY='treino-'+d;try{A=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(A))}catch(e){}prog()};
+fetch(d+'.json?t='+Date.now()).then(r=>r.json()).then(j=>{T=j;paint()}).catch(()=>{document.getElementById('w').innerHTML='<div class="empty">Treino não encontrado.</div>'});
+function paint(){
+ const w=document.getElementById('w');
+ w.innerHTML=`<h1>Treino de ${esc(T.dataExibicao||d)}</h1><p class="sub">${esc(T.intro||'')} · ${T.perguntas.length} perguntas · ~${T.minutos||15} min</p>`
+ +(T.feedbackAnterior?`<div class="card fb"><h2>Correção do treino anterior</h2>${T.feedbackAnterior}</div>`:'')
+ +T.perguntas.map((q,i)=>`<div class="card q"><span class="tag">${esc(q.tema)}</span><span class="tag">${esc(q.tipo)}</span><h3>${i+1}. ${esc(q.enunciado)}</h3>${q.codigo?`<pre>${esc(q.codigo)}</pre>`:''}
+  ${q.opcoes?`<div class="opts">${q.opcoes.map((o,k)=>`<label><input type="radio" name="${q.id}" value="${k}" ${A[q.id]===k?'checked':''}><span>${String.fromCharCode(65+k)}) ${esc(o)}</span></label>`).join('')}</div>`:''}
+  <textarea data-q="${q.id}" placeholder="${q.opcoes?'Explique por que escolheu (com suas palavras)':'Sua resposta'}">${esc(A[q.id+'_t']||'')}</textarea></div>`).join('');
+ document.getElementById('bar').hidden=false;prog();
+}
+document.addEventListener('change',e=>{if(e.target.type==='radio'){A[e.target.name]=+e.target.value;save()}});
+document.addEventListener('input',e=>{const t=e.target.closest('[data-q]');if(t){A[t.dataset.q+'_t']=t.value;save()}});
+function prog(){if(!T)return;const n=T.perguntas.filter(q=>(q.opcoes?A[q.id]!==undefined:true)&&(A[q.id+'_t']||'').trim()).length;document.getElementById('prog').textContent=`${n} de ${T.perguntas.length} respondidas`}
+function texto(){return `Treino ${d}\n\n`+T.perguntas.map((q,i)=>`### ${i+1}. [${q.id}] ${q.enunciado}\n`+(q.opcoes?`Escolha: ${A[q.id]!==undefined?String.fromCharCode(65+A[q.id])+') '+q.opcoes[A[q.id]]:'(sem escolha)'}\n`:'')+`Resposta: ${(A[q.id+'_t']||'(em branco)').trim()}\n`).join('\n')}
+document.getElementById('copy').onclick=async()=>{const t=texto();try{await navigator.clipboard.writeText(t)}catch(e){}alert('Respostas copiadas.')};
+document.getElementById('send').onclick=()=>{const t=texto(),ti='Treino '+d+' — respostas';const u='https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title='+encodeURIComponent(ti)+'&body='+encodeURIComponent(t);
+ if(u.length>7800){navigator.clipboard?.writeText(t);alert('Respostas grandes: foram copiadas. A Issue vai abrir; cole com Ctrl+V.');window.open('https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title='+encodeURIComponent(ti),'_blank')}else window.open(u,'_blank')};
+</script></body></html>
