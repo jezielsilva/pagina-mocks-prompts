@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T18:18",
+  "atualizado": "2026-10-23T18:23",
   "itens": [
     {
       "id": "documentos-mock",
@@ -24,8 +24,8 @@
       "id": "prompt-classificacoes-correcoes",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Classificações: correções do review + contagem + tapa no layout",
-      "data": "2026-10-23T18:18",
+      "titulo": "Prompt — Classificações: review + contagem + layout (aviso, sidebar, central, fila, seletor)",
+      "data": "2026-10-23T18:23",
       "arquivo": "prompts/classificacoes-correcoes-layout.txt"
     }
   ]

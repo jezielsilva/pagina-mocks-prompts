@@ -1,12 +1,12 @@
 [Área: Frontend (Angular) + Backend (.NET/Mongo) | Skills: as de Frontend/UI-Kit e Backend do projeto]
 
-PROMPT — CORREÇÕES DE CLASSIFICAÇÕES (CODE REVIEW + CONTAGEM + TAPA FORTE NO LAYOUT)
+PROMPT — CORREÇÕES DE CLASSIFICAÇÕES (CODE REVIEW + CONTAGEM + TAPA FORTE NO LAYOUT: AVISO, SIDEBAR, CENTRAL, FILA E SELETOR)
 Contexto: a implementação de Classificações está na área de trabalho, sem commit. Ajustar em cima dela. Não refazer do zero o que já funciona.
 
 REFERÊNCIA VISUAL OBRIGATÓRIA
 Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
 Abra o card lateral "Classificações" (central) e "Classificar" num arquivo (seletor). Veja em PC, Tablet e Celular ("Ver como").
-O resultado atual está MUITO longe do mock. Modal, card da sidebar e aviso precisam ficar visualmente iguais ao mock, usando componentes do UI-Kit. Sem pena: pode reescrever template e SCSS desses três pontos inteiros.
+O resultado atual está MUITO longe do mock. Central, fila, seletor, card da sidebar e aviso precisam ficar visualmente iguais ao mock, usando componentes do UI-Kit. Sem pena: pode reescrever template e SCSS desses três pontos inteiros.
 
 PASSO 0 — INVESTIGAÇÃO (antes de codar)
 a) Contagem. Hoje a tela mostra "0 arquivos classificados" e "72 sem classificação", mas a base tem 102 arquivos e NENHUM está classificado. Descubra de onde vem cada número:
@@ -118,7 +118,41 @@ Estrutura alvo (igual ao mock):
   - celular: o modal vira bottom sheet, a barra superior empilha e o formulário fica em coluna.
 - Seletor ("Classificar arquivo" / fila): aplicar os mesmos ícones em círculo, a mesma busca, os mesmos botões e o mesmo formulário.
 
-5. REGRAS
+5. FILA "CLASSIFICAR ARQUIVOS" — REFAZER IGUAL AO MOCK (hoje está quebrada)
+Problemas atuais a eliminar:
+- linhas com alturas diferentes e botões quebrando para a linha de baixo;
+- ID cru do Mongo exibido (ex.: "69d661db1a1e9407de8c8ba3");
+- "72 classificar arquivos" (texto errado);
+- "Aplicar sugestão" desabilitado repetido em todas as linhas;
+- botão de aplicar em massa centralizado e solto;
+- paginação "Anterior 1 Próxima" crua;
+- rodapé "Concluir" duplicando a ação.
+Estrutura alvo (ver no mock: "Classificar pendentes" / "Classificar agora"):
+- Cabeçalho padrão roxo "Classificar arquivos" (pode manter o subtítulo curto).
+- Topo:
+  - à esquerda, título "72 arquivos sem classificação" e, abaixo, em cinza: "N classificados agora · a sugestão considera nome, texto, pasta, formato e os tipos dos arquivos vizinhos";
+  - à direita, botão success "Aplicar N sugestões confiáveis (≥ 80%)", que SÓ aparece se N > 0;
+  - "Gerenciar classificações" vai para o rodapé.
+- Cada linha é UMA grade fixa e alinhada (todas as linhas com a mesma estrutura):
+  [miniatura/ícone do arquivo 40px] [nome em negrito, 1 linha com reticências + abaixo o LOCAL em cinza (caminho da pasta: "Meus documentos / Clientes / …", NUNCA o id)] [seletor de classificação (dropdown com o mesmo picker do item 4)] [botão verde redondo só com ícone ✓ para confirmar, desabilitado sem escolha].
+  - Com sugestão: abaixo do nome, "✦ Sugestão: <badge do tipo> <Categoria › Subcategoria> <confiança %>" e o motivo em cinza pequeno. Alternativas viram chips pequenos ("Tipo 72%").
+  - Sem sugestão: badge warning "Sem sugestão — escolha a classificação" (uma vez, no lugar da sugestão). Nada de "Aplicar sugestão" desabilitado.
+- Ao confirmar, a linha sai com animação e o contador atualiza. Fila vazia: alerta de sucesso "Tudo classificado!".
+- Paginação: usar o MESMO componente de paginação personalizado da página de Clientes (procure lá e reutilize; não criar outro). Ele fica abaixo da lista, alinhado como em Clientes.
+- Rodapé: "Gerenciar classificações" (esquerda) e "Concluir" (primário, direita).
+- Celular: a linha empilha (arquivo em cima; seletor + ✓ embaixo, ocupando a largura).
+
+6. SELETOR "CLASSIFICAR <arquivo>" — ESTADO VAZIO E PADRÃO
+- Hoje ele abre com "Mostrar padrão do sistema", ou seja, o padrão já vem OCULTO, e por isso só aparece "Não achou? Criar novo tipo". Corrigir: por padrão o sistema aparece (o botão mostra "Ocultar padrão do sistema"). Ocultar é só visual.
+- Mesmo layout do mock: busca padrão, blocos "Sugestões" e "Usados recentemente" em chips, lista por "Categoria · <nome>" com cards de subcategoria (ícone em círculo + "N tipos") em acordeão, tipos em chips.
+- Estado vazio (padrão oculto e o escritório sem tipos, OU busca sem resultado): em vez de um link solto,
+  - mostrar uma mensagem amigável num alerta suave: "O escritório ainda não criou tipos próprios." (ou "Nenhum tipo encontrado para '<busca>'.");
+  - logo abaixo, JÁ ABERTO, o formulário "Novo tipo do escritório" (o mesmo componente do item 4: Nome do tipo + Vincular à subcategoria + Cancelar/Criar tipo). Com busca, o nome já vem preenchido com o texto buscado.
+  - Ao criar, o tipo fica selecionado e o botão "Salvar classificação" é habilitado.
+- Com itens na lista: manter no fim o botão outline "Não achou? Criar novo tipo", que abre o mesmo formulário.
+- Rodapé: "Voltar à fila" (só quando veio da fila) à esquerda; "Cancelar" e "Salvar classificação" à direita.
+
+7. REGRAS
 - Front "burro": contagens, unicidade, padrão/escritório, desvínculo ao desativar — tudo vem do backend.
 - Seguir o UI-Kit. Onde ele não cobre (círculo de ícone, layout em 2 colunas), usar só os tokens do UI-Kit (cores, raios, espaçamentos). Nada de cor fixa solta.
 - Sem testes, sem lint, sem scripts de validação.
