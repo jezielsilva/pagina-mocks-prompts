@@ -1,0 +1,92 @@
+[Área: Frontend (Angular) + contrato com Backend | Skills: as de Frontend/UI-Kit do projeto]
+
+PROMPT ADICIONAL — TELA "CLASSIFICAÇÕES" (CENTRAL DE GESTÃO) E SELETOR DE CLASSIFICAÇÃO
+Complementa o prompt de Classificações já em andamento. Não muda regra de negócio nem modelagem: só define COMO a tela deve ficar.
+
+REFERÊNCIA VISUAL (obrigatória)
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+No mock: card lateral "Classificações" (abre a central) e, em qualquer arquivo, "Classificar" (abre o seletor). Veja também nos modos Tablet e Celular (barra "Ver como").
+Reproduzir layout, textos e comportamento. Usar componentes do UI-Kit (e-button, badges, inputs, select); nada de CSS solto se o UI-Kit já tiver.
+
+PASSO 0 — INVESTIGAÇÃO (antes de codar)
+- Localize o padrão de modal do Financeiro/Tarefas (BsModalService, cabeçalho roxo, X branco) e reutilize.
+- Localize o que já foi criado pro módulo de Classificações (service, endpoints, models) e reaproveite. Não duplique.
+- Escreva uma mini-spec curta com os arquivos que vai criar/alterar antes de implementar.
+
+1. MODAL "CLASSIFICAÇÕES" (CENTRAL)
+- Modal largo: até ~1240px (quase a tela toda no desktop). Cabeçalho roxo padrão com ícone de etiqueta + "Classificações" e X branco. Rodapé só com "Fechar".
+- Barra superior (uma linha no desktop, empilhada no celular):
+  - Busca "Buscar tipo ou subcategoria…".
+  - Botão alternável "Só os do escritório" (olho). É SÓ VISUAL: esconde os tipos padrão do sistema. Nada é gravado.
+  - Botão alternável "Mostrar desativados".
+  - Botão verde principal "+ Novo tipo".
+- Linha de resumo: "N tipos · N do escritório" | "N arquivos classificados" | "N sem classificação" + link "Classificar agora" (abre a fila de classificação) | à direita, cadeado + "Itens 'Padrão' são do sistema e não mudam".
+- Corpo em 2 colunas:
+  - ESQUERDA (290px, fixa ao rolar), título "CATEGORIAS": 3 cartões grandes (Petições iniciais, Petições intermediárias, Recursos). Cada cartão tem ícone num círculo, nome em negrito e "X subcategorias · Y tipos". O selecionado fica com borda roxa de 2px e fundo roxo claro. Começa em "Petições iniciais".
+  - DIREITA: cabeçalho com ícone em círculo + nome da categoria (título grande) + frase curta:
+    - Petições iniciais: "Peças que dão início ao processo".
+    - Petições intermediárias: "Peças apresentadas durante o processo".
+    - Recursos: "Peças para recorrer de decisões".
+    Abaixo vem a lista de subcategorias da categoria em cards acordeão.
+- Card de subcategoria: ícone num CÍRCULO com fundo claro na cor da subcategoria (cor ~14% de opacidade, ícone na cor cheia) — NÃO usar badge colorido sólido. Mostra nome em negrito e "N tipos · N arquivos" + chevron. Aberto: borda roxa clara.
+- Lista de tipos (dentro do card aberto), uma linha por tipo, 3 colunas:
+  - Coluna 1, nome:
+    - tipo do escritório: badge "Criado pelo escritório";
+    - tipo desativado: nome riscado + badge "Desativado".
+  - Coluna 2: "N arquivos" / "1 arquivo" / "Nenhum arquivo".
+  - Coluna 3, ação:
+    - padrão do sistema: cadeado + "Padrão" (tooltip "Tipo padrão do sistema: não pode ser alterado"), sem botões;
+    - do escritório ativo: "Renomear" (edição na própria linha com Salvar/Cancelar; Enter salva) e "Desativar";
+    - do escritório desativado: "Reativar".
+  - No fim da lista, o link verde "+ Criar tipo nesta subcategoria" (abre o formulário de novo tipo com a subcategoria já selecionada e rola pro topo).
+  - Palavras-chave NÃO aparecem na tela (são internas do aprendizado).
+- Busca preenchida: ignora a categoria selecionada e mostra "Resultados para '…'" agrupados por categoria, com os cards já abertos e só os tipos que batem. Sem resultado: "Nada encontrado. Confira a grafia ou crie um novo tipo."
+- "Só os do escritório" ligado: mostra só subcategorias que têm tipos do escritório, já abertas. Se não houver: "Nenhum tipo criado pelo escritório nesta categoria."
+
+2. CRIAR TIPO (formulário único, reutilizado na central e no seletor)
+- Abre ao clicar "+ Novo tipo" (que some enquanto o formulário está aberto) ou "+ Criar tipo nesta subcategoria".
+- Caixa com fundo roxo claro e título "+ Novo tipo do escritório". Campos:
+  - "Nome do tipo" (placeholder "Ex.: Ação de Cobrança de Condomínio");
+  - "Vincular à subcategoria": select com optgroup por categoria.
+  Botões "Cancelar" e "Criar tipo" (verde). Enter no nome = criar.
+- Validações: nome vazio → "Informe o nome do tipo"; sem subcategoria → "Selecione a subcategoria"; nome repetido na subcategoria (comparação sem maiúscula/acento, quem decide é o BACKEND) → "Já existe um tipo com esse nome nesta subcategoria".
+- Sucesso: toast "Tipo 'X' criado em <subcategoria>". A central vai para a categoria dele com a subcategoria aberta.
+- Só existe criação de TIPO. Categoria e subcategoria nunca são criadas, editadas ou excluídas pela tela.
+
+3. DESATIVAR / REATIVAR
+- Desativar tipo SEM arquivos: desativa direto + toast "Tipo desativado".
+- COM arquivos: modal de confirmação (padrão do projeto). Título "Desativar tipo", texto "N arquivos usam o tipo X. Para desativar, eles serão desvinculados e ficarão sem classificação." e botão vermelho "Desvincular e desativar". O backend desvincula e desativa na mesma operação.
+- Reativar: toast "Tipo reativado".
+- Tipo desativado não aparece no seletor nem nas sugestões.
+
+4. SELETOR DE CLASSIFICAÇÃO (modal "Classificar 'arquivo'" e fila "Classificar arquivos")
+- Mesmo cabeçalho roxo. Busca no topo e botão "Ocultar/Mostrar padrão do sistema" (só visual).
+- Blocos "Sugestões" (com % de confiança) e "Usados recentemente" em chips.
+- Lista agrupada por "Categoria · <nome>", cards de subcategoria com o MESMO ícone em círculo e "N tipos". Ao abrir, aparecem os tipos em chips; tipo do escritório leva o badge "Escritório". Tooltip do chip: "Categoria › Subcategoria › Tipo".
+- No fim, o botão "Não achou? Criar novo tipo" abre o MESMO formulário do item 2. Ao criar, o tipo já fica selecionado.
+- Texto de selecionado: "<Tipo>" + "<Categoria> › <Subcategoria>".
+
+5. RESPONSIVO (3 versões, ver no mock)
+- Tablet e celular: as colunas viram uma só. Os 3 cartões de categoria viram faixa horizontal com rolagem lateral (mín. 220px cada). No celular, a linha de tipo vira nome + ação, com a contagem embaixo. O modal vira drawer de baixo no celular.
+
+6. REGRAS DE ARQUITETURA
+- Front "burro": contagens, unicidade, desativação/desvínculo, permissões e o que é "padrão" vêm do BACKEND. O front só exibe e chama.
+- Se faltar algum dado pra montar a tela (ex.: contagem de arquivos por tipo/subcategoria, totais do resumo), crie/ajuste o endpoint no backend (Controller → Business → Repository) em vez de calcular no front.
+- Sem testes, sem lint, sem scripts de validação.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
+
+ENTREGA
+- Lista de arquivos criados/alterados (só os trechos/diff relevantes).
+- Seção "Explicações" (conforme o estilo acima).
+- Pendências: o que ficou faltando, se algo ficou.
