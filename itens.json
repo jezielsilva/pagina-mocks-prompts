@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T16:21",
+  "atualizado": "2026-10-23T17:57",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes-tela",
+      "id": "prompt-code-review-classificacoes",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Tela Classificações (central + seletor) baseada no mock",
-      "data": "2026-10-23T16:21",
-      "arquivo": "prompts/classificacoes-tela-central.txt"
+      "titulo": "Prompt — Code review das Classificações (rodar em sessão nova)",
+      "data": "2026-10-23T17:57",
+      "arquivo": "prompts/code-review-classificacoes.txt"
     }
   ]
 }

@@ -1,0 +1,53 @@
+[Área: Revisão de código (sem alterar código) | Skills: code-review]
+
+Use a skill code-review (pasta `code-review` dentro de C:\Users\jeziel.santos\.agents\skills\).
+Rode numa SESSÃO NOVA, que não participou da implementação. Se o ambiente permitir subagentes, rode cada eixo num subagente separado, em paralelo.
+
+ESCOPO: a implementação de CLASSIFICAÇÕES do módulo Documentos (front + back), feita em duas etapas: o prompt "Classificações completas" e, por cima, o prompt de ajuste "Classificações: ajustar front e back à collection classificacoesArquivos (modelagem final)".
+
+PONTO FIXO: <commit de ANTES da primeira etapa de classificações — ex.: o hash do último commit antes de começar, ou develop>
+- Confirme com git rev-parse que o ponto fixo existe e que o diff não está vazio.
+- Diff: git diff <ponto fixo>...HEAD. Se as alterações ainda não estiverem commitadas, use git diff <ponto fixo> (inclui a área de trabalho) e diga isso no relatório.
+- Commits: git log <ponto fixo>..HEAD --oneline
+
+SPEC (fonte do eixo Spec; NÃO procure issue tracker). Leia nesta ordem; o prompt de AJUSTE prevalece sobre o primeiro em tudo que ele muda:
+1. Prompt "Classificações completas":
+   https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/12654a0/prompts/classificacoes-completo.txt
+2. Prompt de AJUSTE (modelagem final — prevalece):
+   https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/73d3fb2/prompts/classificacoes-ajuste-modelagem.txt
+Se não conseguir abrir os links, PARE e peça para o usuário colar os dois textos.
+Modelagem final do banco (já criada pelo usuário; confira se o código bate EXATAMENTE):
+- collection classificacoesArquivos, documentos achatados em 3 níveis: categoria → subcategoria → tipo;
+- campos: nivel, nome, nomeNormalizado, ordem, categoriaId, subcategoriaId, cor (subcategoria), icone, palavrasChave (tipo), padraoSistema, usuarioId (null no padrão; ID do usuário PAI nos tipos do escritório), ativo, criadoEm, atualizadoEm;
+- índice único ux_tipo_nome_por_escritorio (usuarioId + subcategoriaId + nomeNormalizado, só nivel "tipo");
+- no arquivo: classificacao { tipoId, subcategoriaId, categoriaId, classificadoEm }.
+
+PADRÕES: AGENTS.md do front e do back + regras do Obsidian (_INDEX.md e as notas que ele apontar) + UI-Kit + perfil de código do usuário:
+https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/main/perfil/PERFIL-DE-CODIGO.md
+
+PONTOS DE ATENÇÃO (verifique explicitamente, em qualquer dos eixos):
+- Restos da modelagem antiga: collection "classificacoes", tenantId, paiId, grupo, ocultoPara, palavrasEscritorio, criadoPor/classificadoPor, aba Histórico, DELETE de itens, CRUD de categoria/subcategoria pelo escritório.
+- Usuário PAI: toda consulta e gravação usa o ID do pai (inclusive quando quem age é o usuário adicional).
+- Padrão intocável: o back recusa editar/desativar item padrão (não basta esconder o botão).
+- Desativar tipo com arquivos: desvincula ($unset) antes de desativar; reativar não reclassifica.
+- Nome único: normalização (minúsculo, sem acento, espaços) + tratamento do DuplicateKey com mensagem amigável.
+- Aprendizado: calculado na hora (amostra de arquivos classificados, cache por pai, invalidação), sem gravar nada.
+- Ocultar padrão: só visual (nenhuma gravação).
+- Segurança: um escritório não consegue ler/alterar tipos de outro (filtros por usuarioId em TODAS as rotas, inclusive por id).
+- Desempenho: sem N+1, árvore carregada uma vez por request, sugestões só da página atual.
+- Front: textos "Categoria › Subcategoria › Tipo", UI-Kit (e-button, modais padrão, sem hex fora do badge-custom-color), claro/escuro.
+
+REGRAS
+- NÃO altere código: só o relatório.
+- Não crie nem rode testes ou lint. Build/tsc só se precisar confirmar um achado.
+
+ENTREGA
+## Spec
+(a) pedido e não implementado / parcial; (b) feito sem ter sido pedido (escopo extra); (c) parece feito, mas está errado.
+Cada achado: severidade [P1 quebra/perde dado/segurança | P2 comportamento errado | P3 detalhe], arquivo:linha e a linha da spec citada.
+
+## Padrões
+(a) violações das regras do projeto e do perfil de código (cite a regra e o arquivo da regra); (b) cheiros de código como alerta (nome misterioso, duplicação, Feature Envy, Data Clumps, obsessão por primitivo, switch repetido, Shotgun Surgery, generalidade especulativa, cadeia de mensagens, Middle Man). A regra do projeto sempre vence o cheiro.
+
+## Resumo
+Total de achados por eixo, o pior problema de CADA eixo (não misture) e uma lista curta "corrigir antes de subir".
