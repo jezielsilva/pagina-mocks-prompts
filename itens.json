@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T12:10:00-03:00",
+  "atualizado": "2026-10-23T12:20:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -24,8 +24,8 @@
       "id": "prompt-classificacoes",
       "tipo": "prompt",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Classificações completas (front + back, banco por conta do Jeziel)",
-      "data": "2026-10-23T12:10:00-03:00",
+      "titulo": "Prompt — Classificações completas (uma coleção em árvore, log geral, front + back)",
+      "data": "2026-10-23T12:20:00-03:00",
       "arquivo": "prompts/classificacoes-completo.txt"
     }
   ]

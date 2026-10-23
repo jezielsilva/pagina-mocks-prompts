@@ -2,110 +2,118 @@
 
 TAREFA
 Construir a funcionalidade COMPLETA de CLASSIFICAÇÕES de arquivos no módulo Documentos (front + back), igual ao mock do portal ("Mock — Documentos"), mas no padrão do UI-Kit (o mock tem detalhes incompletos: linhas vazadas, ícone fora da barra etc. O UI-Kit prevalece).
-NÃO crie nada no banco (sem seed, sem migração, sem criar coleção/índice): o BANCO É RESPONSABILIDADE DO JEZIEL. Você define o CONTRATO (coleções, campos, índices sugeridos) e entrega o arquivo de carga pronto para ele importar.
+NÃO crie nada no banco (sem seed, sem migração, sem criar coleção/índice): o BANCO É RESPONSABILIDADE DO JEZIEL. Você define o CONTRATO (UMA coleção, campos e índices) e entrega o arquivo de carga pronto para ele importar.
 NÃO crie testes nem rode lint. Verificação estática no fim.
 
 ONDE VER NO MOCK
-- Sidebar: card "Classificações · N áreas · M peças" com badge de pendentes → abre a central "Classificações".
+- Sidebar: card "Classificações · N categorias · M subcategorias" com badge de pendentes → abre a central "Classificações".
 - Banner: "N arquivos sem classificação · Pendente · X com sugestão confiável" + [Classificar agora] + X (lembrar depois).
-- Modal "Classificar arquivos" (fila com sugestões), modal "Classificar <arquivo>" / "Classificar N arquivos" (seletor), central "Classificações" (gestão de áreas e peças).
+- Modal "Classificar arquivos" (fila com sugestões), modal "Classificar <arquivo>" / "Classificar N arquivos" (seletor), central "Classificações" (gestão de grupos, categorias e subcategorias).
 - Badges da classificação nos cards da grade, na lista, no drawer e na visualização rápida; ação "Classificar" na barra de seleção e no menu ⋮.
 
 ========================================================================
 ETAPA A — INVESTIGAR (responda antes de implementar)
 ========================================================================
-A1. Página "Gerador de Peças", botão "Informações gerais": arquivo .ts onde está o JSON das categorias (áreas → peças). Formato exato (campos), quantidade de áreas e de peças. Esse é o CONTEÚDO PADRÃO das classificações.
+A1. Página "Gerador de Peças", botão "Informações gerais": arquivo .ts onde está o JSON das categorias (grupos → categorias → subcategorias). Formato exato (campos), quantidade de cada nível. Esse é o CONTEÚDO PADRÃO das classificações.
 A2. Documento no Mongo (coleção de arquivos da Nova Cloud): existe algum campo de classificação/tipo/etiqueta hoje? Nome e formato. (Etiquetas foram removidas do filtro; confirme se ainda há campo e uso.)
 A3. Estrutura de logs de develop (a mesma usada na modal de Logs): como registrar o evento "classificou/alterou classificação".
 A4. Padrão de tenant/escritório nas coleções (campo e como o back filtra).
-A5. Permissões: quem pode GERENCIAR (criar/editar/excluir áreas e peças) e quem pode APLICAR classificação a um arquivo? Existe permissão parecida (ex.: gerenciar pastas, editar documento)? Proponha a regra; se não houver base no código, pergunte (é o único ponto de alinhamento aberto).
+A5. Permissões (DECIDIDO, não perguntar): titular e usuário adicional podem GERENCIAR (criar, editar, excluir, ocultar) e APLICAR classificações. Tudo o que qualquer um cadastra fica disponível para o ESCRITÓRIO inteiro (escopo = tenant, não usuário). Só confirme como o código identifica o tenant e o usuário logado (titular ou adicional).
 A6. Componentes existentes que serão reaproveitados: barra de seleção genérica, menu de ações, modal BsModal padrão (Financeiro/Logs), badge custom color do UI-Kit, filtro de seleção usado em Tarefas.
 
 ========================================================================
-1. CONTRATO DE DADOS (o Jeziel cria no banco; você só lê/grava conforme isto)
+1. CONTRATO DE DADOS — UMA COLEÇÃO SÓ (o Jeziel cria no banco; você só lê/grava conforme isto)
 ========================================================================
-Coleções (nomes sugeridos; ajuste ao padrão de nomes do projeto e informe):
-- classificacoes_areas: { _id, tenantId (null = padrão do sistema), nome, cor (hex), icone, ordem, padrao (bool), apoio (bool: "Documentos de apoio"), ativo (bool), criadoPor, criadoEm, atualizadoEm }
-- classificacoes_pecas: { _id, areaId, tenantId (null = padrão), nome, palavrasChave [string], padrao (bool), ativo (bool), criadoEm, atualizadoEm }
-- classificacoes_aprendizado: { _id, tenantId, pecaId, palavra, origem ("correcao_sugestao"), criadoEm }  ← palavras aprendidas por escritório
-- No DOCUMENTO: classificacao: { pecaId, areaId, classificadoPor, classificadoEm }  (ausente/null = "sem classificação"; documentos antigos não têm o campo e continuam funcionando)
-Índices sugeridos (o Jeziel cria): areas (tenantId, ativo, ordem); pecas (areaId, ativo), (tenantId, ativo); aprendizado (tenantId, pecaId); documentos (tenantId, classificacao.pecaId), (tenantId, classificacao.areaId).
-Arquivo de carga (ENTREGAR, NÃO EXECUTAR): gere `classificacoes-padrao.json` (formato mongoimport/insertMany) a partir do JSON do Gerador de Peças (A1): áreas padrão (tenantId null, padrao true, cor da paleta de gráficos do UI-Kit em ordem, ícone por área) e peças padrão com palavras-chave iniciais extraídas do nome (minúsculas, sem acento, sem stopwords: de, da, do, ação, para, com, em…, palavras com 4+ letras). Inclua a área "Documentos de apoio" (apoio true) com: Procuração; Documento pessoal (RG, CPF, comprovante de residência); Contrato; Comprovante financeiro (recibo, nota fiscal); Prova / Print de conversa; Ata de audiência; Sentença / Decisão; Planilha / Cálculo (palavras-chave específicas, ex.: procuracao, outorga, poderes, ad judicia, substabelecimento / rg, cpf, identidade, cnh, residencia…). Entregue também os comandos mongoimport/mongosh para criar coleções e índices (texto, sem executar).
+Estrutura em ÁRVORE de 3 níveis, numa única coleção (nome sugerido: `classificacoes`; ajuste ao padrão do projeto e informe):
+  Nível 1 — GRUPO (ex.: "Petição inicial", "Petição intermediária", "Recursos" — veja o JSON do Gerador de Peças, A1)
+    Nível 2 — CATEGORIA (ex.: "Direito Civil", "Direito do Trabalho"…)
+      Nível 3 — SUBCATEGORIA / PEÇA (ex.: "Ação de Cobrança") ← é a que se aplica ao arquivo
+Documento da coleção:
+{ _id, nivel: "grupo" | "categoria" | "subcategoria", paiId (null no grupo), tenantId (null = PADRÃO do sistema), nome, cor (hex; usado no grupo/categoria, a subcategoria herda da categoria), icone, ordem,
+  palavrasChave: [string] (subcategoria; palavras padrão),
+  palavrasEscritorio: [{ tenantId, palavra, origem: "manual" | "aprendizado", criadoPor, criadoEm }] (palavras extras/aprendidas por escritório, inclusive em itens padrão),
+  ocultoPara: [tenantId] (escritórios que ocultaram um item PADRÃO),
+  padrao: bool, ativo: bool, criadoPor, criadoEm, atualizadoPor, atualizadoEm }
+No DOCUMENTO (arquivo da Nova Cloud): classificacao: { subcategoriaId, categoriaId, grupoId, classificadoPor, classificadoEm } (ausente/null = "sem classificação"; arquivos antigos continuam funcionando).
+Índices (o Jeziel cria; entregue os comandos):
+- classificacoes: { tenantId: 1, nivel: 1, ativo: 1, ordem: 1 }; { paiId: 1, ativo: 1 }; { "palavrasEscritorio.tenantId": 1 }
+- documentos: { tenantId: 1, "classificacao.subcategoriaId": 1 }; { tenantId: 1, "classificacao.categoriaId": 1 }; { tenantId: 1, "classificacao.grupoId": 1 }
+Arquivo de carga (ENTREGAR, NÃO EXECUTAR): `classificacoes-padrao.json` gerado do JSON do Gerador de Peças (A1), respeitando a hierarquia dele (grupos → categorias → subcategorias), com tenantId null, padrao true, ordem, cor da paleta de gráficos do UI-Kit por categoria, ícone por categoria e palavrasChave iniciais extraídas do nome da subcategoria (minúsculas, sem acento, sem stopwords: de, da, do, ação, para, com, em…; palavras com 4+ letras). Inclua um grupo "Documentos de apoio" (Procuração; Documento pessoal (RG, CPF, comprovante de residência); Contrato; Comprovante financeiro (recibo, nota fiscal); Prova / Print de conversa; Ata de audiência; Sentença / Decisão; Planilha / Cálculo) com palavras-chave específicas (procuracao, outorga, poderes, ad judicia, substabelecimento / rg, cpf, identidade, cnh, residencia …). Entregue os comandos mongoimport/mongosh (coleção + índices) como texto.
 Regras de escopo:
-- O escritório vê: áreas/peças padrão (tenantId null, ativo) + as dele (tenantId = escritório).
-- Padrão: não pode editar nome nem excluir; pode OCULTAR (desativar só para o escritório → guardar a lista de ocultas por tenant em classificacoes_preferencias {tenantId, areasOcultas[], pecasOcultas[]} — incluir no contrato) e pode ADICIONAR peças próprias dentro de uma área padrão.
-- Próprias: CRUD completo. Nome único (sem acento/maiúsculas) dentro da mesma área (peça) e entre as áreas visíveis (área).
-- Excluir área/peça própria com arquivos classificados: confirmação mostrando quantos arquivos ficarão "sem classificação"; ao confirmar, limpar a classificação desses documentos (UpdateMany $unset classificacao) e então desativar/excluir.
+- O escritório vê: itens padrão ativos que NÃO estão em ocultoPara + itens do próprio tenant.
+- O que qualquer usuário do escritório (titular ou adicional) cadastra fica com tenantId do escritório e aparece para TODOS do escritório.
+- Itens PADRÃO: não podem ter nome editado nem ser excluídos; podem ser OCULTADOS/mostrados pelo escritório (ocultoPara) e receber palavras extras do escritório (palavrasEscritorio). O escritório pode criar categorias próprias dentro de um grupo padrão e subcategorias próprias dentro de uma categoria padrão.
+- Itens PRÓPRIOS: CRUD completo (grupo, categoria, subcategoria). Nome único (sem acento/maiúsculas) entre irmãos visíveis.
+- Excluir item próprio com arquivos classificados (ele ou descendentes): confirmação com a contagem; ao confirmar, limpar a classificação desses arquivos ($unset) e excluir o item e os descendentes. Excluir grupo/categoria apaga em cascata os filhos próprios.
 
 ========================================================================
 2. BACK-END (Controller → Business → Repository, no CloudController, padrão de develop)
 ========================================================================
 Rotas (prefixo e nomes no padrão do CloudController; erros com objeto de resultado + errorId):
-- GET  classificacoes                     → { areas: [{ id, nome, cor, icone, padrao, apoio, oculta, totalArquivos, pecas: [{ id, nome, palavrasChave, padrao, oculta, totalArquivos }] }], totais: { areas, pecas, classificados, semClassificacao } }
-- POST classificacoes/areas               { nome, cor, icone?, pecas?: [nome] }  (pecas separadas por ";" no front)
-- PUT  classificacoes/areas/{id}          { nome, cor }            (só próprias)
-- DELETE classificacoes/areas/{id}        (só próprias; ver regra de exclusão)
-- PUT  classificacoes/areas/{id}/ocultar  { oculta: bool }         (padrão)
-- POST classificacoes/areas/{areaId}/pecas { nome, palavrasChave? }
-- PUT  classificacoes/pecas/{id}          { nome, palavrasChave }  (só próprias; nas padrão só palavrasChave extras do escritório → gravar em classificacoes_aprendizado com origem "manual")
-- DELETE classificacoes/pecas/{id}        (só próprias)
-- PUT  classificacoes/pecas/{id}/ocultar  { oculta }
-- PUT  documentos/classificacao           { documentoIds: [], pecaId | null }   (lote; null = remover; registra log por documento)
-- GET  documentos/sem-classificacao?pagina&tamanhoPagina → { itens: [{ documento resumido + sugestoes top 3 }], total, sugestoesConfiaveis (≥ 80%) }
-- GET  documentos/{id}/sugestoes-classificacao → [{ pecaId, nome, areaNome, cor, confianca (0–98), motivos: [string] }]
-- POST documentos/classificacao/aplicar-sugestoes { minimoConfianca: 80 } → aplica a sugestão principal em todos os pendentes com confiança ≥ mínimo; retorna quantos.
-- Listagem de documentos (lista/grade/"Carregar mais"): incluir classificacao { pecaId, pecaNome, areaNome, cor } no DTO e aceitar filtro classificacao: { areaIds[], pecaIds[], semClassificacao: bool } (Classificação deixa de ser "Em breve").
-SUGESTÃO INTELIGENTE (no BACK; o front só exibe). Port do algoritmo do mock, por documento:
-- Normalizar (minúsculas, sem acento, só [a-z0-9 ]).
-- "frase" da peça = nome sem parênteses e sem "ação de/da/do" no início.
-- Pontuação: frase contida no NOME do arquivo +55; senão frase no TEXTO extraído (se o documento tiver texto) +32; palavras-chave da peça (padrão + aprendidas do escritório) com peso IDF (log((totalPeças+1)/df)+0,4): no nome soma min(45, Σidf×14), no texto min(28, Σidf×6); palavra-chave no caminho da PASTA +10; extensão (xlsx → "Planilha / Cálculo" +30; imagem → "Prova / Print de conversa" +30); se ≥ 50% dos arquivos classificados da mesma pasta usam a peça, + round(20 × proporção).
-- confiança = min(98, pontuação); descartar < 35; retornar top 3 com os "motivos" em texto ("nome contém “cobranca”", "pasta “Cobrança”", "70% dos arquivos da pasta são deste tipo").
-- IDF calculado por escritório e cacheado (IMemoryCache, invalidar ao alterar peças/palavras).
-- Nunca aplicar sozinha: só quando o usuário confirma (individual ou "aplicar ≥ 80%").
-APRENDIZADO: ao classificar com uma peça DIFERENTE da sugestão principal, pegar a palavra mais característica (maior IDF, 4+ letras, não stopword) do nome do arquivo que ainda não é palavra-chave da peça e gravar em classificacoes_aprendizado (tenant). Retornar no response { aprendido: "palavra" } para o front mostrar.
-LOGS: cada classificação/alteração/remoção gera log na estrutura de develop ("definiu a classificação de X: <peça>" / "removeu a classificação de X").
-Performance: listagem e sem-classificacao paginadas; sugestões calculadas só para a página atual; nenhuma consulta N+1 (buscar peças/áreas uma vez por request).
+- GET    classificacoes → árvore visível ao escritório: { grupos: [{ id, nome, cor, icone, padrao, oculto, totalArquivos, categorias: [{ id, nome, cor, icone, padrao, oculto, totalArquivos, subcategorias: [{ id, nome, palavrasChave (padrão + escritório), padrao, oculto, totalArquivos }] }] }], totais: { grupos, categorias, subcategorias, classificados, semClassificacao } }
+- POST   classificacoes              { nivel, paiId, nome, cor?, icone?, filhos?: [nome] }  (filhos: para cadastrar categoria já com subcategorias separadas por ";")
+- PUT    classificacoes/{id}         { nome, cor?, icone?, palavrasChave? }  (próprios: tudo; padrão: só palavrasChave extras → palavrasEscritorio origem "manual")
+- PUT    classificacoes/{id}/ocultar { oculto: bool }                         (só padrão)
+- DELETE classificacoes/{id}                                                   (só próprios; cascata + limpeza dos arquivos)
+- GET    classificacoes/historico?pagina&tamanhoPagina → log geral (ver abaixo)
+- PUT    documentos/classificacao    { documentoIds: [], subcategoriaId | null }   (lote; null remove)
+- GET    documentos/sem-classificacao?pagina&tamanhoPagina → { itens: [documento resumido + sugestoes top 3], total, sugestoesConfiaveis }
+- GET    documentos/{id}/sugestoes-classificacao → [{ subcategoriaId, nome, categoriaNome, grupoNome, cor, confianca, motivos[] }]
+- POST   documentos/classificacao/aplicar-sugestoes { minimoConfianca: 80 }
+- Listagem de documentos (lista/grade/"Carregar mais"): incluir classificacao { subcategoriaId, subcategoriaNome, categoriaNome, grupoNome, cor } no DTO e aceitar o filtro { grupoIds[], categoriaIds[], subcategoriaIds[], semClassificacao } (Classificação deixa de ser "Em breve").
+LOG GERAL DE CLASSIFICAÇÕES (obrigatório):
+- Toda ação de gestão gera log na estrutura de logs de develop (A3), com módulo/categoria "Classificações": usuário (nome; titular ou adicional), ação (cadastrou, editou, renomeou, alterou cor, excluiu, ocultou, mostrou, adicionou palavras-chave), alvo (nível + nome, com o caminho "Grupo › Categoria › Subcategoria"), antes → depois quando for edição, data/hora, tenant.
+- Aplicar/alterar/remover a classificação de um ARQUIVO também gera log (no log do documento E no geral de Classificações): "classificou X como <subcategoria>", "alterou de A para B", "removeu a classificação de X". Aplicação em lote: um log por arquivo + um resumo ("aplicou 12 sugestões").
+- GET classificacoes/historico devolve esse log do escritório, paginado (padrão de paginação de Clientes), mais recente primeiro.
+SUGESTÃO INTELIGENTE (no BACK; o front só exibe) — sobre as SUBCATEGORIAS visíveis:
+- Normalizar (minúsculas, sem acento, só [a-z0-9 ]). "frase" = nome sem parênteses e sem "ação de/da/do" no início.
+- Pontuação: frase no NOME do arquivo +55; senão frase no TEXTO extraído (se houver) +32; palavras-chave (padrão + escritório) com peso IDF (log((total+1)/df)+0,4): no nome min(45, Σidf×14), no texto min(28, Σidf×6); palavra no caminho da PASTA +10; extensão (xlsx → "Planilha / Cálculo" +30; imagem → "Prova / Print de conversa" +30); ≥ 50% dos arquivos classificados da mesma pasta usam a subcategoria → + round(20 × proporção).
+- confiança = min(98, pontuação); descartar < 35; top 3 com motivos em texto ("nome contém “cobranca”", "pasta “Cobrança”", "70% dos arquivos da pasta são deste tipo").
+- IDF por escritório em cache (IMemoryCache), invalidado ao alterar itens/palavras.
+- Nunca aplicar sozinha.
+APRENDIZADO: classificar com subcategoria DIFERENTE da sugestão principal → a palavra mais característica do nome do arquivo (maior IDF, 4+ letras, não stopword, ainda não é palavra-chave) entra em palavrasEscritorio (origem "aprendizado") daquela subcategoria, para o escritório. Retornar { aprendido: "palavra" } e registrar no log geral.
+Performance: paginação em tudo que lista; sugestões só para a página atual; árvore carregada uma vez por request; sem N+1.
 
 ========================================================================
 3. FRONT-END (UI-Kit; modais BsModal padrão: header roxo, X branco, sem brilho)
 ========================================================================
-3.1 Serviço único (ex.: ClassificacoesService) com o estado { areas, totais } compartilhado (sidebar, banner, filtros, modais, badges). Recarrega após qualquer alteração.
-3.2 Sidebar: card "Classificações" (ícone tag, "N áreas · M peças", badge com o número de "sem classificação" quando > 0, chevron) → abre a CENTRAL.
-3.3 Banner (topo da área de arquivos, e-alert info): "N arquivos sem classificação" + badge "Pendente" + "Classifique por área e peça para filtrar e encontrar mais rápido · X com sugestão confiável" + [Classificar agora] (primary) + X "lembrar depois" (oculta até a próxima sessão/dia, preferência local). Não aparece se N = 0.
+3.1 Serviço único (ex.: ClassificacoesService) com o estado { grupos (árvore), totais } compartilhado (sidebar, banner, filtros, modais, badges). Recarrega após qualquer alteração.
+3.2 Sidebar: card "Classificações" (ícone tag, "N categorias · M subcategorias", badge com o número de "sem classificação" quando > 0, chevron) → abre a CENTRAL.
+3.3 Banner (topo da área de arquivos, e-alert info): "N arquivos sem classificação" + badge "Pendente" + "Classifique por categoria e subcategoria para filtrar e encontrar mais rápido · X com sugestão confiável" + [Classificar agora] (primary) + X "lembrar depois" (oculta até a próxima sessão/dia, preferência local). Não aparece se N = 0.
 3.4 Modal "Classificar arquivos" (fila, aberta por "Classificar agora"):
 - Cabeçalho: "N arquivos sem classificação" + texto curto de como a sugestão funciona + botão [Aplicar X sugestões confiáveis (≥ 80%)] quando X > 0.
-- Lista paginada (o back já pagina): cada linha = miniatura padrão do tipo, nome (quebra em 2 linhas), local, "Sugestão: <badge da peça na cor da área> <área> <confiança %>", motivos (texto secundário), alternativas (até 2 botões "Peça 72%"), seletor (abre o picker em linha) e botão ✓ confirmar (desabilitado sem escolha).
-- Ao confirmar: animação de saída da linha, atualiza contadores; se houve aprendizado, mostrar no fim "O sistema aprendeu: “palavra” → Peça".
+- Lista paginada (o back já pagina): cada linha = miniatura padrão do tipo, nome (quebra em 2 linhas), local, "Sugestão: <badge da subcategoria na cor da categoria> <Grupo › Categoria> <confiança %>", motivos (texto secundário), alternativas (até 2 botões "Subcategoria 72%"), seletor (abre o picker em linha) e botão ✓ confirmar (desabilitado sem escolha).
+- Ao confirmar: animação de saída da linha, atualiza contadores; se houve aprendizado, mostrar no fim "O sistema aprendeu: “palavra” → Subcategoria".
 - Rodapé: [Gerenciar classificações] (outline) e [Concluir] (primary). Estado vazio: e-alert positive "Tudo classificado!".
 3.5 Modal "Classificar “arquivo”" / "Classificar N arquivos" (menu ⋮, barra de seleção, drawer, visualização rápida):
-- Linha "Selecionada: <badge> <área>" ou "Nenhuma classificação escolhida".
-- PICKER (componente reutilizável, usado aqui e na fila): busca por área/peça (sem acento), "Sugestões" (1 arquivo: top 3 com %), "Recentes" (últimas 6 usadas pelo usuário, guardar localmente), e áreas em acordeão (badge de cor + ícone, nome, nº de peças) com as peças em lista clicável. Peça selecionada destacada. Teclado: setas + Enter.
+- Linha "Selecionada: <badge> <Grupo › Categoria>" ou "Nenhuma classificação escolhida".
+- PICKER (componente reutilizável, usado aqui e na fila): busca nos 3 níveis (sem acento), "Sugestões" (1 arquivo: top 3 com %), "Recentes" (últimas 6 usadas pelo usuário, guardar localmente), e a ÁRVORE: abas ou seções por GRUPO (Petição inicial | Petição intermediária | Recursos | Documentos de apoio | próprios), dentro de cada grupo as CATEGORIAS em acordeão (badge de cor + ícone, nome, nº de subcategorias) e as SUBCATEGORIAS em lista clicável. A busca procura nos 3 níveis e mostra o caminho "Grupo › Categoria › Subcategoria". Subcategoria selecionada destacada. Teclado: setas + Enter.
 - Rodapé: [Gerenciar classificações], [Cancelar], [Salvar classificação] (primary, desabilitado sem escolha). Com classificação já existente: botão [Remover classificação] (outline danger).
 3.6 Central "Classificações" (sidebar ou "Gerenciar classificações"):
-- Topo: 4 cards de números (áreas, peças, classificados, sem classificação — este com badge warning) + [Classificar agora] se houver pendentes.
-- Busca "Buscar área ou peça…".
-- Lista de áreas (cards com acordeão): badge de cor/ícone, nome, "N peças · M arquivos", selo "Padrão" nas do sistema; ações: Editar (próprias: nome + cor no mesmo lugar, salvar/cancelar), Ocultar/Mostrar (padrão), Excluir (próprias, confirmação com contagem).
-- Dentro da área: tabela de peças com colunas Peça | Palavras-chave (sugestões) | Arq. | ações. Próprias: nome e palavras-chave editáveis (palavras separadas por vírgula). Padrão: nome só leitura, palavras-chave extras do escritório editáveis, ocultar. Excluir com confirmação se houver arquivos. Linha "Nova peça em <área>" + [Adicionar].
-- Card "Nova área": nome, cor (seletor de cor do UI-Kit), peças separadas por ";" + [Cadastrar área].
-- Rodapé: [Fechar] e [Salvar alterações] (salva edições pendentes). Ao fechar com edições não salvas: confirmar.
-- Layout sem colunas vazadas: tabela de peças com larguras fixas (peça 40%, palavras-chave 45%, arq. 60px, ações 40px), ícones DENTRO das barras/inputs, quebra de linha nos nomes.
+- Topo: cards de números (grupos, categorias, subcategorias, classificados, sem classificação — este com badge warning) + [Classificar agora] se houver pendentes.
+- Abas da central (componente de abas da página): [Classificações] | [Histórico].
+- Aba Classificações: busca "Buscar grupo, categoria ou subcategoria…"; seções por GRUPO (cabeçalho com nome, selo "Padrão"/"Do escritório", ações); dentro, CATEGORIAS em cards com acordeão (badge de cor/ícone, nome, "N subcategorias · M arquivos", selo Padrão, ações Editar nome+cor (próprias) / Ocultar-Mostrar (padrão) / Excluir (próprias, com confirmação e contagem)); dentro da categoria, tabela de SUBCATEGORIAS: Subcategoria | Palavras-chave (sugestões) | Arq. | ações (próprias: nome e palavras editáveis; padrão: nome só leitura, palavras extras do escritório editáveis, ocultar); linha "Nova subcategoria em <categoria>" + [Adicionar]. Em cada grupo: "Nova categoria em <grupo>" (nome, cor, subcategorias separadas por ";"). No fim: "Novo grupo" (nome).
+- Aba Histórico: lista do log geral (GET classificacoes/historico) no layout da modal de Logs (ícone da ação, "Usuário ação alvo", antes → depois quando houver, data/hora), paginada com o componente de Clientes, sem separadores.
+- Rodapé: [Fechar] e [Salvar alterações]. Fechar com edições pendentes: confirmar.
+- Layout: tabela de subcategorias com larguras fixas (40% / 45% / 60px / 40px), ícones DENTRO das barras/inputs, nomes quebrando linha, nada vazado.
 3.7 Onde a classificação aparece:
-- Card da grade e linha da lista: badge (badge-sm, cor da área via badge-custom-color, ícone da área, nome da peça curto sem parênteses; tooltip com "Área › Peça" completo). Sem classificação: badge "Sem classificação" neutro.
-- Drawer e visualização rápida, aba Detalhes: "Classificação" com o badge + botão "Alterar" (abre 3.5); sem classificação: "Sem classificação" + "Classificar" + a melhor sugestão como atalho ("Usar sugestão: <peça> 85%").
-- Filtro "Classificação" (fim do "Em breve"): o mesmo campo de seleção de Tarefas, com grupos por área e opção "Sem classificação"; envia ao back.
+- Card da grade e linha da lista: badge (badge-sm, cor da categoria via badge-custom-color, ícone da categoria, nome da subcategoria sem parênteses; tooltip com "Grupo › Categoria › Subcategoria" completo). Sem classificação: badge "Sem classificação" neutro.
+- Drawer e visualização rápida, aba Detalhes: "Classificação" com o badge + botão "Alterar" (abre 3.5); sem classificação: "Sem classificação" + "Classificar" + a melhor sugestão como atalho ("Usar sugestão: <subcategoria> 85%").
+- Filtro "Classificação" (fim do "Em breve"): o mesmo campo de seleção de Tarefas, em grupos (Grupo › Categoria) com as subcategorias selecionáveis, permitindo marcar uma categoria inteira, e a opção "Sem classificação"; envia ao back.
 - Barra de seleção: "Classificar" habilitado (só arquivos; pastas desabilitam com tooltip). Menu ⋮: "Classificar documento…" / "Alterar classificação…".
 - Gráfico/legenda da sidebar "Por categoria" continua como está (não confundir com classificação).
-3.8 Cores: a cor da área vem do banco e é exibida SOMENTE via badge-custom-color (variáveis CSS do componente, exceção já aprovada). Texto do badge com contraste automático (claro/escuro). Nenhum outro hex.
+3.8 Cores: a cor da categoria vem do banco e é exibida SOMENTE via badge-custom-color (variáveis CSS do componente, exceção já aprovada). Texto do badge com contraste automático (claro/escuro). Nenhum outro hex.
 
 ========================================================================
 CRITÉRIOS DE ACEITE
 ========================================================================
-1. Nada foi criado no banco pelo código; o contrato + classificacoes-padrao.json + comandos estão na entrega.
-2. Com a carga importada: central lista as áreas/peças padrão + as do escritório; CRUD das próprias, ocultar padrão, nova peça em área padrão.
+1. Nada foi criado no banco pelo código; o contrato (uma coleção) + classificacoes-padrao.json + comandos de coleção e índices estão na entrega.
+2. Com a carga importada: a central mostra a árvore Grupo › Categoria › Subcategoria (padrão + do escritório); CRUD dos próprios; ocultar padrão; nova categoria/subcategoria dentro de itens padrão; o que um usuário (titular ou adicional) cadastra aparece para todo o escritório.
+2b. Log geral: toda inclusão, edição, exclusão, ocultação e classificação aparece na aba Histórico com quem, o quê, antes → depois e quando.
 3. Sugestões vêm do back com confiança e motivos; "Aplicar ≥ 80%" funciona em lote; aprendizado retorna e aparece.
 4. Classificar 1 ou vários (menu, barra, drawer, modal) grava, gera log e atualiza badges, contadores, banner e filtro sem recarregar a página.
-5. Filtro de Classificação funciona (área, peça, sem classificação) junto com os outros filtros e o "Carregar mais".
-6. Excluir área/peça com arquivos pede confirmação e deixa os arquivos como "sem classificação".
+5. Filtro de Classificação funciona (grupo, categoria, subcategoria, sem classificação) junto com os outros filtros e o "Carregar mais".
+6. Excluir grupo/categoria/subcategoria próprios com arquivos pede confirmação e deixa os arquivos como "sem classificação".
 7. UI-Kit em todos os modais (padrão Financeiro), sem linhas vazadas nem ícones fora das barras; claro e escuro.
 
 ========================================================================
@@ -123,7 +131,7 @@ ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 ========================================================================
 
 ENTREGA
-- A1–A6 (A5 com a proposta de permissão; se houver dúvida, PARE e pergunte antes de implementar essa parte).
+- A1–A6.
 - Mini-spec (AGENTS.md 1.5) e, após OK, a implementação.
 - Contrato de dados + classificacoes-padrao.json + comandos (não executados).
 - Diff do back e do front.
