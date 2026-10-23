@@ -1,7 +1,7 @@
 [Área: Multidisciplinar (Frontend Angular + ajuste pontual no Backend) | Porte: M | Skills: nenhuma]
 
 TAREFA
-Padronizar o CONTEÚDO do drawer do arquivo (aberto por "Abrir") e a modal de visualização rápida (aberta por "Visualizar" na grade) do módulo Documentos. Referência visual: o mock no portal ("Mock — Documentos"): abra uma imagem (Meus documentos → Digitalizações 2026 → "Recibo de honorários 001.jpg") com "Abrir" e com "Visualizar". NÃO crie testes nem rode lint.
+Padronizar o CONTEÚDO do drawer do arquivo (aberto por "Abrir") e a modal de visualização rápida (aberta por "Visualizar" na grade) do módulo Documentos. A modal passa a ter TODAS as funcionalidades do drawer (favorito, ações e abas). Referência visual: o mock no portal ("Mock — Documentos"): abra uma imagem (Meus documentos → Digitalizações 2026 → "Recibo de honorários 001.jpg") com "Abrir" e com "Visualizar". NÃO crie testes nem rode lint.
 Alinhamento: sem pontos em aberto. As decisões estão abaixo.
 
 COMO ESTÁ HOJE (prints)
@@ -60,13 +60,32 @@ Ordem vertical (igual ao mock): header roxo → visualizador → barra de açõe
 3.6 Celular/tablet: mantém o viewer em tela cheia atual, aplicando o mesmo header roxo, a mesma imagem real e o mesmo conteúdo de Detalhes.
 
 ========================================================================
-4. MODAL DE VISUALIZAÇÃO RÁPIDA
+4. MODAL DE VISUALIZAÇÃO RÁPIDA — TUDO O QUE O DRAWER TEM
 ========================================================================
-- Largura MAIOR: ~1180px (máx. 94vw), altura até 86vh. Duas colunas: visualizador (flex 1) | painel de 360px. Nada de rolagem horizontal.
-- Visualizador: a imagem real (item 2) centralizada, fundo de superfície; PDF no visualizador atual.
-- Painel: título "Detalhes" + a MESMA grade de 2 colunas do drawer (3.3), reaproveitando o mesmo componente/template (não duplique). Sem Etiquetas. O Local quebra em quantas linhas precisar, nunca é cortado nem empurra a largura do painel.
-- Rodapé do painel (fixo embaixo, separado por borda): [Baixar] (outline) e [Abrir] (primary), alinhados à direita. "Abrir" fecha a modal e abre o drawer.
-- Só o painel rola verticalmente, se precisar, e nunca na horizontal.
+Regra: a modal tem as MESMAS funcionalidades do drawer (ações, favorito e as três abas). O que muda é só o arranjo.
+Estrutura (de cima para baixo, igual ao mock):
+  [Header roxo: nome · local · tamanho ............................ ☆ favorito  ✕]
+  [Barra de ações (largura total): (Abrir) Comprimir  Unir com…  Baixar  Mover  Renomear ........ (Excluir)]
+  [Visualizador (flex 1)                         | Painel 380px: abas Detalhes | Histórico (N) | Acessos (N) + conteúdo]
+- Largura ~1180px (máx. 94vw); altura do corpo até 86vh menos o header e a barra. Nada de rolagem horizontal.
+- Header: igual ao do drawer (item 1), com a ESTRELA de favorito antes do X (mesmo comportamento do drawer: alterna favorito e atualiza a lista e a área Favoritos).
+- Barra de ações: logo abaixo do header, separada por borda, padding 10px 20px, e-buttons pequenos arredondados (outline), com quebra de linha se faltar espaço (flex-wrap):
+  - primeiro "Abrir" (primary): fecha a modal e abre o drawer do arquivo;
+  - depois Comprimir, Unir com…, Baixar, Mover, Renomear (mesmas regras de habilitação e tooltips do drawer);
+  - Excluir (danger) isolado à direita (margin-left: auto);
+  - na Lixeira: Restaurar e Excluir definitivamente, como no drawer.
+  - Ações que abrem diálogo (Comprimir, Unir, Mover, Renomear, Excluir) fecham a modal e abrem o diálogo correspondente; Baixar e favorito NÃO fecham a modal.
+- Visualizador: a imagem real (item 2) centralizada, ou o visualizador de PDF atual.
+- Painel lateral: SÓ as abas Detalhes | Histórico | Acessos, idênticas às do drawer (3.2 a 3.5), com as abas fixas no topo ao rolar. Só o painel rola verticalmente, se precisar.
+- REMOVER o rodapé antigo do painel (Baixar/Abrir) e as Etiquetas.
+- O Local quebra em quantas linhas precisar, nunca é cortado nem empurra a largura do painel.
+
+COMPONENTES COMPARTILHADOS (obrigatório, sem duplicar):
+- Um componente de AÇÕES DO ARQUIVO (ex.: app-documento-acoes) com input mostrarAbrir (false no drawer, true na modal) e a mesma regra de habilitação/Lixeira. Usado no drawer e na modal.
+- Um componente de ABAS DO ARQUIVO (ex.: app-documento-abas: Detalhes/Histórico/Acessos), usado no drawer e na modal.
+- Um componente de DETALHES (grade 2 colunas), usado dentro das abas.
+- O botão de favorito é o mesmo nos dois headers.
+Se já existirem componentes equivalentes, reaproveite e informe.
 
 ========================================================================
 CRITÉRIOS DE ACEITE
@@ -78,7 +97,7 @@ CRITÉRIOS DE ACEITE
 4. Detalhes só com Tipo, Tamanho, Modificado, Autor, Local, Classificação (Em breve) e Prazo (se houver).
 5. Histórico e Acessos carregando dados reais (sem IP) e com estados vazios.
 6. Ações numa linha abaixo do visualizador.
-7. Modal larga, sem rolagem horizontal, com Baixar/Abrir no rodapé do painel.
+7. Modal larga, sem rolagem horizontal, com a MESMA estrela, as MESMAS ações (+ Abrir) e as MESMAS abas do drawer, vindas dos mesmos componentes.
 8. Tokens, modos claro e escuro. Sem hex, sem !important, sem style inline.
 
 ENTREGA
