@@ -51,7 +51,7 @@ Ordem vertical (igual ao mock): header roxo → visualizador → barra de açõe
 3.3 Detalhes: grade de 2 colunas (rótulo pequeno em cinza 12px, valor em 14px semibold):
     Tipo (extensão em maiúsculas) | Tamanho
     Modificado | Autor ("Você" para o logado)
-    Local (linha inteira, link que navega até a pasta)
+    Local (linha inteira, link que navega até a pasta). Caminho longo QUEBRA LINHA e continua embaixo (white-space: normal; overflow-wrap: anywhere; sem text-overflow/ellipsis, sem nowrap, sem truncar). Vale no drawer e na modal.
     Classificação: badge "Em breve"
     Prazo: SÓ se o arquivo tiver prazo vinculado (badge com a severidade).
     REMOVER: Processo, Status, OCR/texto reconhecido e Etiquetas.
@@ -64,7 +64,7 @@ Ordem vertical (igual ao mock): header roxo → visualizador → barra de açõe
 ========================================================================
 - Largura MAIOR: ~1180px (máx. 94vw), altura até 86vh. Duas colunas: visualizador (flex 1) | painel de 360px. Nada de rolagem horizontal.
 - Visualizador: a imagem real (item 2) centralizada, fundo de superfície; PDF no visualizador atual.
-- Painel: título "Detalhes" + a MESMA grade de 2 colunas do drawer (3.3), reaproveitando o mesmo componente/template (não duplique). Sem Etiquetas.
+- Painel: título "Detalhes" + a MESMA grade de 2 colunas do drawer (3.3), reaproveitando o mesmo componente/template (não duplique). Sem Etiquetas. O Local quebra em quantas linhas precisar, nunca é cortado nem empurra a largura do painel.
 - Rodapé do painel (fixo embaixo, separado por borda): [Baixar] (outline) e [Abrir] (primary), alinhados à direita. "Abrir" fecha a modal e abre o drawer.
 - Só o painel rola verticalmente, se precisar, e nunca na horizontal.
 
@@ -74,6 +74,7 @@ CRITÉRIOS DE ACEITE
 1. Drawer e modal com header roxo padrão, X branco e sem ícone laranja. Modal sem brilho.
 2. Imagem real no drawer e na modal (com skeleton e fallback). O SVG só aparece nas miniaturas.
 3. Abas do drawer iguais às "Lista | Grade" da página.
+4a. Local com caminho longo quebra em várias linhas (drawer e modal), sem reticências.
 4. Detalhes só com Tipo, Tamanho, Modificado, Autor, Local, Classificação (Em breve) e Prazo (se houver).
 5. Histórico e Acessos carregando dados reais (sem IP) e com estados vazios.
 6. Ações numa linha abaixo do visualizador.
