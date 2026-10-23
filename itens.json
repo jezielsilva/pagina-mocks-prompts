@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T10:25:00-03:00",
+  "atualizado": "2026-10-23T11:35:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -17,6 +17,15 @@
       "titulo": "URGENTE — Clientes: endereços sumiram e tipo de pessoa sempre Jurídica (investigação + recuperação)",
       "data": "2026-10-23T10:25:00-03:00",
       "arquivo": "prompts/URGENTE-clientes-endereco-tipopessoa.txt"
+    },
+    {
+      "id": "form-perfil-codigo",
+      "tipo": "artefato",
+      "formulario": true,
+      "projeto": "Jeziel · Perfil de código",
+      "titulo": "Formulário — Perfil de código (como você escreve e lê código)",
+      "data": "2026-10-23T11:35:00-03:00",
+      "arquivo": "formularios/perfil-de-codigo.html"
     }
   ]
 }

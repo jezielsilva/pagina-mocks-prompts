@@ -6,6 +6,8 @@
   - o prompt novo contém SOMENTE os itens tratados na interação atual. NUNCA somar itens de prompts anteriores, a não ser que o usuário peça.
   - manter só o mock PRINCIPAL (`"principal": true` no `itens.json`). O mock publicado/atualizado agora passa a ser o principal; os outros mocks (de outros projetos) são apagados (arquivo + entrada).
 - Assets (imagens/SVG para o sistema) são publicados em `assets/` como artefato com `"asset": true`; não contam como mock e são apagados junto com os prompts na publicação seguinte.
+- Formulários (`formularios/`, artefato com `"formulario": true`) NÃO contam como mock nem prompt: ficam no portal até as respostas chegarem (Issue). Depois de processadas, apagar o formulário.
+- Perfil de código do usuário: `perfil/PERFIL-DE-CODIGO.md`. Todo prompt de implementação para o Codex/Luna deve incluir o bloco "Estilo de código" derivado desse perfil.
 - "Tornar principal": a página abre uma Issue "Tornar principal: <id>". Ao ler essa Issue: marcar esse mock como principal, apagar os outros mocks, fechar a Issue e avisar no chat. Os mocks ficam guardados no histórico do git e na pasta de trabalho do Claude (podem ser republicados).
 - Fora as regras acima, NÃO apagar itens automaticamente: o usuário exclui pelo ícone 🗑 da página.
   - Artefato: um arquivo por projeto, sempre sobrescrito (ex.: `artefatos/documentos-mock.html`), com a data atualizada no `itens.json`.

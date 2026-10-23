@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Perfil de código</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--line:#e2e8f0;--txt:#0f172a;--sub:#64748b;--pri:#70398c;--pri-l:#f6f0fa;--code:#0f172a;--code-bg:#f8fafc}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#171a21;--line:#2a2f3a;--txt:#e6e8ee;--sub:#94a3b8;--pri:#b48ad0;--pri-l:#2a2034;--code:#e6e8ee;--code-bg:#11141a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:24px 16px 120px}
+h1{font-size:22px;margin:0 0 4px}.lead{color:var(--sub);margin:0 0 20px}
+.sec{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pri);margin:28px 0 10px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.q h3{font-size:15px;margin:0 0 4px}.q p.h{margin:0 0 10px;color:var(--sub);font-size:13px}
+.opts{display:grid;gap:8px}.opts.two{grid-template-columns:1fr 1fr}
+@media (max-width:700px){.opts.two{grid-template-columns:1fr}}
+label.o{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+label.o:has(input:checked){border-color:var(--pri);background:var(--pri-l)}
+label.o span{display:flex;gap:8px;align-items:center;font-weight:600}
+pre{margin:0;background:var(--code-bg);color:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px;font:12.5px/1.5 ui-monospace,Consolas,monospace;white-space:pre;overflow:auto}
+textarea{width:100%;min-height:70px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);color:var(--txt);font:inherit;resize:vertical}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:10px 16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:999px;padding:8px 16px;cursor:pointer}
+button.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+.prog{font-size:13px;color:var(--sub);align-self:center}
+.ok{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#2e7d5b;color:#fff;padding:8px 14px;border-radius:10px;font-weight:600;display:none}
+</style></head><body>
+<div class="wrap">
+<h1>Perfil de código do Jeziel</h1>
+<p class="lead">Responda pensando em <b>como você escreveria</b> e <b>como você consegue ler e dar manutenção sem ajuda</b>. Não existe resposta certa. Se nenhuma opção for a sua, use o campo "Comentário". As respostas ficam salvas neste navegador até você enviar.</p>
+<div id="f"></div>
+</div>
+<div class="bar"><span class="prog" id="prog"></span><button id="copy">Copiar respostas</button><button class="pri" id="send">Enviar como Issue</button></div>
+<div class="ok" id="ok">Copiado!</div>
+<script>
+// Cada pergunta: id, seção, título, ajuda, opções [rótulo, código?], two = opções lado a lado, multi = múltipla escolha
+const Q=[
+['Leitura e nomes',[
+ {id:'lingua',t:'Em que língua você nomeia classes, métodos e variáveis?',o:[['Português (ObterClientePorId, valorTotal)'],['Inglês (GetClientById, totalValue)'],['Misto: domínio em português, técnico em inglês (ObterCliente + Repository)'],['Sigo o que já existe no arquivo']]},
+ {id:'nomes',t:'Qual nome de variável você prefere?',two:1,o:[['Curto','var c = await _repo.Get(id);\nvar t = c.Itens.Sum(i => i.V);'],['Descritivo','var cliente = await _clienteRepository.ObterPorId(id);\nvar valorTotal = cliente.Itens.Sum(item => item.Valor);']]},
+ {id:'var',t:'Declaração de tipo no C#',two:1,o:[['var','var clientes = new List<ClienteModel>();'],['Tipo explícito','List<ClienteModel> clientes = new List<ClienteModel>();']]},
+ {id:'comentarios',t:'Comentários no código',o:[['Quase nenhum, o nome explica'],['Um comentário curto antes de cada bloco importante explicando o que ele faz'],['Comentário explicando o PORQUÊ de decisões e regras de negócio'],['Bastante comentário, quanto mais melhor para manutenção']]},
+ {id:'lingua_coment',t:'Comentários em que língua?',o:[['Português'],['Inglês']]},
+]],
+['Estrutura e fluxo',[
+ {id:'if',t:'Validações no início do método',two:1,o:[['Retorno antecipado','if (cliente == null)\n    return NotFound();\n\nif (!cliente.Ativo)\n    return BadRequest("Inativo");\n\nreturn Ok(cliente);'],['if/else aninhado','if (cliente != null)\n{\n    if (cliente.Ativo)\n        return Ok(cliente);\n    else\n        return BadRequest("Inativo");\n}\nelse\n    return NotFound();']]},
+ {id:'chaves',t:'if de uma linha',two:1,o:[['Sem chaves','if (lista.Count == 0)\n    return;'],['Sempre com chaves','if (lista.Count == 0)\n{\n    return;\n}']]},
+ {id:'linq',t:'Filtrar e somar uma lista',two:1,o:[['LINQ encadeado','var total = pedidos\n    .Where(p => p.Pago)\n    .Sum(p => p.Valor);'],['foreach','decimal total = 0;\nforeach (var pedido in pedidos)\n{\n    if (pedido.Pago)\n        total += pedido.Valor;\n}']]},
+ {id:'linq_limite',t:'Até onde LINQ é legível para você?',o:[['Where/Select/Any/FirstOrDefault/Sum: tranquilo'],['Também GroupBy, SelectMany, ToDictionary'],['Também Aggregate, Zip, joins em LINQ'],['Prefiro evitar LINQ complexo']]},
+ {id:'ternario',t:'Operador ternário',two:1,o:[['Uso','var status = ativo ? "Ativo" : "Inativo";'],['Prefiro if','string status;\nif (ativo)\n    status = "Ativo";\nelse\n    status = "Inativo";']]},
+ {id:'ternario_aninhado',t:'Ternário aninhado (a ? b : c ? d : e)',o:[['Não, nunca'],['Só curto e em casos simples'],['Tranquilo']]},
+ {id:'tamanho',t:'Tamanho de método que você acha confortável ler',o:[['Até ~20 linhas'],['Até ~50 linhas'],['Tamanho não importa se o fluxo estiver em ordem, de cima para baixo'],['Prefiro um método maior que eu leio de uma vez do que pular entre vários métodos pequenos']]},
+ {id:'extrair',t:'Quando o método cresce, você...',o:[['Quebra em métodos privados com nomes claros, no mesmo arquivo'],['Cria classes/serviços novos'],['Deixa junto com comentários separando as partes (// 1. valida, // 2. salva…)']]},
+ {id:'nulos',t:'Tratamento de nulos',two:1,o:[['Operadores ?. ??','var cidade = cliente?.Endereco?.Cidade ?? "Sem cidade";'],['if explícito','string cidade = "Sem cidade";\nif (cliente != null && cliente.Endereco != null)\n    cidade = cliente.Endereco.Cidade;']]},
+ {id:'switch',t:'Mapear um tipo para um texto',two:1,o:[['switch expression','var texto = tipo switch\n{\n    TipoConta.Receita => "Receita",\n    TipoConta.Despesa => "Despesa",\n    _ => "Outro"\n};'],['switch clássico / if','switch (tipo)\n{\n    case TipoConta.Receita:\n        texto = "Receita";\n        break;\n    case TipoConta.Despesa:\n        texto = "Despesa";\n        break;\n    default:\n        texto = "Outro";\n        break;\n}']]},
+]],
+['Arquitetura (back .NET)',[
+ {id:'camadas',t:'Onde fica a regra de negócio no back que você mantém hoje?',o:[['Controller → Business → Repository (como já está no projeto)'],['Controller → Service → Repository'],['Tudo no controller quando é simples'],['Não sei dizer, sigo o que existe']]},
+ {id:'abstracao',t:'Interfaces e abstrações',o:[['Interface para todo serviço/repositório (IClienteBusiness)'],['Interface só quando tem mais de uma implementação'],['Prefiro classe concreta, abstração me confunde'],['Sigo o padrão do projeto']]},
+ {id:'generico',t:'Código genérico (BaseRepository<T>, métodos com <T>, extension methods próprios)',o:[['Entendo e uso'],['Entendo, mas prefiro explícito por entidade'],['Me confunde, evitar']]},
+ {id:'mapeamento',t:'Converter Model → DTO',two:1,o:[['Manual','return new ClienteDto\n{\n    Id = cliente.Id,\n    Nome = cliente.Nome\n};'],['AutoMapper','return _mapper.Map<ClienteDto>(cliente);']]},
+ {id:'erros',t:'Erro de regra de negócio no back',o:[['Lançar exceção (throw new BusinessException("…")) e tratar no controller/middleware'],['Retornar objeto de resultado (Result/Retorno com sucesso + mensagem)'],['Retornar null/false e o controller decide'],['O padrão que já existe no projeto (errorId)']]},
+ {id:'mongo',t:'Consultas no Mongo',two:1,o:[['Builders','var filtro = Builders<ClienteModel>.Filter.Eq(x => x.Id, id);\nvar update = Builders<ClienteModel>.Update.Set(x => x.Nome, nome);'],['LINQ/Expression','await _colecao.Find(x => x.Id == id).FirstOrDefaultAsync();']]},
+ {id:'async',t:'async/await',o:[['Tranquilo com async/await normal'],['Também Task.WhenAll, CancellationToken'],['Também Channels, IAsyncEnumerable, SemaphoreSlim'],['Prefiro o básico']]},
+]],
+['Front (Angular)',[
+ {id:'rx',t:'RxJS: o que você lê sem dificuldade?',multi:1,o:[['subscribe'],['pipe + map/filter/tap'],['switchMap/mergeMap/concatMap'],['combineLatest/forkJoin'],['debounceTime/distinctUntilChanged'],['takeUntilDestroyed/takeUntil'],['shareReplay/BehaviorSubject']]},
+ {id:'signals',t:'Estado no componente',o:[['Variáveis simples + subscribe (this.lista = res)'],['Signals (signal, computed, effect)'],['BehaviorSubject/Observables + async pipe'],['Misturo conforme o caso']]},
+ {id:'subscribe',t:'Chamada HTTP no componente',two:1,o:[['subscribe simples','this.clienteService.obter(id).subscribe(res => {\n  this.cliente = res;\n  this.carregando = false;\n});'],['Encadeado com operadores','this.cliente$ = this.route.paramMap.pipe(\n  map(p => p.get(\'id\')!),\n  switchMap(id => this.clienteService.obter(id)),\n  finalize(() => this.carregando = false)\n);']]},
+ {id:'template',t:'Lógica no template',o:[['Template só exibe; lógica no .ts com nomes claros'],['Pode ter condições simples no template (@if x && y)'],['Pode ter expressões/pipes mais elaborados']]},
+ {id:'forms',t:'Formulários',o:[['Reactive Forms com FormGroup/FormControl'],['FormBuilder'],['ngModel (template-driven)'],['Sigo o padrão da tela']]},
+ {id:'componentes',t:'Tamanho de componente',o:[['Prefiro um componente maior e completo'],['Quebrar em componentes filhos quando passa de ~300 linhas'],['Quebrar bastante, componentes pequenos']]},
+]],
+['Manutenção e debug',[
+ {id:'debug',t:'Como você debuga quando algo quebra?',multi:1,o:[['Breakpoint no Visual Studio/VS Code'],['console.log / Console.WriteLine'],['Aba Network/DevTools'],['Lendo o código de cima para baixo'],['Logs do servidor']]},
+ {id:'arquivos',t:'Organização de arquivos',o:[['Poucos arquivos maiores, tudo do assunto junto'],['Um arquivo por classe, pastas por funcionalidade'],['Sigo a estrutura que já existe']]},
+ {id:'constantes',t:'Valores fixos (status, limites, textos)',two:1,o:[['Constante/enum','private const int TamanhoMaximoPagina = 50;\nif (tamanho > TamanhoMaximoPagina) …'],['Direto no código','if (tamanho > 50) …']]},
+ {id:'confunde',t:'O que mais te trava no código que a IA escreve? (marque tudo que vale)',multi:1,o:[['Muitas camadas/abstrações para seguir'],['Métodos muito pequenos espalhados'],['LINQ/RxJS encadeado longo'],['Genéricos e extension methods'],['Nomes em inglês/abstratos'],['Falta de comentário explicando o fluxo'],['Padrões que não conheço (Strategy, Factory, Mediator…)'],['Arquivos novos demais']]},
+]],
+['Livre',[
+ {id:'exemplo_ruim',t:'Descreva (ou cole) um trecho de código de IA que você não conseguiu entender e por quê.',free:1},
+ {id:'exemplo_bom',t:'Descreva como você gostaria de receber um método novo (ex.: "nome em português, comentário no topo dizendo o que faz, validações primeiro, sem LINQ complexo").',free:1},
+ {id:'aprender',t:'O que você QUER aprender e pode aparecer no código aos poucos (com um comentário explicando)?',free:1},
+]]];
+const KEY='perfil-codigo-v1';let A={};try{A=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(A))}catch(e){}prog()};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let n=0;const f=document.getElementById('f');
+f.innerHTML=Q.map(([sec,qs])=>`<div class="sec">${sec}</div>`+qs.map(q=>{n++;
+ const body=q.free?`<textarea data-free="${q.id}">${esc(A[q.id]||'')}</textarea>`:
+ `<div class="opts ${q.two?'two':''}">${q.o.map(([l,c],i)=>`<label class="o"><span><input type="${q.multi?'checkbox':'radio'}" name="${q.id}" value="${i}" ${(A[q.id]||[]).includes?.(i)||A[q.id]===i?'checked':''}>${esc(l)}</span>${c?`<pre>${esc(c)}</pre>`:''}</label>`).join('')}</div>
+ <textarea data-com="${q.id}" placeholder="Comentário (opcional)" style="min-height:38px;margin-top:8px">${esc(A[q.id+'_c']||'')}</textarea>`;
+ return `<div class="q"><h3>${n}. ${esc(q.t)}</h3>${q.multi?'<p class="h">Pode marcar mais de uma.</p>':''}${body}</div>`;}).join('')).join('');
+f.addEventListener('change',e=>{const i=e.target;if(i.type==='radio')A[i.name]=+i.value;if(i.type==='checkbox'){A[i.name]=[...document.querySelectorAll(`input[name="${i.name}"]:checked`)].map(x=>+x.value)}save()});
+f.addEventListener('input',e=>{const t=e.target;if(t.dataset.free)A[t.dataset.free]=t.value;if(t.dataset.com)A[t.dataset.com+'_c']=t.value;save()});
+const all=Q.flatMap(([,qs])=>qs);
+function prog(){const done=all.filter(q=>q.free?(A[q.id]||'').trim():Array.isArray(A[q.id])?A[q.id].length:A[q.id]!==undefined).length;document.getElementById('prog').textContent=`${done} de ${all.length} respondidas`}
+function texto(){return '# Perfil de código — respostas\n\n'+all.map(q=>{let r;
+ if(q.free)r=(A[q.id]||'').trim()||'(sem resposta)';
+ else{const v=A[q.id];const ids=Array.isArray(v)?v:v!==undefined?[v]:[];r=ids.length?ids.map(i=>q.o[i][0]).join(' | '):'(sem resposta)';}
+ const c=(A[q.id+'_c']||'').trim();return `- **${q.id}** — ${q.t}\n  → ${r}${c?`\n  ✎ ${c}`:''}`}).join('\n')}
+document.getElementById('copy').onclick=async()=>{const t=texto();try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}const o=document.getElementById('ok');o.style.display='block';setTimeout(()=>o.style.display='none',1500)};
+document.getElementById('send').onclick=()=>{const t=texto();const u='https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title='+encodeURIComponent('Perfil de código — respostas')+'&body='+encodeURIComponent(t);
+ if(u.length>7800){document.getElementById('copy').click();alert('As respostas são grandes demais para o link. Elas foram COPIADAS: a Issue vai abrir vazia, cole com Ctrl+V.');window.open('https://github.com/jezielsilva/pagina-mocks-prompts/issues/new?title='+encodeURIComponent('Perfil de código — respostas'),'_blank')}else window.open(u,'_blank')};
+prog();
+</script></body></html>

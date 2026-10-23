@@ -136,7 +136,7 @@ async function open(i,push=true){
   if(i.tipo==='resposta')return openResposta(i);
   if(i.tipo==='print'){$('#acts').innerHTML=`<a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Abrir em nova aba</a>`;$('#view').innerHTML=`<div class="shot"><img src="${i.arquivo}" alt="${i.titulo}"></div>`;return;}
   if(i.tipo==='artefato'){
-    $('#acts').innerHTML=`<span class="seg" role="group" aria-label="Tamanho da tela">${Object.keys(DEV).map(k=>`<button data-dev="${k}" class="${k===DV?'on':''}">${DEV[k].n}</button>`).join('')}</span> ${i.principal||i.asset?'':`<a class="btn" href="${principalUrl(i)}" target="_blank" rel="noopener" title="Abre um pedido no GitHub; o Claude aplica e remove os outros mocks">★ Tornar principal</a>`} <a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Nova aba</a> <a class="btn pri" href="${i.arquivo}" download>Baixar</a>`;
+    $('#acts').innerHTML=`<span class="seg" role="group" aria-label="Tamanho da tela">${Object.keys(DEV).map(k=>`<button data-dev="${k}" class="${k===DV?'on':''}">${DEV[k].n}</button>`).join('')}</span> ${i.principal||i.asset||i.formulario?'':`<a class="btn" href="${principalUrl(i)}" target="_blank" rel="noopener" title="Abre um pedido no GitHub; o Claude aplica e remove os outros mocks">★ Tornar principal</a>`} <a class="btn" href="${i.arquivo}" target="_blank" rel="noopener">Nova aba</a> <a class="btn pri" href="${i.arquivo}" download>Baixar</a>`;
     $('#view').innerHTML=`<div class="stage" id="stage"><div class="frame" id="frame"><iframe src="${i.arquivo}" title="${i.titulo}"></iframe></div></div>`;
     fit();
   }else{
