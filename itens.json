@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T18:38",
+  "atualizado": "2026-10-23T19:48",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes-aprovacao",
+      "id": "prompt-classificacoes-rollback",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Aprovação da mini-spec + contagem com fonte única",
-      "data": "2026-10-23T18:38",
-      "arquivo": "prompts/classificacoes-aprovacao-contagem.txt"
+      "titulo": "URGENTE — Rollback da contagem + terminar front de Classificações",
+      "data": "2026-10-23T19:48",
+      "arquivo": "prompts/classificacoes-rollback-contagem.txt"
     }
   ]
 }

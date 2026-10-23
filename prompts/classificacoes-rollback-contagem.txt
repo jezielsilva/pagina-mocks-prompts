@@ -1,0 +1,74 @@
+[Área: Backend (.NET/Mongo) + Frontend (Angular) | Skills: as de Backend e Frontend do projeto]
+
+URGENTE — ROLLBACK DA UNIFICAÇÃO DE CONTAGEM + TERMINAR O FRONT DE CLASSIFICAÇÕES
+
+SITUAÇÃO (prints do usuário)
+- `GET .../areas` retorna 500: {"mensagem":"Não foi possível concluir esta operação. Tente novamente.","errorId":"ERR-1C910969"}. Por isso a listagem de arquivos não carrega ("Não foi possível concluir esta operação" + "Tentar novamente").
+- Os contadores da sidebar (Meus documentos, Processos, Pré-processos, Prazos, Tarefas, "Todos os documentos") estavam CERTOS antes da última alteração e agora estão errados (ex.: "Todos os documentos 36 arquivos").
+- Aviso e badge mostram 69 sem classificação.
+- O visual da central, da fila, do seletor e do card da sidebar parece não ter mudado.
+
+1. ROLLBACK NO BACK (prioridade máxima)
+- Desfaça a refatoração/"fonte única" de contagem e qualquer alteração em métodos/consultas COMPARTILHADOS do explorador:
+  - áreas;
+  - totais por área;
+  - armazenamento/resumo;
+  - listagem de arquivos;
+  - filtros de escopo titular/adicional;
+  - lixeira.
+  Esses métodos devem voltar EXATAMENTE ao estado do commit de ponto fixo (back: 9d9e02932f16339315c1cff741716027d33af782), linha a linha. Use `git diff 9d9e029 -- <arquivo>` para identificar e reverter só esses trechos.
+- MANTER tudo o que é exclusivo de Classificações:
+  - coleção `classificacoesArquivos`, endpoints, business e repository de classificações;
+  - criar/renomear/desativar/reativar tipo;
+  - aplicar classificação;
+  - sugestões.
+- A contagem de "sem classificação" fica ISOLADA dentro do código de Classificações (consulta própria), sem reutilizar nem alterar os métodos do explorador. Mantenha o escopo como estava antes da unificação (fora da lixeira). A divergência 69/72 x total eu investigo depois. NÃO tente corrigir agora.
+- Se precisar do contexto por pasta (pastaId opcional) no aviso, implemente só na consulta de classificações.
+- Critério de pronto:
+  - `/areas` volta a responder 200;
+  - os arquivos carregam;
+  - os contadores da sidebar voltam aos números de antes.
+  Verifique pelo código (sem testes/scripts): nenhum arquivo do explorador fora de Classificações pode ter diff de regra em relação ao ponto fixo. Liste na entrega os arquivos revertidos e confirme isso.
+- Explique na entrega a causa provável do 500 em `/areas` (o que a unificação quebrou).
+
+2. FRONT — CONFIRMAR QUE AS MUDANÇAS ESTÃO NO CÓDIGO
+- O usuário não vê as mudanças visuais. Confira se os templates/SCSS NOVOS são os que estão de fato referenciados:
+  - componentes declarados/importados;
+  - o seletor/rota que abre a modal aponta para o componente novo;
+  - nada ficou no componente antigo.
+  Remova o código antigo que ficou órfão. Diga na entrega quais componentes ficam ativos.
+
+3. FRONT — AJUSTES QUE CONTINUAM VALENDO (seguir o mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock)
+a) Aviso "N arquivos sem classificação" (hoje: caixa amarela alta, borda forte e texto inteiro em laranja; está "estrondoso"):
+   - deixar bem mais leve: UMA linha, altura ~32–36px, padding vertical mínimo;
+   - fundo amarelo bem clarinho (ou neutro), sem borda forte (no máximo 1px suave) e cantos arredondados do UI-Kit;
+   - texto em cor normal/cinza escuro, só o número em negrito; ícone de etiqueta pequeno; badge "Pendente" pequeno;
+   - frase de ajuda em cinza, que some no celular;
+   - "Classificar agora" como botão pequeno/link na ponta direita;
+   - sem X; continua dentro do card branco do header, abaixo dos filtros;
+   - usar `e-alert` na variante mais discreta, ou um container simples com tokens do UI-Kit se o `e-alert` não permitir ficar fino.
+b) Card "Classificações" na sidebar (continua quebrado: tudo centralizado, badge e chevron soltos embaixo). Refazer em UMA linha horizontal, ~64px, igual aos cards Favoritos/Lixeira:
+   [ícone etiqueta em quadrado roxo claro 32px] [à esquerda: "Classificações" em negrito + abaixo "3 categorias · 22 subcategorias · 150 tipos" em cinza] [à direita: badge warning com o número + chevron ">"]. Card inteiro clicável, mesmo hover dos outros cards. NADA centralizado.
+c) Modal "Classificações", fila "Classificar arquivos" e seletor "Classificar <arquivo>": aplicar TUDO o que estava no prompt anterior de correções (layout em 2 colunas com categorias em destaque, ícones em círculo, acordeão, busca igual à de Meus documentos, resumo em badges, formulário "Novo tipo" único, fila em grade com local da pasta em vez de id, paginação de Clientes, seletor abrindo com o padrão visível e estado vazio com mensagem + formulário). Se algum item não foi feito, faça agora e liste na entrega item a item: feito / não feito.
+
+4. REGRAS
+- Não mexer em nada fora de Classificações além do rollback.
+- Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA
+- Arquivos revertidos no back (confirmando que voltaram ao ponto fixo).
+- Causa provável do 500.
+- Componentes de front ativos e checklist item a item do item 3.
+- Seção "Explicações" e pendências.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
