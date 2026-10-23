@@ -395,7 +395,9 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .picker-trigger{max-width:260px}
 /* Visualização rápida */
 .modal-ql{width:min(1180px,94vw)}
-.quicklook{display:grid;grid-template-columns:minmax(0,1fr) 360px;height:min(720px,86vh)}
+.quicklook{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:min(680px,calc(86vh - 120px))}
+.ql-actions{display:flex;flex-wrap:wrap;gap:8px;padding:10px 20px;align-items:center}
+.quicklook-side .nav-tabs{position:sticky;top:-20px;background:var(--card-bg);z-index:1;margin-top:-6px}
 .quicklook-doc{overflow:auto;padding:28px;display:flex;justify-content:center;align-items:flex-start}
 .quicklook-doc .pg{max-width:420px}
 .quicklook-side{padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;overflow-x:hidden;min-width:0}
@@ -1957,34 +1959,36 @@ function renderMobileViewer(){
       :btn('download','download','Baixar','btn-primary')+btn('compress','compress','Comprimir','btn-outline-secondary',!m)+btn('merge','merge','Unir','btn-outline-secondary',!m)+btn('move','move','Mover')+btn('trash','trash','Excluir','btn-danger')}</nav></div>`;
   const ns=$('.doc-viewer-scroll');if(ns)ns.scrollTop=scroll;
 }
+/* Peças compartilhadas entre o drawer e a visualização rápida (mesmas ações, mesmas abas) */
+function fileActionsHTML(f,{abrir=false}={}){
+  const inTrash=TRASH.some(t=>t.item===f),m=isMergeable(f);
+  const b=(k,icn,l,cls='btn-outline-secondary',extra='')=>`<button type="button" class="btn btn-sm rounded-pill ${cls}" data-pa="${k}" ${extra}>${ic(icn,14)}${l}</button>`;
+  if(inTrash)return b('restore','restore','Restaurar','btn-success')+b('purge','trash','Excluir definitivamente','btn-danger ms-auto');
+  return (abrir?b('open','open','Abrir','btn-primary'):'')
+    +b('compress','compress','Comprimir','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')+b('merge','merge','Unir com…','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')
+    +b('download','download','Baixar')+b('move','move','Mover')+b('rename','edit','Renomear')+b('trash','trash','Excluir','btn-danger ms-auto');
+}
+function fileTabsHTML(f,tab){
+  const evs=EVENTS.filter(e=>e.item===f).sort((a,b)=>b.date-a.date);
+  const vazio=(icn,t,s)=>`<div class="tab-empty text-secondary">${ic(icn,28)}<span class="card-title">${t}</span><span class="small">${s}</span></div>`;
+  let body;
+  if(tab==='detalhes')body=detailList(f);
+  else if(tab==='historico')body=evs.length?eventsHTML(evs,true):vazio('history','Sem histórico','Envios, renomeações e movimentações deste arquivo aparecem aqui.');
+  else{const acc=f.access.slice().sort((a,b)=>b.date-a.date);body=acc.length?accessList(acc.map(a=>({f,a})),false):vazio('eye','Nenhum acesso registrado','Visualizações e downloads deste arquivo aparecem aqui.');}
+  const tabs=[['detalhes','Detalhes'],['historico','Histórico'],['acessos','Acessos']];
+  return `<ul class="nav nav-tabs" role="tablist">${tabs.map(([k2,l])=>`<li class="nav-item" role="presentation"><button type="button" class="nav-link ${tab===k2?'active':''}" role="tab" aria-selected="${tab===k2}" data-ptab="${k2}">${l}${k2==='historico'&&evs.length?` <span class="badge badge-sm badge-secondary">${evs.length}</span>`:k2==='acessos'&&f.access.length?` <span class="badge badge-sm badge-secondary">${f.access.length}</span>`:''}</button></li>`).join('')}</ul><div class="doc-drawer-tab" role="tabpanel">${body}</div>`;
+}
 function renderPanel(){
   const f=PNL.item,el=$('#panel');if(!f){el.innerHTML='';return;}
   if(isT())return renderMobileViewer();
   const inTrash=TRASH.some(t=>t.item===f),m=isMergeable(f);
   const scroll=$('.doc-drawer-body')?$('.doc-drawer-body').scrollTop:0;
-  const b=(k,icn,l,cls='btn-outline-secondary',extra='')=>`<button type="button" class="btn btn-sm rounded-pill ${cls}" data-pa="${k}" ${extra}>${ic(icn,14)}${l}</button>`;
-  const acts=inTrash?b('restore','restore','Restaurar','btn-success')+b('purge','trash','Excluir definitivamente','btn-danger')
-   :b('compress','compress','Comprimir','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')+b('merge','merge','Unir com…','btn-outline-secondary',m?'':'disabled title="Disponível para PDFs/imagens"')
-    +b('download','download','Baixar')+b('move','move','Mover')+b('rename','edit','Renomear')+b('trash','trash','Excluir','btn-danger ms-auto');
-  const evs=EVENTS.filter(e=>e.item===f).sort((a,b)=>b.date-a.date);
-  let body='';
-  const vazio=(icn,t,s)=>`<div class="tab-empty text-secondary">${ic(icn,28)}<span class="card-title">${t}</span><span class="small">${s}</span></div>`;
-  if(PNL.tab==='detalhes'){
-    body=detailList(f);
-  }else if(PNL.tab==='historico'){
-    body=evs.length?eventsHTML(evs,true):vazio('history','Sem histórico','Envios, renomeações e movimentações deste arquivo aparecem aqui.');
-  }else{
-    const acc=f.access.slice().sort((a,b)=>b.date-a.date);
-    body=acc.length?accessList(acc.map(a=>({f,a})),false):vazio('eye','Nenhum acesso registrado','Visualizações e downloads deste arquivo aparecem aqui.');
-  }
-  const tabs=[['detalhes','Detalhes'],['historico','Histórico'],['acessos','Acessos']];
   el.innerHTML=`<div class="drawer-backdrop" data-pclose></div><aside class="drawer drawer-end doc-drawer" role="dialog" aria-modal="true" aria-label="Documento ${esc(f.name)}">
     <header class="doc-drawer-head modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block text-truncate">${esc(f.name)}</span><span class="brand-sub d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>
     ${inTrash?'':favBtn(f,18)}<button type="button" class="btn-close" id="pnl-x" data-pclose aria-label="Fechar">${ic('x',18)}</button></header>
     <div class="doc-drawer-viewer file-list-item-thumb">${pagesHTML(f)}</div>
-    <div class="doc-drawer-actions border-top border-bottom">${acts}</div>
-    <div class="doc-drawer-body"><ul class="nav nav-tabs" role="tablist">${tabs.map(([k2,l])=>`<li class="nav-item" role="presentation"><button type="button" class="nav-link ${PNL.tab===k2?'active':''}" role="tab" aria-selected="${PNL.tab===k2}" data-ptab="${k2}">${l}${k2==='historico'&&evs.length?` <span class="badge badge-sm badge-secondary">${evs.length}</span>`:k2==='acessos'&&f.access.length?` <span class="badge badge-sm badge-secondary">${f.access.length}</span>`:''}</button></li>`).join('')}</ul>
-    <div class="doc-drawer-tab" role="tabpanel">${body}</div></div></aside>`;
+    <div class="doc-drawer-actions border-top border-bottom">${fileActionsHTML(f)}</div>
+    <div class="doc-drawer-body">${fileTabsHTML(f,PNL.tab)}</div></aside>`;
   const bd=$('.doc-drawer-body');if(bd)bd.scrollTop=scroll;
 }
 $('#panel').addEventListener('click',e=>{
@@ -2004,17 +2008,30 @@ $('#panel').addEventListener('change',e=>{const s=e.target.closest('[data-pa-sta
    11. VISUALIZAÇÃO RÁPIDA (Grid: Visualizar / duplo clique / Espaço) — modal
    ===================================================================== */
 let QL=null;
-function quickLook(f){
+function quickLook(f,tab='detalhes'){
   if(!f||f.type!=='file')return;closeQL();closeMenu();
   access(f,'visualizado');
   const b=document.createElement('div');b.className='modal';
-  b.innerHTML=`<div class="modal-dialog modal-ql"><div class="modal-content" role="dialog" aria-modal="true" aria-label="Visualização rápida de ${esc(f.name)}"><div class="modal-header modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block text-truncate">${esc(f.name)}</span><span class="brand-sub d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div><button type="button" class="btn-close" data-qx aria-label="Fechar">${ic('x',18)}</button></div>
+  const paint=()=>{const inTrash=TRASH.some(t=>t.item===f);
+    b.innerHTML=`<div class="modal-dialog modal-ql"><div class="modal-content" role="dialog" aria-modal="true" aria-label="Visualização rápida de ${esc(f.name)}"><div class="modal-header modal-header-brand"><div class="flex-fill min-w-0"><span class="brand-title d-block text-truncate">${esc(f.name)}</span><span class="brand-sub d-block text-truncate">${esc(locationOf(f))} · ${fmtSize(f.size)}</span></div>${inTrash?'':favBtn(f,18)}<button type="button" class="btn-close" data-qx aria-label="Fechar">${ic('x',18)}</button></div>
+    <div class="ql-actions border-bottom">${fileActionsHTML(f,{abrir:true})}</div>
     <div class="quicklook"><div class="quicklook-doc file-list-item-thumb">${pagesHTML(f)}</div>
-    <div class="quicklook-side border-start"><span class="card-title">Detalhes</span>${detailList(f)}
-    <div class="quicklook-actions"><button type="button" class="btn btn-outline-secondary rounded-pill" data-qd>${ic('download',14)}Baixar</button><button type="button" class="btn btn-primary rounded-pill" data-qo>${ic('open',14)}Abrir</button></div></div></div></div></div>`;
+    <div class="quicklook-side border-start">${fileTabsHTML(f,QL.tab)}</div></div></div></div>`;};
+  QL={el:b,prev:document.activeElement,tab,f};paint();QL.paint=paint;
   b.addEventListener('mousedown',e=>{if(e.target===b)closeQL();});
-  b.addEventListener('click',e=>{if(e.target.closest('[data-qx]'))closeQL();else if(e.target.closest('[data-qo]')){closeQL();openPanel(f);}else if(e.target.closest('[data-qd]'))doDownload([f]);else if(e.target.closest('[data-goto]')){closeQL();revealFile(f);}});
-  $('#layer').appendChild(b);QL={el:b,prev:document.activeElement};$('[data-qx]',b).focus();
+  b.addEventListener('click',e=>{
+    if(e.target.closest('[data-qx]'))return closeQL();
+    const t=e.target.closest('[data-ptab]');if(t){QL.tab=t.dataset.ptab;const sc=$('.quicklook-side',b).scrollTop;paint();return;}
+    if(e.target.closest('[data-goto]')){closeQL();revealFile(f);return;}
+    const a=e.target.closest('[data-pa]');if(!a||a.disabled)return;
+    const k=a.dataset.pa;
+    if(k==='open'){closeQL();openPanel(f);return;}
+    if(k==='fav'){toggleFav(f);paint();return;}
+    if(k==='download'){doDownload([f]);return;}
+    closeQL();
+    ({restore:()=>doRestore([f]),purge:()=>doPurge([f]),compress:()=>dlgCompress([f]),merge:()=>dlgMerge([f],true),move:()=>dlgMove([f]),rename:()=>dlgRename(f),trash:()=>doTrash([f])})[k]?.();
+  });
+  $('#layer').appendChild(b);$('[data-qx]',b).focus();
 }
 function closeQL(){if(!QL)return;QL.el.remove();const p=QL.prev;QL=null;if(p&&p.focus&&document.body.contains(p))p.focus();}
 
