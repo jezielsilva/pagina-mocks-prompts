@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-23T12:20:00-03:00",
+  "atualizado": "2026-10-23T15:05:00-03:00",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes",
+      "id": "script-classificacoes-mongo",
       "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Classificações completas (uma coleção em árvore, log geral, front + back)",
-      "data": "2026-10-23T12:20:00-03:00",
-      "arquivo": "prompts/classificacoes-completo.txt"
+      "projeto": "elaw adv · Banco",
+      "titulo": "Script Mongo — classificacoesArquivos (collection, índices e padrão do sistema: 3 categorias, 22 subcategorias, 150 tipos)",
+      "data": "2026-10-23T15:05:00-03:00",
+      "arquivo": "prompts/classificacoes-arquivos.mongo.js"
     }
   ]
 }
