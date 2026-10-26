@@ -43,9 +43,18 @@ Conferir no mock: "Classificar agora" (fila) e o card "Todos os documentos" na s
 4. SUGESTÕES (confirmar)
 - Já pedido: sugestões removidas da fila e do seletor, sem tag "Sem sugestão". O mock já está assim: a linha mostra só miniatura, nome, local, seletor e ✓.
 
+5. FILTRO "CLASSIFICAÇÃO" NA PÁGINA PRINCIPAL (Meus documentos)
+- O combo de filtro "Classificação" (ao lado de Tipo / Autor / Data) passa a listar SEMPRE e SOMENTE as SUBCATEGORIAS (as 22), nunca categorias nem tipos.
+- Usar o componente de AUTOCOMPLETE padrão do sistema (o mesmo usado em outros filtros/campos com busca; procurar e reutilizar), com:
+  - busca por digitação, sem acento e sem maiúsculas ("familia" encontra "Direito de Família e Sucessões");
+  - opções agrupadas pelo nome da categoria (Petições iniciais / Petições intermediárias / Recursos), se o componente suportar grupo; se não, mostrar a categoria em cinza ao lado do nome;
+  - opção "Todas" para limpar o filtro.
+- O filtro aplica `classificacao.subcategoriaId` = selecionada (traz todos os arquivos de qualquer tipo daquela subcategoria). O filtro é feito no BACKEND, na consulta de listagem, com o parâmetro opcional subcategoriaId.
+- A lista de subcategorias vem do endpoint de classificações que já existe (só as ativas).
+
 REGRAS: UI-Kit + tokens. Sem testes, sem lint, sem scripts de validação.
 
-ENTREGA: arquivos alterados (trechos relevantes), seção "Explicações" (transição em 2 tempos e o flex da sidebar) e checklist 1–4 feito/não feito.
+ENTREGA: arquivos alterados (trechos relevantes), seção "Explicações" (transição em 2 tempos e o flex da sidebar) e checklist 1–5 feito/não feito.
 
 ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 - Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).

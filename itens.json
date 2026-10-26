@@ -50,7 +50,7 @@
       "id": "prompt-classificacoes-ultimos",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Últimos ajustes: paginação da fila, linhas subindo ao salvar, card Todos os documentos",
+      "titulo": "Prompt — Últimos ajustes: paginação da fila, linhas subindo ao salvar, card Todos os documentos, filtro por subcategoria",
       "data": "2026-10-26T16:12",
       "arquivo": "prompts/classificacoes-ultimos-ajustes.txt"
     }
