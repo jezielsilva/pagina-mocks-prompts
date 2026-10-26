@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T11:32",
+  "atualizado": "2026-10-26T12:26",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes-visual",
+      "id": "prompt-classificacoes-visual-2",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Ajustes visuais da modal Classificações (cantos, botão, categorias, ícones)",
-      "data": "2026-10-26T11:32",
-      "arquivo": "prompts/classificacoes-ajustes-visuais.txt"
+      "titulo": "Prompt — Ajustes visuais 2 da modal Classificações (ícones, clique, tabela, scroll, busca, novo tipo)",
+      "data": "2026-10-26T12:26",
+      "arquivo": "prompts/classificacoes-ajustes-visuais-2.txt"
     }
   ]
 }
