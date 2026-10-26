@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T14:45",
+  "atualizado": "2026-10-26T15:08",
   "itens": [
     {
       "id": "documentos-mock",
@@ -28,14 +28,6 @@
       "titulo": "Miniaturas por tipo de arquivo — claro e escuro (SVG adaptável)",
       "data": "2026-10-26T14:41",
       "arquivo": "assets/miniaturas-por-tipo.html"
-    },
-    {
-      "id": "prompt-miniatura-por-tipo",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Componente de miniatura por tipo de arquivo",
-      "data": "2026-10-26T14:41",
-      "arquivo": "prompts/miniatura-por-tipo.txt"
     },
     {
       "id": "asset-miniaturas-zip",
