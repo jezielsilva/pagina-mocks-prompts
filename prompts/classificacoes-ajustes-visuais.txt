@@ -1,0 +1,98 @@
+[Área: Frontend (Angular) + seed de ícones/cores (Backend/Mongo) | Skills: as de Frontend/UI-Kit do projeto]
+
+AJUSTES VISUAIS — MODAL "CLASSIFICAÇÕES" (pontuais)
+Referência: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock (card "Classificações" na sidebar).
+Mexer SÓ no visual da modal de Classificações. Não alterar contagens nem outras regras.
+
+PASSO 0 — Investigar rapidamente:
+- o padrão de modal do Financeiro;
+- os tokens de cor do sistema (primary, info, success, warning, danger e uma eventual paleta de gráficos `--chart-color-*`);
+- como os Material Symbols/Material Icons do Google são usados no projeto (ligature/classe).
+Listar o que achou numa mini-spec curta.
+
+1. CABEÇALHO COM CANTOS BRANCOS
+- Os cantos superiores esquerdo e direito do cabeçalho roxo mostram um "pedaço" branco. O roxo tem que preencher o canto inteiro.
+- Correção: o header precisa ter o mesmo border-radius superior do modal-content (border-top-left/right-radius: inherit), ou o modal-content precisa de overflow: hidden. Conferir também se não há padding/borda do container aparecendo atrás. Seguir exatamente o modal do Financeiro.
+
+2. BOTÃO "NOVO TIPO" COM DOIS ÍCONES
+- Hoje aparece "+ + Novo tipo". Deixar UM ícone "+" só: o do e-button. Remover o "+" do texto/label.
+
+3. TEXTO "ITENS PADRÃO SÃO DO SISTEMA E NÃO MUDAM"
+- Hoje está em preto, com o cadeado grudado no texto. Deixar igual ao mock:
+  - texto pequeno (12–13px) em cinza secundário (token de texto secundário);
+  - cadeado pequeno (13–14px) também em cinza, com ~4px de espaço;
+  - alinhado à direita da linha de resumo.
+
+4. CARTÕES DE CATEGORIA (coluna esquerda)
+- Manter os ícones laranja (estão certos).
+- Ajustes:
+  - bordas mais arredondadas (12–14px, igual ao mock);
+  - fundo BRANCO nos não selecionados (hoje estão cinza), com borda fina e hover com a borda na cor primária clara;
+  - selecionado com borda primária 2px e fundo primário bem claro (lightest), sem cinza;
+  - padding de ~14px;
+  - nome em negrito 15px e linha de "N subcategorias · N tipos" em cinza secundário;
+  - espaço de 8px entre cartões.
+
+5. LISTA DE SUBCATEGORIAS (lado direito) — "está muito feio"
+- Cabeçalho da categoria:
+  - círculo de 44px com o ícone da categoria (mesmo laranja), alinhado verticalmente ao título;
+  - título 20px em negrito;
+  - descrição em cinza.
+- Cards de subcategoria:
+  - borda 12px de raio, fundo branco;
+  - padding de 10px 14px;
+  - hover com fundo cinza bem claro;
+  - aberto com borda primária clara;
+  - chevron PARA BAIXO, que vira PARA CIMA quando aberto (acordeão, não ">").
+- ÍCONES DAS SUBCATEGORIAS: hoje vários estão vazios e os outros são pretos e soltos. Todo card tem que ter ícone, num CÍRCULO de 36px com fundo da cor a ~14% de opacidade e o ícone na cor cheia.
+  - Usar Google Material Symbols (o mesmo set que o sistema já usa).
+  - Cores vindas SÓ dos tokens do sistema, alternando roxo (primary), azul (info), amarelo (warning), verde (success) e vermelho (danger), mais a paleta `--chart-color-*` se existir. Nada de hex solto.
+- Mapa sugerido (nome do ícone Material Symbols → subcategoria):
+  - Petições iniciais:
+    - Direito Civil → gavel (primary)
+    - Direito Imobiliário → home_work (info)
+    - Direito de Família e Sucessões → family_restroom (warning)
+    - Direito do Consumidor → shopping_cart (success)
+    - Direito Trabalhista → work (danger)
+    - Direito Tributário → account_balance (primary)
+    - Direito Empresarial → business_center (info)
+    - Direito Penal → policy (danger)
+    - Direito Administrativo e Constitucional → account_balance_wallet ou assured_workload (success)
+    - Outras Iniciais Específicas → note_add (warning)
+  - Petições intermediárias:
+    - Peças de Defesa → shield (primary)
+    - Impugnações e Manifestações → rate_review (info)
+    - Cumprimento de Sentença → task_alt (success)
+    - Fase Final / Saneamento / Sentença → fact_check (warning)
+  - Recursos:
+    - Contra decisões interlocutórias → call_split (primary)
+    - Contra sentenças → undo (danger)
+    - Recursos nos Tribunais (Segunda Instância) → apartment (info)
+    - Recursos Especiais e Autônomos → star (warning)
+    - Recursos em Execução / Cumprimento de Sentença → payments (success)
+    - Recursos Trabalhistas – Estrutura Recursal Específica → engineering (danger)
+    - Recursos Eleitorais / Administrativos / Especiais → how_to_vote (primary)
+    - Recursos Incidentes / Situações Específicas → report (info)
+  Se algum nome não existir no set usado pelo projeto, escolha o mais próximo e liste a troca na entrega.
+- Onde guardar o ícone e a cor: a subcategoria já tem os campos `icone` e `cor` na coleção `classificacoesArquivos`. Grave o NOME do ícone e o NOME do token (ex.: "primary", "info"), nunca hex. O front traduz o token para a variável CSS. NÃO alterar o banco: gere um script Mongo de update (updateOne por _id das subcategorias, só $set de icone e cor) e entregue para EU rodar. Enquanto isso, o front usa um fallback (ícone "folder" + primary) se vier vazio.
+- O mesmo componente de ícone em círculo deve ser usado no seletor ("Classificar arquivo") e na fila.
+
+6. REGRAS
+- Seguir o UI-Kit. Onde ele não cobrir (círculo de ícone), usar só tokens (cores, raios, espaçamentos).
+- Sem testes, sem lint, sem scripts de validação (o script Mongo do item 5 é de dados, não de validação).
+
+ENTREGA
+- Arquivos alterados (trechos relevantes) + o script Mongo de ícones/cores.
+- Seção "Explicações" e pendências.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

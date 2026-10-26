@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T10:01",
+  "atualizado": "2026-10-26T11:32",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes-rollback",
+      "id": "prompt-classificacoes-visual",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "URGENTE — Rollback da contagem + terminar front de Classificações",
-      "data": "2026-10-23T19:48",
-      "arquivo": "prompts/classificacoes-rollback-contagem.txt"
+      "titulo": "Prompt — Ajustes visuais da modal Classificações (cantos, botão, categorias, ícones)",
+      "data": "2026-10-26T11:32",
+      "arquivo": "prompts/classificacoes-ajustes-visuais.txt"
     }
   ]
 }
