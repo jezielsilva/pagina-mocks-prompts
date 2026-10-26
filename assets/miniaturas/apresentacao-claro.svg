@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" role="img" aria-label="Arquivo PPTX">
+  <path d="M12 0 H164 L210 46 V285 Q210 297 198 297 H12 Q0 297 0 285 V12 Q0 0 12 0Z" fill="#fdf0e9"/>
+  <path d="M164 0 V34 Q164 46 176 46 H210Z" fill="#ea580c" opacity=".3"/>
+  <rect x="72" y="60" width="66" height="44" rx="5" fill="none" stroke="#ea580c" stroke-width="4"/><path d="M88 96V84M101 96V74M114 96V80M127 96V88" stroke="#ea580c" stroke-width="6" stroke-linecap="round"/><path d="M105 104v10" stroke="#ea580c" stroke-width="4"/>
+  <rect x="18" y="142" width="174" height="82" rx="16" fill="#ea580c"/>
+  <text x="105" y="183" dominant-baseline="central" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="48" font-weight="800" letter-spacing="1" fill="#ffffff">PPTX</text>
+</svg>

@@ -21,16 +21,16 @@ Listar na mini-spec.
 - Template: um <svg viewBox="0 0 210 297"> com:
   a) folha com o canto superior direito dobrado (path do arquivo de referência), preenchida com color-mix da cor do tipo com o fundo do card (≈9% no claro, ≈20% no escuro);
   b) a dobra na cor do tipo, com 28% de opacidade;
-  c) o GLIFO do tipo (formas do arquivo de referência);
-  d) o selo (pill) com a extensão em maiúsculas (até 4 letras), na cor do tipo e com o texto na cor do fundo.
-- Cores: SEM hex. Cada tipo usa um token do sistema, via variável CSS no host (`--c`):
-  pdf=danger · doc=info · xls=success · img=primary · ppt=laranja (warning ou paleta) · txt=neutro/secundário · zip=warning · audio=info/ciano da paleta · video=rosa da paleta (ou primary) · outro=neutro.
+  c) o GLIFO pequeno do grupo, no topo (formas do arquivo de referência);
+  d) a FAIXA com a extensão (ver "FOCO NO RÓTULO").
+- Cores: SEM hex. Cada grupo usa um token do sistema via variável CSS no host (`--c`), conforme o mapa abaixo.
   Se o tema escuro já troca os tokens, nada mais é necessário. Se não troca, usar o seletor do tema escuro só para --paper-mix/--paper-base.
-- Mapa de extensões → tipo: igual a TIPOS no arquivo de referência (pdf; doc/docx/odt; xls/xlsx/csv/ods; png/jpg/jpeg/gif/webp/svg; ppt/pptx/odp; txt/rtf/md; zip/rar/7z; mp3/wav/ogg/m4a; mp4/mov/avi/mkv; resto = outro). Valor fixo no próprio componente (perfil: valores fixos inline).
+- FOCO NO RÓTULO: a extensão é o elemento principal. Faixa larga na cor do tipo atravessando a folha (x=18, largura 174, raio 16), com o texto da extensão em maiúsculas (até 4 letras), peso 800, grande (58 para até 3 letras, 48 para 4) e na cor do fundo. O desenho fica PEQUENO acima da faixa.
+- Abaixo de 40px de largura: sem desenho, só a folha + faixa ocupando o meio, com o texto ainda maior (72/58).
+- GRUPOS enxutos (8 desenhos só): pdf; texto (doc/docx/odt/txt/rtf/md); planilha (xls/xlsx/csv/ods); imagem (png/jpg/jpeg/gif/webp/svg/heic); apresentação (ppt/pptx/odp); compactado (zip/rar/7z, desenho de caixa de arquivo); mídia (mp3/wav/ogg/m4a/mp4/mov/avi/mkv, círculo com play); outro (folha simples). O RÓTULO sempre mostra a extensão REAL (PNG, JPG, DOCX…), mesmo dentro do grupo. Mapa igual a GRUPOS no arquivo de referência, fixo no componente.
+- Cores por grupo: pdf=danger · texto=info · planilha=success · imagem=primary · apresentação=laranja · compactado=warning · mídia=rosa da paleta (ou primary) · outro=neutro.
 - Glifos: um bloco por tipo no template (switch clássico/@switch), com as mesmas coordenadas do arquivo de referência. Nada de innerHTML/bypassSecurityTrust.
-- clipPath da imagem: id único por instância (ex.: contador estático no componente), para não colidir quando houver várias miniaturas na tela.
 - Acessibilidade: role="img" e aria-label="Arquivo PDF".
-- Tamanho mínimo legível: abaixo de 32px de largura, esconder o selo de texto (manter só a folha + glifo).
 
 2. QUANDO HÁ PRÉVIA REAL
 - Imagens com URL de prévia/thumbnail (S3) continuam mostrando a foto real. O componente é o fallback enquanto carrega, quando não há prévia ou quando dá erro no <img> (evento error → mostra a miniatura SVG).
@@ -45,7 +45,7 @@ Listar na mini-spec.
 - Front puro (a extensão já vem do back).
 - Sem testes, sem lint, sem scripts de validação.
 
-ENTREGA: arquivos criados/alterados (trechos relevantes), lista dos pontos substituídos, seção "Explicações" (color-mix, clipPath com id único, fallback do <img>) e pendências.
+ENTREGA: arquivos criados/alterados (trechos relevantes), lista dos pontos substituídos, seção "Explicações" (color-mix, regra abaixo de 40px, fallback do <img>) e pendências.
 
 ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 - Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
