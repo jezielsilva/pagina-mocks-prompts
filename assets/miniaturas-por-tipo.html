@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Miniaturas por tipo</title>
+<style>
+:root{--bg:#f4f2f7;--card:#fff;--txt:#1f1a29;--muted:#6b6478;--line:#e4dfec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15121b;--card:#1e1a26;--txt:#ece8f3;--muted:#a59cb4;--line:#332c40}}
+:root[data-theme="dark"]{--bg:#15121b;--card:#1e1a26;--txt:#ece8f3;--muted:#a59cb4;--line:#332c40}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px 16px}
+h1{font-size:20px;margin:0 0 4px}p{margin:0 0 20px;color:var(--muted)}
+.wrap{max-width:1100px;margin:0 auto}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:760px){.panels{grid-template-columns:1fr}}
+.panel{border-radius:14px;padding:16px;border:1px solid var(--line)}
+.panel h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px}
+/* Tokens de exemplo — no sistema vêm do UI-Kit */
+.light{background:#fff;color:#1f1a29;--paper-mix:9%;--paper-base:#ffffff;--ink-base:#1f1a29;
+  --t-pdf:#d93025;--t-doc:#2563eb;--t-xls:#16a34a;--t-img:#70398c;--t-ppt:#ea580c;--t-txt:#64748b;--t-zip:#ca8a04;--t-aud:#0891b2;--t-vid:#db2777;--t-out:#6b7280}
+.dark{background:#1e1a26;color:#ece8f3;--paper-mix:20%;--paper-base:#221d2b;--ink-base:#ece8f3;
+  --t-pdf:#f87171;--t-doc:#60a5fa;--t-xls:#4ade80;--t-img:#c49be0;--t-ppt:#fb923c;--t-txt:#94a3b8;--t-zip:#facc15;--t-aud:#22d3ee;--t-vid:#f472b6;--t-out:#9ca3af}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:14px}
+.item{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;opacity:.9}
+.thumb{width:84px;aspect-ratio:210/297}
+.thumb svg{display:block;width:100%;height:100%}
+.sizes{display:flex;gap:12px;align-items:flex-end;margin-top:16px}
+.sizes .thumb{width:auto}
+code{font-size:12px}
+</style></head><body><div class="wrap">
+<h1>Miniaturas por tipo de arquivo</h1>
+<p>Um único SVG que muda o desenho e a cor conforme a extensão. As cores vêm de tokens (aqui são exemplos), então claro e escuro saem automaticamente.</p>
+<div class="panels">
+  <section class="panel light"><h2>Tema claro</h2><div class="grid" data-g></div><div class="sizes" data-s></div></section>
+  <section class="panel dark"><h2>Tema escuro</h2><div class="grid" data-g></div><div class="sizes" data-s></div></section>
+</div></div>
+<script>
+/* Mapa extensão → tipo */
+const TIPOS={pdf:'pdf',doc:'doc',docx:'doc',odt:'doc',xls:'xls',xlsx:'xls',csv:'xls',ods:'xls',png:'img',jpg:'img',jpeg:'img',gif:'img',webp:'img',svg:'img',ppt:'ppt',pptx:'ppt',odp:'ppt',txt:'txt',rtf:'txt',md:'txt',zip:'zip',rar:'zip','7z':'zip',mp3:'aud',wav:'aud',ogg:'aud',m4a:'aud',mp4:'vid',mov:'vid',avi:'vid',mkv:'vid'};
+function tipoDe(ext){return TIPOS[(ext||'').toLowerCase()]||'out';}
+/* Desenho do meio de cada tipo (área útil 210x297; C = cor do tipo) */
+const L=(x,y,w,o=.35)=>`<rect x="${x}" y="${y}" width="${w}" height="7" rx="3.5" fill="var(--c)" opacity="${o}"/>`;
+const GLIFO={
+ pdf:()=>L(45,70,120,.55)+L(45,88,100)+L(45,106,112)+L(45,124,90)+L(45,150,120)+L(45,168,104)+L(45,186,80),
+ doc:()=>L(45,66,80,.7)+L(45,90,120)+L(45,106,120)+L(45,122,96)+L(45,146,120)+L(45,162,120)+L(45,178,70),
+ xls:()=>{let s=`<rect x="40" y="70" width="130" height="120" rx="6" fill="none" stroke="var(--c)" stroke-width="2"/><rect x="41" y="71" width="128" height="22" rx="5" fill="var(--c)" opacity=".25"/>`;
+   for(let i=1;i<5;i++)s+=`<line x1="40" x2="170" y1="${70+i*24}" y2="${70+i*24}" stroke="var(--c)" stroke-width="1.5" opacity=".5"/>`;
+   for(let j=1;j<3;j++)s+=`<line y1="70" y2="190" x1="${40+j*43}" x2="${40+j*43}" stroke="var(--c)" stroke-width="1.5" opacity=".5"/>`;return s;},
+ img:()=>`<rect x="45" y="80" width="120" height="90" rx="10" fill="none" stroke="var(--c)" stroke-width="2"/><clipPath id="CP"><rect x="46" y="81" width="118" height="88" rx="9"/></clipPath><g clip-path="url(#CP)"><circle cx="139" cy="105" r="9" fill="var(--c)" opacity=".45"/><path d="M58 170 L100 120 Q105 114 110 120 L150 170Z" fill="var(--c)" opacity=".3"/><path d="M38 170 L78 128 Q84 122 90 128 L132 170Z" fill="var(--c)" opacity=".6"/></g>`,
+ ppt:()=>`<rect x="35" y="78" width="140" height="92" rx="8" fill="none" stroke="var(--c)" stroke-width="2"/>`+[[60,40],[85,62],[110,30],[135,52]].map(([x,h])=>`<rect x="${x}" y="${158-h}" width="16" height="${h}" rx="3" fill="var(--c)" opacity=".55"/>`).join('')+`<line x1="105" y1="170" x2="105" y2="186" stroke="var(--c)" stroke-width="2"/><line x1="88" y1="186" x2="122" y2="186" stroke="var(--c)" stroke-width="2" stroke-linecap="round"/>`,
+ txt:()=>L(45,76,120)+L(45,96,120)+L(45,116,120)+L(45,136,120)+L(45,156,90)+L(45,176,60),
+ zip:()=>{let s=`<rect x="92" y="40" width="26" height="12" fill="var(--c)" opacity=".5"/>`;for(let i=0;i<8;i++)s+=`<rect x="${i%2?105:92}" y="${54+i*13}" width="13" height="11" rx="2" fill="var(--c)" opacity=".55"/>`;return s+`<rect x="88" y="160" width="34" height="34" rx="6" fill="none" stroke="var(--c)" stroke-width="2.5"/><rect x="99" y="171" width="12" height="12" rx="2" fill="var(--c)" opacity=".6"/>`;},
+ aud:()=>[14,30,50,70,46,62,34,20,40,24].map((h,i)=>`<rect x="${48+i*12}" y="${130-h/2}" width="7" height="${h}" rx="3.5" fill="var(--c)" opacity="${.4+(i%3)*.15}"/>`).join(''),
+ vid:()=>`<rect x="40" y="82" width="130" height="86" rx="10" fill="none" stroke="var(--c)" stroke-width="2"/><circle cx="105" cy="125" r="24" fill="var(--c)" opacity=".2"/><path d="M97 112 L120 125 L97 138Z" fill="var(--c)"/>`,
+ out:()=>L(45,90,120,.25)+L(45,110,100,.25)+L(45,130,110,.25)+L(45,150,70,.25)
+};
+/* Monta o SVG completo: folha com dobra + glifo + selo da extensão */
+function miniatura(ext,id){
+  const t=tipoDe(ext),c=`var(--t-${t})`,rot=(ext||'?').toUpperCase().slice(0,4);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" role="img" aria-label="Arquivo ${rot}" style="--c:${c}">
+  <path d="M10 0 H168 L210 42 V287 Q210 297 200 297 H10 Q0 297 0 287 V10 Q0 0 10 0Z" fill="color-mix(in srgb, var(--c) var(--paper-mix), var(--paper-base))"/>
+  <path d="M168 0 V32 Q168 42 178 42 H210Z" fill="var(--c)" opacity=".28"/>
+  ${GLIFO[t]().replace(/CP/g,'cp'+id)}
+  <rect x="${105-(rot.length*9+24)/2}" y="226" width="${rot.length*9+24}" height="34" rx="17" fill="var(--c)"/>
+  <text x="105" y="249" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="17" font-weight="700" letter-spacing=".5" fill="var(--paper-base)">${rot}</text>
+</svg>`;}
+const EXEMPLOS=['pdf','docx','xlsx','csv','png','jpg','pptx','txt','rtf','zip','mp3','mp4','dwg'];
+let n=0;
+document.querySelectorAll('[data-g]').forEach(g=>{g.innerHTML=EXEMPLOS.map(e=>`<div class="item"><div class="thumb">${miniatura(e,n++)}</div><code>.${e}</code></div>`).join('');});
+document.querySelectorAll('[data-s]').forEach(g=>{g.innerHTML=[24,42,64,120].map(w=>`<div class="item"><div class="thumb" style="width:${w}px">${miniatura('pdf',n++)}</div><code>${w}px</code></div>`).join('');});
+</script></body></html>

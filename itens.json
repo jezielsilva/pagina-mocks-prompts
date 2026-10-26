@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T12:38",
+  "atualizado": "2026-10-26T14:41",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,21 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes-fila",
+      "id": "asset-miniaturas-por-tipo",
+      "tipo": "artefato",
+      "asset": true,
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Miniaturas por tipo de arquivo — claro e escuro (SVG adaptável)",
+      "data": "2026-10-26T14:41",
+      "arquivo": "assets/miniaturas-por-tipo.html"
+    },
+    {
+      "id": "prompt-miniatura-por-tipo",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Fila 'Classificar arquivos' + seletor exatamente iguais ao mock",
-      "data": "2026-10-26T12:38",
-      "arquivo": "prompts/classificacoes-fila-igual-mock.txt"
+      "titulo": "Prompt — Componente de miniatura por tipo de arquivo",
+      "data": "2026-10-26T14:41",
+      "arquivo": "prompts/miniatura-por-tipo.txt"
     }
   ]
 }
