@@ -405,8 +405,8 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .quicklook-actions{margin-top:auto;display:flex;gap:8px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border-color)}
 /* Classificação */
 .classify-list{display:flex;flex-direction:column;max-height:52vh;overflow-y:auto}
-.classify-row{display:flex;align-items:center;gap:12px;padding:10px 4px;transition:opacity .2s,transform .2s}
-.classify-row.is-leaving{opacity:0;transform:translateY(-6px)}
+.classify-row{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:10px 4px;max-height:240px;overflow:hidden;transition:opacity .2s,transform .2s,max-height .25s ease .15s,padding .25s ease .15s,border-width .25s ease .15s}
+.classify-row.is-leaving{opacity:0;transform:translateY(-6px);max-height:0;padding-top:0;padding-bottom:0;border-bottom-width:0!important}
 .picker-inline{padding:8px 4px 12px}
 .picker-body{display:flex;flex-direction:column;gap:12px;max-height:46vh;overflow:auto;margin-top:8px}
 .picker-chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -534,10 +534,13 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 #device:not(.t) .doc-side{overflow:hidden}
 .side-scroll{display:flex;flex-direction:column;gap:inherit;min-height:0}
 /* Desktop: a sidebar tem UM scroll só (topo). O card de upgrade fica fixo no rodapé visível. */
-#device:not(.t) .side-scroll{flex:1 1 auto;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent;margin:0 -6px;padding:0 6px}
+#device:not(.t) .side-scroll{flex:1 1 auto;overflow:hidden;scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent;margin:0 -6px;padding:0 6px}
 #device:not(.t) .side-scroll>*{flex-shrink:0}
-#device:not(.t) .acc,#device:not(.t) .acc.open{flex:0 0 auto;min-height:0}
-#device:not(.t) .acc.open .acc-b>div{overflow:visible}
+/* Todos os documentos: fechado = só o cabeçalho; aberto = cresce até o card de upgrade e rola por dentro */
+#device:not(.t) .acc{flex:0 0 auto;min-height:0}
+#device:not(.t) .acc.open{flex:0 1 auto;min-height:120px;overflow:hidden}
+#device:not(.t) .acc.open .acc-b{flex:1 1 auto;min-height:0}
+#device:not(.t) .acc.open .acc-b>div{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent}
 #device:not(.t) .doc-side{gap:10px;padding:14px}
 #device:not(.t) .stc{padding:12px 14px}
 #device:not(.t) .cta{padding:12px 14px;gap:10px}
@@ -712,6 +715,7 @@ body.framed #device.t:not(.m){width:820px}
     <div class="side-scroll">
     <button type="button" class="new-btn" data-act="create-menu" aria-haspopup="menu"><span class="pc" id="new-ic"></span>Novo arquivo</button>
     <div class="quick" id="fav-slot"></div>
+    <div id="cls-slot"></div>
     <div class="stc" id="stc">
       <div class="st-top"><div class="st-used tabular-nums" id="st-used"></div><span class="st-pct tabular-nums" id="st-pct"></span></div>
       <div class="st-seg" role="tablist" aria-label="Agrupar uso">
@@ -722,7 +726,6 @@ body.framed #device.t:not(.m){width:820px}
       <div class="st-types" id="st-types"></div>
     </div>
     <section class="acc" id="acc"></section>
-    <div id="cls-slot"></div>
     </div><!-- /.side-scroll -->
     <div class="cta lv-ok" id="cta">
       <div class="tank" aria-hidden="true"><svg class="wave" viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0 8 Q25 0 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 V16 H0Z"/></svg><svg class="wave w2" viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0 8 Q25 16 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 V16 H0Z"/></svg></div>
@@ -1852,18 +1855,18 @@ const pickerTrigger=(t,attrs)=>`<button type="button" class="form-select form-se
 /* ---------- Classificar arquivos sem tipo ---------- */
 function dlgClassify(files){
   files=files||semTipo();if(!files.length){toast('Todos os arquivos já estão classificados',{kind:'ok'});return;}
-  const pend=new Map(files.map(f=>{const s=sugerirTipos(f);return [f.id,{f,sug:s,pick:s[0]?s[0].tipo:''}];}));
+  const pend=new Map(files.map(f=>[f.id,{f,sug:[],pick:''}])); // sugestões removidas
   let done=0,learned=[],editing=null;
   const row=p=>{const f=p.f,s=p.sug[0],t=s&&tipoById(s.tipo),pk=p.pick&&tipoById(p.pick);return `<div class="classify-row border-bottom" data-c="${f.id}">
     <span class="compact-thumb file-list-item-thumb">${thumb(f)}</span>
     <div class="flex-fill d-flex flex-column gap-1"><span class="fw-semibold text-truncate">${esc(f.name)}</span><span class="small text-secondary text-truncate">${esc(locationOf(f))}</span>
-      ${s?`<span class="d-flex align-items-center gap-1 flex-wrap small">${ic('spark',12)}Sugestão: ${catBadge(t.cor,esc(curto(t.nome)))}<span class="text-secondary">${esc(t.cat.grupo)} › ${esc(t.cat.nome)}</span>${confBadge(s.conf)}</span><span class="small text-secondary">${esc(s.why.join(' · '))}</span>`:`<span>${badge('warning','Sem sugestão — escolha a classificação','alert')}</span>`}
+      ${s?`<span class="d-flex align-items-center gap-1 flex-wrap small">${ic('spark',12)}Sugestão: ${catBadge(t.cor,esc(curto(t.nome)))}<span class="text-secondary">${esc(t.cat.grupo)} › ${esc(t.cat.nome)}</span>${confBadge(s.conf)}</span><span class="small text-secondary">${esc(s.why.join(' · '))}</span>`:''}
       ${p.sug.length>1?`<span class="d-flex gap-1 flex-wrap">${p.sug.slice(1).map(a=>`<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-alt="${f.id}|${a.tipo}">${esc(curto(tipoById(a.tipo).nome))} ${a.conf}%</button>`).join('')}</span>`:''}</div>
     ${pickerTrigger(pk,`data-edit="${f.id}" aria-expanded="${editing===f.id}"`)}
     <button type="button" class="btn btn-sm btn-success rounded-pill" data-ok="${f.id}" ${p.pick?'':'disabled'} aria-label="Confirmar classificação de ${esc(f.name)}">${ic('check',14,3)}</button></div>
     ${editing===f.id?`<div class="picker-inline border-bottom" data-pk="${f.id}"></div>`:''}`;};
   const head=()=>{const left=pend.size,conf=[...pend.values()].filter(p=>p.sug[0]&&p.sug[0].conf>=80).length;
-    return `<div class="d-flex align-items-center gap-3 flex-wrap"><div class="flex-fill"><span class="card-title d-block">${left} arquivo${left!==1?'s':''} sem classificação</span><span class="small text-secondary">${done?`${done} classificado${done>1?'s':''} agora · `:''}a sugestão considera nome, texto (OCR), pasta, formato e os tipos dos arquivos vizinhos</span></div>
+    return `<div class="d-flex align-items-center gap-3 flex-wrap"><div class="flex-fill"><span class="card-title d-block">${left} arquivo${left!==1?'s':''} sem classificação</span>${done?`<span class="small text-secondary">${done} classificado${done>1?'s':''} agora</span>`:''}</div>
       ${conf?`<button type="button" class="btn btn-sm btn-success rounded-pill" data-bulk>${ic('spark',14)}Aplicar ${conf} sugest${conf>1?'ões':'ão'} confiáve${conf>1?'is':'l'} (≥ 80%)</button>`:''}</div>`;};
   const paint=a=>{a.body.innerHTML=head()+(pend.size?`<div class="classify-list border-top">${[...pend.values()].map(row).join('')}</div>`:eAlert('positive',{titulo:'Tudo classificado!',html:learned.length?`O sistema aprendeu: ${learned.map(l=>`“${esc(l.w)}” → ${esc(l.t)}`).join(', ')}.`:''}));
     if(editing){const box=$(`[data-pk="${editing}"]`,a.body),p=pend.get(editing);if(box&&p)mountPicker(box,{q:'',pick:p.pick,sug:p.sug,open:new Set()},id=>{p.pick=id;editing=null;paint(a);});}};
@@ -1874,15 +1877,15 @@ function dlgClassify(files){
       a.body.addEventListener('click',e=>{
         if(e.target.closest('.picker-inline'))return;
         const ed=e.target.closest('[data-edit]');if(ed){editing=editing===ed.dataset.edit?null:ed.dataset.edit;paint(a);return;}
-        const ok=e.target.closest('[data-ok]');if(ok){const id=ok.dataset.ok;ok.closest('.classify-row').classList.add('is-leaving');setTimeout(()=>{apply(id,pend.get(id).pick);if(editing===id)editing=null;paint(a);render();},220);return;}
+        const ok=e.target.closest('[data-ok]');if(ok){const id=ok.dataset.ok;ok.closest('.classify-row').classList.add('is-leaving');setTimeout(()=>{apply(id,pend.get(id).pick);if(editing===id)editing=null;paint(a);render();},420);return;}
         const al=e.target.closest('[data-alt]');if(al){const [id,t]=al.dataset.alt.split('|');pend.get(id).pick=t;paint(a);return;}
         if(e.target.closest('[data-bulk]')){[...pend.values()].filter(p=>p.sug[0]&&p.sug[0].conf>=80).forEach(p=>apply(p.f.id,p.sug[0].tipo));editing=null;paint(a);render();}});}});
 }
 /* ---------- Definir classificação (1 ou vários arquivos) ---------- */
 function dlgSetTipo(items){
   const files=items.filter(i=>i.type==='file');if(!files.length)return;
-  const sug=files.length===1?sugerirTipos(files[0]):[];
-  const st={q:'',pick:files.length===1?(files[0].tipo||(sug[0]&&sug[0].tipo)||''):'',sug,open:new Set()};
+  const sug=[];
+  const st={q:'',pick:files.length===1?(files[0].tipo||''):'',sug,open:new Set()};
   dialog({title:files.length===1?`Classificar “${files[0].name}”`:`Classificar ${files.length} arquivos`,icon:'tag',wide:true,
     body:`<div class="d-flex align-items-center gap-2" id="pk-cur"></div><div id="pk-root"></div>`,
     actions:[{label:`${ic('settings',13)}Gerenciar classificações`,fn:()=>dlgTipos()},{label:'Cancelar',fn:a=>a.close()},{label:'Salvar classificação',kind:'save',id:'pk-save',fn:a=>{if(!st.pick)return;files.forEach(f=>{const s=sugerirTipos(f)[0];f.tipo=st.pick;log('tipado',f,curto(tipoById(st.pick).nome));aprender(f,st.pick,s&&s.tipo);});a.close();toast('Classificação salva',{kind:'ok'});render();}}],

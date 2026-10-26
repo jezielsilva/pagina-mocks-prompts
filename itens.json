@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-26T15:30",
+  "atualizado": "2026-10-26T16:12",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (drawer e visualização rápida padronizados)",
-      "data": "2026-10-23T16:17",
+      "titulo": "Mock — Documentos (Classificações sem sugestões + sidebar ajustada)",
+      "data": "2026-10-26T16:12",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true
@@ -47,12 +47,12 @@
       "arquivo": "prompts/miniatura-por-tipo.txt"
     },
     {
-      "id": "prompt-classificacoes-finais",
+      "id": "prompt-classificacoes-ultimos",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Classificações: ajustes finais (sem sugestões, modais maiores, busca, novo tipo, snackbar)",
-      "data": "2026-10-26T15:30",
-      "arquivo": "prompts/classificacoes-ajustes-finais.txt"
+      "titulo": "Prompt — Últimos ajustes: paginação da fila, linhas subindo ao salvar, card Todos os documentos",
+      "data": "2026-10-26T16:12",
+      "arquivo": "prompts/classificacoes-ultimos-ajustes.txt"
     }
   ]
 }

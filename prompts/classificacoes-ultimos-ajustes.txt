@@ -1,0 +1,60 @@
+[Área: Frontend (Angular) | Skills: as de Frontend/UI-Kit do projeto]
+
+CLASSIFICAÇÕES + SIDEBAR — ÚLTIMOS AJUSTES
+Mock atualizado: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Conferir no mock: "Classificar agora" (fila) e o card "Todos os documentos" na sidebar (abrir e fechar).
+
+1. PAGINAÇÃO DA FILA "CLASSIFICAR ARQUIVOS"
+- A paginação atual ("Ir para página [ ] de 3 →  Itens por página [24]  1–24 de 72  |< < > >|") está crua e fora do padrão.
+- Usar o MESMO componente de paginação personalizado da página de Clientes: procure o componente usado lá e reutilize, com o mesmo visual, os mesmos tamanhos e o mesmo posicionamento. Não criar outro, não estilizar à parte.
+- Fica abaixo da lista, dentro do corpo da modal. Ao classificar a última linha da página, recarregar a página atual (ou voltar uma, se esvaziar).
+
+2. ESPAÇO EM BRANCO AO SALVAR NA FILA
+- Hoje, ao confirmar, a linha some mas deixa um buraco no topo da lista. Os arquivos de baixo precisam SUBIR suavemente, como no mock.
+- Como o mock faz: a linha recebe a classe "saindo" e a transição em 2 tempos:
+  - primeiro opacity 1→0 + translateY(-6px) (200ms);
+  - depois max-height → 0, padding vertical → 0 e borda inferior → 0 (250ms, com delay de 150ms).
+  Só depois (~420ms) a linha é removida do array. A linha precisa de overflow: hidden, um max-height inicial (ex.: 240px) e flex-shrink: 0.
+- Não usar *ngIf com espaço reservado, não deixar placeholder. Conferir que nenhum wrapper (ex.: cdk-virtual-scroll, min-height fixo, trackBy errado) mantém a altura.
+
+3. SIDEBAR — CARD "TODOS OS DOCUMENTOS"
+- Comportamento esperado (igual ao mock):
+  - FECHADO: o card tem SÓ a altura do cabeçalho ("Todos os documentos · N arquivos · tamanho" + seta). Hoje ele fica esticado, ocupando todo o espaço em branco até o card de upgrade: corrigir;
+  - ABERTO: o card cresce para baixo só até encostar no card "Amplie o seu armazenamento", e a lista interna (Meus documentos, Processos, Pré-processos, Prazos, Tarefas…) ganha SCROLL INTERNO, com barra fina visível. Ele nunca empurra o card de upgrade para fora da tela, e a sidebar não ganha scroll geral.
+  - O card "Amplie o seu armazenamento" fica sempre colado no rodapé da sidebar (margin-top: auto).
+- Ordem dos cards (como já está no sistema e agora no mock):
+  1. Novo arquivo;
+  2. Favoritos/Lixeira;
+  3. Classificações;
+  4. Armazenamento;
+  5. Todos os documentos;
+  6. (espaço livre);
+  7. Upgrade.
+  Assim, abrir "Todos os documentos" não empurra Classificações.
+- CSS de referência (adaptar aos nomes do projeto):
+  - sidebar: display flex, column, height 100%, overflow hidden;
+  - área de cima (cards): flex 1 1 auto, min-height 0, overflow hidden, display flex column;
+  - demais cards: flex-shrink 0;
+  - "Todos os documentos" fechado: flex 0 0 auto;
+  - "Todos os documentos" aberto: flex 0 1 auto; min-height 120px; overflow hidden; display flex column. O corpo vira flex 1 1 auto, min-height 0, overflow-y auto;
+  - upgrade: flex-shrink 0; margin-top auto.
+- Tablet e celular: manter o comportamento atual (sem scroll interno forçado).
+
+4. SUGESTÕES (confirmar)
+- Já pedido: sugestões removidas da fila e do seletor, sem tag "Sem sugestão". O mock já está assim: a linha mostra só miniatura, nome, local, seletor e ✓.
+
+REGRAS: UI-Kit + tokens. Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: arquivos alterados (trechos relevantes), seção "Explicações" (transição em 2 tempos e o flex da sidebar) e checklist 1–4 feito/não feito.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
