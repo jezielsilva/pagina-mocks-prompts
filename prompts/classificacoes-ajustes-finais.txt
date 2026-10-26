@@ -1,0 +1,68 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+CLASSIFICAÇÕES — AJUSTES FINAIS (fechar a feature)
+Referência: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Mexer só em Classificações e nos avisos (snackbar) do módulo Documentos. Não tocar na contagem do explorador.
+
+PASSO 0 — Investigar e listar na mini-spec:
+- o componente/serviço PADRÃO de snackbar/toast do sistema (posição superior direita, cores predefinidas: sucesso, erro, aviso, info) e onde Documentos usa outra coisa;
+- o campo de busca padrão (quadrado), usado nos filtros de Meus documentos;
+- os inputs/selects e botões no tamanho padrão do UI-Kit.
+
+1. REMOVER SUGESTÕES DE CLASSIFICAÇÃO (não estão exatas)
+- Front:
+  - remover tudo de sugestão: bloco "✦ Sugestão…", % de confiança, motivos, alternativas, bloco "Sugestões" do seletor, botão "Aplicar N sugestões confiáveis" e o subtítulo "a sugestão considera…";
+  - remover a TAG amarela "Sem sugestão — escolha a classificação";
+  - o dropdown da linha começa vazio ("Selecione uma classificação").
+  - MANTER: "Usados recentemente" (não é sugestão; se depender do motor de sugestão, remover também).
+- Back:
+  - remover o cálculo de sugestões e o aprendizado (métodos, endpoints, DTOs e o "aplicar sugestões em lote");
+  - a fila passa a devolver só os arquivos sem classificação, paginados (nome, local, extensão, prévia).
+  - Manter: aplicar classificação manual e o CRUD de tipos.
+- Atualizar `docs` dizendo que a sugestão foi removida.
+
+2. TAMANHO DAS MODAIS
+- Central "Classificações" e fila "Classificar arquivos": aumentar para ~1320px de largura (ou 95vw, o que for menor) e ~90vh de altura, com o corpo rolando dentro.
+- Seletor "Classificar <arquivo>": o mesmo tamanho grande.
+
+3. CAMPO DE BUSCA
+- Hoje está redondo (pill). Usar o MESMO campo de busca do sistema (cantos quadrados/raio padrão dos inputs, mesma altura e mesmo ícone) — igual aos filtros de Meus documentos. Vale para a central e para o seletor.
+
+4. FORMULÁRIO "NOVO TIPO DO ESCRITÓRIO"
+- Campos no tamanho PADRÃO do sistema: mesma altura e mesma largura que os filtros de Meus documentos (Tipo/Autor/Classificação). Não esticar além do normal: Nome com ~320px e Vincular à subcategoria com ~320px (no celular, 100%).
+- Botões "Cancelar" e "Criar tipo" no tamanho padrão/pequeno do UI-Kit (hoje grandes demais), alinhados pela base dos campos e com um ícone só no "Criar tipo".
+- Manter o fundo roxo clarinho e o título.
+
+5. "CRIAR TIPO NESTA SUBCATEGORIA" (fim da lista de tipos)
+- Igual ao mock: link/botão de texto ROXO (cor primária), sem sublinhado, com ícone "+", CENTRALIZADO na largura do card e com padding de ~10px. Hover com fundo primário bem claro. Nem verde nem sublinhado.
+- Remover o fundo cinza do rodapé interno do card (o fundo é branco, como o resto da lista).
+
+6. FILA "CLASSIFICAR ARQUIVOS" — ESPAÇO DA SELEÇÃO
+- Ao escolher um tipo, o dropdown da linha fica espremido (texto cortado: "o de Retificação de Nome…").
+- Correção:
+  - coluna do seletor com min-width de 320px e max-width de 420px;
+  - mostrar o nome do tipo com reticências NO FIM (text-overflow: ellipsis, sem cortar o começo) e tooltip com "Categoria › Subcategoria › Tipo";
+  - não mostrar badge + texto lado a lado: só o nome do tipo (com o ícone pequeno da subcategoria, opcional);
+  - com a modal maior (item 2), o bloco do arquivo e o seletor cabem sem apertar.
+- Ao confirmar, a linha sai com animação e o espaço dela FECHA (hoje fica um buraco em branco no topo da lista). Remover a linha do array depois da animação.
+- Chips de tipos no seletor: ficam LADO A LADO com quebra automática (flex-wrap, gap de 6px), não um por linha. Pills pequenos do UI-Kit.
+
+7. SNACKBAR / AVISOS DO MÓDULO DOCUMENTOS
+- Todos os avisos de Documentos (inclusive Classificações) devem usar o snackbar PADRÃO do sistema: canto superior direito, cores predefinidas (sucesso/erro/aviso/info), mesma duração e mesmo componente/serviço que o resto do sistema.
+- Remover qualquer toast/snackbar customizado ou posicionado diferente que o módulo criou. Listar na entrega os pontos trocados.
+
+REGRAS: UI-Kit + tokens. Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: arquivos alterados (trechos relevantes), o que foi removido do back (sugestões), seção "Explicações" e checklist 1–7 feito/não feito.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

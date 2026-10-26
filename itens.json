@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T15:14",
+  "atualizado": "2026-10-26T15:30",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,6 +45,14 @@
       "titulo": "Prompt — Componente de miniatura por tipo de arquivo (o código desenha o SVG)",
       "data": "2026-10-26T15:14",
       "arquivo": "prompts/miniatura-por-tipo.txt"
+    },
+    {
+      "id": "prompt-classificacoes-finais",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Classificações: ajustes finais (sem sugestões, modais maiores, busca, novo tipo, snackbar)",
+      "data": "2026-10-26T15:30",
+      "arquivo": "prompts/classificacoes-ajustes-finais.txt"
     }
   ]
 }
