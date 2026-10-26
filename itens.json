@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T09:40",
+  "atualizado": "2026-10-26T10:01",
   "itens": [
     {
       "id": "documentos-mock",
@@ -27,16 +27,6 @@
       "titulo": "URGENTE — Rollback da contagem + terminar front de Classificações",
       "data": "2026-10-23T19:48",
       "arquivo": "prompts/classificacoes-rollback-contagem.txt"
-    },
-    {
-      "id": "treino-2026-10-26",
-      "tipo": "artefato",
-      "treino": true,
-      "fixo": true,
-      "projeto": "Jeziel · Treino",
-      "titulo": "Treino de segunda, 26/10 — 5 perguntas",
-      "data": "2026-10-26T09:40:00-03:00",
-      "arquivo": "treino/index.html?d=2026-10-26"
     }
   ]
 }
