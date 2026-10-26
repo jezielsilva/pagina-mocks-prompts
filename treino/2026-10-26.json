@@ -1,0 +1,59 @@
+{
+  "data": "2026-10-26",
+  "dataExibicao": "segunda, 26/10",
+  "intro": "Primeiro treino! Foco no que mais aparece no elawadv: agrupar dados, buscas no front, chat, update no Mongo e ler o C# 'moderno' que as IAs escrevem.",
+  "minutos": 15,
+  "feedbackAnterior": "",
+  "perguntas": [
+    {
+      "id": "q1",
+      "tema": "LINQ avançado (GroupBy)",
+      "tipo": "Leitura",
+      "enunciado": "O que este código faz? Explique linha a linha com suas palavras e diga o que vem em resumo[\"cli-1\"] se cli-1 tiver 3 documentos (2 pendentes de assinatura).",
+      "codigo": "// Monta um resumo de documentos por cliente para o painel\npublic Dictionary<string, ResumoDocumentosDto> MontarResumo(List<Documento> documentos)\n{\n    var resumo = documentos\n        .Where(d => !d.Excluido)\n        .GroupBy(d => d.ClienteId)\n        .ToDictionary(\n            grupo => grupo.Key,\n            grupo => new ResumoDocumentosDto\n            {\n                Total = grupo.Count(),\n                Pendentes = grupo.Count(d => d.Status == \"PendenteAssinatura\"),\n                UltimoEnvio = grupo.Max(d => d.DataEnvio)\n            });\n\n    return resumo;\n}",
+      "gabarito": "Filtra os documentos não excluídos, agrupa por ClienteId e cria um dicionário onde a chave é o ClienteId e o valor é um resumo com Total, Pendentes e a maior DataEnvio do grupo. Para cli-1: Total=3, Pendentes=2, UltimoEnvio = data mais recente dos 3.",
+      "explicacao": "GroupBy cria 'caixinhas' por chave (grupo.Key = ClienteId; o grupo é a lista daquele cliente). ToDictionary transforma cada grupo num par chave→valor. Versão simples equivalente: foreach nos documentos, if (!resumo.ContainsKey(id)) cria; depois soma. Debug: breakpoint no return e expanda o dicionário. Atenção: se houver documento excluído, ele não entra na contagem."
+    },
+    {
+      "id": "q2",
+      "tema": "RxJS switchMap",
+      "tipo": "Escolha",
+      "enunciado": "Tela de busca de clientes: a cada letra digitada vai uma requisição. Qual forma você escreveria? Escolha uma e explique o porquê (o que acontece se a resposta da busca 'Ma' chegar DEPOIS da busca 'Mar').",
+      "codigo": "// A\nthis.buscaControl.valueChanges.subscribe(texto => {\n  this.clienteService.buscar(texto).subscribe(res => this.clientes = res);\n});\n\n// B\nthis.buscaControl.valueChanges.pipe(\n  debounceTime(300),\n  switchMap(texto => this.clienteService.buscar(texto)),\n  takeUntilDestroyed(this.destroyRef)\n).subscribe(res => this.clientes = res);\n\n// C\nthis.buscaControl.valueChanges.pipe(\n  map(texto => this.clienteService.buscar(texto)),\n  takeUntilDestroyed(this.destroyRef)\n).subscribe(res => this.clientes = res);",
+      "opcoes": [
+        "A — subscribe dentro de subscribe",
+        "B — debounceTime + switchMap + takeUntilDestroyed",
+        "C — map chamando o serviço"
+      ],
+      "gabarito": "B",
+      "explicacao": "switchMap cancela a requisição anterior quando chega texto novo, então a resposta atrasada de 'Ma' é descartada e a lista mostra só 'Mar'. debounceTime espera 300ms sem digitar antes de buscar (menos requisições). A: subscribe aninhado não cancela nada → resposta antiga pode sobrescrever a nova (race condition) e não há unsubscribe. C: map devolve um Observable, não os clientes — this.clientes recebe um Observable e a requisição nem é disparada. Debug: aba Network mostra as requisições 'canceled' com B."
+    },
+    {
+      "id": "q3",
+      "tema": "Unsubscribe / takeUntilDestroyed",
+      "tipo": "Ache o bug",
+      "enunciado": "Componente do chat. Depois de abrir e fechar a conversa 5 vezes, cada mensagem nova aparece 5 vezes no console e o app fica lento. Ache o bug e diga como corrigir.",
+      "codigo": "@Component({ selector: 'app-conversa', templateUrl: './conversa.component.html' })\nexport class ConversaComponent implements OnInit {\n  mensagens: MensagemDto[] = [];\n\n  constructor(private chatService: ChatService) {}\n\n  // Escuta as mensagens novas do hub e adiciona na lista\n  ngOnInit(): void {\n    this.chatService.mensagemRecebida$.subscribe(mensagem => {\n      console.log('nova mensagem', mensagem.id);\n      this.mensagens.push(mensagem);\n    });\n  }\n}",
+      "gabarito": "O subscribe em mensagemRecebida$ (Observable que nunca completa, vem do hub/serviço singleton) nunca é cancelado. Cada vez que o componente é criado, uma inscrição nova fica viva mesmo após o componente ser destruído. Correção: .pipe(takeUntilDestroyed(this.destroyRef)) com destroyRef = inject(DestroyRef) (ou chamar takeUntilDestroyed() no construtor).",
+      "explicacao": "HTTP completa sozinho depois da resposta, mas Observable de hub/Subject/interval fica vivo para sempre. O serviço é singleton, então ele segura a referência do componente morto (memory leak) e executa o callback de novo. Dica de debug: um console.log no ngOnDestroy + contar quantas vezes o log 'nova mensagem' aparece por mensagem."
+    },
+    {
+      "id": "q4",
+      "tema": "Mongo: $set × ReplaceOne",
+      "tipo": "Conceito",
+      "enunciado": "O front manda só { id, telefone } para atualizar o telefone do cliente. O código abaixo é usado. (1) O que acontece com o nome, CPF e documentos do cliente no Mongo? (2) Escreva (ou descreva) a versão correta.",
+      "codigo": "// Atualiza o cliente com os dados recebidos da tela\npublic async Task AtualizarCliente(ClienteDto dto)\n{\n    var cliente = new Cliente\n    {\n        Id = dto.Id,\n        Telefone = dto.Telefone,\n        Nome = dto.Nome,\n        Cpf = dto.Cpf\n    };\n\n    await _collection.ReplaceOneAsync(c => c.Id == dto.Id, cliente);\n}",
+      "gabarito": "(1) ReplaceOne troca o documento inteiro: Nome e Cpf viram null (vieram null no DTO) e todo campo que não está no objeto (documentos, contatos etc.) é apagado. (2) var update = Builders<Cliente>.Update.Set(c => c.Telefone, dto.Telefone); await _collection.UpdateOneAsync(c => c.Id == dto.Id, update); — $set só do campo alterado.",
+      "explicacao": "Esse é exatamente o tipo de incidente de clientes que apagou dados. Regra: DTO parcial → UpdateOne com $set dos campos que mudaram. ReplaceOne só quando você tem o documento COMPLETO carregado do banco. Dica: confira o resultado (ModifiedCount) e, no Mongo Compass, compare o documento antes/depois."
+    },
+    {
+      "id": "q5",
+      "tema": "switch expression + ?. ??",
+      "tipo": "Traduza",
+      "enunciado": "Reescreva no SEU estilo (switch clássico, nulos com if explícito, retorno antecipado) OU explique linha a linha. Diga o que retorna quando processo é null e quando processo.Cliente é null.",
+      "codigo": "// Texto do status exibido no card do processo\npublic string ObterTextoStatus(Processo? processo)\n{\n    var nomeCliente = processo?.Cliente?.Nome ?? \"Sem cliente\";\n\n    return processo?.Status switch\n    {\n        \"Ativo\" => $\"Em andamento — {nomeCliente}\",\n        \"Arquivado\" => \"Arquivado\",\n        null => \"Processo não encontrado\",\n        _ => $\"Status desconhecido ({processo.Status})\"\n    };\n}",
+      "gabarito": "processo null → 'Processo não encontrado'. Cliente null com Status 'Ativo' → 'Em andamento — Sem cliente'. Versão no estilo: if (processo == null) return \"Processo não encontrado\"; var nomeCliente = \"Sem cliente\"; if (processo.Cliente != null && processo.Cliente.Nome != null) nomeCliente = processo.Cliente.Nome; switch (processo.Status) { case \"Ativo\": return $\"Em andamento — {nomeCliente}\"; case \"Arquivado\": return \"Arquivado\"; case null: return \"Processo não encontrado\"; default: return $\"Status desconhecido ({processo.Status})\"; }",
+      "explicacao": "?. para tudo se o da esquerda for null (devolve null em vez de dar NullReferenceException); ?? usa o valor da direita quando a esquerda é null. Na switch expression, cada linha é 'padrão => resultado' e _ é o default. O null do switch cobre tanto processo null quanto Status null. Na sua versão, o guard clause no topo deixa claro o caso null e dá para pôr breakpoint em cada case."
+    }
+  ]
+}
