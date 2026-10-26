@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T15:08",
+  "atualizado": "2026-10-26T15:14",
   "itens": [
     {
       "id": "documentos-mock",
@@ -37,6 +37,14 @@
       "titulo": "Miniaturas SVG (16 arquivos: 8 grupos × claro/escuro) — .zip",
       "data": "2026-10-26T14:45",
       "arquivo": "assets/miniaturas-svg.zip"
+    },
+    {
+      "id": "prompt-miniatura-por-tipo",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Componente de miniatura por tipo de arquivo (o código desenha o SVG)",
+      "data": "2026-10-26T15:14",
+      "arquivo": "prompts/miniatura-por-tipo.txt"
     }
   ]
 }
