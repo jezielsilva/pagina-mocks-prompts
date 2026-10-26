@@ -1,0 +1,51 @@
+[Área: Backend (.NET/Mongo) + Frontend (Angular) | Skills: as de Backend e Frontend do projeto]
+
+DOCUMENTOS — NOMES DAS PASTAS NAS ÁREAS AUTOMÁTICAS + UPLOAD NAS ÁREAS + BOTÃO "NOVO ARQUIVO"
+
+CONTEXTO
+As áreas automáticas (Processos, Pré-processos, Clientes, Fornecedores, Financeiro, Tarefas, Prazos) listam uma PASTA por registro e, dentro dela, os arquivos. O nome exibido dessas pastas hoje não ajuda a identificar o registro.
+
+PASSO 0 — INVESTIGAR (mini-spec antes de codar)
+- Onde o back monta as pastas virtuais de cada área (repository/business) e qual campo vira o nome hoje.
+- Os campos disponíveis em cada entidade (processo, pré-processo, cliente, fornecedor, movimentação financeira, tarefa, prazo).
+- Se já existe um helper de formatação CNJ no projeto (back ou front); se existir, reutilizar.
+- Como o upload de anexos já funciona HOJE em cada módulo (tela de processo, cliente, tarefa etc.): endpoint, serviço e onde vincula o arquivo ao registro.
+- Por que o botão "Novo arquivo" não faz nada (handler, evento, permissão, área atual).
+
+1. NOME DAS PASTAS (montado no BACKEND, o front só exibe)
+- Processos: número no formato CNJ "NNNNNNN-DD.AAAA.J.TR.OOOO" (20 dígitos). Se o número não tiver 20 dígitos, exibir como está.
+- Pré-processos: número (CNJ, se tiver 20 dígitos) OU o nome/título, o que existir. Prioridade: número → nome. Se nenhum existir: "Pré-processo sem identificação".
+- Clientes e Fornecedores: o nome (razão social/nome completo, conforme o cadastro).
+- Tarefas: o título/nome da tarefa.
+- Prazos: a providência.
+- Financeiro: "Descrição da movimentação · dd/MM/aaaa · R$ valor" (ex.: "Honorários — Ana Costa · 12/10/2026 · R$ 1.500,00"). Usar descrição/histórico + data da movimentação + valor formatado em pt-BR. Se não houver descrição, usar o tipo (Receita/Despesa) no lugar.
+- Em todas, o nome é truncado no front com reticências e tooltip com o texto completo. Ordenação alfabética pelo nome exibido (Financeiro: pela data, da mais recente para a mais antiga).
+- Busca da página: passa a encontrar a pasta por esse nome exibido.
+
+2. UPLOAD DENTRO DAS ÁREAS AUTOMÁTICAS
+- Regra mantida: nessas áreas NÃO se cria pasta (botão "Nova pasta" desabilitado com tooltip "Esta área é automática e não permite pastas").
+- MUDANÇA: dentro da pasta de um registro (ex.: um processo), AGORA PODE subir arquivos (botão "Enviar arquivos" e arrastar e soltar).
+- O upload deve CHAMAR A MESMA funcionalidade que o módulo do registro já usa para anexar arquivo (mesmo endpoint/serviço do back), para o arquivo ficar vinculado ao processo/cliente/tarefa etc. e aparecer também na tela do próprio módulo. Não criar fluxo novo de upload nem duplicar regra.
+- Na raiz da área (lista de pastas), o upload fica desabilitado com tooltip "Abra um registro para enviar arquivos".
+- Depois do upload: atualizar a lista e os contadores, com o snackbar padrão de sucesso/erro.
+
+3. BOTÃO "NOVO ARQUIVO" (sidebar)
+- Hoje não faz nada. Ele deve abrir o menu/fluxo de criação do mock: "Enviar arquivos" (seletor do computador) e, se já existir no sistema, "Nova pasta"/"Gerar documento".
+- O destino é a pasta atual. Se a pasta atual for a raiz de uma área automática, enviar para "Meus documentos" e avisar ("Arquivos enviados para Meus documentos"), como no mock. Dentro de um registro de área automática, usar a regra do item 2.
+- Corrigir a causa-raiz (handler não ligado, evento, condição) e explicar na entrega.
+
+REGRAS: Front "burro" (nome, formatação CNJ e vínculo vêm do back). UI-Kit + tokens. Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: mini-spec, arquivos alterados (trechos relevantes), como o upload por área reaproveitou o fluxo existente (qual endpoint por área), causa do "Novo arquivo", seção "Explicações" e checklist 1–3 feito/não feito.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

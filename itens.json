@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T17:18",
+  "atualizado": "2026-10-26T17:32",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,12 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-docs-fila-modal-drawer",
+      "id": "prompt-docs-areas",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Fila (seletor e ✓), modal de arquivo e drawer iguais ao mock + remover Acessos",
-      "data": "2026-10-26T17:18",
-      "arquivo": "prompts/documentos-fila-modal-drawer.txt"
+      "titulo": "Prompt — Nomes das pastas nas áreas (CNJ, nomes, financeiro) + upload nas áreas + botão Novo arquivo",
+      "data": "2026-10-26T17:32",
+      "arquivo": "prompts/documentos-areas-nomes-upload.txt"
     }
   ]
 }
