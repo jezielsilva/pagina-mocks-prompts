@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T12:26",
+  "atualizado": "2026-10-26T12:38",
   "itens": [
     {
       "id": "documentos-mock",
@@ -21,12 +21,12 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-classificacoes-visual-2",
+      "id": "prompt-classificacoes-fila",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Ajustes visuais 2 da modal Classificações (ícones, clique, tabela, scroll, busca, novo tipo)",
-      "data": "2026-10-26T12:26",
-      "arquivo": "prompts/classificacoes-ajustes-visuais-2.txt"
+      "titulo": "Prompt — Fila 'Classificar arquivos' + seletor exatamente iguais ao mock",
+      "data": "2026-10-26T12:38",
+      "arquivo": "prompts/classificacoes-fila-igual-mock.txt"
     }
   ]
 }

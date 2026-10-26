@@ -1,0 +1,81 @@
+[Área: Frontend (Angular) + contrato com Backend | Skills: as de Frontend/UI-Kit do projeto]
+
+FILA "CLASSIFICAR ARQUIVOS" + SELETOR — EXATAMENTE IGUAL AO MOCK
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Para ver: aviso "N arquivos sem classificação" → "Classificar agora" (fila); em qualquer arquivo → "Classificar" (seletor).
+ANTES de codar, abra o mock e use a fila de verdade: confirmar, alternativas, abrir o seletor dentro da linha, criar tipo, aplicar em massa, até a fila esvaziar. Reproduza o MESMO comportamento e visual, peça por peça. Use os componentes do UI-Kit e os tokens do sistema.
+Ícones: Google Material Symbols (https://fonts.google.com/icons), só com nomes válidos. Os nomes do mock (users, dollar, filetext, sheet, sign) NÃO existem lá e aparecem como texto: mapear para nomes válidos.
+
+0. AVISO CINZA "N ARQUIVOS SEM CLASSIFICAÇÃO" (no header)
+- Está bom. Só ajustar:
+  - arredondar os cantos (raio do UI-Kit, ~10–12px);
+  - REMOVER a tag "Pendente".
+- Manter: ícone de etiqueta, número em negrito, texto de ajuda em cinza e "Classificar agora" à direita.
+
+1. MODAL DA FILA — ESTRUTURA
+- Cabeçalho roxo padrão: ícone de etiqueta + "Classificar arquivos" (sem subtítulo). Os cantos superiores ficam preenchidos de roxo.
+- Topo do corpo (uma linha):
+  - à esquerda, título "72 arquivos sem classificação" (16px semibold; singular "1 arquivo"). Hoje está "72 classificar arquivos": errado. Abaixo, em 12px cinza: "N classificados agora · a sugestão considera nome, texto (OCR), pasta, formato e os tipos dos arquivos vizinhos" (o "N classificados agora ·" só aparece depois do primeiro);
+  - à direita, botão success pequeno "✦ Aplicar N sugestões confiáveis (≥ 80%)", que só aparece se N > 0 e some quando zera.
+- Lista: borda superior fina, altura máxima de ~52vh, overflow-y: auto, BARRA DE ROLAGEM VISÍVEL (reutilizar o estilo de scrollbar fina do sistema, se houver).
+- Paginação: componente de paginação personalizado da página de Clientes, abaixo da lista (só se houver mais de uma página).
+- Rodapé: "⚙ Gerenciar classificações" (outline, esquerda) e "Concluir" (primário, direita). Ao concluir com algo classificado: toast "N arquivos classificados".
+
+2. LINHA DO ARQUIVO (cada linha igual, separada por divisória fina; sem card com borda em volta de cada uma)
+Grade em uma linha: [miniatura] [bloco de texto, flexível] [seletor] [✓]
+- Miniatura de 42×54px, raio de 8px: a mesma miniatura/ícone do tipo de arquivo usada na listagem de Meus documentos (pdf/imagem/planilha…), não um círculo cinza genérico.
+- Bloco de texto (min-width: 0):
+  - NOME do arquivo em semibold, 1 linha com reticências e TOOLTIP com o nome completo (tooltip do UI-Kit);
+  - LOCAL abaixo, 12px cinza, 1 linha com reticências e tooltip: caminho de pastas ("Meus documentos / Clientes / Fulano"), nunca id;
+  - SUGESTÃO, se houver: linha 12px com ícone "auto_awesome" + "Sugestão:" + badge do tipo (com ícone da subcategoria) + "Categoria › Subcategoria" em cinza + badge de confiança (≥80 verde, ≥60 amarelo, abaixo disso cinza). Na linha de baixo, o motivo em 12px cinza (ex.: 'nome contém "cobranca" · pasta "Clientes"');
+  - ALTERNATIVAS, se houver (2ª e 3ª sugestão): chips pequenos outline "Nome curto 72%". Clicar troca a escolha da linha;
+  - SEM sugestão: só um badge warning "⚠ Sem sugestão — escolha a classificação" (no lugar da sugestão). Nada de texto "Nenhuma sugestão confiável…" nem botão "Aplicar sugestão".
+- SELETOR (dropdown fechado, à direita, max-width de 260px, estilo form-select pequeno):
+  - mostra o tipo escolhido (badge colorido + Categoria › Subcategoria truncado) ou "Classificar…" em cinza;
+  - já vem preenchido com a 1ª sugestão, quando existir;
+  - ao clicar, NÃO abre outra modal: abre o seletor INLINE logo abaixo da linha (painel que expande, ocupando a largura da lista; clicar de novo fecha; só um aberto por vez).
+- ✓ CONFIRMAR: botão circular de 32px, success, só com ícone "check" branco (peso maior), aria-label "Confirmar classificação de <arquivo>". Desabilitado (opaco) enquanto não houver escolha. Substitui o "Aplicar sugestão".
+- Ao confirmar:
+  - a linha sai com animação (opacity 1→0 + translateY(-6px), 200ms) e depois é removida;
+  - o contador atualiza;
+  - o arquivo some da listagem de pendentes;
+  - o aviso do header atualiza.
+- Fila vazia: alerta de sucesso "Tudo classificado!" + "O sistema aprendeu: 'palavra' → Tipo, …" (vem do backend, se houver aprendizado).
+- Celular: a linha quebra (miniatura + texto em cima; seletor ocupando a largura + ✓ embaixo).
+
+3. SELETOR (o mesmo componente: inline na fila e dentro da modal "Classificar <arquivo>")
+- Busca no topo, com o MESMO campo de busca de Meus documentos: "Buscar tipo ou subcategoria (ex.: apelação, despejo, contestação)…", ignorando acento e maiúsculas.
+- Abaixo, à direita, botão outline pequeno "👁 Ocultar padrão do sistema" ↔ "Mostrar padrão do sistema". Começa MOSTRANDO o padrão; é só visual.
+- Bloco "✦ Sugestões" (sem busca): chips dos tipos sugeridos, com badge de %.
+- Bloco "🕘 Usados recentemente" (sem busca): chips (vem do backend ou do estado da sessão).
+- Lista agrupada:
+  - rótulo pequeno cinza "📁 Categoria · Petições iniciais" (12px semibold, NÃO título grande; hoje está gigante);
+  - cards de subcategoria em acordeão: linha inteira clicável, ícone em círculo de 30px na cor do token da subcategoria, nome 14px semibold, "N tipos" em cinza à direita e chevron;
+  - aberto: tipos em CHIPS (pills outline pequenos; o selecionado fica preenchido/active; tipo do escritório com badge "Escritório"; tooltip "Categoria › Subcategoria › Tipo"). Abre sozinho o card que contém o tipo selecionado.
+- Com busca: cards abertos já filtrados.
+- No fim da lista, o botão outline success "+ Não achou? Criar novo tipo", que abre o formulário "Novo tipo do escritório" (o mesmo da central: Nome + Vincular à subcategoria + Cancelar/Criar). Ao criar, o tipo fica selecionado.
+- Estado vazio (busca sem resultado ou padrão oculto sem tipos do escritório): mensagem suave + formulário já aberto (com o nome preenchido pela busca).
+- Área de rolagem do seletor: max-height ~46vh, com scroll visível.
+- Na fila, escolher um chip fecha o painel inline e preenche o dropdown da linha. Na modal "Classificar <arquivo>", mostra no topo "Selecionada: <badge do tipo> Categoria › Subcategoria" e habilita "Salvar classificação".
+- Modal "Classificar <arquivo>": título "Classificar 'nome.ext'" (truncado com tooltip). Rodapé: "Voltar à fila" (só quando veio da fila), "Cancelar" e "Salvar classificação".
+
+4. NÚMEROS E REGRAS (backend)
+- Sugestões, confiança, motivos, alternativas, recentes, aprendizado e paginação vêm do backend. O front só exibe.
+- "Aplicar N sugestões confiáveis" chama um endpoint que aplica em lote (≥ 80%) e devolve o que foi aplicado.
+- Não alterar a contagem do explorador (rollback anterior mantido).
+
+REGRAS: UI-Kit + tokens. Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: arquivos alterados (trechos relevantes), seção "Explicações" e checklist item a item (0–4) feito/não feito.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
