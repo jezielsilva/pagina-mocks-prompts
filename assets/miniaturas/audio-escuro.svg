@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" role="img" aria-label="Arquivo MP3">
+  <path d="M10 0 H168 L210 42 V287 Q210 297 200 297 H10 Q0 297 0 287 V10 Q0 0 10 0Z" fill="#224152"/>
+  <path d="M168 0 V32 Q168 42 178 42 H210Z" fill="#22d3ee" opacity=".28"/>
+  <rect x="48" y="123" width="7" height="14" rx="3.5" fill="#22d3ee" opacity="0.4"/><rect x="60" y="115" width="7" height="30" rx="3.5" fill="#22d3ee" opacity="0.55"/><rect x="72" y="105" width="7" height="50" rx="3.5" fill="#22d3ee" opacity="0.7"/><rect x="84" y="95" width="7" height="70" rx="3.5" fill="#22d3ee" opacity="0.4"/><rect x="96" y="107" width="7" height="46" rx="3.5" fill="#22d3ee" opacity="0.55"/><rect x="108" y="99" width="7" height="62" rx="3.5" fill="#22d3ee" opacity="0.7"/><rect x="120" y="113" width="7" height="34" rx="3.5" fill="#22d3ee" opacity="0.4"/><rect x="132" y="120" width="7" height="20" rx="3.5" fill="#22d3ee" opacity="0.55"/><rect x="144" y="110" width="7" height="40" rx="3.5" fill="#22d3ee" opacity="0.7"/><rect x="156" y="118" width="7" height="24" rx="3.5" fill="#22d3ee" opacity="0.4"/>
+  <rect x="79.5" y="226" width="51" height="34" rx="17" fill="#22d3ee"/>
+  <text x="105" y="249" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="17" font-weight="700" letter-spacing=".5" fill="#221d2b">MP3</text>
+</svg>

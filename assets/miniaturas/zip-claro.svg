@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" role="img" aria-label="Arquivo ZIP">
+  <path d="M10 0 H168 L210 42 V287 Q210 297 200 297 H10 Q0 297 0 287 V10 Q0 0 10 0Z" fill="#faf4e8"/>
+  <path d="M168 0 V32 Q168 42 178 42 H210Z" fill="#ca8a04" opacity=".28"/>
+  <rect x="92" y="40" width="26" height="12" fill="#ca8a04" opacity=".5"/><rect x="92" y="54" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="105" y="67" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="92" y="80" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="105" y="93" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="92" y="106" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="105" y="119" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="92" y="132" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="105" y="145" width="13" height="11" rx="2" fill="#ca8a04" opacity=".55"/><rect x="88" y="160" width="34" height="34" rx="6" fill="none" stroke="#ca8a04" stroke-width="2.5"/><rect x="99" y="171" width="12" height="12" rx="2" fill="#ca8a04" opacity=".6"/>
+  <rect x="79.5" y="226" width="51" height="34" rx="17" fill="#ca8a04"/>
+  <text x="105" y="249" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="17" font-weight="700" letter-spacing=".5" fill="#ffffff">ZIP</text>
+</svg>

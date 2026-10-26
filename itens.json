@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T14:41",
+  "atualizado": "2026-10-26T14:45",
   "itens": [
     {
       "id": "documentos-mock",
@@ -36,6 +36,15 @@
       "titulo": "Prompt — Componente de miniatura por tipo de arquivo",
       "data": "2026-10-26T14:41",
       "arquivo": "prompts/miniatura-por-tipo.txt"
+    },
+    {
+      "id": "asset-miniaturas-zip",
+      "tipo": "artefato",
+      "asset": true,
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Miniaturas SVG (20 arquivos: 10 tipos × claro/escuro) — .zip",
+      "data": "2026-10-26T14:45",
+      "arquivo": "assets/miniaturas-svg.zip"
     }
   ]
 }

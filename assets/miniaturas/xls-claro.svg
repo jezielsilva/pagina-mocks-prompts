@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" role="img" aria-label="Arquivo XLSX">
+  <path d="M10 0 H168 L210 42 V287 Q210 297 200 297 H10 Q0 297 0 287 V10 Q0 0 10 0Z" fill="#eaf7ef"/>
+  <path d="M168 0 V32 Q168 42 178 42 H210Z" fill="#16a34a" opacity=".28"/>
+  <rect x="40" y="70" width="130" height="120" rx="6" fill="none" stroke="#16a34a" stroke-width="2"/><rect x="41" y="71" width="128" height="22" rx="5" fill="#16a34a" opacity=".25"/><line x1="40" x2="170" y1="94" y2="94" stroke="#16a34a" stroke-width="1.5" opacity=".5"/><line x1="40" x2="170" y1="118" y2="118" stroke="#16a34a" stroke-width="1.5" opacity=".5"/><line x1="40" x2="170" y1="142" y2="142" stroke="#16a34a" stroke-width="1.5" opacity=".5"/><line x1="40" x2="170" y1="166" y2="166" stroke="#16a34a" stroke-width="1.5" opacity=".5"/><line y1="70" y2="190" x1="83" x2="83" stroke="#16a34a" stroke-width="1.5" opacity=".5"/><line y1="70" y2="190" x1="126" x2="126" stroke="#16a34a" stroke-width="1.5" opacity=".5"/>
+  <rect x="75" y="226" width="60" height="34" rx="17" fill="#16a34a"/>
+  <text x="105" y="249" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="17" font-weight="700" letter-spacing=".5" fill="#ffffff">XLSX</text>
+</svg>

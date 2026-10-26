@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" role="img" aria-label="Arquivo PNG">
+  <path d="M10 0 H168 L210 42 V287 Q210 297 200 297 H10 Q0 297 0 287 V10 Q0 0 10 0Z" fill="#42364f"/>
+  <path d="M168 0 V32 Q168 42 178 42 H210Z" fill="#c49be0" opacity=".28"/>
+  <rect x="45" y="80" width="120" height="90" rx="10" fill="none" stroke="#c49be0" stroke-width="2"/><clipPath id="cp0"><rect x="46" y="81" width="118" height="88" rx="9"/></clipPath><g clip-path="url(#cp0)"><circle cx="139" cy="105" r="9" fill="#c49be0" opacity=".45"/><path d="M58 170 L100 120 Q105 114 110 120 L150 170Z" fill="#c49be0" opacity=".3"/><path d="M38 170 L78 128 Q84 122 90 128 L132 170Z" fill="#c49be0" opacity=".6"/></g>
+  <rect x="79.5" y="226" width="51" height="34" rx="17" fill="#c49be0"/>
+  <text x="105" y="249" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="17" font-weight="700" letter-spacing=".5" fill="#221d2b">PNG</text>
+</svg>
