@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T16:41",
+  "atualizado": "2026-10-26T17:18",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,12 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-classificacoes-pontuais",
+      "id": "prompt-docs-fila-modal-drawer",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Ajustes pontuais: paginação no rodapé, miniatura na grade, aviso enxuto",
-      "data": "2026-10-26T16:41",
-      "arquivo": "prompts/classificacoes-ajustes-pontuais.txt"
+      "titulo": "Prompt — Fila (seletor e ✓), modal de arquivo e drawer iguais ao mock + remover Acessos",
+      "data": "2026-10-26T17:18",
+      "arquivo": "prompts/documentos-fila-modal-drawer.txt"
     }
   ]
 }

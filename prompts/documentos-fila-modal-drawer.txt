@@ -1,0 +1,61 @@
+[Área: Frontend (Angular) + Backend (.NET/Mongo) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — FILA DE CLASSIFICAÇÃO + MODAL DE ARQUIVO + DRAWER
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Para ver no mock: na GRADE, "Visualizar"/duplo clique (modal de arquivo); na LISTA, clique no arquivo (drawer).
+
+PARTE A — FILA "CLASSIFICAR ARQUIVOS"
+A1. Campo "Selecione uma classificação"
+- Está largo demais para um texto curto. Sem escolha: largura compacta (~220px, o tamanho do texto + seta).
+- Depois de escolher: o campo cresce para caber o nome do tipo (até ~420px), com reticências no fim e tooltip "Categoria › Subcategoria › Tipo". Transição suave de largura.
+A2. Botão ✓ confirmar: está oval. Deixar PERFEITAMENTE circular: largura = altura = 32px, padding 0, border-radius 50%, ícone centralizado, sem min-width herdado do e-button (sobrescrever só nesse botão).
+A3. Busca "Buscar tipo ou subcategoria" dentro do seletor da linha: está fora do padrão (rótulo flutuante, muito alta e muito larga). Usar o MESMO campo de busca padrão de Meus documentos: altura padrão, ícone de lupa à esquerda, placeholder simples e largura ~360px (100% no celular), com o botão "Ocultar padrão do sistema" ao lado.
+
+PARTE B — MODAL DE ARQUIVO (visualização rápida) — layout EXATO do mock
+B1. Skeleton: ao abrir, mostrar o skeleton do UI-Kit (ou blocos com shimmer usando tokens) e só exibir o conteúdo quando TODAS as informações chegarem (prévia, detalhes, contagem de logs). O skeleton tem a mesma estrutura do layout final:
+- cabeçalho com título;
+- barra de botões;
+- área da prévia;
+- abas;
+- 2 colunas de detalhes.
+Sem "pulo" de layout. Hoje há um buraco branco grande entre os botões e a prévia: remover.
+B2. Disposição (igual ao mock):
+- cabeçalho roxo com o nome (1–2 linhas), "Local · tamanho" abaixo, favorito e X à direita;
+- barra de ações logo abaixo do cabeçalho, com borda inferior fina;
+- corpo em 2 colunas: à esquerda a PRÉVIA (fundo cinza claro, documento centralizado, ocupando a altura); à direita, com borda à esquerda, as ABAS e o conteúdo, com scroll próprio;
+- prévia e lateral começam no topo, logo abaixo da barra (sem espaço vazio).
+B3. Botões: hoje cinza. Todos em OUTLINE ROXO (primário) pequenos, com ícone: Abrir (primário preenchido), Classificar, Comprimir, Unir com outros PDFs, Baixar, Mover, Renomear. "Excluir" fica vermelho à direita. Mesma altura e mesmo espaçamento.
+B4. Favoritar: botão de estrela no cabeçalho, maior e mais claro. Ícone de estrela 20px dentro de um botão circular de 36px com fundo branco translúcido no hover. Quando favorito: estrela PREENCHIDA amarela/laranja (token warning) e tooltip "Remover dos favoritos"; quando não: estrela vazada branca e tooltip "Adicionar aos favoritos". Atualiza na hora.
+B5. Abas: "Detalhes" e "Logs" (renomear "Histórico" para "Logs").
+- REMOVER a aba "Acessos".
+- Badge de contagem pequeno ao lado de "Logs", como no mock.
+- Detalhes em grade de 2 colunas, igual ao mock: rótulo cinza 12px em cima e valor em negrito 14px embaixo. Itens: Tipo | Tamanho; Modificado | Autor; Local (linha inteira, link roxo SEM sublinhado, quebrando linha se for longo); Classificação (linha inteira: badge do tipo ou "Sem classificação" + link "Classificar" ao lado, alinhados na mesma linha).
+- Logs: lista no estilo do mock (ícone, ação, quem, quando), com a PAGINAÇÃO PADRÃO do sistema (o componente de Clientes) no fim da aba, 8 por página. Paginação feita no backend.
+
+PARTE C — DRAWER (lista) — mesmo padrão do mock
+- Mesmo cabeçalho, botões (outline roxo), favorito, abas (Detalhes / Logs, sem Acessos), detalhes em 2 colunas e logs paginados da Parte B.
+- Disposição do mock: cabeçalho → prévia → barra de ações (borda em cima e embaixo) → abas → conteúdo. "Excluir" alinhado à direita na MESMA linha dos outros botões quando couber.
+- Skeleton igual à Parte B (mesma estrutura do drawer).
+- Hoje os rótulos dos detalhes estão sumidos (só aparecem os valores) e o espaçamento está irregular: corrigir.
+
+PARTE D — REMOVER "ACESSOS" (implementação inteira)
+- Front: aba, contagens, chamadas, models e serviços de acessos.
+- Back: endpoint(s), business, repository e o registro de acesso (onde grava "visualizado"/"baixado"). Só a parte de ACESSOS; os LOGS de ações continuam.
+- NÃO apagar a collection nem dados: só parar de gravar e de ler.
+- Na entrega, informar: o NOME da collection (ou do campo dentro de arquivos) onde os acessos eram gravados, o formato do documento e uma estimativa de volume, para eu decidir se apago no banco.
+
+REGRAS: UI-Kit + tokens. Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: arquivos alterados (trechos relevantes), a collection de acessos (Parte D), seção "Explicações" (skeleton até tudo carregar, largura dinâmica do seletor) e checklist A1–D feito/não feito.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
