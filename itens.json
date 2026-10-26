@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T16:12",
+  "atualizado": "2026-10-26T16:41",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,20 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-miniatura-por-tipo",
+      "id": "prompt-classificacoes-pontuais",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Componente de miniatura por tipo de arquivo (o código desenha o SVG)",
-      "data": "2026-10-26T15:14",
-      "arquivo": "prompts/miniatura-por-tipo.txt"
-    },
-    {
-      "id": "prompt-classificacoes-ultimos",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Últimos ajustes: paginação da fila, linhas subindo ao salvar, card Todos os documentos, filtro por subcategoria",
-      "data": "2026-10-26T16:12",
-      "arquivo": "prompts/classificacoes-ultimos-ajustes.txt"
+      "titulo": "Prompt — Ajustes pontuais: paginação no rodapé, miniatura na grade, aviso enxuto",
+      "data": "2026-10-26T16:41",
+      "arquivo": "prompts/classificacoes-ajustes-pontuais.txt"
     }
   ]
 }
