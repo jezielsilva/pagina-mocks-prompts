@@ -19,8 +19,19 @@ ul{margin:6px 0;padding-left:20px}
 <p class="lead">O vigia olha o portal a cada 2 minutos. Quando aparece um prompt marcado para executar, ele abre uma janela do Codex já trabalhando nele. Quando o Codex termina, a entrega vira uma Issue no portal.</p>
 
 <div class="step"><h2><span class="n">1</span>Pré-requisitos</h2>
-<ul><li>Codex CLI instalado e logado.</li><li>GitHub CLI (<code>gh</code>) instalado e logado. Sem admin: <code>winget install --id GitHub.cli --scope user</code>, depois <code>gh auth login</code> (GitHub.com → HTTPS → Login with a web browser).</li><li>Git instalado.</li></ul>
+<ul><li><b>Codex CLI</b> (versão de terminal) instalado e logado. O <b>app desktop</b> do Codex não basta: se <code>codex --version</code> der "não é reconhecido", veja o passo 1.1.</li><li>GitHub CLI (<code>gh</code>) instalado e logado. Sem admin: <code>winget install --id GitHub.cli --scope user</code>, depois <code>gh auth login</code> (GitHub.com → HTTPS → Login with a web browser).</li><li>Git instalado.</li></ul>
 <p class="muted">Depois de instalar qualquer programa, feche e abra o PowerShell de novo.</p></div>
+
+<div class="step"><h2><span class="n">1.1</span>Codex CLI ("codex não é reconhecido")</h2>
+<p><b>a) O app já trouxe o codex.exe?</b> Procure:</p>
+<pre><code>Get-ChildItem "$env:LOCALAPPDATA","$env:APPDATA","$env:USERPROFILE\.codex" -Recurse -Filter codex.exe -ErrorAction SilentlyContinue | Select-Object FullName</code></pre>
+<p>Se aparecer um caminho, mande para o Claude, que coloca ele direto no script. Se não aparecer nada, siga o b).</p>
+<p><b>b) Instalar o CLI só para o seu usuário (sem admin), pelo npm.</b> Precisa do Node (<code>node -v</code>).</p>
+<pre><code>npm install -g @openai/codex</code></pre>
+<p>Feche e abra o PowerShell e teste <code>codex --version</code>. Se ainda não for reconhecido, veja onde o npm instala e confira se essa pasta está no Path do usuário (normalmente <code>%APPDATA%\npm</code>):</p>
+<pre><code>npm prefix -g</code></pre>
+<p><b>c) Login</b>, com a mesma conta do app (abre o navegador):</p>
+<pre><code>codex login</code></pre></div>
 
 <div class="step"><h2><span class="n">2</span>Baixar o script</h2>
 <p>No portal, abra <b>Vigia do Codex (PowerShell)</b> e salve o arquivo <code>vigia-codex.ps1</code> nesta pasta:</p>
@@ -69,7 +80,8 @@ git --version</code></pre>
 
 <div class="step"><h2><span class="n">?</span>Problemas comuns</h2>
 <ul>
-<li><b>"… não é reconhecido"</b>: o programa não está instalado ou o PowerShell foi aberto antes da instalação. Instale e abra um PowerShell novo.</li>
+<li><b>"codex não é reconhecido"</b>: você tem só o app desktop. Instale o CLI (passo 1.1).</li>
+<li><b>"… não é reconhecido"</b> (outros): o programa não está instalado ou o PowerShell foi aberto antes da instalação. Instale e abra um PowerShell novo.</li>
 <li><b>Pede administrador</b>: use as opções <code>--scope user</code> ou peça para a TI. Não tente contornar o bloqueio.</li>
 <li><b>Script bloqueado</b>: repita o passo 3. Se a empresa bloquear o <code>Set-ExecutionPolicy</code>, avise o Claude.</li>
 <li><b>Rodar de novo o mesmo prompt</b>: o Claude republica com data nova. Ou apague a linha dele em <code>%USERPROFILE%\vigia-codex\executados.txt</code>.</li>
