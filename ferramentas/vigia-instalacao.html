@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instalar o vigia do Codex</title>
+<style>
+:root{--bg:#f6f4f9;--card:#fff;--txt:#1f1a29;--muted:#6b6478;--line:#e4dfec;--pri:#70398c;--code:#1e1a26;--codetxt:#ece8f3;--ok:#16794a;--warn:#9a6700}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15121b;--card:#1e1a26;--txt:#ece8f3;--muted:#a59cb4;--line:#332c40;--pri:#c49be0;--code:#0f0c14}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px 16px}
+.wrap{max-width:820px;margin:0 auto}h1{font-size:22px;margin:0 0 6px}p.lead{color:var(--muted);margin:0 0 20px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px}
+.step h2{font-size:16px;margin:0 0 6px;display:flex;gap:10px;align-items:center}
+.n{width:26px;height:26px;border-radius:50%;background:var(--pri);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+.step p{margin:6px 0}.muted{color:var(--muted);font-size:13px}
+pre{position:relative;background:var(--code);color:var(--codetxt);border-radius:10px;padding:12px 14px;overflow-x:auto;margin:8px 0;font:13px/1.5 ui-monospace,Consolas,monospace}
+pre button{position:absolute;top:6px;right:6px;border:0;border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer;background:#ffffff22;color:#fff}
+.ok{color:var(--ok);font-weight:600}.warn{color:var(--warn);font-weight:600}
+ul{margin:6px 0;padding-left:20px}
+</style></head><body><div class="wrap">
+<h1>Instalar o vigia do Codex</h1>
+<p class="lead">O vigia olha o portal a cada 2 minutos. Quando aparece um prompt marcado para executar, ele abre uma janela do Codex já trabalhando nele. Quando o Codex termina, a entrega vira uma Issue no portal.</p>
+
+<div class="step"><h2><span class="n">1</span>Pré-requisitos</h2>
+<ul><li>Codex CLI instalado e logado.</li><li>GitHub CLI (<code>gh</code>) instalado e logado. Sem admin: <code>winget install --id GitHub.cli --scope user</code>, depois <code>gh auth login</code> (GitHub.com → HTTPS → Login with a web browser).</li><li>Git instalado.</li></ul>
+<p class="muted">Depois de instalar qualquer programa, feche e abra o PowerShell de novo.</p></div>
+
+<div class="step"><h2><span class="n">2</span>Baixar o script</h2>
+<p>No portal, abra <b>Vigia do Codex (PowerShell)</b> e salve o arquivo <code>vigia-codex.ps1</code> nesta pasta:</p>
+<pre><code>%USERPROFILE%\vigia-codex\</code></pre>
+<p class="muted">Ou deixe o PowerShell criar a pasta e baixar direto:</p>
+<pre><code>New-Item -ItemType Directory -Force "$env:USERPROFILE\vigia-codex" | Out-Null
+Invoke-WebRequest https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/main/ferramentas/vigia-codex.ps1 -OutFile "$env:USERPROFILE\vigia-codex\vigia-codex.ps1"</code></pre></div>
+
+<div class="step"><h2><span class="n">3</span>Abrir o PowerShell na pasta e liberar o script</h2>
+<p>Menu Iniciar → digite <b>PowerShell</b> → abrir (não precisa ser administrador). Não dê dois cliques no .ps1: a janela fecha sozinha.</p>
+<pre><code>cd "$env:USERPROFILE\vigia-codex"
+Unblock-File .\vigia-codex.ps1
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
+<p class="muted">Se perguntar, responda S (ou Y).</p></div>
+
+<div class="step"><h2><span class="n">4</span>Conferir as ferramentas</h2>
+<pre><code>codex --version
+gh auth status
+git --version</code></pre>
+<p>Os três precisam responder sem erro.</p></div>
+
+<div class="step"><h2><span class="n">5</span>Clonar o portal (se ainda não clonou)</h2>
+<pre><code>Test-Path "$env:USERPROFILE\Documents\Portal Claude\pagina-mocks-prompts\itens.json"</code></pre>
+<p>Se responder <span class="warn">False</span>, clone:</p>
+<pre><code>git clone https://github.com/jezielsilva/pagina-mocks-prompts.git "$env:USERPROFILE\Documents\Portal Claude\pagina-mocks-prompts"</code></pre>
+<p class="muted">Os projetos precisam estar em <code>%USERPROFILE%\elawadv</code> (com <code>web-proadv</code> e <code>api-proadv</code> dentro).</p></div>
+
+<div class="step"><h2><span class="n">6</span>Testar uma vez, na mão</h2>
+<pre><code>.\vigia-codex.ps1</code></pre>
+<p>Se houver prompt marcado para executar no portal, <span class="ok">abre uma janela nova com o Codex trabalhando</span>. Para levar a conversa ao app desktop, digite <code>/app</code> dentro dela.</p>
+<p>Não abriu? Veja o log:</p>
+<pre><code>Get-Content "$env:USERPROFILE\vigia-codex\vigia.log"</code></pre></div>
+
+<div class="step"><h2><span class="n">7</span>Instalar no Agendador (roda sozinho a cada 2 min)</h2>
+<pre><code>.\vigia-codex.ps1 -Instalar</code></pre>
+<p class="muted">Roda enquanto você estiver logado no Windows. Para parar: <code>.\vigia-codex.ps1 -Remover</code></p></div>
+
+<div class="step"><h2><span class="n">8</span>Como funciona no dia a dia</h2>
+<ul>
+<li>O Claude publica o prompt no portal com <code>"executar": true</code>.</li>
+<li>Em até 2 min o vigia abre a janela do Codex. Você acompanha e responde se ele perguntar algo.</li>
+<li>No fim, o Codex salva a entrega em <code>%USERPROFILE%\vigia-codex\retornos\</code>, e o vigia abre a Issue <b>"Retorno Codex: …"</b> no portal.</li>
+<li>Você avisa o Claude no chat ("lê a issue"), e ele revisa e publica o próximo prompt.</li>
+<li>Um prompt por vez: o próximo só abre quando o retorno do atual chegar.</li>
+</ul></div>
+
+<div class="step"><h2><span class="n">?</span>Problemas comuns</h2>
+<ul>
+<li><b>"… não é reconhecido"</b>: o programa não está instalado ou o PowerShell foi aberto antes da instalação. Instale e abra um PowerShell novo.</li>
+<li><b>Pede administrador</b>: use as opções <code>--scope user</code> ou peça para a TI. Não tente contornar o bloqueio.</li>
+<li><b>Script bloqueado</b>: repita o passo 3. Se a empresa bloquear o <code>Set-ExecutionPolicy</code>, avise o Claude.</li>
+<li><b>Rodar de novo o mesmo prompt</b>: o Claude republica com data nova. Ou apague a linha dele em <code>%USERPROFILE%\vigia-codex\executados.txt</code>.</li>
+<li><b>Ficou travado em "aguardando retorno"</b>: o Codex não salvou o retorno. Salve a entrega manualmente em <code>retornos\&lt;id&gt;.md</code> ou apague <code>em-andamento.txt</code>.</li>
+</ul></div>
+</div>
+<script>document.querySelectorAll('pre').forEach(p=>{const b=document.createElement('button');b.type='button';b.textContent='Copiar';b.onclick=()=>{navigator.clipboard.writeText(p.querySelector('code').innerText).then(()=>{b.textContent='Copiado';setTimeout(()=>b.textContent='Copiar',1200)}).catch(()=>{})};p.appendChild(b);});</script>
+</body></html>

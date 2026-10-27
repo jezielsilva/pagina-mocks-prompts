@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T11:42",
+  "atualizado": "2026-10-27T11:53",
   "itens": [
     {
       "id": "documentos-mock",
@@ -56,6 +56,16 @@
       "titulo": "Prompt — Mover endpoints de documentos de prazo para a controller da Cloud",
       "data": "2026-10-27T11:42",
       "arquivo": "prompts/documentos-unificar-controller-prazo.txt"
+    },
+    {
+      "id": "ferramenta-vigia-guia",
+      "tipo": "artefato",
+      "asset": true,
+      "fixo": true,
+      "projeto": "Automação",
+      "titulo": "Passo a passo — instalar o vigia do Codex",
+      "data": "2026-10-27T11:53",
+      "arquivo": "ferramentas/vigia-instalacao.html"
     }
   ]
 }
