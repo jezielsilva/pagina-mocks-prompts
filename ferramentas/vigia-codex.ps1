@@ -106,12 +106,19 @@ foreach ($item in $pendentes) {
         $app = Get-StartApps | Where-Object { $_.Name -eq $NomeApp } | Select-Object -First 1
         if ($null -eq $app) { $app = Get-StartApps | Where-Object { $_.Name -like "*$NomeApp*" } | Select-Object -First 1 }
         if ($null -eq $app) { Registrar "app '$NomeApp' nao encontrado no menu Iniciar"; return }
+        Registrar "app encontrado: '$($app.Name)' ($($app.AppID))"
         Start-Process "shell:AppsFolder\$($app.AppID)"
         Start-Sleep -Seconds $EsperaAbrirApp
 
         # 3) Foca a janela, abre conversa nova, cola e envia
         $teclado = New-Object -ComObject WScript.Shell
         $focou = $teclado.AppActivate($NomeApp)
+        if (-not $focou) {
+            # Tenta pelo processo: pega a primeira janela visível cujo processo tenha "codex" no nome
+            $proc = Get-Process | Where-Object { $_.MainWindowTitle -and ($_.ProcessName -like '*codex*' -or $_.MainWindowTitle -like '*Codex*') } | Select-Object -First 1
+            if ($proc) { Registrar "janela achada pelo processo: $($proc.ProcessName) / '$($proc.MainWindowTitle)'"; $focou = $teclado.AppActivate($proc.Id) }
+        }
+        Registrar "foco na janela: $focou"
         if (-not $focou) { Registrar "nao consegui focar a janela '$NomeApp' (prompt ficou copiado: cole com Ctrl+V)"; }
         else {
             Start-Sleep -Milliseconds 800
