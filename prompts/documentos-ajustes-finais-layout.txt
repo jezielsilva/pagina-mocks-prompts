@@ -1,0 +1,87 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — AJUSTES FINAIS DE LAYOUT (14 itens)
+Mock de referência: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Seguir o UI-Kit e os tokens. Front "burro": contagens e ordenação vêm do back.
+
+VALIDAÇÃO VISUAL OBRIGATÓRIA (pedido explícito do usuário para estes itens)
+Ao terminar, abra a tela no navegador (ng serve já rodando ou suba local) e CONFIRME visualmente, com print ou descrição do que viu, os itens marcados com [VALIDAR]. Se algum não abrir como descrito, corrija antes de entregar. Isso NÃO é teste automatizado: não criar testes, lint ou scripts.
+
+1. NOVO TIPO (central de Classificações) — campos grandes demais
+- "Nome do tipo" e "Vincular à subcategoria" estão altos e largos em relação aos botões. Usar a variante COMPACTA/pequena dos campos do UI-Kit (mesma altura dos botões Cancelar/Criar tipo, ~36px), com larguras de ~260px e ~260px. Tudo alinhado pela base, numa linha.
+
+2. BOTÃO "NOVO ARQUIVO" (sidebar) — igual ao mock [VALIDAR]
+- REMOVER o drawer "Adicionar em …" com "Enviar arquivos / Digitalizar com a câmera / Nova pasta" (não existe no mock). Remover também "Digitalizar com a câmera" e o código ligado a ele.
+- Comportamento do mock:
+  a) se o contexto atual NÃO permite criar pasta (raiz de área automática, nível máximo de pastas etc.): o clique abre DIRETO a janela de seleção de arquivos do Windows (upload na pasta atual / regra já existente de destino);
+  b) se está numa pasta onde pode criar pasta: abre o MENU DE AÇÕES padrão do sistema (o mesmo componente de menu de ações já usado nos itens) ancorado no botão, com 2 opções: "Enviar arquivos" e "Nova pasta". "Nova pasta" segue a mesma regra do botão "Nova pasta" do header (desabilitada quando não pode, com tooltip do motivo) e respeita o permissionamento.
+
+3. FILA "CLASSIFICAR ARQUIVOS" — seletor
+- "Selecione uma classificação" está quebrando em 2 linhas num campo apertado. O texto fica em UMA linha (white-space: nowrap), o campo com largura automática pelo conteúdo (sem largura fixa grande).
+- O seletor + o ✓ ficam na EXTREMA DIREITA da linha (margin-left: auto), sempre.
+- Depois de escolher: o campo mostra só o nome do tipo com reticências (max-width ~320px) e tooltip com "Categoria › Subcategoria › Tipo".
+
+4. CENTRAL DE CLASSIFICAÇÕES — barra superior
+- Busca ocupando ~metade da largura da modal (à esquerda). Os botões "Só os do escritório", "Mostrar desativados" e "Novo tipo" agrupados À DIREITA (justify-content: space-between). No celular, empilha.
+
+5. ÁREAS AUTOMÁTICAS (Tarefas, Processos, Pré-processos, Clientes, Fornecedores, Financeiro, Prazos) — contador e ordenação
+- BACK: a listagem das pastas dessas áreas passa a devolver, para cada pasta, a QUANTIDADE de arquivos (contando os das subpastas, respeitando permissão/escopo do usuário) e vir ORDENADA por quantidade/tamanho de arquivos, da maior para a menor (pastas com arquivo primeiro; desempate pelo nome). A paginação ("Carregar mais") segue essa ordem.
+- LISTA: logo depois do NOME da pasta, um contador em pill pequeno (fundo roxo bem claro / token primary-lightest, texto primário, 11–12px), ex.: "12". Pasta sem arquivo: sem pill (ou "0" em cinza claro — escolha o mais limpo e explique).
+- GRADE: mesmo contador, como já existe em Meus documentos ("N arquivos").
+
+6. ERRO "Não foi possível carregar ou salvar as classificações" [VALIDAR]
+- Cenário: no menu lateral, clicar em uma área automática (ex.: Tarefas) e abrir Classificações → aparece o erro.
+- Investigar a causa-raiz (provável chamada contextual com a área/pasta atual — ex.: contagem por pasta enviando um id de área virtual que o back não aceita). Corrigir para a central abrir sem erro em QUALQUER área (Meus documentos e todas as automáticas). Explicar a causa na entrega.
+
+7. PAINEL DE DETALHES NA LISTA (prévia à direita) — conteúdo cortado
+- A miniatura grande (PNG/PDF) ocupa espaço demais e corta "Local" e o resto. Reduzir a miniatura (~120px de largura), e a lista de detalhes rola internamente se precisar; o botão "Abrir" fica sempre visível no rodapé do painel.
+
+8. MENU DE AÇÕES DO ITEM (⋮)
+- REMOVER "Etiquetar…" e TODA a funcionalidade de etiquetas no front e no back (endpoints, serviços, modelos, telas) — não haverá etiqueta (classificação é outra coisa). Listar o que foi removido.
+- O menu (componente de menu de ações padrão) deve ter LARGURA AUTOMÁTICA pelo maior texto (width: max-content, com min-width atual), sem reticências: "Comprimir para protocolo…" aparece inteiro. Aplicar no componente para valer em todo o sistema, sem quebrar outros usos.
+
+9. MODAL "MOVER"
+- Tirar o brilho/sombra colorida em volta da modal (usar a sombra padrão das modais do sistema).
+- Botões "Cancelar" e "Mover para …" ARREDONDADOS (pill), como os demais botões do sistema.
+- Árvore de pastas mais limpa: indentação de 20px por nível, setinha (chevron) alinhada, ícone de pasta em roxo, linha com hover cinza claro e selecionada com fundo primary-lightest + borda à esquerda primária (não o bloco roxo cheio); itens indisponíveis em cinza com tooltip do motivo.
+- Scroll vertical VISÍVEL na lista (max-height ~50vh), com a barra fina do sistema.
+
+10. VISUALIZAÇÃO DE PDF (modal e drawer) — não abre [VALIDAR]
+- PDF de 7 páginas mostra só um bloco cinza vazio "Página 1 de 7". Corrigir para renderizar o PDF de verdade (todas as páginas com rolagem ou navegação por página), usando o visualizador já existente no sistema, se houver; se não houver, um com licença livre (sem AGPL — regra do projeto, ex.: pdf.js/ng2-pdf-viewer). Mostrar skeleton enquanto carrega e mensagem clara se falhar, com botão "Baixar".
+- Confirmar com um PDF de várias páginas e com uma imagem.
+
+11. CLASSIFICAÇÃO NOS DETALHES (modal e drawer) — "tapa" visual
+- Hoje: badge "Sem classificação" com borda preta + link sublinhado "Classificar" desalinhado.
+- Novo: bloco de linha inteira, com rótulo "Classificação" em cinza.
+  - Sem classificação: texto cinza "Sem classificação" + botão outline primário pequeno "Classificar" (com ícone de etiqueta), na mesma linha.
+  - Com classificação: badge do tipo com o ícone em círculo da subcategoria (cor do token) + abaixo "Categoria › Subcategoria" em 12px cinza + botão de texto "Alterar".
+- Mesmo componente na modal e no drawer.
+
+12. BOTÃO "BAIXAR" — loading
+- Enquanto o download prepara/baixa, o botão mostra o spinner pequeno do UI-Kit dentro dele e fica desabilitado; volta ao normal ao terminar ou se der erro (snackbar padrão de erro). Vale na modal, no drawer, no menu ⋮ e em lote.
+
+13. FAVORITAR (cabeçalho da modal e do drawer)
+- O ícone está fora do centro e feio. Usar o ícone de estrela do mesmo set de ícones do sistema (Material Symbols "star": vazado quando não favorito, preenchido quando favorito, na cor warning), 20px, CENTRALIZADO num botão circular de 36px (display flex, align/justify center), hover com fundo branco translúcido, tooltip "Adicionar aos favoritos"/"Remover dos favoritos". Mesmo botão no drawer.
+
+14. DRAWER (lista) — scroll e rótulos
+- A parte de baixo (Detalhes / Logs) não rola: dar scroll vertical visível ao corpo do drawer (o cabeçalho fica fixo; prévia, ações e abas rolam juntos ou só as abas rolam — o que ficar mais natural), sem cortar conteúdo.
+- Os rótulos "Tipo" e "Tamanho" da 1ª linha dos detalhes estão sumindo: corrigir.
+- Aplicar os itens 10, 11, 12 e 13 também no drawer.
+- Renomear a aba "Histórico" para "Logs" (modal e drawer), se ainda não foi feito.
+
+ENTREGA
+- Checklist 1–14 (feito / não feito) e, para os [VALIDAR], o que você viu na tela.
+- Causa do erro do item 6 e o que foi removido no item 8.
+- Arquivos alterados (trechos relevantes) e seção "Explicações".
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

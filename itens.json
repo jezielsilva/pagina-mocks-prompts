@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T12:34",
+  "atualizado": "2026-10-27T13:02",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,12 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-docs-controller-prazo",
+      "id": "prompt-docs-layout-final",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Mover endpoints de documentos de prazo para a controller da Cloud",
-      "data": "2026-10-27T11:42",
-      "arquivo": "prompts/documentos-unificar-controller-prazo.txt"
+      "titulo": "Prompt — Ajustes finais de layout de Documentos (14 itens, com validação visual)",
+      "data": "2026-10-27T13:02",
+      "arquivo": "prompts/documentos-ajustes-finais-layout.txt"
     }
   ]
 }
