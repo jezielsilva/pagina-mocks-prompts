@@ -1,0 +1,92 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS (NOVA CLOUD) — PERMISSIONAMENTO COMPLETO (DE-PARA COM AS CHAVES DO BANCO)
+Base: relatório de levantamento já feito (rota ativa DocumentosPageComponent; contexto ExploradorDocumentosPolicy.CriarContextoAsync; validação AcessoFuncionalidadePermitido).
+
+0. REGRA DE OURO — SÓ CHAVES QUE EXISTEM NO BANCO
+- Usar EXCLUSIVAMENTE as permissões cadastradas na collection `categoria` (recurso → TiposAcesso → Funcionalidades), lidas pelos serviços que o sistema já usa (GetAcessosUsuarioAdicional / AcessoFuncionalidadePermitido no back, e o serviço de permissões do front que os outros módulos usam).
+- Chaves usadas aqui:
+  - Documentos: Visualizar (nível Visualização), Remover (nível Remover), Contratar (nível Contratação);
+  - Tarefas: ExibirLista; Prazos: ExibirLista; Processos: ExibirLista; Pré-processos: VisualizarDocumentos; Clientes: Lista; Financeiro: Lista (vale para Financeiro e Fornecedores).
+- O sistema valida o NÍVEL usando UMA chave filha (ex.: ExibirLista representa a leitura). Seguir esse padrão. NÃO renomear, NÃO criar chave nova, NÃO reestruturar a collection.
+- REMOVER as permissões inventadas nos últimos ajustes ("podeEscrever", "PodeEscrever", "PodeModificar", "PodeBaixar", capabilities criadas só no front etc.). Tudo vira um mapeamento para as chaves acima. Listar na entrega cada uma removida e o que entrou no lugar.
+
+1. QUEM VÊ O QUÊ
+- PAI (titular): acesso TOTAL. Vê os arquivos dele e de todos os adicionais, todas as áreas, todas as ações habilitadas. Nenhuma checagem o bloqueia.
+- ADICIONAL, 3 filtros:
+  a) ESCOPO `visualizarTodosDocumentos`: true = vê todos os documentos do escritório, como o pai; false = vê só os que ele mesmo enviou/criou.
+  b) CATEGORIA: sem a chave de leitura do módulo, a área fica DESABILITADA na sidebar (visual cinza, sem clique, tooltip "Você não tem permissão para acessar <Área>") e NADA dela aparece em Documentos: pastas, arquivos, contadores, gráfico de armazenamento (e total), filtros, favoritos, lixeira, fila de classificação, logs, prazos da semana.
+  c) AÇÃO: chaves de Documentos (tabela abaixo).
+
+2. DE-PARA FUNCIONALIDADE → PERMISSÃO (adicional; o pai sempre pode)
+| Funcionalidade | Precisa |
+|---|---|
+| Acessar a central | acesso ao módulo Documentos (já existe: AdminGuard + contexto) |
+| Ver área Minhas pastas | Documentos › Visualizar |
+| Ver área Tarefas | Tarefas › ExibirLista + Documentos › Visualizar |
+| Ver área Prazos (pasta virtual e prazos da semana) | Prazos › ExibirLista + Documentos › Visualizar |
+| Ver área Processos | Processos › ExibirLista + Documentos › Visualizar |
+| Ver área Pré-processos | Pré-processos › VisualizarDocumentos + Documentos › Visualizar |
+| Ver área Clientes | Clientes › Lista + Documentos › Visualizar |
+| Ver áreas Fornecedores e Financeiro | Financeiro › Lista + Documentos › Visualizar |
+| Favoritos / Lixeira (listar) | Documentos › Visualizar, mostrando só itens das áreas permitidas e do escopo |
+| LEITURA: listar, navegar, filtros, abrir, visualização rápida, drawer, prévia, detalhes, logs do arquivo, logs gerais, baixar, baixar seleção (zip), consultar/baixar resultado de job, central de classificações (ver), uso de tipo | Documentos › Visualizar + categoria do item |
+| ALTERAÇÃO (tudo que muda algo): enviar arquivo, botão Novo arquivo, arrastar e soltar, criar pasta, renomear, mover, favoritar/desfavoritar, etiquetas (criar/editar/excluir), classificar (1 ou fila), criar/renomear/desativar/reativar tipo, unir PDFs, comprimir, excluir (lixeira), restaurar, excluir definitivamente, esvaziar lixeira, ações em lote | Documentos › Remover + categoria do item/destino |
+| Upload dentro de registro de área automática (processo, cliente, tarefa, financeiro, fornecedor, pré-processo, prazo) | Documentos › Remover + chave de leitura da categoria de destino |
+| Upgrade de armazenamento | Documentos › Contratar |
+
+3. FRONT — COMO APLICAR (o permissionamento fica principalmente aqui)
+- Um único ponto no front (serviço/facade de permissões de Documentos) calcula, ao abrir a página, booleans simples a partir do serviço de permissões existente: ehPai, podeVisualizar, podeAlterar (Remover), podeContratar, areasPermitidas (por categoria) e visualizarTodosDocumentos. Os componentes só leem esses booleans (template simples, sem regra espalhada).
+- PADRÃO VISUAL DE AÇÃO SEM PERMISSÃO (o mesmo do resto do sistema):
+  - o botão continua VISÍVEL, mas vira e-button OUTLINE CINZA (secondary), NÃO preenchido, com [disabled]="true" e sem nenhuma ação no clique;
+  - tooltip "Você não tem permissão para esta ação";
+  - com permissão: botão normal, com a cor e o clique de sempre.
+- Aplicar em TODOS os pontos:
+  - barra do header (Nova pasta, Enviar arquivos, Novo arquivo da sidebar);
+  - barra de ações do drawer e da visualização rápida (Classificar, Comprimir, Unir, Baixar, Mover, Renomear, Excluir, Favoritar);
+  - menu kebab (⋮) de cada item (itens desabilitados em cinza);
+  - barra de ações em lote;
+  - lixeira (Restaurar, Excluir definitivamente, Esvaziar);
+  - central de Classificações (Novo tipo, Renomear, Desativar/Reativar, "Criar tipo nesta subcategoria");
+  - fila de classificação (seletor e ✓);
+  - aviso "Classificar agora";
+  - botão "Fazer upgrade" (Contratar).
+- Arrastar e soltar: sem Remover (ou sem a categoria de destino), a área de drop não aceita e mostra o tooltip/aviso padrão.
+- Sidebar: áreas sem categoria ficam desabilitadas (cinza, sem clique, tooltip) e somem da contagem "Todos os documentos" e do gráfico.
+- Filtro de autor: listar só autores dos documentos visíveis. Se visualizarTodosDocumentos=false, mostrar só o próprio usuário.
+
+4. BACK — ALINHAR (sem lógica nova de regra no front)
+- Trocar as checagens inventadas (PodeEscrever/PodeModificar/PodeBaixar) pelas chaves reais: leitura → Documentos › Visualizar; qualquer alteração → Documentos › Remover; upgrade → Documentos › Contratar; sempre + a categoria do item. Concentrar isso em ExploradorDocumentosPolicy (contexto único) e devolver ao front os mesmos booleans do item 3 (capabilities), calculados SÓ a partir das chaves reais.
+- Corrigir os vazamentos do relatório:
+  a) ObterArquivoAutorizadoAsync: aplicar o escopo visualizarTodosDocumentos=false a QUALQUER tipo de pasta (hoje só ETipoPasta.Arquivos). Afeta abrir, baixar, item, eventos, operações e jobs;
+  b) Área Prazos: exigir Prazos › ExibirLista + Documentos › Visualizar (hoje deriva de Processos). Aplicar AutorRestrito em ConsultarArquivosComPrazo e ConsultarPrazosAsync. PrazoDocumentosController também passa a exigir Prazos › ExibirLista;
+  c) Logs gerais (CloudBusiness.DocumentosLogs): filtrar por categorias permitidas e escopo do adicional. Aceitar o documentoId que o front já envia (hoje é ignorado) para o histórico por arquivo;
+  d) Armazenamento: TotalUtilizado do adicional com os mesmos filtros de área e escopo dos grupos;
+  e) Favoritar: exigir Documentos › Remover;
+  f) Upgrade (UpgradeEspacoNuvem): exigir Documentos › Contratar;
+  g) Endpoints legados de upload por categoria (CloudController.cs ~809–1004): se ainda forem chamados, aplicar Remover + categoria; se não tiverem chamador, listar na entrega (não remover sem minha confirmação).
+- Corrigir docs/business-rules/documentos-prazo.md: Prazos é o tipo 12, não 9.
+
+5. NÃO FAZER
+- Não criar chave/permissão nova, nem mexer na collection categoria.
+- Não esconder botão por permissão (padrão é desabilitar em outline cinza). Exceção: as áreas sem categoria não mostram conteúdo.
+- Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA
+- Mini-spec antes de codar (arquivos que vai mexer).
+- Tabela final "funcionalidade → chave usada → onde no front → onde no back".
+- Lista das permissões inventadas removidas.
+- Vazamentos corrigidos (a–g) com arquivo:linha.
+- Seção "Explicações" e checklist 0–4 feito/não feito.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
