@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T10:42",
+  "atualizado": "2026-10-27T11:13",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,6 +45,16 @@
       "titulo": "Prompt — Permissionamento completo de Documentos (de-para com as chaves do banco)",
       "data": "2026-10-27T10:11",
       "arquivo": "prompts/documentos-permissionamento.txt"
+    },
+    {
+      "id": "ferramenta-vigia",
+      "tipo": "artefato",
+      "asset": true,
+      "fixo": true,
+      "projeto": "Automação",
+      "titulo": "Vigia do Codex (PowerShell) — abre o Codex com o prompt novo e devolve o retorno como Issue",
+      "data": "2026-10-27T11:13",
+      "arquivo": "ferramentas/vigia-codex.ps1"
     }
   ]
 }

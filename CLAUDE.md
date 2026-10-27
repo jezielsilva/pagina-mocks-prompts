@@ -18,3 +18,4 @@
 - `itens.json` é o índice da página: atualizar `atualizado` e as entradas a cada push.
 - Respostas do usuário chegam como Issues; ao resolver, avisar no chat (imagens das Issues não são acessíveis deste ambiente).
 - Commits terminam com as linhas de atribuição da sessão.
+- Vigia do Codex (ferramentas/vigia-codex.ps1, na máquina do usuário): prompts de implementação publicados com `"executar": true` no itens.json são abertos automaticamente numa janela do Codex. O retorno volta como Issue "Retorno Codex: <id>". Republicar o mesmo prompt com data nova faz rodar de novo. Prompts que NÃO devem rodar sozinhos: sem o campo.
