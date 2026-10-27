@@ -1,0 +1,50 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — CORREÇÕES DO QA (BLOCOS 1 E 2)
+Não mexer no banco. Não criar controller nova (tudo de documentos fica na controller da Cloud existente). Front "burro": regras no back.
+
+BLOCO 1 — AJUSTES SIMPLES
+1. Filtro mostrando "[object Object]"
+- Localizar qual filtro da listagem exibe "[object Object]" (rótulo do valor selecionado ou opção) e exibir o texto correto (nome do autor / nome da subcategoria / tipo). Conferir todos os filtros: tipo, autor, classificação, data.
+2. Logs da Lixeira em "0–0 de 0"
+- Na área Lixeira, a aba/tela de logs mostra vazio mesmo havendo ações de excluir/restaurar. Descobrir a causa (contexto/área enviado errado, filtro que exclui itens da lixeira, consulta que ignora itens com flag de lixeira) e corrigir para mostrar os eventos de excluir, restaurar e excluir definitivamente.
+3. Conteúdo cortado no TABLET
+- Na largura de tablet (768–1024px), revisar listagem (lista e grade), sidebar, modais (arquivo, classificações, mover, classificar arquivos) e drawer: nada pode ficar cortado sem scroll. Ajuste pontual de layout. A revisão completa de celular/tablet fica para depois; aqui só o que está cortado.
+
+BLOCO 2 — REGRA E FLUXO
+4. Excluir em lote com seleção MISTA (arquivo + pasta) não faz nada
+- Com 1 arquivo funciona; com arquivo + pasta selecionados, o "Excluir" não inicia o fluxo. Investigar no FRONT (montagem da requisição/condição do botão) e principalmente no BACK (validação da operação em lote com itens de tipos diferentes, rejeição silenciosa). Corrigir para: confirmar ("Mover N itens para a Lixeira?"), mover arquivos e pastas juntos e mostrar snackbar padrão de sucesso/erro. Se algum item não puder ir para a lixeira (permissão, área automática), mover os permitidos e informar quais não foram.
+- Aplicar a mesma checagem às outras ações em lote com seleção mista (mover, baixar, restaurar, excluir definitivamente).
+5. Filtro de autor "Você" não traz os documentos do próprio usuário
+- Provável comparação com o id errado (titular x usuário logado/adicional) ou lista de autores vinda de outra fonte (ex.: serviço de tarefas). Corrigir:
+  - a lista de autores deve vir do BACK, com os autores dos documentos que o usuário pode ver (respeitando o escopo do adicional);
+  - "Você" = o usuário LOGADO; o filtro compara com o mesmo campo de autor gravado no arquivo.
+- Conferir com conta pai e explicar a causa.
+6. Prévia de documentos (PDF em branco; Word/Excel sem prévia) — usar o modo da DEVELOP
+- Abra a branch develop num WORKTREE separado (não misture com a branch atual) e veja como a tela antiga de documentos abre os arquivos: para PDF usava o visualizador online da Adobe (Adobe PDF Embed / leitor online) e para Word/Excel/PowerPoint usava visualizadores online. Identifique exatamente quais (bibliotecas/serviços, chaves de configuração, componentes).
+- Reaproveite o MESMO mecanismo da develop, agora DENTRO da modal de visualização e DENTRO do drawer (área de prévia), sem abrir outra página:
+  - PDF → visualizador da Adobe (ou o que a develop usa), com rolagem por todas as páginas;
+  - Word/Excel/PowerPoint → o mesmo visualizador online da develop;
+  - imagens → como já estão;
+  - outros tipos → miniatura por tipo + botão "Baixar".
+- Skeleton enquanto carrega e mensagem clara + "Baixar" se falhar. Usar a URL temporária do arquivo que o back já fornece (pré-assinada), sem expor outra coisa.
+- Remover o visualizador que está deixando o PDF em branco, se ficar sem uso.
+- Na entrega, diga o que a develop usava e onde ficam as configurações (chave/cliente) e se há algum pré-requisito (domínio autorizado etc.).
+
+FORA DESTE PROMPT (não fazer agora)
+- Layout de celular (revisão geral depois), contador "sem classificação" e contador de Tarefas (serão investigados à parte).
+
+ENTREGA
+- Checklist 1–6 (feito/não feito) com a causa de cada problema.
+- Arquivos alterados (trechos relevantes) e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
