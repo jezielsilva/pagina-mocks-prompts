@@ -82,11 +82,15 @@ foreach ($item in $pendentes) {
 
     # Mensagem curta para o Codex: ele lê o prompt inteiro do arquivo (evita limite de tamanho da linha de comando)
     $mensagem = "Leia e execute integralmente as instruções do arquivo '$arquivoPrompt'. " +
-                "Os projetos ficam em '$Projetos' (web-proadv e api-proadv). " +
-                "Ao terminar (inclusive se parar por erro ou precisar de aprovação minha), salve a ENTREGA completa em markdown no arquivo '$arquivoRetorno'."
+                "Os projetos ficam em '$Projetos', nas pastas web-proadv e api-proadv. " +
+                "Ao terminar, inclusive se parar por erro ou precisar de aprovação minha, salve a ENTREGA completa em markdown no arquivo '$arquivoRetorno'."
+
+    # A mensagem vai num arquivo: assim aspas e parênteses do texto não quebram o comando
+    $arquivoMensagem = Join-Path $Base 'mensagem.txt'
+    Set-Content -Path $arquivoMensagem -Value $mensagem -Encoding UTF8
 
     # Abre uma janela nova com o Codex interativo (você acompanha tudo; /app leva a sessão para o app desktop)
-    $comando = "Set-Location '$Projetos'; codex -C '$Projetos' `"$($mensagem.Replace('"','\"'))`""
+    $comando = "Set-Location -LiteralPath '$Projetos'; codex -C '$Projetos' (Get-Content -Raw -Encoding UTF8 -LiteralPath '$arquivoMensagem')"
     Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoExit', '-ExecutionPolicy', 'Bypass', '-Command', $comando)
 
     Add-Content -Path $Estado -Value $chave
