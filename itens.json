@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T12:18",
+  "atualizado": "2026-10-27T12:34",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,33 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "ferramenta-vigia",
-      "tipo": "artefato",
-      "asset": true,
-      "fixo": true,
-      "projeto": "Automação",
-      "titulo": "Vigia do Codex (PowerShell) — abre o Codex com o prompt novo e devolve o retorno como Issue",
-      "data": "2026-10-27T12:18",
-      "arquivo": "ferramentas/vigia-codex.ps1"
-    },
-    {
       "id": "prompt-docs-controller-prazo",
       "tipo": "prompt",
-      "executar": true,
       "projeto": "elaw adv · Codex",
       "titulo": "Prompt — Mover endpoints de documentos de prazo para a controller da Cloud",
       "data": "2026-10-27T11:42",
       "arquivo": "prompts/documentos-unificar-controller-prazo.txt"
-    },
-    {
-      "id": "ferramenta-vigia-guia",
-      "tipo": "artefato",
-      "asset": true,
-      "fixo": true,
-      "projeto": "Automação",
-      "titulo": "Passo a passo — instalar o vigia do Codex",
-      "data": "2026-10-27T12:18",
-      "arquivo": "ferramentas/vigia-instalacao.html"
     }
   ]
 }
