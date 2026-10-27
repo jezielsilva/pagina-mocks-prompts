@@ -112,19 +112,36 @@ foreach ($item in $pendentes) {
         Start-Process "shell:AppsFolder\$($app.AppID)"
         Start-Sleep -Seconds $EsperaAbrirApp
 
-        # 3) Foca a janela DO APP (pelo processo, para não pegar uma aba "ChatGPT" do navegador)
-        $teclado = New-Object -ComObject WScript.Shell
+        # 3) Traz a janela DO APP para frente com a API do Windows (mais confiável que AppActivate)
+        Add-Type -ErrorAction SilentlyContinue -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public static class Janela {
+    [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
+    [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h, int cmd);
+    [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] public static extern void keybd_event(byte k, byte s, int f, int e);
+}
+"@
+        # Pega a janela principal maior entre os processos do app (o app tem vários processos auxiliares)
         $proc = Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.ProcessName -like "*$NomeApp*" } | Select-Object -First 1
-        if ($proc) { $focou = $teclado.AppActivate($proc.Id) } else { $focou = $teclado.AppActivate($NomeApp) }
-        Registrar "foco: $focou / processo: $($proc.ProcessName) / janela: '$($proc.MainWindowTitle)'"
-        if (-not $focou) { Registrar "nao consegui focar o app (o prompt ficou copiado: cole com Ctrl+V)" }
+        if ($null -eq $proc) { Registrar "nenhuma janela do processo '*$NomeApp*' encontrada (o prompt ficou copiado: cole com Ctrl+V)"; }
         else {
-            Start-Sleep -Milliseconds 1000
+            $h = $proc.MainWindowHandle
+            [Janela]::ShowWindow($h, 9) | Out-Null          # 9 = restaurar, se estiver minimizada
+            [Janela]::keybd_event(0x12, 0, 0, 0)            # aperta Alt (libera a troca de janela ativa no Windows)
+            [Janela]::SetForegroundWindow($h) | Out-Null
+            [Janela]::keybd_event(0x12, 0, 2, 0)            # solta Alt
+            Start-Sleep -Milliseconds 800
+            $ativa = [Janela]::GetForegroundWindow()
+            Registrar "processo: $($proc.ProcessName) / janela: '$($proc.MainWindowTitle)' / ficou na frente: $($ativa -eq $h)"
+
+            $teclado = New-Object -ComObject WScript.Shell
             if ($AtalhoAbrirCodex) { $teclado.SendKeys($AtalhoAbrirCodex); Start-Sleep -Seconds 2 }
             $teclado.SendKeys($AtalhoNovaConversa)
+            # Espera a conversa nova carregar (antes disso a caixa de texto não existe e o colar se perde)
             Start-Sleep -Seconds $EsperaNovaConversa
-            # Garante o foco de novo (a conversa nova pode trocar a janela ativa) e cola
-            if ($proc) { [void]$teclado.AppActivate($proc.Id) } else { [void]$teclado.AppActivate($NomeApp) }
+            [Janela]::SetForegroundWindow($h) | Out-Null
             Start-Sleep -Milliseconds 600
             $teclado.SendKeys('^v')
             Start-Sleep -Milliseconds 1200
