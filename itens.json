@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T17:46",
+  "atualizado": "2026-10-27T17:50",
   "itens": [
     {
       "id": "documentos-mock",
@@ -53,6 +53,15 @@
       "titulo": "Prompt — Correções do QA: blocos A e B (filtros, scroll, contador de pasta, + contextual, prévia de imagem, subcategoria)",
       "data": "2026-10-27T17:46",
       "arquivo": "prompts/documentos-correcoes-qa-blocos-a-b.txt"
+    },
+    {
+      "id": "temp-plano-30-dias",
+      "tipo": "artefato",
+      "asset": true,
+      "projeto": "Jeziel",
+      "titulo": "TEMPORÁRIO — Plano de 30 dias (checklist .docx) — apagar após baixar",
+      "data": "2026-10-27T17:50",
+      "arquivo": "temp/Plano-30-dias-checklist.docx"
     }
   ]
 }
