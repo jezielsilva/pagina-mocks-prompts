@@ -10,9 +10,9 @@
 #>
 param([switch]$Instalar, [switch]$Remover)
 
-# ===== Configuração (caminhos do Jeziel) =====
-$Portal   = 'C:\Users\jeziel.santos\Documents\Portal Claude\pagina-mocks-prompts'
-$Projetos = 'C:\Users\jeziel.santos\elawadv'          # contém web-proadv e api-proadv
+# ===== Configuração (relativos à pasta do usuário) =====
+$Portal   = Join-Path $env:USERPROFILE 'Documents\Portal Claude\pagina-mocks-prompts'
+$Projetos = Join-Path $env:USERPROFILE 'elawadv'         # contém web-proadv e api-proadv
 $Repo     = 'jezielsilva/pagina-mocks-prompts'
 $Base     = Join-Path $env:USERPROFILE 'vigia-codex'   # estado local (fora do portal)
 $Retornos = Join-Path $Base 'retornos'
