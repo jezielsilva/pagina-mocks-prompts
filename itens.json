@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T11:53",
+  "atualizado": "2026-10-27T12:18",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,7 +45,7 @@
       "fixo": true,
       "projeto": "Automação",
       "titulo": "Vigia do Codex (PowerShell) — abre o Codex com o prompt novo e devolve o retorno como Issue",
-      "data": "2026-10-27T11:13",
+      "data": "2026-10-27T12:18",
       "arquivo": "ferramentas/vigia-codex.ps1"
     },
     {
@@ -64,7 +64,7 @@
       "fixo": true,
       "projeto": "Automação",
       "titulo": "Passo a passo — instalar o vigia do Codex",
-      "data": "2026-10-27T11:53",
+      "data": "2026-10-27T12:18",
       "arquivo": "ferramentas/vigia-instalacao.html"
     }
   ]

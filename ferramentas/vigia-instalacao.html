@@ -61,7 +61,7 @@ git --version</code></pre>
 
 <div class="step"><h2><span class="n">6</span>Testar uma vez, na mão</h2>
 <pre><code>.\vigia-codex.ps1</code></pre>
-<p>Se houver prompt marcado para executar no portal, <span class="ok">abre uma janela nova com o Codex trabalhando</span>. Para levar a conversa ao app desktop, digite <code>/app</code> dentro dela.</p>
+<p>Se houver prompt marcado para executar no portal, <span class="ok">o app do Codex abre, cria uma conversa nova, cola o prompt e envia</span>. Não mexa no teclado por uns 10 segundos. Se nada acontecer, veja o <a href="#diagnostico">Diagnóstico</a>.</p>
 <p>Não abriu? Veja o log:</p>
 <pre><code>Get-Content "$env:USERPROFILE\vigia-codex\vigia.log"</code></pre></div>
 
@@ -77,6 +77,27 @@ git --version</code></pre>
 <li>Você avisa o Claude no chat ("lê a issue"), e ele revisa e publica o próximo prompt.</li>
 <li>Um prompt por vez: o próximo só abre quando o retorno do atual chegar.</li>
 </ul></div>
+
+<div class="step" id="diagnostico"><h2><span class="n">!</span>Diagnóstico — não abriu nada no app</h2>
+<p><b>1. Confira se é a versão nova do script</b> (tem que aparecer <code>$Modo = 'app'</code>):</p>
+<pre><code>Select-String -Path "$env:USERPROFILE\vigia-codex\vigia-codex.ps1" -Pattern "Modo"</code></pre>
+<p>Não apareceu? Baixe de novo, direto do GitHub (o portal pode estar em cache):</p>
+<pre><code>Invoke-WebRequest https://raw.githubusercontent.com/jezielsilva/pagina-mocks-prompts/main/ferramentas/vigia-codex.ps1 -OutFile "$env:USERPROFILE\vigia-codex\vigia-codex.ps1"
+Unblock-File "$env:USERPROFILE\vigia-codex\vigia-codex.ps1"</code></pre>
+<p><b>2. Veja o que o vigia registrou:</b></p>
+<pre><code>Get-Content "$env:USERPROFILE\vigia-codex\vigia.log" -Tail 5</code></pre>
+<ul>
+<li><code>app 'Codex' nao encontrado</code>: o nome do app no menu Iniciar é outro. Rode o comando abaixo e mande o resultado ao Claude.</li>
+<li><code>nao consegui focar a janela</code>: o app abriu, mas o título da janela é outro. O prompt ficou copiado: cole no app com Ctrl+V.</li>
+<li><code>Codex iniciado</code> e nada aconteceu: os atalhos foram para outra janela, ou o Ctrl+N do app é outro.</li>
+<li><code>aguardando retorno de …</code>: apague os arquivos de estado (próximo bloco).</li>
+</ul>
+<pre><code>Get-StartApps | Where-Object { $_.Name -like "*odex*" }</code></pre>
+<p><b>3. Zerar e testar de novo:</b></p>
+<pre><code>Remove-Item "$env:USERPROFILE\vigia-codex\executados.txt","$env:USERPROFILE\vigia-codex\em-andamento.txt" -ErrorAction SilentlyContinue
+cd "$env:USERPROFILE\vigia-codex"
+.\vigia-codex.ps1</code></pre>
+<p class="muted">Para usar o modo terminal em vez do app, troque <code>$Modo = 'app'</code> por <code>$Modo = 'terminal'</code> no começo do script.</p></div>
 
 <div class="step"><h2><span class="n">?</span>Problemas comuns</h2>
 <ul>

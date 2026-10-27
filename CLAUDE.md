@@ -23,3 +23,4 @@
   - NÃO publicar: caminhos da máquina do usuário (C:\Users\...), nomes de usuário/e-mails, nomes de classes/arquivos/linhas/endpoints/rotas internas do sistema da empresa, estrutura/IDs do banco, connection strings, tokens, dados de clientes. Em prompts, descrever por função ("o serviço de permissões de Documentos") e mandar o Codex localizar no código; usar $env:USERPROFILE em scripts.
   - Issues que chegarem com esse tipo de conteúdo: depois de lidas, esvaziar o corpo ("(conteúdo removido — já processado no chat)") e fechar; avisar o usuário que ele pode apagar a Issue pelo site para sumir o histórico de edição.
   - No chat entre o Claude e o usuário pode tudo; a regra vale só para o que fica no GitHub.
+- Instruções com comandos (PowerShell, passos de instalação, diagnóstico) vão para o PORTAL (página em ferramentas/ ou o guia existente), não só no chat; no chat, só um resumo curto e o nome do item.
