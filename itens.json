@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T09:29",
+  "atualizado": "2026-10-27T09:50",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,6 +45,16 @@
       "titulo": "Prompt — Levantamento de funcionalidades de Documentos (base do permissionamento)",
       "data": "2026-10-27T09:29",
       "arquivo": "prompts/documentos-levantamento-funcionalidades.txt"
+    },
+    {
+      "id": "treino-2026-10-27",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de terça, 27/10 — 5 perguntas",
+      "data": "2026-10-27T09:50:00-03:00",
+      "arquivo": "treino/index.html?d=2026-10-27"
     }
   ]
 }
