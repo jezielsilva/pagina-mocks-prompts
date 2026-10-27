@@ -677,6 +677,7 @@ body.framed #device.t:not(.m){width:820px}
 .cls-lock{display:inline-flex;gap:4px;align-items:center;font-size:12px;color:var(--text-color-secondary)}
 #device.m .cls-grid,#device.t .cls-grid{grid-template-columns:1fr}#device.m .cls-cats,#device.t .cls-cats{flex-direction:row;overflow-x:auto;position:static}#device.m .cls-cat,#device.t .cls-cat{min-width:220px}
 #device.m .cls-tipo{grid-template-columns:1fr auto}#device.m .cls-tipo__meta{grid-row:2}#device.m .cls-summary .ms-auto{margin-left:0!important}
+.cls-tabs{margin-bottom:4px}.cls-tabs .nav-link{display:inline-flex;align-items:center;gap:6px}
 </style>
 </head>
 <body>
@@ -1870,7 +1871,7 @@ function dlgClassify(files){
       ${conf?`<button type="button" class="btn btn-sm btn-success rounded-pill" data-bulk>${ic('spark',14)}Aplicar ${conf} sugest${conf>1?'ões':'ão'} confiáve${conf>1?'is':'l'} (≥ 80%)</button>`:''}</div>`;};
   const paint=a=>{a.body.innerHTML=head()+(pend.size?`<div class="classify-list border-top">${[...pend.values()].map(row).join('')}</div>`:eAlert('positive',{titulo:'Tudo classificado!',html:learned.length?`O sistema aprendeu: ${learned.map(l=>`“${esc(l.w)}” → ${esc(l.t)}`).join(', ')}.`:''}));
     if(editing){const box=$(`[data-pk="${editing}"]`,a.body),p=pend.get(editing);if(box&&p)mountPicker(box,{q:'',pick:p.pick,sug:p.sug,open:new Set()},id=>{p.pick=id;editing=null;paint(a);});}};
-  const apply=(id,tipo)=>{const p=pend.get(id);if(!p||!tipo)return;const sug=p.sug[0]&&p.sug[0].tipo;p.f.tipo=tipo;log('tipado',p.f,curto(tipoById(tipo).nome));const w=aprender(p.f,tipo,sug);if(w)learned.push({w,t:curto(tipoById(tipo).nome)});pend.delete(id);done++;};
+  const apply=(id,tipo)=>{const p=pend.get(id);if(!p||!tipo)return;const sug=p.sug[0]&&p.sug[0].tipo;p.f.tipo=tipo;log('tipado',p.f,curto(tipoById(tipo).nome));clsLog('classificado',SUBS.find(x=>x.id===tipo),'',p.f.name);const w=aprender(p.f,tipo,sug);if(w)learned.push({w,t:curto(tipoById(tipo).nome)});pend.delete(id);done++;};
   dialog({title:'Classificar arquivos',icon:'tag',wide:true,body:'',
     actions:[{label:`${ic('settings',13)}Gerenciar classificações`,fn:()=>dlgTipos()},{label:'Concluir',kind:'pri',fn:a=>{a.close();render();if(done)toast(`${done} arquivo${done>1?'s':''} classificado${done>1?'s':''}`,{kind:'ok'});}}],
     onMount:a=>{paint(a);
@@ -1888,10 +1889,22 @@ function dlgSetTipo(items){
   const st={q:'',pick:files.length===1?(files[0].tipo||''):'',sug,open:new Set()};
   dialog({title:files.length===1?`Classificar “${files[0].name}”`:`Classificar ${files.length} arquivos`,icon:'tag',wide:true,
     body:`<div class="d-flex align-items-center gap-2" id="pk-cur"></div><div id="pk-root"></div>`,
-    actions:[{label:`${ic('settings',13)}Gerenciar classificações`,fn:()=>dlgTipos()},{label:'Cancelar',fn:a=>a.close()},{label:'Salvar classificação',kind:'save',id:'pk-save',fn:a=>{if(!st.pick)return;files.forEach(f=>{const s=sugerirTipos(f)[0];f.tipo=st.pick;log('tipado',f,curto(tipoById(st.pick).nome));aprender(f,st.pick,s&&s.tipo);});a.close();toast('Classificação salva',{kind:'ok'});render();}}],
+    actions:[{label:`${ic('settings',13)}Gerenciar classificações`,fn:()=>dlgTipos()},{label:'Cancelar',fn:a=>a.close()},{label:'Salvar classificação',kind:'save',id:'pk-save',fn:a=>{if(!st.pick)return;files.forEach(f=>{const s=sugerirTipos(f)[0];f.tipo=st.pick;log('tipado',f,curto(tipoById(st.pick).nome));clsLog('classificado',SUBS.find(x=>x.id===st.pick),'',f.name);aprender(f,st.pick,s&&s.tipo);});a.close();toast('Classificação salva',{kind:'ok'});render();}}],
     onMount:()=>{const show=()=>{const t=st.pick&&tipoById(st.pick);$('#pk-cur').innerHTML=t?`<span class="small text-secondary">Selecionada:</span>${catBadge(t.cor,esc(t.nome),t.ic)}<span class="small text-secondary">${esc(t.cat.grupo)} › ${esc(t.cat.nome)}</span>`:'<span class="text-secondary">Nenhuma classificação escolhida</span>';};
       show();mountPicker($('#pk-root'),st,show);}});
 }
+/* ---------- Logs das classificações (produção: collection de logs, paginado no back) ---------- */
+const CLS_LOG=[];
+const CLS_ACAO={criado:{ic:'plus',v:'criou o tipo'},renomeado:{ic:'edit',v:'renomeou o tipo'},desativado:{ic:'alert',v:'desativou o tipo'},reativado:{ic:'restore',v:'reativou o tipo'},classificado:{ic:'tag',v:'classificou'}};
+function clsLog(acao,tipo,extra='',arquivo=null,user=ME,date=new Date()){CLS_LOG.push({acao,tipo:tipo?tipo.nome:'',sub:tipo?tipo.cat.nome:'',extra,arquivo,user,date});}
+(function seedClsLog(){const h=Date.now(),d=n=>new Date(h-n*36e5);const s=SUBS[2],t=SUBS[5],r=SUBS[90]||SUBS[9];
+  CLS_LOG.push({acao:'criado',tipo:'Ação de Cobrança de Condomínio',sub:'Direito Civil',extra:'',user:'ana',date:d(70)},
+   {acao:'renomeado',tipo:'Ação de Cobrança de Condomínio',sub:'Direito Civil',extra:'antes: “Cobrança condomínio”',user:'ana',date:d(66)},
+   {acao:'classificado',tipo:s.nome,sub:s.cat.nome,extra:'',arquivo:'Contrato de locação — Souza.pdf',user:'bru',date:d(40)},
+   {acao:'desativado',tipo:'Notificação extrajudicial (modelo antigo)',sub:'Outras Iniciais Específicas',extra:'3 arquivos desvinculados',user:ME,date:d(20)},
+   {acao:'reativado',tipo:'Notificação extrajudicial (modelo antigo)',sub:'Outras Iniciais Específicas',extra:'',user:ME,date:d(8)},
+   {acao:'classificado',tipo:t.nome,sub:t.cat.nome,extra:'',arquivo:'Petição inicial — Lima.docx',user:ME,date:d(2)});})();
+const clsLogItem=l=>`<div class="list-group-item"><span class="section-icon">${ic(CLS_ACAO[l.acao].ic,15)}</span><div class="flex-fill min-w-0"><b>${esc(userName(l.user))}</b> ${CLS_ACAO[l.acao].v} ${l.arquivo?`<b>${esc(l.arquivo)}</b> como `:''}<span class="fw-semibold">${esc(l.tipo)}</span> <span class="text-secondary">em ${esc(l.sub)}</span>${l.extra?` <span class="small text-secondary">· ${esc(l.extra)}</span>`:''}<span class="d-block small text-secondary tabular-nums">${fmtDate(l.date)}</span></div></div>`;
 /* ---------- Classificações: central de gestão (Categoria › Subcategoria › Tipo) ---------- */
 const GRUPO_IC=['filetext','layers','up'];
 const GRUPO_DESC=['Peças que dão início ao processo','Peças apresentadas durante o processo','Peças para recorrer de decisões'];
@@ -1905,9 +1918,9 @@ function criarTipo(root){const n=$('[data-nt-nome]',root).value.trim(),cid=$('[d
   if(!n){toast('Informe o nome do tipo',{kind:'err'});$('[data-nt-nome]',root).focus();return null;}
   if(!cid){toast('Selecione a subcategoria',{kind:'err'});return null;}
   const cat=CATS.find(x=>x.id===cid);if(cat.itens.some(s=>norm(s.nome)===norm(n))){toast('Já existe um tipo com esse nome nesta subcategoria',{kind:'err'});return null;}
-  const s=addSub(cat,n);recalcIdf();toast(`Tipo “${esc(n)}” criado em ${esc(cat.nome)}`,{kind:'ok'});return s;}
+  const s=addSub(cat,n);recalcIdf();clsLog('criado',s);toast(`Tipo “${esc(n)}” criado em ${esc(cat.nome)}`,{kind:'ok'});return s;}
 function dlgTipos(){
-  let q='',grp=0,open=new Set(),hidePad=false,showOff=false,editing=null,creating=false;
+  let aba='cls',lpg=1,lfil='todos',q='',grp=0,open=new Set(),hidePad=false,showOff=false,editing=null,creating=false;
   const files=()=>allFiles();
   const countSub=id=>files().filter(f=>f.tipo===id).length;
   const vis=s=>(showOff||s.ativo!==false)&&(!hidePad||proprio(s));
@@ -1921,7 +1934,13 @@ function dlgTipos(){
   const subCard=(c,its,forceOpen)=>{const o=forceOpen||open.has(c.id),ativos=c.itens.filter(s=>s.ativo!==false).length,nf=files().filter(f=>tipoById(f.tipo)?.cat===c).length;
     return `<div class="cls-sub ${o?'is-open':''}"><button type="button" class="cls-sub__head" data-tcat="${c.id}" aria-expanded="${!!o}">${clsIc(c.cor,c.ic,36)}<span class="flex-fill text-start"><span class="fw-semibold d-block">${esc(c.nome)}</span><span class="small text-secondary">${ativos} tipos · ${nf} arquivo${nf!==1?'s':''}</span></span>${ic(o?'up':'chevDown',16)}</button>
       ${o?`<div class="cls-sub__body">${its.length?its.map(tipoRow).join(''):'<span class="small text-secondary p-2">Nenhum tipo para mostrar.</span>'}<button type="button" class="btn btn-sm btn-link text-success align-self-start" data-newin="${c.id}">${ic('plus',13)}Criar tipo nesta subcategoria</button></div>`:''}</div>`;};
-  const body=()=>{const nq=norm(q),pend=semTipo().length,meus=SUBS.filter(proprio).length;
+  const tabsHTML=()=>`<ul class="nav nav-tabs cls-tabs" role="tablist"><li class="nav-item"><button type="button" class="nav-link ${aba==='cls'?'active':''}" data-aba="cls" role="tab" aria-selected="${aba==='cls'}">${ic('tag',14)}Classificações</button></li><li class="nav-item"><button type="button" class="nav-link ${aba==='logs'?'active':''}" data-aba="logs" role="tab" aria-selected="${aba==='logs'}">${ic('history',14)}Logs <span class="badge badge-sm badge-secondary">${CLS_LOG.length}</span></button></li></ul>`;
+  const logsHTML=()=>{const fil={todos:()=>true,tipos:l=>l.acao!=='classificado',arquivos:l=>l.acao==='classificado'}[lfil];const all=CLS_LOG.filter(fil).sort((a,b)=>b.date-a.date);
+    const chip=(k,l)=>`<button type="button" class="btn btn-sm rounded-pill ${lfil===k?'btn-primary':'btn-outline-secondary'}" data-lfil="${k}">${l}</button>`;
+    return `<div class="d-flex gap-2 flex-wrap align-items-center">${chip('todos','Todos')}${chip('tipos','Tipos (criar, renomear, desativar, reativar)')}${chip('arquivos','Arquivos classificados')}</div>`+
+      (all.length?`<div class="list-group log-list">${all.slice((lpg-1)*LOG_PAGE,lpg*LOG_PAGE).map(clsLogItem).join('')}</div>${logPager(lpg,all.length)}`:`<div class="grid-empty text-secondary">${ic('history',36)}<span class="card-title">Nenhum registro</span></div>`);};
+  const body=()=>tabsHTML()+(aba==='logs'?logsHTML():bodyCls());
+  const bodyCls=()=>{const nq=norm(q),pend=semTipo().length,meus=SUBS.filter(proprio).length;
     const catsNav=GRUPOS.map((g,i)=>{const subs=CATS.filter(c=>c.grupo===g),nt=subs.reduce((a,c)=>a+c.itens.filter(s=>s.ativo!==false).length,0);
       return `<button type="button" class="cls-cat ${!nq&&grp===i?'is-active':''}" data-grp="${i}" aria-pressed="${!nq&&grp===i}">${clsIc('var(--color-primary)',GRUPO_IC[i],40)}<span class="text-start"><span class="cls-cat__name">${esc(g)}</span><span class="small text-secondary d-block">${subs.length} subcategorias · ${nt} tipos</span></span></button>`;}).join('');
     let main='';
@@ -1944,11 +1963,14 @@ function dlgTipos(){
     actions:[{label:'Fechar',fn:a=>{a.close();render();}}],
     onMount:a=>{
       const paint=(keepQ)=>{a.body.innerHTML=body();bindQ();if(keepQ){const n=$('#tt-q');n.focus();n.setSelectionRange(q.length,q.length);}};
-      const bindQ=()=>{$('#tt-q').oninput=e=>{q=e.target.value;paint(true);};};
+      const bindQ=()=>{const n=$('#tt-q');if(n)n.oninput=e=>{q=e.target.value;paint(true);};};
       const openNew=sub=>{creating=sub||true;paint();setTimeout(()=>$('[data-nt-nome]',a.body)?.focus(),0);};
       paint();
       a.body.addEventListener('click',async e=>{
         const t=e.target;
+        const ab=t.closest('[data-aba]');if(ab){aba=ab.dataset.aba;lpg=1;paint();return;}
+        const lf=t.closest('[data-lfil]');if(lf){lfil=lf.dataset.lfil;lpg=1;paint();return;}
+        const lp=t.closest('[data-lpg]');if(lp&&!lp.closest('.disabled')){lpg=+lp.dataset.lpg;paint();return;}
         if(t.closest('[data-newtipo]')){openNew();return;}
         const ni=t.closest('[data-newin]');if(ni){openNew(ni.dataset.newin);a.body.scrollTop=0;return;}
         if(t.closest('[data-nt-cancel]')){creating=false;paint();return;}
@@ -1961,12 +1983,12 @@ function dlgTipos(){
         const ed=t.closest('[data-edt]');if(ed){editing=ed.dataset.edt;paint();setTimeout(()=>$(`[data-ename="${editing}"]`)?.select(),0);return;}
         if(t.closest('[data-ecancel]')){editing=null;paint();return;}
         const es=t.closest('[data-esave]');if(es){const s=SUBS.find(x=>x.id===es.dataset.esave),v=$(`[data-ename="${s.id}"]`).value.trim();if(!v)return;
-          if(s.cat.itens.some(o=>o!==s&&norm(o.nome)===norm(v))){toast('Já existe um tipo com esse nome nesta subcategoria',{kind:'err'});return;}s.nome=v;editing=null;paint();toast('Tipo renomeado',{kind:'ok'});return;}
+          if(s.cat.itens.some(o=>o!==s&&norm(o.nome)===norm(v))){toast('Já existe um tipo com esse nome nesta subcategoria',{kind:'err'});return;}const antes=s.nome;s.nome=v;clsLog('renomeado',s,`antes: “${antes}”`);editing=null;paint();toast('Tipo renomeado',{kind:'ok'});return;}
         const of=t.closest('[data-off]');if(of){const s=SUBS.find(x=>x.id===of.dataset.off),n=countSub(s.id);
           if(n){const ok=await confirmDlg({title:'Desativar tipo',icon:'alert',text:`<b>${n} arquivo${n>1?'s usam':' usa'}</b> o tipo <b>${esc(s.nome)}</b>. Para desativar, ${n>1?'eles serão desvinculados e ficarão':'ele será desvinculado e ficará'} sem classificação.`,ok:'Desvincular e desativar',danger:true});
-            if(!ok){dlgTipos();return;}allFiles().filter(f=>f.tipo===s.id).forEach(f=>f.tipo=null);s.ativo=false;render();dlgTipos();toast('Tipo desativado',{kind:'ok'});return;}
-          s.ativo=false;paint();toast('Tipo desativado',{kind:'ok'});return;}
-        const re=t.closest('[data-react]');if(re){SUBS.find(x=>x.id===re.dataset.react).ativo=true;paint();toast('Tipo reativado',{kind:'ok'});return;}});
+            if(!ok){dlgTipos();return;}allFiles().filter(f=>f.tipo===s.id).forEach(f=>f.tipo=null);s.ativo=false;clsLog('desativado',s,`${n} arquivo${n>1?'s':''} desvinculado${n>1?'s':''}`);render();dlgTipos();toast('Tipo desativado',{kind:'ok'});return;}
+          s.ativo=false;clsLog('desativado',s);paint();toast('Tipo desativado',{kind:'ok'});return;}
+        const re=t.closest('[data-react]');if(re){const sr=SUBS.find(x=>x.id===re.dataset.react);sr.ativo=true;clsLog('reativado',sr);paint();toast('Tipo reativado',{kind:'ok'});return;}});
       a.body.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-nt-nome]')){e.preventDefault();$('[data-nt-ok]',a.body).click();}if(e.key==='Enter'&&e.target.matches('[data-ename]')){e.preventDefault();$(`[data-esave="${e.target.dataset.ename}"]`).click();}});}});
 }
 </script>

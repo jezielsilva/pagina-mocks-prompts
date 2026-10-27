@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-27T10:27",
+  "atualizado": "2026-10-27T10:42",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (Classificações sem sugestões + sidebar ajustada)",
-      "data": "2026-10-26T16:12",
+      "titulo": "Mock — Documentos (Classificações com aba de Logs)",
+      "data": "2026-10-27T10:42",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true
