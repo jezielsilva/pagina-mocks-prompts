@@ -1,0 +1,48 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — CORREÇÕES DO QA (BLOCOS A E B)
+Não mexer no banco. Não criar controller nova (tudo de documentos fica na controller da Cloud existente). Front "burro": regras no back. Reaproveitar o que já existe.
+
+BLOCO A — AJUSTES SIMPLES
+1. Data inválida aceita no filtro
+- "31/02/2026" é aceita sem aviso. O campo de data do filtro deve validar a data (dia/mês reais, ano coerente), não aplicar o filtro com data inválida e mostrar a mensagem de validação padrão do UI-Kit ("Data inválida").
+2. Trocar Lista/Grade limpa o filtro de data
+- Ao alternar Lista ↔ Grade, TODOS os filtros (data, tipo, autor, classificação) e a pasta atual devem ser mantidos. Guardar o estado dos filtros num único lugar (o serviço/estado da página), não no componente de cada visualização.
+3. Sem indicação de scroll vertical na lista
+- A lista (e as colunas de pastas) precisa mostrar a barra de rolagem vertical visível quando houver mais itens que o espaço, usando o estilo de scrollbar fina do sistema (se existir uma classe/estilo global, reutilizar).
+4. Pasta pai mostra "0 pastas · 0 arquivos" tendo subpastas
+- O resumo da pasta (contador de pastas e arquivos) deve contar as subpastas e os arquivos diretos. Corrigir no back, se o número vem de lá, ou no front, se o front calcula. Atualizar depois de criar/excluir/mover pasta ou arquivo, sem recarregar a página.
+5. Botão "+" (Adicionar) do cabeçalho é CONTEXTUAL
+- Hoje, na tela de Documentos, ele abre a criação de tarefa. O "+" do cabeçalho do sistema é contextual: dentro de Documentos ele deve abrir o seletor de arquivos para UPLOAD na pasta que está aberta (mesma regra do botão "Enviar arquivos": destino, áreas automáticas, permissões e mensagens).
+- Onde não é possível enviar (raiz de área automática, sem permissão), seguir a mesma regra do "Enviar arquivos" (bloquear com o aviso padrão ou enviar para Meus documentos, conforme já implementado).
+- Localizar como o cabeçalho decide a ação contextual em outras telas e registrar Documentos do mesmo jeito. Não mudar o comportamento nas outras telas.
+
+BLOCO B — MÉDIO
+6. Prévia de imagem (JPG/PNG/GIF/WEBP) mostra ícone genérico
+- Imagem não deve mostrar ícone: deve mostrar a PRÓPRIA imagem.
+- Usar o método que JÁ EXISTE na controller da Cloud para gerar a URL temporária (pré-assinada) do arquivo — o mesmo que a develop usava para exibir imagens. Montar a prévia com essa URL na grade (miniatura), no painel de prévia da lista, na modal de visualização e no drawer.
+- Enquanto carrega: skeleton. Se a URL falhar ou expirar: mostrar a miniatura por tipo (o SVG de imagem) e tentar gerar a URL de novo ao abrir.
+- Não criar endpoint novo se o método existente servir.
+7. Filtro por subcategoria não retorna itens
+- Verificar no código (front e back) se há erro: parâmetro com nome/tipo diferente entre front e back, id enviado errado (categoria/tipo em vez de subcategoria), campo consultado errado no documento do arquivo, ou filtro aplicado antes do escopo.
+- Se encontrar erro de código: corrigir e explicar.
+- Se NÃO encontrar erro de código: NÃO altere nada; explique na entrega o caminho completo da consulta e o que precisa ser conferido nos dados (o usuário vai debugar).
+
+FORA DESTE PROMPT (não fazer)
+- Classificação que não grava, desativar tipo com erro, processamento parado (ZIP/comprimir/unir), contadores das áreas e "sem classificação", layout de celular.
+
+ENTREGA
+- Checklist 1–7 (feito/não feito) com a causa de cada problema.
+- Item 7: corrigido ou "sem erro de código" + caminho da consulta.
+- Arquivos alterados (trechos relevantes) e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

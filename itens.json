@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T17:09",
+  "atualizado": "2026-10-27T17:46",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,20 +39,20 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-docs-correcoes-qa-1-2",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Correções do QA: blocos 1 e 2 (filtro, logs da lixeira, tablet, lote misto, autor, prévias da develop)",
-      "data": "2026-10-27T16:51",
-      "arquivo": "prompts/documentos-correcoes-qa-blocos-1-2.txt"
-    },
-    {
       "id": "documentos-mock-quadrados",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "TESTE — Mock com botões quadrados (cantos arredondados) — temporário",
       "data": "2026-10-27T17:09",
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
+    },
+    {
+      "id": "prompt-docs-correcoes-qa-a-b",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Correções do QA: blocos A e B (filtros, scroll, contador de pasta, + contextual, prévia de imagem, subcategoria)",
+      "data": "2026-10-27T17:46",
+      "arquivo": "prompts/documentos-correcoes-qa-blocos-a-b.txt"
     }
   ]
 }
