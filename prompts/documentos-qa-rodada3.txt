@@ -1,0 +1,47 @@
+[Área: QA funcional pela interface (Front + Back) | Skills: QA + visão de advogado + testes de navegador (da pasta de skills)]
+
+QA — RODADA 3: CONTINUAR DE ONDE PAROU (CONTA PAI)
+
+O USUÁRIO ESTÁ NA FRENTE DO COMPUTADOR ACOMPANHANDO.
+- Você tem AUTORIZAÇÃO EXPRESSA e acesso total à interface para fazer QUALQUER ação: criar, enviar, mover, renomear, baixar, comprimir, unir, classificar, excluir, restaurar, excluir definitivamente.
+- NÃO pare para pedir confirmação de ação, nem para ações irreversíveis em itens "QA-" (excluir definitivamente um item "QA-" está autorizado). Só fale com o usuário se precisar de algo físico (selecionar arquivo numa janela do Windows, login): peça de forma objetiva e siga.
+- NÃO pare no meio. Siga a lista até o fim. Se um item travar, registre e vá para o próximo. Ao final de cada item, escreva no chat uma linha: "Item N — passou/falhou — resumo", para o usuário acompanhar.
+- Proibido: mexer no banco e alterar código. Ler código só para explicar a causa de um erro.
+
+ESTADO ATUAL (da rodada 2)
+- Em Meus documentos existem: QA-documento.docx, QA-planilha.xlsx, QA-imagem.png, QA-imagem.jpg, QA-Documento de texto.txt, QA-arquivo.zip, QA-arquivo-grande-20MB.bin e a pasta vazia QA-Pasta-Rodada2. QA-Petição inicial teste.pdf está na Lixeira.
+- Os arquivos locais de teste continuam na pasta temporária da rodada 2. Reutilize-os (ou recrie).
+- NÃO repita o que já foi testado: upload pelo botão da área (formatos, múltiplos, 20 MB, acento), criar pasta, mandar um PDF para a lixeira, contadores após upload.
+- Na Lixeira há itens que NÃO são "QA-": não restaure, não exclua e não esvazie a lixeira inteira enquanto eles estiverem lá.
+
+FALTA TESTAR (nesta ordem)
+1. Upload pelo botão do CABEÇALHO e pelo "Novo arquivo" da sidebar (seletor direto ou menu Enviar/Nova pasta, conforme o contexto).
+2. Arrastar e soltar arquivos "QA-" na lista e na grade: numa pasta comum e numa raiz de área automática (deve bloquear ou orientar).
+3. Reproduzir de propósito o "upload inesperado": Ctrl+V com uma imagem na área de transferência sobre a lista; reabrir o seletor depois de um envio; arrastar um print. Se subir algo que você não escolheu, é bug CRÍTICO (passos exatos).
+4. Upload DENTRO de um registro de cada área automática: processo, pré-processo, cliente, fornecedor, financeiro, tarefa, prazo. Use um arquivo "QA-" diferente em cada um. Anote área, registro, arquivo e hora (o usuário confere no S3). Conferir também o bloqueio na raiz de cada área.
+5. Renomear arquivo e pasta: nome válido (manter "QA-"), repetido na mesma pasta, vazio, caracteres especiais.
+6. Mover: abrir a modal (árvore, expandir/recolher, destinos indisponíveis com motivo, scroll); mover um arquivo para QA-Pasta-Rodada2; mover a pasta; mover em lote (2 arquivos).
+7. Pastas: criar subpastas dentro de QA-Pasta-Rodada2 até o limite de níveis e tentar passar do limite; excluir e restaurar pasta com arquivos dentro.
+8. Baixar: 1 arquivo (ver loading no botão), vários (zip) e a pasta QA-Pasta-Rodada2; abrir o que baixou.
+9. Comprimir um arquivo QA e Unir PDFs (gere 2 PDFs QA se precisar): acompanhar status, baixar o resultado, confirmar que os originais continuam.
+10. Ações em lote: seleção só de arquivos, só de pastas e MISTA (arquivo + pasta) — testar todas as ações da barra. Na rodada 2, "Excluir" com seleção mista não fez nada: confirme e detalhe.
+11. Lixeira: restaurar QA-Petição inicial teste.pdf; mandar de novo para a lixeira; excluir definitivamente SÓ esse item; ver os logs da Lixeira (rodada 2 mostrou "0–0 de 0").
+12. Favoritos: favoritar/desfavoritar pela modal, pelo drawer e pelo menu ⋮; conferir a lista de Favoritos.
+13. Classificações — tipos: criar "QA-Tipo teste" numa subcategoria; criar de novo com o mesmo nome e com acento/maiúscula diferente (deve bloquear); renomear para "QA-Tipo teste 2"; classificar 1 arquivo QA nesse tipo; desativar o tipo (deve avisar e desvincular o arquivo); reativar; "Mostrar desativados"; "Só os do escritório"; abrir a central em CADA área automática (não pode dar erro); aba de logs (se existir).
+14. Classificar: 1 arquivo pela modal e 1 pelo drawer; criar tipo a partir do seletor.
+15. Fila "Classificar arquivos": seletor, ✓, paginação 8/16/24, linha sumindo e as de baixo subindo; o aviso "N sem classificação" muda depois de classificar? (na rodada 2 ficou parado em 72); aviso por pasta.
+16. Filtros: autor "Você" (na rodada 2 não trouxe nada), identificar qual filtro mostra "[object Object]", filtro por subcategoria, data (válida e inválida), combinações, limpar, filtro mantido ao trocar lista/grade.
+17. Prévia: imagem, PDF de várias páginas (rodada 2: em branco), DOCX e XLSX (o que acontece).
+18. "Carregar mais" até o fim em Processos, Pré-processos, Clientes, Fornecedores, Financeiro e Prazos; total x contador da sidebar.
+19. Logs gerais: percorrer TODAS as páginas e confirmar que cada ação desta rodada aparece.
+20. Responsivo (DevTools): celular e tablet. Liste o que quebra em cada tela (lista, grade, modal, drawer, classificações, mover).
+21. Limpeza final: excluir definitivamente SOMENTE os itens "QA-" criados nas rodadas 2 e 3 (arquivos, pastas, tipos podem ficar desativados). Listar o que ficou.
+
+RELATÓRIO FINAL (markdown completo, todas as seções)
+1. Resultado de cada item 1–21 (passou / falhou / não testado + motivo).
+2. Tabela de achados NOVOS desta rodada, ordenada do mais simples ao mais complexo:
+| # | Item | Severidade | Complexidade da correção (Baixa/Média/Alta) | Passos | Esperado | Obtido | Evidência | Causa provável | Solução sugerida |
+3. Discrepâncias de dados (contadores) com números antes/depois de cada ação.
+4. Visão do advogado.
+5. Uploads feitos (área, registro, arquivo, hora) para conferência no S3.
+6. O que ficou no sistema ao final.
