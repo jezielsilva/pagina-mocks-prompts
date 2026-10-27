@@ -25,7 +25,8 @@ $Tarefa   = 'Vigia Codex (portal)'
 # 'app'      = abre o APP do Codex, cria conversa nova, cola o prompt e envia (simula teclado)
 # 'terminal' = abre uma janela do PowerShell com o Codex CLI
 $Modo               = 'app'
-$NomeApp            = 'Codex'   # nome do app no menu Iniciar / título da janela
+$NomeApp            = 'ChatGPT' # nome do app no menu Iniciar / título da janela (o Codex fica dentro do app ChatGPT)
+$AtalhoAbrirCodex   = ''        # atalho para ir à área do Codex dentro do app, se existir (ex.: '^+c'); vazio = não usa
 $AtalhoNovaConversa = '^n'      # Ctrl+N = nova conversa no app (troque se o atalho for outro)
 $EsperaAbrirApp     = 6         # segundos esperando o app abrir
 
@@ -122,6 +123,7 @@ foreach ($item in $pendentes) {
         if (-not $focou) { Registrar "nao consegui focar a janela '$NomeApp' (prompt ficou copiado: cole com Ctrl+V)"; }
         else {
             Start-Sleep -Milliseconds 800
+            if ($AtalhoAbrirCodex) { $teclado.SendKeys($AtalhoAbrirCodex); Start-Sleep -Seconds 2 }
             $teclado.SendKeys($AtalhoNovaConversa)
             Start-Sleep -Seconds 2
             $teclado.SendKeys('^v')

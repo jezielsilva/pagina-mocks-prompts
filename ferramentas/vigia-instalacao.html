@@ -87,7 +87,7 @@ Unblock-File "$env:USERPROFILE\vigia-codex\vigia-codex.ps1"</code></pre>
 <p><b>2. Veja o que o vigia registrou:</b></p>
 <pre><code>Get-Content "$env:USERPROFILE\vigia-codex\vigia.log" -Tail 5</code></pre>
 <ul>
-<li><code>app 'Codex' nao encontrado</code>: o nome do app no menu Iniciar é outro. Rode o comando abaixo e mande o resultado ao Claude.</li>
+<li><code>app '…' nao encontrado</code>: o nome do app no menu Iniciar é outro (o padrão agora é <b>ChatGPT</b>, onde o Codex fica). Ajuste <code>$NomeApp</code> no começo do script. Rode o comando abaixo e mande o resultado ao Claude.</li>
 <li><code>nao consegui focar a janela</code>: o app abriu, mas o título da janela é outro. O prompt ficou copiado: cole no app com Ctrl+V.</li>
 <li><code>Codex iniciado</code> e nada aconteceu: os atalhos foram para outra janela, ou o Ctrl+N do app é outro.</li>
 <li><code>aguardando retorno de …</code>: apague os arquivos de estado (próximo bloco).</li>
