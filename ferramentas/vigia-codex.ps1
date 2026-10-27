@@ -21,6 +21,14 @@ $Estado   = Join-Path $Base 'executados.txt'
 $Log      = Join-Path $Base 'vigia.log'
 $Tarefa   = 'Vigia Codex (portal)'
 
+# ===== Modo de abertura =====
+# 'app'      = abre o APP do Codex, cria conversa nova, cola o prompt e envia (simula teclado)
+# 'terminal' = abre uma janela do PowerShell com o Codex CLI
+$Modo               = 'app'
+$NomeApp            = 'Codex'   # nome do app no menu Iniciar / título da janela
+$AtalhoNovaConversa = '^n'      # Ctrl+N = nova conversa no app (troque se o atalho for outro)
+$EsperaAbrirApp     = 6         # segundos esperando o app abrir
+
 # Cria as pastas de trabalho
 foreach ($p in @($Base, $Retornos, $Enviados)) { if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p | Out-Null } }
 if (-not (Test-Path $Estado)) { New-Item -ItemType File -Path $Estado | Out-Null }
@@ -90,9 +98,35 @@ foreach ($item in $pendentes) {
     $arquivoMensagem = Join-Path $Base 'mensagem.txt'
     Set-Content -Path $arquivoMensagem -Value $mensagem -Encoding UTF8
 
-    # Abre uma janela nova com o Codex interativo (você acompanha tudo; /app leva a sessão para o app desktop)
-    $comando = "Set-Location -LiteralPath '$Projetos'; codex -C '$Projetos' (Get-Content -Raw -Encoding UTF8 -LiteralPath '$arquivoMensagem')"
-    Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoExit', '-ExecutionPolicy', 'Bypass', '-Command', $comando)
+    if ($Modo -eq 'app') {
+        # 1) Prompt na área de transferência
+        Set-Clipboard -Value $mensagem
+
+        # 2) Abre (ou traz para frente) o app do Codex pelo menu Iniciar
+        $app = Get-StartApps | Where-Object { $_.Name -eq $NomeApp } | Select-Object -First 1
+        if ($null -eq $app) { $app = Get-StartApps | Where-Object { $_.Name -like "*$NomeApp*" } | Select-Object -First 1 }
+        if ($null -eq $app) { Registrar "app '$NomeApp' nao encontrado no menu Iniciar"; return }
+        Start-Process "shell:AppsFolder\$($app.AppID)"
+        Start-Sleep -Seconds $EsperaAbrirApp
+
+        # 3) Foca a janela, abre conversa nova, cola e envia
+        $teclado = New-Object -ComObject WScript.Shell
+        $focou = $teclado.AppActivate($NomeApp)
+        if (-not $focou) { Registrar "nao consegui focar a janela '$NomeApp' (prompt ficou copiado: cole com Ctrl+V)"; }
+        else {
+            Start-Sleep -Milliseconds 800
+            $teclado.SendKeys($AtalhoNovaConversa)
+            Start-Sleep -Seconds 2
+            $teclado.SendKeys('^v')
+            Start-Sleep -Milliseconds 800
+            $teclado.SendKeys('{ENTER}')
+        }
+    }
+    else {
+        # Janela do PowerShell com o Codex CLI (você acompanha tudo; /app leva a sessão para o app desktop)
+        $comando = "Set-Location -LiteralPath '$Projetos'; codex -C '$Projetos' (Get-Content -Raw -Encoding UTF8 -LiteralPath '$arquivoMensagem')"
+        Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoExit', '-ExecutionPolicy', 'Bypass', '-Command', $comando)
+    }
 
     Add-Content -Path $Estado -Value $chave
     Set-Content -Path $emAndamento -Value $item.id
