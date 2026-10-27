@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T13:09",
+  "atualizado": "2026-10-27T13:41",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,12 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-docs-layout-final",
+      "id": "prompt-docs-qa",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Ajustes finais de layout de Documentos (14 itens + decisões confirmadas)",
-      "data": "2026-10-27T13:09",
-      "arquivo": "prompts/documentos-ajustes-finais-layout.txt"
+      "titulo": "Prompt — QA completo de Documentos (conta pai, pela interface)",
+      "data": "2026-10-27T13:41",
+      "arquivo": "prompts/documentos-qa-completo.txt"
     }
   ]
 }

@@ -1,0 +1,60 @@
+[Área: QA funcional pela interface (Front + Back) | Skills: QA + visão de advogado (da pasta de skills)]
+
+QA COMPLETO — MÓDULO DOCUMENTOS (CONTA PAI)
+
+SKILLS
+- Na pasta de skills que você já conhece, procure e carregue:
+  1) a skill de QA (há uma chamada literalmente "QA") e qualquer outra que ajude em teste exploratório/funcional e relatório de bugs;
+  2) uma skill com a visão de ADVOGADO/usuário final (escritório jurídico).
+- Teste com os dois olhares: o técnico (funciona? dados batem?) e o do advogado ("isso faz sentido no meu dia a dia? é fácil de entender? o texto está claro?").
+- Diga no relatório quais skills usou.
+
+REGRAS
+- Somente a conta PAI (titular). O usuário vai logar na hora; use essa sessão.
+- TUDO pela INTERFACE, como um usuário. PROIBIDO mexer no banco (sem consultas de escrita, sem scripts, sem apagar/criar nada direto no Mongo). Leitura de código/logs para entender a causa de um erro é permitida.
+- NÃO alterar código neste QA. Só testar e reportar (correções vêm depois, em outro prompt).
+- Tudo o que você criar (pastas, arquivos, tipos de classificação, renomeações) deve ter o prefixo "QA-" no nome, para eu identificar. Ao final, liste tudo o que foi criado/alterado/excluído.
+- Pode mover, cadastrar, subir, renomear, classificar, excluir, restaurar etc. à vontade.
+- Fora do escopo: upgrade/contratação de armazenamento e testes com usuário adicional (serão feitos depois).
+
+O QUE TESTAR (TODAS as funcionalidades, sem exceção; use esta lista como mínimo e acrescente o que encontrar)
+A. Navegação e leitura
+- Abrir a central; sidebar (Favoritos, Lixeira, Classificações, armazenamento por categoria/por tipo, "Todos os documentos" abrindo e fechando com scroll interno, card de upgrade só visual).
+- Todas as áreas: Minhas pastas, Processos, Pré-processos, Clientes, Fornecedores, Financeiro, Tarefas, Prazos.
+- Nome das pastas nas áreas (processo no formato CNJ, pré-processo número ou nome, cliente/fornecedor nome, tarefa título, prazo providência, financeiro descrição · data · valor).
+- Contador de arquivos por pasta e ordenação (mais arquivos primeiro); "Carregar mais".
+- Lista e grade; breadcrumb; navegação por pastas e subpastas; limite de níveis.
+- Filtros: tipo, autor, classificação (só subcategorias, autocomplete), data; combinações e "limpar".
+- Visualização rápida (modal) e drawer: prévia de imagem e de PDF com várias páginas, detalhes, classificação, logs paginados, favoritar, todos os botões.
+- Logs gerais do módulo (paginação, abrir item a partir do log).
+B. Arquivos
+- Enviar: botão do header, botão "Novo arquivo" (abre seletor direto ou menu com Enviar/Nova pasta, conforme o contexto), arrastar e soltar; vários arquivos de uma vez; tipos diferentes (pdf, docx, xlsx, png/jpg, txt, zip); arquivo grande; arquivo acima do limite; nome com acento/espaço.
+- Upload DENTRO de um registro de área automática (processo, cliente, tarefa, financeiro, fornecedor, pré-processo, prazo) e bloqueio na raiz da área. Para CADA upload, anote: área, registro, nome do arquivo e data/hora. Eu vou conferir no S3 se subiu no lugar certo.
+- Renomear, mover (modal Mover: árvore, destinos indisponíveis, scroll), baixar (1 arquivo, vários/zip, loading no botão), comprimir, unir PDFs (status/resultado), favoritar/desfavoritar.
+- Excluir → Lixeira; restaurar; excluir definitivamente; esvaziar lixeira.
+- Seleção em lote e todas as ações em lote.
+- Menu ⋮ de cada item: todas as opções.
+C. Pastas
+- Criar pasta/subpasta (até o limite), renomear, mover, excluir/restaurar; bloqueio de criação nas áreas automáticas; "Nova pasta" desabilitada com tooltip quando não pode.
+D. Classificações
+- Central: abrir em TODAS as áreas (inclusive automáticas), categorias, subcategorias (acordeão), busca, "Só os do escritório", "Mostrar desativados", resumo, aba de logs (se existir).
+- Tipo: criar (inclusive nome repetido e repetido com acento/maiúscula diferente), renomear, desativar (com e sem arquivos vinculados — confirmar desvínculo), reativar.
+- Classificar 1 arquivo (modal/drawer), fila "Classificar arquivos" (seletor, ✓, paginação 8/16/24, linhas subindo ao salvar), criar tipo pelo seletor, aviso "N arquivos sem classificação" (geral e por pasta), filtro por subcategoria na listagem.
+E. Interface
+- Snackbars (padrão do sistema, canto superior direito), mensagens de erro e vazias, textos/ortografia, alinhamentos, ícones (sem texto no lugar de ícone), miniaturas por tipo.
+- Responsivo: desktop, tablet e celular (DevTools). Modo escuro.
+F. Dados (discrepâncias)
+- Contadores da sidebar x quantidade real na listagem de cada área.
+- "Todos os documentos" x soma das áreas; gráfico de armazenamento x tamanhos.
+- Total "sem classificação" x arquivos reais sem classificação (ex.: o caso conhecido 72 x 102 arquivos). Diga qual número está certo e por quê.
+- Contagens que não atualizam depois de uma ação (upload, exclusão, classificação, mover).
+
+RELATÓRIO (markdown, pronto para colar numa issue)
+1. Resumo: skills usadas, ambiente, o que passou / falhou por bloco (A–F).
+2. Tabela de achados, um por linha:
+| # | Bloco | Funcionalidade | Severidade (Crítico/Alto/Médio/Baixo) | Passos para reproduzir | Esperado | Obtido | Evidência (print/descrição/mensagem de erro/console/rede) | Causa provável | Solução sugerida |
+3. Discrepâncias de dados (bloco F) com os números encontrados.
+4. Visão do advogado: o que confunde, textos ruins, fluxos difíceis, sugestões.
+5. Lista dos uploads feitos (para conferência no S3).
+6. Tudo o que foi criado/alterado/excluído com prefixo "QA-".
+7. Funcionalidades que NÃO conseguiu testar e por quê.
