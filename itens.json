@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T13:02",
+  "atualizado": "2026-10-27T13:09",
   "itens": [
     {
       "id": "documentos-mock",
@@ -42,8 +42,8 @@
       "id": "prompt-docs-layout-final",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Ajustes finais de layout de Documentos (14 itens, com validação visual)",
-      "data": "2026-10-27T13:02",
+      "titulo": "Prompt — Ajustes finais de layout de Documentos (14 itens + decisões confirmadas)",
+      "data": "2026-10-27T13:09",
       "arquivo": "prompts/documentos-ajustes-finais-layout.txt"
     }
   ]

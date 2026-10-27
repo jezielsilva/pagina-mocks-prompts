@@ -4,6 +4,11 @@ DOCUMENTOS — AJUSTES FINAIS DE LAYOUT (14 itens)
 Mock de referência: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
 Seguir o UI-Kit e os tokens. Front "burro": contagens e ordenação vêm do back.
 
+DECISÕES CONFIRMADAS (respostas ao alinhamento — pode implementar os 14 itens direto, sem nova confirmação)
+- Q1 — Etiquetas: SIM, remover a etiquetagem de documentos do explorador, no front e no back (menu, telas, serviços, endpoints, modelos e regras ligadas às etiquetas de documentos). Preservar as tags de outros módulos (ex.: processos) se forem independentes.
+- BANCO: NÃO mexer no banco. Não apagar collections, campos, índices nem dados históricos, e não criar script de banco. Só retirar do código; a limpeza do banco é do usuário. Na entrega, listar as collections/campos de etiquetas que ficaram sem uso.
+- Q2 — Ordenação das pastas das áreas automáticas: quantidade de arquivos, decrescente, desempate pelo nome. NÃO usar tamanho em bytes. (Ajusta o item 5: onde diz "quantidade/tamanho", vale só QUANTIDADE.)
+
 VALIDAÇÃO VISUAL OBRIGATÓRIA (pedido explícito do usuário para estes itens)
 Ao terminar, abra a tela no navegador (ng serve já rodando ou suba local) e CONFIRME visualmente, com print ou descrição do que viu, os itens marcados com [VALIDAR]. Se algum não abrir como descrito, corrija antes de entregar. Isso NÃO é teste automatizado: não criar testes, lint ou scripts.
 
@@ -25,7 +30,7 @@ Ao terminar, abra a tela no navegador (ng serve já rodando ou suba local) e CON
 - Busca ocupando ~metade da largura da modal (à esquerda). Os botões "Só os do escritório", "Mostrar desativados" e "Novo tipo" agrupados À DIREITA (justify-content: space-between). No celular, empilha.
 
 5. ÁREAS AUTOMÁTICAS (Tarefas, Processos, Pré-processos, Clientes, Fornecedores, Financeiro, Prazos) — contador e ordenação
-- BACK: a listagem das pastas dessas áreas passa a devolver, para cada pasta, a QUANTIDADE de arquivos (contando os das subpastas, respeitando permissão/escopo do usuário) e vir ORDENADA por quantidade/tamanho de arquivos, da maior para a menor (pastas com arquivo primeiro; desempate pelo nome). A paginação ("Carregar mais") segue essa ordem.
+- BACK: a listagem das pastas dessas áreas passa a devolver, para cada pasta, a QUANTIDADE de arquivos (contando os das subpastas, respeitando permissão/escopo do usuário) e vir ORDENADA por QUANTIDADE de arquivos, da maior para a menor (pastas com arquivo primeiro; desempate pelo nome). A paginação ("Carregar mais") segue essa ordem.
 - LISTA: logo depois do NOME da pasta, um contador em pill pequeno (fundo roxo bem claro / token primary-lightest, texto primário, 11–12px), ex.: "12". Pasta sem arquivo: sem pill (ou "0" em cinza claro — escolha o mais limpo e explique).
 - GRADE: mesmo contador, como já existe em Meus documentos ("N arquivos").
 
