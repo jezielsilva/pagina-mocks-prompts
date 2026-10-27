@@ -81,9 +81,10 @@ foreach ($item in $pendentes) {
     $arquivoRetorno = Join-Path $Retornos "$($item.id).md"
 
     # Mensagem curta para o Codex: ele lê o prompt inteiro do arquivo (evita limite de tamanho da linha de comando)
-    $mensagem = "Leia e execute integralmente as instruções do arquivo '$arquivoPrompt'. " +
+    # Texto sem acentos de propósito: o PowerShell 5 corrompe acentos ao passar argumentos para o codex
+    $mensagem = "Leia e execute integralmente as instrucoes do arquivo '$arquivoPrompt'. " +
                 "Os projetos ficam em '$Projetos', nas pastas web-proadv e api-proadv. " +
-                "Ao terminar, inclusive se parar por erro ou precisar de aprovação minha, salve a ENTREGA completa em markdown no arquivo '$arquivoRetorno'."
+                "Ao terminar, inclusive se parar por erro ou precisar de aprovacao minha, salve a ENTREGA completa em markdown no arquivo '$arquivoRetorno'."
 
     # A mensagem vai num arquivo: assim aspas e parênteses do texto não quebram o comando
     $arquivoMensagem = Join-Path $Base 'mensagem.txt'
