@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-26T17:32",
+  "atualizado": "2026-10-27T09:29",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,12 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-docs-areas",
+      "id": "prompt-docs-levantamento",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Nomes das pastas nas áreas (CNJ, nomes, financeiro) + upload nas áreas + botão Novo arquivo",
-      "data": "2026-10-26T17:32",
-      "arquivo": "prompts/documentos-areas-nomes-upload.txt"
+      "titulo": "Prompt — Levantamento de funcionalidades de Documentos (base do permissionamento)",
+      "data": "2026-10-27T09:29",
+      "arquivo": "prompts/documentos-levantamento-funcionalidades.txt"
     }
   ]
 }
