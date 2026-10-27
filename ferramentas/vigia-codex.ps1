@@ -29,6 +29,7 @@ $NomeApp            = 'ChatGPT' # nome do app no menu Iniciar / título da janel
 $AtalhoAbrirCodex   = ''        # atalho para ir à área do Codex dentro do app, se existir (ex.: '^+c'); vazio = não usa
 $AtalhoNovaConversa = '^n'      # Ctrl+N = nova conversa no app (troque se o atalho for outro)
 $EsperaAbrirApp     = 6         # segundos esperando o app abrir
+$EsperaNovaConversa = 4         # segundos esperando a conversa nova carregar antes de colar
 
 # Cria as pastas de trabalho
 foreach ($p in @($Base, $Retornos, $Enviados)) { if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p | Out-Null } }
@@ -111,24 +112,24 @@ foreach ($item in $pendentes) {
         Start-Process "shell:AppsFolder\$($app.AppID)"
         Start-Sleep -Seconds $EsperaAbrirApp
 
-        # 3) Foca a janela, abre conversa nova, cola e envia
+        # 3) Foca a janela DO APP (pelo processo, para não pegar uma aba "ChatGPT" do navegador)
         $teclado = New-Object -ComObject WScript.Shell
-        $focou = $teclado.AppActivate($NomeApp)
-        if (-not $focou) {
-            # Tenta pelo processo: pega a primeira janela visível cujo processo tenha "codex" no nome
-            $proc = Get-Process | Where-Object { $_.MainWindowTitle -and ($_.ProcessName -like '*codex*' -or $_.MainWindowTitle -like '*Codex*') } | Select-Object -First 1
-            if ($proc) { Registrar "janela achada pelo processo: $($proc.ProcessName) / '$($proc.MainWindowTitle)'"; $focou = $teclado.AppActivate($proc.Id) }
-        }
-        Registrar "foco na janela: $focou"
-        if (-not $focou) { Registrar "nao consegui focar a janela '$NomeApp' (prompt ficou copiado: cole com Ctrl+V)"; }
+        $proc = Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.ProcessName -like "*$NomeApp*" } | Select-Object -First 1
+        if ($proc) { $focou = $teclado.AppActivate($proc.Id) } else { $focou = $teclado.AppActivate($NomeApp) }
+        Registrar "foco: $focou / processo: $($proc.ProcessName) / janela: '$($proc.MainWindowTitle)'"
+        if (-not $focou) { Registrar "nao consegui focar o app (o prompt ficou copiado: cole com Ctrl+V)" }
         else {
-            Start-Sleep -Milliseconds 800
+            Start-Sleep -Milliseconds 1000
             if ($AtalhoAbrirCodex) { $teclado.SendKeys($AtalhoAbrirCodex); Start-Sleep -Seconds 2 }
             $teclado.SendKeys($AtalhoNovaConversa)
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EsperaNovaConversa
+            # Garante o foco de novo (a conversa nova pode trocar a janela ativa) e cola
+            if ($proc) { [void]$teclado.AppActivate($proc.Id) } else { [void]$teclado.AppActivate($NomeApp) }
+            Start-Sleep -Milliseconds 600
             $teclado.SendKeys('^v')
-            Start-Sleep -Milliseconds 800
+            Start-Sleep -Milliseconds 1200
             $teclado.SendKeys('{ENTER}')
+            Registrar "atalhos enviados: nova conversa, colar, enter"
         }
     }
     else {
