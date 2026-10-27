@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T11:15",
+  "atualizado": "2026-10-27T11:42",
   "itens": [
     {
       "id": "documentos-mock",
@@ -47,6 +47,15 @@
       "titulo": "Vigia do Codex (PowerShell) — abre o Codex com o prompt novo e devolve o retorno como Issue",
       "data": "2026-10-27T11:13",
       "arquivo": "ferramentas/vigia-codex.ps1"
+    },
+    {
+      "id": "prompt-docs-controller-prazo",
+      "tipo": "prompt",
+      "executar": true,
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Mover endpoints de documentos de prazo para a controller da Cloud",
+      "data": "2026-10-27T11:42",
+      "arquivo": "prompts/documentos-unificar-controller-prazo.txt"
     }
   ]
 }
