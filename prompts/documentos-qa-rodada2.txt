@@ -1,0 +1,50 @@
+[Área: QA funcional pela interface (Front + Back) | Skills: QA + visão de advogado (da pasta de skills)]
+
+QA — RODADA 2: SÓ O QUE NÃO FOI TESTADO NA RODADA 1 (CONTA PAI)
+
+Contexto: a rodada 1 cobriu navegação/leitura e parte das ações. Esta rodada testa EXATAMENTE os itens que ficaram de fora (seção 7 do relatório anterior). Não repita o que já foi testado.
+
+SKILLS: carregue de novo a skill de QA e a de visão de advogado (pasta de skills que você já conhece). Diga quais usou.
+
+REGRAS (iguais à rodada 1)
+- Somente a conta PAI, na sessão que o usuário logar.
+- TUDO pela INTERFACE. PROIBIDO mexer no banco. Leitura de código/logs só para explicar a causa de um erro.
+- NÃO alterar código. Só testar e reportar.
+- Tudo o que criar leva o prefixo "QA-". Desta vez EXECUTE as ações de escrita (criar, enviar, mover, renomear, excluir): elas são o objetivo da rodada. Não pare para pedir autorização a cada ação; o usuário já autorizou tudo pela interface.
+- Arquivos de teste: crie localmente os arquivos "QA-" (pdf de várias páginas, docx, xlsx, png, jpg, txt, zip, um com acento e espaço no nome, um grande e um acima do limite) e use-os nos uploads. Se não conseguir criar algum formato, diga qual.
+- Upload: só selecione os arquivos "QA-". Se aparecer upload de outro arquivo que você NÃO escolheu, registre como bug Crítico, com os passos exatos (isso aconteceu na rodada 1).
+- Fora do escopo: upgrade de armazenamento e usuário adicional.
+
+O QUE TESTAR (todos, nesta ordem)
+1. Upload controlado: cada formato acima pelo botão "Enviar arquivos" e pelo "Novo arquivo"; vários de uma vez; arquivo grande; arquivo acima do limite (mensagem); nome com acento e espaço.
+2. Arrastar e soltar: arquivos do computador na lista e na grade, numa pasta e numa raiz de área automática (deve bloquear ou orientar).
+3. Upload dentro de registro de área automática (um processo, um cliente, uma tarefa, um prazo, um fornecedor, uma movimentação financeira, um pré-processo). Anote área, registro, arquivo e hora de cada um (vou conferir no S3).
+4. Pastas: criar pasta e subpastas até o limite de níveis (e tentar passar do limite), renomear, mover, excluir e restaurar pasta (com e sem arquivos dentro).
+5. Mover: modal Mover (árvore, expandir/recolher, destinos indisponíveis com motivo, scroll), mover arquivo e pasta, mover em lote.
+6. Renomear arquivo (nome repetido na mesma pasta, nome vazio, caracteres especiais).
+7. Download: 1 arquivo (loading no botão), vários/zip, pasta inteira; abrir o arquivo baixado.
+8. Comprimir e Unir PDFs: criar, acompanhar status, baixar resultado, conferir que o original continua.
+9. Ações em lote: selecionar vários (lista e grade), testar todas as ações da barra de lote, limpar seleção.
+10. Lixeira: excluir arquivo e pasta, restaurar, excluir definitivamente, esvaziar lixeira (só com itens "QA-").
+11. Classificações:
+    - criar tipo (incluindo nome repetido e repetido só com acento/maiúscula diferente), renomear, desativar SEM arquivos, desativar COM arquivos (confirmar o desvínculo), reativar, "Mostrar desativados", "Só os do escritório";
+    - classificar 1 arquivo pela modal e pelo drawer;
+    - fila "Classificar arquivos": seletor, ✓, paginação 8/16/24, linha sumindo e as de baixo subindo, contador e aviso atualizando;
+    - criar tipo a partir do seletor;
+    - aba de logs da central (se existir).
+12. Filtros combinados: tipo + autor + classificação + data; datas inválidas; limpar filtros; filtro mantido ao trocar lista/grade e ao navegar.
+13. "Todos os documentos" na sidebar: abrir/fechar, scroll interno, não empurrar o card de upgrade.
+14. Armazenamento "Por tipo": valores x arquivos reais.
+15. Logs: ler todas as páginas dos logs gerais e conferir que cada ação desta rodada aparece (quem, o quê, quando).
+16. "Carregar mais" até o fim em cada área automática (contagem final x contador da sidebar).
+17. Depois de cada ação de escrita, conferir se os contadores (sidebar, área, "sem classificação", armazenamento) atualizam sem recarregar a página.
+
+RELATÓRIO (markdown completo, pronto para colar numa issue; inclua TODAS as seções)
+1. Resumo por item (1–17): passou / falhou / não testado.
+2. Tabela de achados:
+| # | Item | Severidade (Crítico/Alto/Médio/Baixo) | Passos | Esperado | Obtido | Evidência | Causa provável | Solução sugerida |
+3. Discrepâncias de dados com números.
+4. Visão do advogado.
+5. Lista dos uploads (área, registro, arquivo, hora) para conferência no S3.
+6. Tudo o que foi criado/alterado/excluído com "QA-" e o que ficou no sistema no final.
+7. O que não conseguiu testar e por quê.

@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-27T13:41",
+  "atualizado": "2026-10-27T15:55",
   "itens": [
     {
       "id": "documentos-mock",
@@ -39,12 +39,12 @@
       "arquivo": "assets/miniaturas-svg.zip"
     },
     {
-      "id": "prompt-docs-qa",
+      "id": "prompt-docs-qa-2",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — QA completo de Documentos (conta pai, pela interface)",
-      "data": "2026-10-27T13:41",
-      "arquivo": "prompts/documentos-qa-completo.txt"
+      "titulo": "Prompt — QA rodada 2 (só o que não foi testado)",
+      "data": "2026-10-27T15:55",
+      "arquivo": "prompts/documentos-qa-rodada2.txt"
     }
   ]
 }
