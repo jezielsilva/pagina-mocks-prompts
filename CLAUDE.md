@@ -19,3 +19,7 @@
 - Respostas do usuário chegam como Issues; ao resolver, avisar no chat (imagens das Issues não são acessíveis deste ambiente).
 - Commits terminam com as linhas de atribuição da sessão.
 - Vigia do Codex (ferramentas/vigia-codex.ps1, na máquina do usuário): prompts de implementação publicados com `"executar": true` no itens.json são abertos automaticamente numa janela do Codex. O retorno volta como Issue "Retorno Codex: <id>". Republicar o mesmo prompt com data nova faz rodar de novo. Prompts que NÃO devem rodar sozinhos: sem o campo.
+- SIGILO (o repositório é PÚBLICO): nada sensível pode ficar publicado. Antes de cada push, e ao processar cada Issue:
+  - NÃO publicar: caminhos da máquina do usuário (C:\Users\...), nomes de usuário/e-mails, nomes de classes/arquivos/linhas/endpoints/rotas internas do sistema da empresa, estrutura/IDs do banco, connection strings, tokens, dados de clientes. Em prompts, descrever por função ("o serviço de permissões de Documentos") e mandar o Codex localizar no código; usar $env:USERPROFILE em scripts.
+  - Issues que chegarem com esse tipo de conteúdo: depois de lidas, esvaziar o corpo ("(conteúdo removido — já processado no chat)") e fechar; avisar o usuário que ele pode apagar a Issue pelo site para sumir o histórico de edição.
+  - No chat entre o Claude e o usuário pode tudo; a regra vale só para o que fica no GitHub.
