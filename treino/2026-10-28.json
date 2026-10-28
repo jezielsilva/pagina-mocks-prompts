@@ -1,0 +1,59 @@
+{
+ "data": "2026-10-28",
+ "dataExibicao": "quarta, 28/10",
+ "intro": "Hoje: ler switch expression, busca com switchMap, await esquecido, o 3º round do unsubscribe e transformar ternário aninhado em guard clauses. Leia com calma e sempre diga o RESULTADO concreto.",
+ "minutos": 15,
+ "feedbackAnterior": "<p><b>Lembretes do treino de 27/10</b> (já corrigido) — fixe estes 4 antes de começar:</p>\n<ul>\n<li><b>Subject vivo × componente morto:</b> sair da tela destrói o componente, mas a inscrição num Subject/hub do serviço continua viva. Solução: <code>.pipe(takeUntilDestroyed(this.destroyRef))</code>. Hoje tem pergunta sobre isso de novo (q4).</li>\n<li><b>Guard clause</b> = <code>if</code> de erro no topo + <code>return</code>. Você já faz isso — agora é só reconhecer o nome e reescrever código aninhado assim (q5).</li>\n<li><b>$set × ReplaceOne:</b> você acertou a escolha do <code>$set</code> ontem. 👏 Continue: ReplaceOne troca o documento inteiro.</li>\n<li><b><code>where T :</code></b> é restrição do genérico, não LINQ. E <code>??</code> não troca texto vazio, só <code>null</code>.</li>\n</ul>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "switch expression + LINQ (C#)",
+   "tipo": "Leitura",
+   "enunciado": "Hoje = 28/10. A lista tem: Contrato (ativo, vence 30/10), Procuração (ativo, vence 27/10), Petição (INATIVO, vence 28/10) e Laudo (ativo, vence 15/11). Qual lista de textos o método retorna, NA ORDEM? E o que significa a linha '< 0 =>'?",
+   "codigo": "// Monta o rótulo de prazo de cada documento ativo do cliente\npublic List<string> ObterRotulosPrazo(List<Documento> documentos, DateTime hoje)\n{\n    return documentos\n        .Where(d => d.Ativo)\n        .OrderBy(d => d.DataVencimento)\n        .Select(d => (d.DataVencimento - hoje).Days switch\n        {\n            < 0 => $\"{d.Nome}: vencido\",\n            0 => $\"{d.Nome}: vence hoje\",\n            <= 7 => $\"{d.Nome}: vence em {(d.DataVencimento - hoje).Days} dias\",\n            _ => $\"{d.Nome}: no prazo\"\n        })\n        .ToList();\n}",
+   "gabarito": "[\"Procuração: vencido\", \"Contrato: vence em 2 dias\", \"Laudo: no prazo\"]. A Petição sai no Where (inativa). OrderBy ordena por vencimento (27/10, 30/10, 15/11). '< 0 =>' significa: se a diferença de dias for menor que zero (já venceu), devolve 'vencido'.",
+   "explicacao": "A switch expression é lida de cima para baixo e para no PRIMEIRO caso que bate, como um switch clássico com return em cada case. Procuração: -1 dia → '< 0'. Contrato: 2 dias → não é <0 nem 0, mas é <=7 → 'vence em 2 dias'. Laudo: 18 dias → cai no '_' (default). Versão simples: var dias = (d.DataVencimento - hoje).Days; if (dias < 0) return ...; if (dias == 0) return ...; if (dias <= 7) return ...; return '... no prazo'. Debug: ponha a conta dos dias numa variável 'dias' para ver no breakpoint. Cuidado real: se DataVencimento tiver hora (ex.: 30/10 08:00 e hoje 28/10 10:00), .Days dá 1, não 2 — use .Date nos dois lados."
+  },
+  {
+   "id": "q2",
+   "tema": "RxJS switchMap / debounceTime",
+   "tipo": "Escolha",
+   "enunciado": "Campo de busca de clientes na tela. O usuário digita 'An' e depois 'Ana'. A resposta de 'An' demora mais e chega DEPOIS da de 'Ana'. Qual versão você usaria e por quê? O que aparece na lista em cada uma?",
+   "codigo": "// A\nthis.buscaControl.valueChanges.subscribe(texto => {\n  this.clienteService.buscar(texto).subscribe(lista => this.clientes = lista);\n});\n\n// B\nthis.buscaControl.valueChanges.pipe(\n  debounceTime(300),\n  distinctUntilChanged(),\n  switchMap(texto => this.clienteService.buscar(texto)),\n  takeUntilDestroyed(this.destroyRef)\n).subscribe(lista => this.clientes = lista);\n\n// C\nthis.buscaControl.valueChanges.pipe(\n  debounceTime(300),\n  mergeMap(texto => this.clienteService.buscar(texto))\n).subscribe(lista => this.clientes = lista);",
+   "opcoes": [
+    "A — subscribe dentro de subscribe",
+    "B — debounceTime + distinctUntilChanged + switchMap + takeUntilDestroyed",
+    "C — debounceTime + mergeMap"
+   ],
+   "gabarito": "B. switchMap cancela a busca anterior quando chega um texto novo, então a resposta atrasada de 'An' é descartada e a lista mostra o resultado de 'Ana'. Em A e C as duas buscas seguem vivas e a última a CHEGAR ganha: a lista termina com o resultado de 'An' (errado).",
+   "explicacao": "debounceTime(300): só busca depois de 300 ms sem digitar (não dispara 1 requisição por tecla). distinctUntilChanged: não repete a busca se o texto não mudou. switchMap: 'troca' para a busca nova e cancela a antiga (no Network do DevTools ela aparece como (canceled)). mergeMap deixa todas rodando em paralelo. A ainda tem subscribe aninhado e nenhum unsubscribe. Debug: tap(texto => console.log('buscando', texto)) antes do switchMap. No elawadv: qualquer busca/autocomplete de clientes ou documentos é caso de switchMap."
+  },
+  {
+   "id": "q3",
+   "tema": "async/await (C#)",
+   "tipo": "Ache o bug",
+   "enunciado": "Inserir() e Registrar() retornam Task. O usuário clica em salvar, recebe 'sucesso', mas às vezes as classificações não aparecem e nenhum erro é logado. Qual é o bug e como corrigir?",
+   "codigo": "// Salva as classificações do documento e registra o log da alteração\npublic async Task<Retorno> SalvarClassificacoes(string documentoId, List<string> classificacoes)\n{\n    var documento = await _documentoRepository.ObterPorId(documentoId);\n    if (documento == null)\n        return Retorno.Erro(\"Documento não encontrado\");\n\n    foreach (var classificacao in classificacoes)\n    {\n        _classificacaoRepository.Inserir(documentoId, classificacao);\n    }\n\n    _logRepository.Registrar(documentoId, \"Classificações alteradas\");\n\n    return Retorno.Ok();\n}",
+   "gabarito": "Faltou await em Inserir() e Registrar(). Sem await o método só DISPARA as tarefas e já retorna Retorno.Ok() sem esperar o Mongo gravar. Se uma inserção falhar, a exceção fica 'perdida' na Task que ninguém observa (não chega ao catch/log) e o usuário vê sucesso. Correção: await _classificacaoRepository.Inserir(...); dentro do foreach e await _logRepository.Registrar(...).",
+   "explicacao": "Regra: método que retorna Task → sempre await (o compilador avisa com o warning CS4014 'Because this call is not awaited...' — não ignore esse aviso amarelo). Alternativa mais rápida, se a ordem não importar: var tarefas = classificacoes.Select(c => _classificacaoRepository.Inserir(documentoId, c)).ToList(); await Task.WhenAll(tarefas); (roda em paralelo e espera todas). Melhor ainda no Mongo: InsertMany numa chamada só. Debug: breakpoint no return Retorno.Ok() — sem await você chega nele antes do documento existir no banco."
+  },
+  {
+   "id": "q4",
+   "tema": "Unsubscribe / takeUntilDestroyed",
+   "tipo": "Conceito",
+   "enunciado": "Estas 4 inscrições estão no ngOnInit de uma tela. Quais PRECISAM de takeUntilDestroyed para não vazar memória quando o usuário sai da tela? Diga os números e escreva a regra em 1 frase com suas palavras.",
+   "codigo": "// 1) HTTP: busca o cliente uma vez\nthis.clienteService.obter(id).subscribe(c => this.cliente = c);\n\n// 2) Subject do serviço do chat (recebe mensagens do hub enquanto o app estiver aberto)\nthis.chatService.mensagemRecebida$.subscribe(m => this.mensagens.push(m));\n\n// 3) Atualiza a lista a cada 30 segundos\ninterval(30000).subscribe(() => this.carregarDocumentos());\n\n// 4) BehaviorSubject do serviço de login (usuário logado)\nthis.authService.usuarioLogado$.subscribe(u => this.usuario = u);",
+   "gabarito": "2, 3 e 4. A 1 (HTTP) completa sozinha depois da resposta, então não acumula (pôr takeUntilDestroyed nela também é boa prática: cancela se sair antes da resposta). Regra: se o Observable vive mais que a tela (está num serviço ou é um timer) e não termina sozinho, precisa de takeUntilDestroyed.",
+   "explicacao": "Pense em quem 'segura' a inscrição: o serviço é singleton e vive o app inteiro; o interval nunca para; o BehaviorSubject nunca completa. O componente morre, mas o callback dele continua sendo chamado (push em lista de uma tela que não existe mais, carregarDocumentos a cada 30 s em segundo plano). Correção: private destroyRef = inject(DestroyRef); e .pipe(takeUntilDestroyed(this.destroyRef)) antes do .subscribe. Debug: console.log no callback e entre/saia da tela 3 vezes — se o número de logs cresce, vazou. É o 3º dia neste tema: se acertar hoje, ele sai do nível 0."
+  },
+  {
+   "id": "q5",
+   "tema": "Nulos ?. ?? + guard clauses (C#)",
+   "tipo": "Traduza",
+   "enunciado": "Reescreva no SEU estilo: guard clauses (if de erro no topo + return), nulos com if explícito e sem ternário aninhado. Depois diga: o que retorna para um cliente ATIVO com Responsavel = null?",
+   "codigo": "// Monta o texto do responsável para o cabeçalho do cliente\npublic string ObterTextoResponsavel(Cliente? cliente)\n{\n    var nome = cliente?.Responsavel?.Nome ?? \"\";\n\n    return cliente == null ? \"Cliente não encontrado\"\n        : !cliente.Ativo ? \"Cliente inativo\"\n        : nome != \"\" ? $\"Responsável: {nome}\"\n        : \"Sem responsável\";\n}",
+   "gabarito": "Retorna \"Sem responsável\" (cliente?.Responsavel é null → ?. para tudo e dá null → ?? troca por \"\"). Reescrita:\nif (cliente == null)\n    return \"Cliente não encontrado\";\n\nif (!cliente.Ativo)\n    return \"Cliente inativo\";\n\nvar nome = \"\";\nif (cliente.Responsavel != null && cliente.Responsavel.Nome != null)\n    nome = cliente.Responsavel.Nome;\n\nif (nome == \"\")\n    return \"Sem responsável\";\n\nreturn $\"Responsável: {nome}\";",
+   "explicacao": "O ternário aninhado é um if/else if lido de cima para baixo: cada '? x' é 'então retorna x' e cada ':' é 'senão'. Cada linha vira uma guard clause. ?. = 'se for null, para e dá null'; ?? = 'se deu null, usa este valor'. Detalhe: com as guard clauses no topo, depois do 'if (cliente == null) return' você já sabe que cliente não é null, então nem precisa de ?. para ele. Bônus: Nome com só espaços ('  ') passa como responsável nas duas versões — string.IsNullOrWhiteSpace(nome) resolve."
+  }
+ ]
+}

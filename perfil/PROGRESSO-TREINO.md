@@ -28,6 +28,7 @@
 ## Histórico de treinos
 | Data | Acertos | Temas | Observações |
 |---|---|---|---|
+| 2026-10-28 | (aguardando resposta) | switch expression+LINQ, switchMap/debounce, async sem await, unsubscribe (3º round), ?./??+guard clauses | Gerado; corrigir no próximo treino. |
 | 2026-10-27 | ~1,5/5 (q1 ≈½, q2 ✓ parcial, q3 ✗, q4 ≈⅓, q5 ≈¼) | forkJoin/?./??, ReplaceOne×$set, unsubscribe, guard clauses, genéricos/extension | Acertou a escolha do $set (evolução vs 26/10). Unsubscribe errado pela 2ª vez → prioridade máxima. Não conhecia o termo 'guard clause' (já usa a ideia). Confundiu 'where' de genérico com LINQ. |
 | 2026-10-26 | ~1,5/5 (q1 ½, q2 ✗, q3 ¼, q4 ¼, q5 ½) | GroupBy, switchMap, unsubscribe, ReplaceOne×$set, switch expression | Lê a intenção geral, mas falta precisão no resultado. Repetir: ReplaceOne×$set, takeUntilDestroyed, switchMap (com versão sem pipe ao lado) |
 
