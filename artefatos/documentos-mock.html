@@ -678,6 +678,18 @@ body.framed #device.t:not(.m){width:820px}
 #device.m .cls-grid,#device.t .cls-grid{grid-template-columns:1fr}#device.m .cls-cats,#device.t .cls-cats{flex-direction:row;overflow-x:auto;position:static}#device.m .cls-cat,#device.t .cls-cat{min-width:220px}
 #device.m .cls-tipo{grid-template-columns:1fr auto}#device.m .cls-tipo__meta{grid-row:2}#device.m .cls-summary .ms-auto{margin-left:0!important}
 .cls-tabs{margin-bottom:4px}.cls-tabs .nav-link{display:inline-flex;align-items:center;gap:6px}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:16px;align-content:start;overflow-y:auto;height:100%}
+.home-card{display:flex;flex-direction:column;gap:8px;text-align:left;padding:16px;border:1px solid var(--card-border-color,var(--color-slate-200));border-radius:16px;background:var(--color-white);cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+.home-card:hover{border-color:var(--c);box-shadow:0 6px 18px -10px color-mix(in srgb,var(--c) 60%,transparent);transform:translateY(-1px)}
+.home-card:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.home-card__top{display:flex;align-items:center;justify-content:space-between}
+.home-card__ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.home-card__name{font-weight:700;font-size:15px;color:var(--text-color)}
+.home-card__meta{font-size:12px;color:var(--text-color-secondary)}
+.home-card__bar{height:4px;border-radius:99px;background:var(--color-slate-100);overflow:hidden}.home-card__bar i{display:block;height:100%;background:var(--c);border-radius:99px}
+.home-card__foot{display:flex;align-items:center;justify-content:space-between;gap:8px}.home-card__go{color:var(--text-color-secondary);display:flex}
+#device.t .home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#device.m .home-grid{grid-template-columns:1fr;padding:12px;gap:10px}#device.m .home-card{flex-direction:column;padding:14px}
 </style>
 </head>
 <body>
@@ -1085,7 +1097,8 @@ const S={
   area:'meus', path:[ROOT.meus], selFile:null, sel:new Set(), anchor:null, cursor:null,
   view:store.get('view','list')==='grid'?'grid':'list', tab:'arquivos',
   q:'', scope:'area', f:{proc:null,autor:null,prazo:null,tipo:null,ano:null,dtipo:null},
-  renaming:null, renameVal:'', renameErr:'', loadingId:null, stMode:'area', selMode:false
+  renaming:null, renameVal:'', renameErr:'', loadingId:null, stMode:'area', selMode:false,
+  home:true /* 1º carregamento: home com as categorias em grade */
 };
 let COLS=[], GRID=[];
 const cur=()=>S.path[S.path.length-1];
@@ -1218,6 +1231,7 @@ function renderBanner(){
     html:`<span class="d-block">Confira antes de arquivar ou mover para outra pasta.</span><div class="alert-chips">${list.map(f=>{const d=deadlineInfo(f.deadline);return `<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-open="${f.id}">${esc(f.name.replace(/\.[^.]+$/,''))}${badge(SEV_BADGE[d.sev],d.rot)}</button>`;}).join('')}</div>`});
 }
 function levelBadge(f,a){
+  if(S.home)return '';
   if(S.q)return '';
   if(a.calc)return badge('secondary','Visão automática');
   const d=depth(f);return badge(d===MAX_DEPTH?'warning':'secondary',d===0?'Raiz':`Nível ${d} de ${MAX_DEPTH}`);
@@ -1225,12 +1239,12 @@ function levelBadge(f,a){
 function renderHead(){
   if(isM())return renderMobileHead();
   const a=areaOf(S.area),f=cur();
-  const title=S.q?'Resultados da busca':(f.isRoot?a.nome:f.name);
+  const title=S.q?'Resultados da busca':S.home?'Documentos':(f.isRoot?a.nome:f.name);
   let acts='';
   if(S.area==='lix')acts=`<button type="button" class="btn btn-sm btn-danger rounded-pill" data-act="empty-trash" ${TRASH.length?'':'disabled'}>${ic('trash',14)}Esvaziar lixeira</button>`;
   else if(isT())acts=`<button type="button" class="btn btn-sm btn-success rounded-pill dropdown-toggle" data-act="create-menu" aria-haspopup="menu" ${S.q?'disabled':''}>${ic('plus',14,2.4)}Novo</button>`;
   $('#xhead').innerHTML=`<div class="file-list-toolbar"><span class="doc-title text-primary text-truncate">${esc(title)}</span>${levelBadge(f,a)}<div class="file-list-actions">${acts}
-    <div class="file-list-view-toggle" role="group" aria-label="Modo de visualização"><button type="button" class="file-list-view-toggle__button file-list-view-toggle__button--start ${S.view==='list'?'active':''}" data-act="view-list" aria-pressed="${S.view==='list'}">${ic('list',14)}Lista</button><button type="button" class="file-list-view-toggle__button file-list-view-toggle__button--end ${S.view==='grid'?'active':''}" data-act="view-grid" aria-pressed="${S.view==='grid'}">${ic('grid',14)}Grid</button></div></div></div>`;
+    ${S.home?'':`<div class="file-list-view-toggle" role="group" aria-label="Modo de visualização"><button type="button" class="file-list-view-toggle__button file-list-view-toggle__button--start ${S.view==='list'?'active':''}" data-act="view-list" aria-pressed="${S.view==='list'}">${ic('list',14)}Lista</button><button type="button" class="file-list-view-toggle__button file-list-view-toggle__button--end ${S.view==='grid'?'active':''}" data-act="view-grid" aria-pressed="${S.view==='grid'}">${ic('grid',14)}Grid</button></div>`}</div></div>`;
 }
 function renderTabs(){
   const el=$('#tabs');
@@ -1241,7 +1255,8 @@ function renderTabs(){
 function renderCrumbs(){
   const el=$('#crumbs');
   if(S.q){el.innerHTML='';return;}
-  el.innerHTML=`<ol class="breadcrumb">${S.path.map((p,i)=>{const last=i===S.path.length-1;return `<li class="breadcrumb-item ${last?'active':''}" ${p.virtual?'':`data-drop="${p.id}"`} ${last?'aria-current="page"':''}>${i?ic('chev',13):''}${last?esc(p.name):`<button type="button" class="btn btn-link btn-sm" data-crumb="${i}">${esc(p.name)}</button>`}</li>`;}).join('')}</ol>`;
+  if(S.home){el.innerHTML=`<ol class="breadcrumb"><li class="breadcrumb-item active" aria-current="page">Todas as categorias</li></ol>`;return;}
+  el.innerHTML=`<ol class="breadcrumb"><li class="breadcrumb-item"><button type="button" class="btn btn-link btn-sm" data-act="go-home">${ic('grid',13)}Documentos</button></li>${S.path.map((p,i)=>{const last=i===S.path.length-1;return `<li class="breadcrumb-item ${last?'active':''}" ${p.virtual?'':`data-drop="${p.id}"`} ${last?'aria-current="page"':''}>${i?ic('chev',13):''}${last?esc(p.name):`<button type="button" class="btn btn-link btn-sm" data-crumb="${i}">${esc(p.name)}</button>`}</li>`;}).join('')}</ol>`;
 }
 function filterSummary(k){
   const F=S.f;
@@ -1253,6 +1268,7 @@ function filterSummary(k){
   if(k==='ano')return F.ano?String(F.ano):'Ano';
 }
 function renderFilters(){
+  if(S.home){$('#filters').innerHTML='';return;}
   const keys=['dtipo','proc','autor','prazo','tipo','ano'];
   $('#filters').innerHTML=`<span class="small text-secondary d-flex align-items-center gap-1 desktop-only">${ic('filter',13)}Filtrar</span>`+keys.map(k=>`<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill dropdown-toggle ${S.f[k]?'active':''}" data-filter="${k}" aria-haspopup="true" aria-pressed="${!!S.f[k]}">${esc(filterSummary(k))}</button>`).join('')
     +(anyFilter()?`<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-act="clear-filters">${ic('x',13)}Limpar filtros</button>`:'');
@@ -1260,9 +1276,28 @@ function renderFilters(){
 function renderView(){
   const v=$('#view');
   if(S.q)return renderSearch(v);
+  if(S.home)return renderHome(v);
   if(S.tab==='timeline'&&inProcess())return renderTimeline(v);
   if(S.view==='list'){if(isT())renderCompact(v);else renderFinder(v);}else renderGrid(v);
   if(S.renaming){const inp=$('#rn-input');if(inp){inp.focus();inp.setSelectionRange(0,inp.value.length);}}
+}
+
+
+/* ---------- Home de Documentos: todas as categorias em grade (1º carregamento) ---------- */
+function renderHome(v){
+  const cnt=k=>k==='tar'||k==='prz'?calcList(k).length:allFiles(k).length;
+  const bytes=k=>(k==='tar'||k==='prz'?calcList(k):allFiles(k)).reduce((s,f)=>s+f.size,0);
+  const areas=AREAS.filter(a=>a.k!=='fav'&&a.k!=='lix');
+  const total=areas.reduce((s,a)=>s+bytes(a.k),0)||1;
+  const pend=k=>(k==='tar'||k==='prz'?calcList(k):allFiles(k)).filter(f=>!f.tipo).length;
+  v.innerHTML=`<div class="home-grid" role="list" aria-label="Categorias de documentos">${areas.map(a=>{const n=cnt(a.k),b=bytes(a.k),p=Math.round(b/total*100),sc=pend(a.k);
+    return `<button type="button" class="home-card pal-${a.pal}" role="listitem" data-area="${a.k}" aria-label="Abrir ${esc(a.nome)}: ${n} arquivos">
+      <span class="home-card__top"><span class="home-card__ic">${ic(a.ic,20)}</span>${a.calc?`<span class="badge badge-sm badge-secondary">Automática</span>`:''}</span>
+      <span class="home-card__name">${esc(a.nome)}</span>
+      <span class="home-card__meta tabular-nums">${n} arquivo${n!==1?'s':''} · ${fmtSize(b)}</span>
+      <span class="home-card__bar" aria-hidden="true"><i style="width:${Math.max(p,n?3:0)}%"></i></span>
+      <span class="home-card__foot">${sc?`<span class="small text-secondary">${ic('tag',12)} ${sc} sem classificação</span>`:`<span class="small text-secondary">${p}% do armazenamento</span>`}<span class="home-card__go">${ic('chev',16)}</span></span>
+    </button>`;}).join('')}</div>`;
 }
 
 /* ---------- Lista (colunas) ---------- */
@@ -1419,10 +1454,10 @@ function renderMobileHead(){
   if(S.selMode){
     top=`<div class="app-bar"><button type="button" class="btn-close" data-act="sel-cancel" aria-label="Cancelar seleção">${ic('x',20)}</button><span class="app-bar-title fw-bold">${S.sel.size} selecionado${S.sel.size!==1?'s':''}</span><button type="button" class="btn btn-link btn-sm" data-act="sel-all">Selecionar tudo</button></div>`;
   }else{
-    const back=S.path.length>1&&!S.q;
-    const sub=S.q?'Resultados da busca':f.isRoot?(a.calc?'Visão automática':`${allFiles(S.area).length} arquivos`):S.path.slice(0,-1).map(p=>p.name).join(' › ');
+    const back=!S.home&&!S.q;
+    const sub=S.q?'Resultados da busca':S.home?'Todas as categorias':f.isRoot?(a.calc?'Visão automática':`${allFiles(S.area).length} arquivos`):S.path.slice(0,-1).map(p=>p.name).join(' › ');
     top=`<div class="app-bar">${back?`<button type="button" class="btn btn-icon" data-act="m-back" aria-label="Voltar">${ic('back',22)}</button>`:`<button type="button" class="btn btn-icon" data-act="open-side" aria-label="Áreas e armazenamento">${ic('menu',22)}</button>`}
-      <div class="app-bar-title"><span class="card-title d-block text-truncate text-primary">${esc(f.isRoot?a.nome:f.name)}</span><span class="small text-secondary d-flex align-items-center gap-1 text-truncate">${!a.calc&&!f.isRoot?badge(d===MAX_DEPTH?'warning':'secondary',`Nível ${d}/${MAX_DEPTH}`):''}${esc(sub)}</span></div>
+      <div class="app-bar-title"><span class="card-title d-block text-truncate text-primary">${esc(S.home?'Documentos':f.isRoot?a.nome:f.name)}</span><span class="small text-secondary d-flex align-items-center gap-1 text-truncate">${!S.home&&!a.calc&&!f.isRoot?badge(d===MAX_DEPTH?'warning':'secondary',`Nível ${d}/${MAX_DEPTH}`):''}${esc(sub)}</span></div>
       <button type="button" class="btn btn-icon" data-act="m-search" aria-label="Buscar">${ic('search',21)}</button>
       ${S.area==='lix'?'':`<button type="button" class="btn btn-icon btn-success" data-act="create-menu" aria-label="Novo">${ic('plus',22,2.4)}</button>`}
       <button type="button" class="btn btn-icon" data-act="m-more" aria-label="Mais opções da pasta">${ic('more',22)}</button></div>`;
@@ -1623,12 +1658,13 @@ function createMenu(anchor){
    9. AÇÕES (no sistema real: chamadas à API)
    ===================================================================== */
 function setArea(k){
-  const a=areaOf(k);S.area=k;if(!a.calc)store.set('lastContent',k);S.selMode=false;$('#device').classList.remove('msearch');S.path=[a.calc?VROOT[k]:ROOT[k]];S.sel.clear();S.selFile=null;S.tab='arquivos';S.renaming=null;S.q='';$('#q').value='';syncQ();
+  const a=areaOf(k);S.home=false;S.area=k;if(!a.calc)store.set('lastContent',k);S.selMode=false;$('#device').classList.remove('msearch');S.path=[a.calc?VROOT[k]:ROOT[k]];S.sel.clear();S.selFile=null;S.tab='arquivos';S.renaming=null;S.q='';$('#q').value='';syncQ();
   store.set('area',k);loadFolder(cur());
 }
 function loadFolder(f){S.loadingId=f.id;render();setTimeout(()=>{if(S.loadingId===f.id){S.loadingId=null;render();}},260);}
 function goFolder(f){
   if(!f||f.virtual)return;
+  S.home=false;
   const root=pathOf(f)[0];const k=Object.keys(ROOT).find(x=>ROOT[x]===root);
   if(k&&k!==S.area){S.area=k;}
   S.path=pathOf(f);S.sel.clear();S.selFile=null;S.q='';$('#q').value='';syncQ();S.cursor=f.id;
@@ -2288,6 +2324,7 @@ document.addEventListener('click',e=>{
     if(k==='purge-sel')return doPurge(selItems());
     if(k==='upgrade'){e.stopPropagation();return toast('Abrir a tela de planos');}
   }
+  if(e.target.closest('[data-act="go-home"]')){S.home=true;S.sel.clear();S.selFile=null;closePanel();render();return;}
   const tb=e.target.closest('[data-tab]');if(tb){S.tab=tb.dataset.tab;render();return;}
   const cr=e.target.closest('[data-crumb]');if(cr){const i=+cr.dataset.crumb;S.path=S.path.slice(0,i+1);S.sel.clear();S.selFile=null;if(!inProcess())S.tab='arquivos';render();return;}
   const ar=e.target.closest('[data-area]');if(ar){closePanel();closeSide();setArea(ar.dataset.area);return;}
@@ -2456,7 +2493,7 @@ document.addEventListener('click',e=>{
   const a=e.target.closest('[data-act]');
   if(!a||e.target.closest('#view [data-id]'))return;
   const k=a.dataset.act;
-  if(k==='m-back'){S.path.pop();S.sel.clear();S.selFile=null;if(!inProcess())S.tab='arquivos';render();return;}
+  if(k==='m-back'){if(S.path.length<=1){S.home=true;S.sel.clear();S.selFile=null;render();return;}S.path.pop();S.sel.clear();S.selFile=null;if(!inProcess())S.tab='arquivos';render();return;}
   if(k==='open-side'){$('#device').classList.add('side-open');if(stChart)setTimeout(()=>stChart.resize(),260);return;}
   if(k==='m-search')return openMSearch();
   if(k==='m-more'){const r=a.getBoundingClientRect();return mFolderMenu(r.right,r.bottom);}
