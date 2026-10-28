@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T15:50",
+  "atualizado": "2026-10-28T16:08",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,30 +45,6 @@
       "titulo": "TESTE — Mock com botões quadrados (cantos arredondados) — temporário",
       "data": "2026-10-27T17:09",
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
-    },
-    {
-      "id": "prompt-docs-componentizar",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — (1º) Componentizar lista e grade de arquivos para reuso em outras telas",
-      "data": "2026-10-28T15:13",
-      "arquivo": "prompts/documentos-componentizar-lista-grade.txt"
-    },
-    {
-      "id": "prompt-docs-home",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — (2º) Home de Documentos com todas as categorias em grade",
-      "data": "2026-10-28T15:13",
-      "arquivo": "prompts/documentos-home-categorias.txt"
-    },
-    {
-      "id": "prompt-investigar-modal",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Investigar travamento ao Editar cliente específico (backdrop sem modal)",
-      "data": "2026-10-28T15:50",
-      "arquivo": "prompts/investigar-modal-travada-cliente.txt"
     }
   ]
 }
