@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T13:07",
+  "atualizado": "2026-10-28T13:13",
   "itens": [
     {
       "id": "documentos-mock",
@@ -47,12 +47,12 @@
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
     },
     {
-      "id": "prompt-docs-lixeira-logs-desativar",
+      "id": "prompt-docs-componentizar",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Lixeira com pastas + logs das classificações + erro ao desativar tipo",
-      "data": "2026-10-28T13:07",
-      "arquivo": "prompts/documentos-lixeira-logs-desativar.txt"
+      "titulo": "Prompt — Componentizar lista e grade de arquivos para reuso em outras telas",
+      "data": "2026-10-28T13:13",
+      "arquivo": "prompts/documentos-componentizar-lista-grade.txt"
     }
   ]
 }
