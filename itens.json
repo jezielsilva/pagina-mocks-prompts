@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-28T15:10",
+  "atualizado": "2026-10-28T15:13",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (home com categorias em grade)",
-      "data": "2026-10-28T15:10",
+      "data": "2026-10-28T15:13",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true
@@ -47,11 +47,19 @@
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
     },
     {
+      "id": "prompt-docs-componentizar",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — (1º) Componentizar lista e grade de arquivos para reuso em outras telas",
+      "data": "2026-10-28T15:13",
+      "arquivo": "prompts/documentos-componentizar-lista-grade.txt"
+    },
+    {
       "id": "prompt-docs-home",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Home de Documentos com todas as categorias em grade",
-      "data": "2026-10-28T15:10",
+      "titulo": "Prompt — (2º) Home de Documentos com todas as categorias em grade",
+      "data": "2026-10-28T15:13",
       "arquivo": "prompts/documentos-home-categorias.txt"
     }
   ]

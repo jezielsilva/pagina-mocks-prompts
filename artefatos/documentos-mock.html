@@ -1292,7 +1292,7 @@ function renderHome(v){
   const pend=k=>(k==='tar'||k==='prz'?calcList(k):allFiles(k)).filter(f=>!f.tipo).length;
   v.innerHTML=`<div class="home-grid" role="list" aria-label="Categorias de documentos">${areas.map(a=>{const n=cnt(a.k),b=bytes(a.k),p=Math.round(b/total*100),sc=pend(a.k);
     return `<button type="button" class="home-card pal-${a.pal}" role="listitem" data-area="${a.k}" aria-label="Abrir ${esc(a.nome)}: ${n} arquivos">
-      <span class="home-card__top"><span class="home-card__ic">${ic(a.ic,20)}</span>${a.calc?`<span class="badge badge-sm badge-secondary">Automática</span>`:''}</span>
+      <span class="home-card__top"><span class="home-card__ic">${ic(a.ic,20)}</span></span>
       <span class="home-card__name">${esc(a.nome)}</span>
       <span class="home-card__meta tabular-nums">${n} arquivo${n!==1?'s':''} · ${fmtSize(b)}</span>
       <span class="home-card__bar" aria-hidden="true"><i style="width:${Math.max(p,n?3:0)}%"></i></span>

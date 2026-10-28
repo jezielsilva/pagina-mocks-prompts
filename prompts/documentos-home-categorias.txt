@@ -14,7 +14,6 @@ CARTÕES (igual ao mock)
 - Categorias: Meus documentos, Processos, Pré-processos, Clientes, Fornecedores, Financeiro, Tarefas, Prazos (Favoritos e Lixeira continuam só na sidebar).
 - Cada cartão:
   - ícone da área num círculo (cor da área, ~14% de fundo);
-  - selo "Automática" nas áreas automáticas (Tarefas, Prazos);
   - nome em negrito;
   - "N arquivos · tamanho";
   - barra fina com a % do armazenamento (cor da área);
