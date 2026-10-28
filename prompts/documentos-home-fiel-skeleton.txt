@@ -14,6 +14,14 @@ Seguir o UI-Kit e os tokens (o óbvio: componentes, cores, raios, tipografia e e
   - barra fina de 4px (fundo cinza claro, preenchimento na cor da área, cantos arredondados) com a % do armazenamento;
   - rodapé em linha: à esquerda "N sem classificação" com ícone de etiqueta (ou "X% do armazenamento" se não houver pendentes), 12px cinza; à direita a seta (chevron) cinza;
   - SEM selo "Automática".
+- O que está errado hoje (visto no print) e precisa ser corrigido:
+  - cartões altos demais, com um vão vazio no meio: o cartão deve ter altura do conteúdo (sem esticar; grade com align-items:start);
+  - ícone solto e preto: deve ficar no círculo colorido da área;
+  - sem cor por área: cada área tem sua cor (ícone, círculo, barra, borda no hover);
+  - barra sem preenchimento visível: preencher na cor da área, com largura mínima visível quando >0%;
+  - cantos retos: usar o raio do mock (16px);
+  - porcentagem "91.74%": formatar em pt-BR com 1 casa ("91,7%");
+  - rodapé deve mostrar "N sem classificação" por área quando houver pendentes.
 - HOVER: só a BORDA muda para a cor da área (como já é nos outros cartões do sistema). REMOVER o efeito de subir o cartão (translateY) e a sombra no hover.
 - Foco por teclado visível (outline na cor da área). Área sem permissão: cartão desabilitado (cinza, sem clique, tooltip), como já combinado.
 
