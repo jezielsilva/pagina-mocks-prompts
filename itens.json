@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T17:20",
+  "atualizado": "2026-10-28T17:23",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,14 +45,6 @@
       "titulo": "TESTE — Mock com botões quadrados (cantos arredondados) — temporário",
       "data": "2026-10-27T17:09",
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
-    },
-    {
-      "id": "prompt-docs-home-skeleton",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Home igual ao mock (hover só na borda) + skeleton ajustado ao conteúdo",
-      "data": "2026-10-28T16:45",
-      "arquivo": "prompts/documentos-home-fiel-skeleton.txt"
     },
     {
       "id": "prompt-docs-zip-fase2",
