@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T15:13",
+  "atualizado": "2026-10-28T15:50",
   "itens": [
     {
       "id": "documentos-mock",
@@ -61,6 +61,14 @@
       "titulo": "Prompt — (2º) Home de Documentos com todas as categorias em grade",
       "data": "2026-10-28T15:13",
       "arquivo": "prompts/documentos-home-categorias.txt"
+    },
+    {
+      "id": "prompt-investigar-modal",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Investigar modal travada (backdrop sem modal) em cliente específico",
+      "data": "2026-10-28T15:50",
+      "arquivo": "prompts/investigar-modal-travada-cliente.txt"
     }
   ]
 }
