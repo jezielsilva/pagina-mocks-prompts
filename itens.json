@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T16:45",
+  "atualizado": "2026-10-28T17:20",
   "itens": [
     {
       "id": "documentos-mock",
@@ -47,20 +47,20 @@
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
     },
     {
-      "id": "prompt-docs-zip-comprimir-unir",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — ZIP, comprimir e unir PDFs (diagnóstico + download automático, sem salvar na plataforma)",
-      "data": "2026-10-28T16:16",
-      "arquivo": "prompts/documentos-zip-comprimir-unir.txt"
-    },
-    {
       "id": "prompt-docs-home-skeleton",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
       "titulo": "Prompt — Home igual ao mock (hover só na borda) + skeleton ajustado ao conteúdo",
       "data": "2026-10-28T16:45",
       "arquivo": "prompts/documentos-home-fiel-skeleton.txt"
+    },
+    {
+      "id": "prompt-docs-zip-fase2",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — ZIP/Comprimir/Unir Fase 2 (causa do 0%, sem salvar na plataforma, download em segundo plano)",
+      "data": "2026-10-28T17:20",
+      "arquivo": "prompts/documentos-zip-fase2.txt"
     }
   ]
 }

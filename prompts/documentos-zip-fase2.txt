@@ -1,0 +1,49 @@
+[Área: Backend (.NET) + Frontend (Angular) | Skills: as de Backend, Frontend e Mongo do projeto]
+
+DOCUMENTOS — ZIP / COMPRIMIR / UNIR — FASE 2 (implementação)
+Base: o seu diagnóstico da Fase 1. Banco: NÃO mexer (sem migração, sem índice, sem script); eu cuido. Bibliotecas: manter as atuais (PDFsharp 6.2.4 MIT, SkiaSharp MIT, ZipArchive). NÃO atualizar o PDFsharp para 6.5+ (AGPL).
+
+DECISÕES
+- Controller: manter a controller de processamento que JÁ existe e as rotas atuais. Não criar outra e não mover para a Cloud agora.
+- Nenhum resultado (ZIP, comprimido, unido) é salvo na plataforma. Tudo é temporário e só para download; os originais nunca são alterados.
+
+1. CAUSA DO 0% (fazer primeiro)
+- Tornar visível em que ETAPA o trabalho está: adicionar ao trabalho um campo de etapa (na_fila, preparando, baixando_fontes, processando, finalizando, concluido, erro) gravado a cada transição, e logs estruturados (Information) em cada etapa com Id do trabalho, tentativa e tempo gasto.
+- No início do supervisor, validar se o worker existe no caminho configurado e se o processo "dotnet" sobe; se não, marcar o trabalho como erro com mensagem clara ("Serviço de processamento indisponível") e logar o caminho verificado (sem expor caminho ao usuário).
+- Lease: se o lease global estiver vencido, outro trabalho pode assumir; se o processo morrer, o lease não pode travar a fila. Revisar e corrigir.
+- O progresso deve sair de 0% já na preparação (ex.: 5% ao baixar as fontes, proporcional ao número de arquivos baixados).
+- Trabalho em "pendente" por mais de 2 minutos sem mudar de etapa: logar Warning.
+
+2. BACKEND
+- Comprimir e Unir: parar de publicar o resultado como documento. Gerar em pasta temporária igual ao ZIP, com download pela rota de download do trabalho que já existe, para os três tipos.
+- Limpeza: apagar o arquivo temporário após o download concluído ou ao expirar (1 hora), o que vier primeiro; uma rotina na própria BackgroundService remove os expirados.
+- Nomes: ZIP "Documentos - dd-MM-aaaa HHmm.zip"; comprimido "<nome original> - comprimido.<ext>"; unido "Unificado - dd-MM-aaaa HHmm.pdf".
+- Comprimir: aceitar PDF, JPG, JPEG e PNG (PNG reencodado sem perda de transparência; se não reduzir, devolver o original com aviso "já estava otimizado"). Alinhar front e back na MESMA lista de formatos (vinda do back).
+- Erros do worker: distinguir e devolver mensagem específica: PDF protegido por senha, arquivo corrompido/inválido, formato não suportado, limite excedido, tempo esgotado.
+- Log de operação (logs gerais de Documentos) para os três: usuário, ação, quantidade de itens, data/hora. Sem salvar o arquivo.
+- Permissões: manter as que existem (ZIP = Visualizar; Comprimir/Unir = Remover na área).
+
+3. FRONTEND
+- Nada na tela durante o processamento: remover o diálogo/painel de acompanhamento. Ao pedir, só o snackbar padrão (canto superior direito): "Preparando seu download…".
+- Ao concluir com o usuário na tela: download automático + snackbar "Download pronto".
+- Se o usuário saiu e voltou (ou o navegador bloqueou o download): ao abrir Documentos, buscar trabalhos concluídos e não baixados e mostrar snackbar com botão "Baixar" (um por trabalho, ou "Baixar todos" se houver mais de um).
+- Erro: snackbar de erro com a mensagem específica do back.
+- Manter SignalR + polling como estão, sem mudar o contrato.
+
+4. DOCUMENTAÇÃO
+- Atualizar a documentação existente do fluxo/regras de Documentos. Não criar arquivos .md novos.
+
+Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: checklist 1–4, arquivos alterados (trechos relevantes) e seção "Explicações". No item 1, dizer qual foi a causa do 0% se ficar evidente pelo código.
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
