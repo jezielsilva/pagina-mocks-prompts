@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T11:59",
+  "atualizado": "2026-10-28T12:28",
   "itens": [
     {
       "id": "documentos-mock",
@@ -47,12 +47,12 @@
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
     },
     {
-      "id": "prompt-docs-correcoes-qa-a-b",
+      "id": "prompt-docs-faceis-medios",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Correções do QA: blocos A e B (filtros, scroll, contador de pasta, + contextual, prévia de imagem, subcategoria)",
-      "data": "2026-10-27T17:46",
-      "arquivo": "prompts/documentos-correcoes-qa-blocos-a-b.txt"
+      "titulo": "Prompt — Ajustes fáceis + arrastar/soltar sem travar + renomear rápido",
+      "data": "2026-10-28T12:28",
+      "arquivo": "prompts/documentos-ajustes-faceis-medios.txt"
     }
   ]
 }

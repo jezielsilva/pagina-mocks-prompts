@@ -1,0 +1,49 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — AJUSTES FÁCEIS + ARRASTAR/SOLTAR + RENOMEAR
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Não mexer no banco. Não criar controller nova. UI-Kit + tokens.
+
+FÁCEIS
+1. Modal "Mover" — fora do padrão
+- Tirar o brilho/sombra colorida em volta da modal: usar exatamente a sombra das outras modais do sistema (ex.: Financeiro).
+- Aproveitar: na árvore aparece "Meus documentos" DUAS vezes (no topo e no meio da lista). Mostrar a raiz uma vez só.
+2. Ícone de reserva gigante no drawer e na modal
+- Quando a miniatura/prévia não carrega (ou o tipo não tem prévia), o SVG de reserva (ex.: "PNG") ocupa a área inteira. Limitar a ~120px de largura, centralizado na área de prévia, com fundo neutro. Vale para drawer e modal.
+3. Renomear — mensagem de erro
+- Remover a FAIXA AMARELA (alerta grande acima da lista) que aparece no erro de renomear (ex.: "Já existe um arquivo com este nome neste local", que inclusive veio com ": " sobrando no início).
+- Manter SÓ a mensagem em vermelho embaixo do campo de edição (já existe), com o ícone de erro no campo.
+4. Painel preto de fila de envio ("Enviando 1 arquivo(s)… / 2 enviados")
+- Remover esse painel flutuante (estilo Google Drive) da tela de Documentos. O envio/processamento continua em segundo plano normalmente.
+- Feedback que fica: o arquivo aparece na lista assim que enviado (com indicador discreto de carregamento na própria linha/cartão, se já existir) e o snackbar padrão de sucesso/erro ao terminar.
+5. Snackbar azul "Informação — Salvando…"
+- Remover esse aviso de "Salvando…" de TODAS as ações de Documentos (renomear, mover, classificar etc.). Manter apenas os avisos de SUCESSO e ERRO, no snackbar padrão do sistema.
+
+MÉDIOS
+6. Arrastar e soltar — igual ao mock e sem travar
+- Visual da área de soltar igual ao mock (sobreposição suave sobre a lista, borda tracejada primária, ícone e texto "Solte para enviar em <pasta>").
+- SEM PERMISSÃO (ex.: área Tarefas sem permissão de alteração, raiz de área automática): hoje aparece a caixa "Solte para enviar" + "Você não tem permissão para esta ação" e a TELA TRAVA (a sobreposição não some, não dá para sair). Corrigir:
+  - ao arrastar sobre um local sem permissão: mostrar o estado "não permitido" (cursor de bloqueio e texto curto), SEM aceitar o drop;
+  - se soltar mesmo assim: NÃO enviar, fechar a sobreposição na hora e mostrar o aviso de "Você não tem permissão para esta ação" no SNACKBAR PADRÃO do sistema;
+  - a sobreposição SEMPRE some ao soltar, ao sair da janela (dragleave), ao apertar Esc e no dragend. Garanta que nenhum estado fique preso (contador de dragenter/dragleave, listeners removidos).
+7. Renomear — experiência e velocidade
+- Atualização OTIMISTA: ao confirmar o novo nome (Enter ou clicar fora), a tela volta ao normal NA HORA, com o novo nome na lista, como se já tivesse dado certo. A requisição segue em segundo plano. Se o back recusar (nome repetido etc.), volta o nome antigo, reabre a edição com a mensagem vermelha do item 3.
+- Investigar por que salvar o renomear demora tanto (é só trocar o nome): medir a chamada e ver o que o back faz nela (recarregar a pasta inteira, recalcular contadores, gravar o documento inteiro em vez de $set do nome, logs síncronos, chamadas extras do front após salvar). Corrigir a causa: o renomear deve gravar só o nome ($set) e não recarregar tudo. Explique a causa na entrega.
+
+FORA DESTE PROMPT
+- Visualização de arquivos nas outras telas, logs das classificações, desativar tipo, processamento parado (ZIP/comprimir/unir), contadores, celular.
+
+ENTREGA
+- Checklist 1–7 (feito/não feito), causa da lentidão do renomear e do travamento do arrastar.
+- Arquivos alterados (trechos relevantes) e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
