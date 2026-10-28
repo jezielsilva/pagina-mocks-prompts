@@ -1,0 +1,61 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: as de Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — LIXEIRA COM PASTAS + LOGS DAS CLASSIFICAÇÕES + ERRO AO DESATIVAR TIPO
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock (card "Classificações" na sidebar → abas "Classificações | Logs")
+Não mexer no banco (sem scripts, sem apagar/criar collection na mão). Não criar controller nova (tudo na controller da Cloud). Front "burro": regras no back.
+
+1. LIXEIRA COM PASTAS
+Problemas:
+- Ao mandar uma PASTA para a lixeira, ela só some da tela depois de atualizar a página (arquivo some na hora).
+- A Lixeira lista só ARQUIVOS; pastas excluídas não aparecem.
+Fazer:
+- Excluir pasta: mesmo comportamento de arquivo — some da lista na hora (atualização da lista/estado local após o sucesso, sem recarregar a página), contadores e "Todos os documentos" atualizados, snackbar padrão.
+- Lixeira: listar PASTAS e ARQUIVOS (pastas primeiro, depois arquivos; mesma ordenação/paginação que já existe), com ícone de pasta, nome, local de origem, quem excluiu, quando e quantidade de itens dentro da pasta.
+- Ações na Lixeira para pasta: Restaurar (volta com todo o conteúdo para o local de origem; se a origem não existir mais, restaurar na raiz de Meus documentos e avisar) e Excluir definitivamente (remove a pasta e todo o conteúdo, com confirmação mostrando quantos itens serão apagados). Em lote, aceitar pastas e arquivos juntos.
+- Arquivos que estão DENTRO de uma pasta excluída não aparecem soltos na Lixeira (aparecem só dentro da pasta), e não podem ser restaurados separadamente sem a pasta, a menos que o fluxo atual já permita — explique a regra escolhida.
+- Logs: excluir/restaurar/excluir definitivamente pasta geram registro nos logs do módulo.
+- Respeitar permissionamento (Documentos › Remover + categoria) e escopo do usuário adicional.
+
+2. LOGS DAS CLASSIFICAÇÕES (igual ao mock)
+- Na modal "Classificações", criar ABAS no topo: "Classificações" (a tela atual de gerenciamento) e "Logs" (com badge com o total).
+- O que registrar (no BACK, no momento da ação, junto com usuário e data/hora):
+  - tipo CRIADO (nome do tipo e subcategoria);
+  - tipo RENOMEADO (nome anterior → novo);
+  - tipo DESATIVADO (e quantos arquivos foram desvinculados);
+  - tipo REATIVADO;
+  - arquivo CLASSIFICADO (qual arquivo, em qual tipo/subcategoria) e reclassificado/removida classificação, se existir.
+- Onde gravar: REUTILIZAR o mecanismo de logs que o módulo Documentos já usa (mesmo serviço/repositório/collection dos logs gerais), com um tipo/categoria de evento "classificação". NÃO criar collection nova. Se for indispensável, PARE e explique antes.
+- Escopo: titular e adicionais do mesmo escritório veem os logs do escritório (respeitando o permissionamento de Documentos › Visualizar).
+- Tela (igual ao mock):
+  - chips de filtro: "Todos" | "Tipos (criar, renomear, desativar, reativar)" | "Arquivos classificados";
+  - lista no mesmo estilo dos Logs de Meus documentos: ícone da ação em círculo, "<Usuário> <ação> <tipo> em <subcategoria>" (+ detalhe: "antes: …", "N arquivos desvinculados", nome do arquivo), data/hora abaixo;
+  - paginação padrão do sistema (componente de Clientes), 10 por página, paginação no back;
+  - estado vazio: "Nenhum registro".
+- Ao fazer uma ação na aba Classificações, ao voltar para Logs a lista já está atualizada.
+
+3. ERRO AO DESATIVAR TIPO
+- Hoje: desativar um tipo do escritório dá erro e o tipo continua ativo.
+- Investigar a causa (front: payload/rota; back: validação, desvínculo dos arquivos falhando, atualização em lote, permissão) e corrigir.
+- Comportamento esperado:
+  - tipo SEM arquivos: desativa direto, snackbar "Tipo desativado";
+  - tipo COM arquivos: confirmação "N arquivos usam o tipo X. Para desativar, eles serão desvinculados e ficarão sem classificação." → desvincula e desativa na MESMA operação (se falhar, nada muda);
+  - "Mostrar desativados" exibe o tipo riscado com "Reativar"; reativar funciona;
+  - contadores ("sem classificação", resumo) atualizam;
+  - gera os logs do item 2.
+- Explique a causa na entrega.
+
+ENTREGA
+- Checklist 1–3 (feito/não feito) e a causa do erro do item 3.
+- Como os logs de classificação foram gravados (reaproveitamento do mecanismo existente).
+- Arquivos alterados (trechos relevantes) e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

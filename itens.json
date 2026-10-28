@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T12:28",
+  "atualizado": "2026-10-28T13:07",
   "itens": [
     {
       "id": "documentos-mock",
@@ -47,12 +47,12 @@
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
     },
     {
-      "id": "prompt-docs-faceis-medios",
+      "id": "prompt-docs-lixeira-logs-desativar",
       "tipo": "prompt",
       "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Ajustes fáceis + arrastar/soltar sem travar + renomear rápido",
-      "data": "2026-10-28T12:28",
-      "arquivo": "prompts/documentos-ajustes-faceis-medios.txt"
+      "titulo": "Prompt — Lixeira com pastas + logs das classificações + erro ao desativar tipo",
+      "data": "2026-10-28T13:07",
+      "arquivo": "prompts/documentos-lixeira-logs-desativar.txt"
     }
   ]
 }
