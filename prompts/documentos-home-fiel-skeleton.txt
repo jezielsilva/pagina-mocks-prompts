@@ -1,0 +1,45 @@
+[Área: Frontend (Angular) | Skills: as de Frontend/UI-Kit do projeto]
+
+DOCUMENTOS — HOME FIEL AO MOCK + SKELETON DA PÁGINA
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock (a primeira tela é a home com os cartões das categorias)
+Seguir o UI-Kit e os tokens (o óbvio: componentes, cores, raios, tipografia e espaçamentos do UI-Kit). Só front.
+
+1. HOME — EXATAMENTE COMO O MOCK
+- O estilo implementado não ficou como o mock. Refazer os cartões IGUAIS ao mock, peça por peça:
+  - grade com cartões de largura mínima ~220px (4 por linha no desktop padrão, 2 no tablet, 1 no celular), espaçamento de 14px, padding da área de 16px;
+  - cartão: fundo branco, borda 1px da cor de borda do sistema, raio de 16px, padding de 16px, conteúdo em coluna com 8px entre os itens;
+  - topo: ícone da área num círculo de 40px (ícone na cor da área; fundo da mesma cor a ~14%);
+  - nome da área em negrito 15px;
+  - linha "N arquivos · tamanho" em 12px, cor de texto secundária;
+  - barra fina de 4px (fundo cinza claro, preenchimento na cor da área, cantos arredondados) com a % do armazenamento;
+  - rodapé em linha: à esquerda "N sem classificação" com ícone de etiqueta (ou "X% do armazenamento" se não houver pendentes), 12px cinza; à direita a seta (chevron) cinza;
+  - SEM selo "Automática".
+- HOVER: só a BORDA muda para a cor da área (como já é nos outros cartões do sistema). REMOVER o efeito de subir o cartão (translateY) e a sombra no hover.
+- Foco por teclado visível (outline na cor da área). Área sem permissão: cartão desabilitado (cinza, sem clique, tooltip), como já combinado.
+
+2. SKELETON DA PÁGINA DE DOCUMENTOS — AJUSTAR AO CONTEÚDO
+- Hoje, ao entrar em uma área (ex.: Meus documentos), o skeleton ocupa uma área muito pequena e depois a tela "pula" porque sempre há bastante conteúdo.
+- O skeleton deve ter a FORMA e o TAMANHO do conteúdo que vai aparecer, preenchendo a área visível:
+  - HOME: grade de 8 cartões-esqueleto com a mesma estrutura dos cartões (círculo, 2 linhas de texto, barra, rodapé);
+  - LISTA (colunas): a coluna com ~10 linhas-esqueleto (ícone + texto de largura variada + contador), ocupando a altura disponível; as colunas seguintes vazias;
+  - GRADE: cartões-esqueleto na mesma grade dos cartões de arquivo (miniatura + 2 linhas), preenchendo pelo menos 2–3 linhas da tela;
+  - cabeçalho (título, breadcrumb, filtros) com seus próprios blocos-esqueleto no lugar certo;
+  - painel de prévia (lista): bloco da miniatura + linhas de detalhes.
+- Quantidade de itens do skeleton calculada pela altura disponível (ou um número fixo que encha a tela no desktop padrão); sem "pulo" de layout quando o conteúdo chega (mesmas alturas/larguras).
+- Usar o componente/estilo de skeleton do UI-Kit (shimmer com os tokens), um só para a página toda.
+- Aplicar também no celular e no tablet, respeitando o layout de cada um.
+
+Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: checklist 1–2, arquivos alterados (trechos relevantes) e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

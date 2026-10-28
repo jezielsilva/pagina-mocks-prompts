@@ -1,12 +1,12 @@
 {
-  "atualizado": "2026-10-28T16:16",
+  "atualizado": "2026-10-28T16:45",
   "itens": [
     {
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
       "titulo": "Mock — Documentos (home com categorias em grade)",
-      "data": "2026-10-28T15:13",
+      "data": "2026-10-28T16:45",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true
@@ -53,6 +53,14 @@
       "titulo": "Prompt — ZIP, comprimir e unir PDFs (diagnóstico + download automático, sem salvar na plataforma)",
       "data": "2026-10-28T16:16",
       "arquivo": "prompts/documentos-zip-comprimir-unir.txt"
+    },
+    {
+      "id": "prompt-docs-home-skeleton",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Home igual ao mock (hover só na borda) + skeleton ajustado ao conteúdo",
+      "data": "2026-10-28T16:45",
+      "arquivo": "prompts/documentos-home-fiel-skeleton.txt"
     }
   ]
 }
