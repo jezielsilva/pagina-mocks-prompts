@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T16:08",
+  "atualizado": "2026-10-28T16:16",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,6 +45,14 @@
       "titulo": "TESTE — Mock com botões quadrados (cantos arredondados) — temporário",
       "data": "2026-10-27T17:09",
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
+    },
+    {
+      "id": "prompt-docs-zip-comprimir-unir",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — ZIP, comprimir e unir PDFs (diagnóstico + download automático, sem salvar na plataforma)",
+      "data": "2026-10-28T16:16",
+      "arquivo": "prompts/documentos-zip-comprimir-unir.txt"
     }
   ]
 }

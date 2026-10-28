@@ -1,0 +1,45 @@
+[Área: Backend (.NET) + Frontend (Angular) | Skills: as de Backend, Frontend e investigação do projeto]
+
+DOCUMENTOS — ZIP, COMPRIMIR E UNIR PDFs (DIAGNÓSTICO PRIMEIRO, DEPOIS AJUSTE)
+Não mexer no banco. Não criar controller nova (tudo de documentos na controller da Cloud). Regra de licenças do projeto: só bibliotecas de licença livre, SEM AGPL (ex.: NÃO usar Ghostscript nem iText; preferir opções como qpdf/PdfSharp/PDFsharp-MigraDoc/SixLabors etc., conferindo a licença).
+
+SINTOMA
+- ZIP de vários itens, Comprimir e Unir PDFs são aceitos, mas o trabalho fica na fila em 0% e nunca termina. O download individual funciona.
+
+FASE 1 — DIAGNÓSTICO (entregar ANTES de alterar código e AGUARDAR minha confirmação)
+Ler o código existente (o back já tem implementação de processamento em segundo plano) e responder:
+1. Como está desenhado hoje, ponta a ponta: quem cria o trabalho (endpoint), onde ele é guardado (fila em memória? collection? qual campo de status), quem consome (BackgroundService/hosted service/worker), como notifica o front (polling, SignalR), onde grava o resultado (S3? pasta? anexa na plataforma?) e como o front baixa.
+2. POR QUE fica em 0%: o worker está registrado e rodando? lê a mesma fila em que o endpoint grava? há exceção engolida? falta dependência (binário/biblioteca de PDF) no ambiente? permissão de leitura dos arquivos no S3? timeout? status nunca atualizado? Mostrar a evidência (log, trecho de código, configuração).
+3. REGRAS atuais de cada função:
+   - ZIP: quais itens aceita (arquivos, pastas, mistura, áreas automáticas), limite de quantidade/tamanho, nome do arquivo final, estrutura de pastas dentro do zip;
+   - Comprimir: quais tipos (PDF, imagens?), nível/qualidade, limite de tamanho, o que acontece se o resultado ficar maior que o original;
+   - Unir: só PDF? aceita imagens convertendo para PDF? ordem dos arquivos, limite de quantidade/páginas, PDFs protegidos/corrompidos;
+   - O que BLOQUEIA cada uma (permissão — Documentos › Visualizar/Remover + categoria, escopo do adicional —, tipo de arquivo, tamanho, seleção mista) e qual mensagem o usuário recebe.
+4. O que já existe e funciona, o que existe e está quebrado, e o que FALTA para o comportamento desejado abaixo.
+5. Bibliotecas usadas para PDF/ZIP e as licenças (apontar qualquer AGPL).
+
+COMPORTAMENTO DESEJADO (para a FASE 2, depois da minha confirmação)
+- Em segundo plano, SEM mostrar nada em tela nesta primeira versão: nada de painel de fila/progresso (o painel preto já foi removido; não recriar). O botão da ação pode mostrar o spinner pequeno enquanto o trabalho roda, e no fim o snackbar padrão de sucesso/erro.
+- Ao terminar QUALQUER uma das três funções, o resultado é BAIXADO AUTOMATICAMENTE no navegador do usuário (o mesmo comportamento do download individual).
+- O resultado NÃO é salvo/anexado na plataforma: não cria arquivo novo em Meus documentos nem em nenhuma área, não entra na contagem de armazenamento. Se precisar de arquivo temporário (S3 ou disco), apagar depois do download ou após um prazo curto (ex.: 1 hora), via a própria rotina de processamento.
+- Os ORIGINAIS permanecem intactos.
+- Se o usuário sair da tela antes de terminar: ao concluir, baixar quando ele voltar a Documentos (ou, se for complexo, apenas avisar no snackbar que o arquivo está pronto com um botão "Baixar") — proponha a opção mais simples na Fase 1.
+- Unir: respeitar a ordem da seleção (ou da lista) e informar no nome do arquivo final (ex.: "Unido-<data-hora>.pdf"); Comprimir: "<nome>-comprimido.pdf"; ZIP: "Documentos-<data-hora>.zip".
+- Registrar nos logs do módulo quem fez e o quê (sem salvar o arquivo).
+- Erros claros no snackbar: tipo não suportado, arquivo protegido/corrompido, limite excedido, sem permissão.
+
+ENTREGA
+- Fase 1: relatório do diagnóstico (itens 1–5) + plano da Fase 2 (arquivos a alterar) — e PARAR aguardando confirmação.
+- Fase 2 (após confirmação): checklist, arquivos alterados (trechos relevantes) e seção "Explicações".
+- Sem testes, sem lint, sem scripts de validação.
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
