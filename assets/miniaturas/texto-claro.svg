@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" role="img" aria-label="Arquivo DOCX">
-  <path d="M12 0 H164 L210 46 V285 Q210 297 198 297 H12 Q0 297 0 285 V12 Q0 0 12 0Z" fill="#ebf1fd"/>
-  <path d="M164 0 V34 Q164 46 176 46 H210Z" fill="#2563eb" opacity=".3"/>
-  <rect x="78" y="64" width="54" height="6" rx="3" fill="#2563eb" opacity="1"/><rect x="78" y="77" width="54" height="6" rx="3" fill="#2563eb" opacity=".6"/><rect x="78" y="90" width="54" height="6" rx="3" fill="#2563eb" opacity=".6"/><rect x="78" y="103" width="34" height="6" rx="3" fill="#2563eb" opacity=".6"/>
-  <rect x="18" y="142" width="174" height="82" rx="16" fill="#2563eb"/>
-  <text x="105" y="183" dominant-baseline="central" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="48" font-weight="800" letter-spacing="1" fill="#ffffff">DOCX</text>
-</svg>
