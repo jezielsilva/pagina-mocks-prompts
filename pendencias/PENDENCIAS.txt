@@ -5,7 +5,6 @@ SEUS TESTES MANUAIS
 [ ] 1. S3: conferir os envios e depois apagar os endpoints antigos de upload
 [ ] 2. Celular e tablet
 [ ] 3. Usuário adicional (escopo restrito)
-[ ] 4. Limpar itens de QA (arquivos QA-*, pasta QA-Pasta-Rodada2, tipo "QA-Tipo teste 2")
 
 PRÓXIMAS IMPLEMENTAÇÕES
 [ ] 5. Visualização de arquivos nas outras telas (componentização fase 3)
@@ -14,11 +13,3 @@ PRÓXIMAS IMPLEMENTAÇÕES
 DECISÕES SUAS
 [ ] 7. Índices do banco
 [ ] 8. Limpeza de dados antigos de etiquetas/acessos
-[ ] 9. Histórico do GitHub: apagar a Issue 24 e as outras que tinham dados internos
-
-CONCLUÍDOS RECENTES
-[x] Mock com botões quadrados (descartado)
-[x] Home com categorias + skeleton
-[x] ZIP / Comprimir / Unir (Fase 2 + review)
-[x] Contadores das áreas e "sem classificação"
-[x] Renomear, mover pasta/lote, excluir/restaurar pasta, reativar tipo
