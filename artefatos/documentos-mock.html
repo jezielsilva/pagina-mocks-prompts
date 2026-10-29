@@ -419,7 +419,10 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .manage-sub{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 40px minmax(120px,auto);gap:8px;align-items:center}
 .manage-cat-edit{display:flex;align-items:center;gap:8px;padding:8px}
 /* Prazos próximos */
-.prz-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.prz-strip{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.doc-badges:empty{display:none}.doc-badges{margin-top:10px}
+.prz-strip .prz-chip--neutral{border-color:var(--color-slate-200);background:var(--color-slate-100);color:var(--text-color);cursor:default}
+.prz-chip__link{border:none;background:none;padding:0 0 0 4px;margin-left:4px;border-left:1px solid var(--color-slate-300);color:var(--color-primary);font:600 13px var(--font-body);text-decoration:underline;cursor:pointer;padding-left:8px}
 .prz-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid;font-size:13px;cursor:pointer;background:var(--card-bg)}
 .prz-chip--warn{border-color:var(--color-warning);color:var(--color-warning-dark);background:var(--color-warning-lightest)}
 .prz-chip--crit{border-color:var(--color-negative);color:var(--color-negative-dark);background:var(--color-negative-lightest)}
@@ -427,6 +430,7 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .prz-chip b{font-weight:700}
 .prz-chip__tag{background:var(--color-negative);color:var(--color-white);border-radius:999px;padding:0 7px;font:700 11px/18px var(--font-body)}
 .home-card__top{display:flex;align-items:flex-start;justify-content:space-between}
+.sc-mini{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--color-slate-100);color:var(--text-color-secondary);font:600 12px var(--font-body)}
 .prz-mini{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--color-warning-lightest);color:var(--color-warning-dark);font:700 12px var(--font-body)}
 /* Novidades (sino + drawer) */
 .nt-bell{position:relative;margin-left:auto}
@@ -790,6 +794,7 @@ body.framed #device.t:not(.m){width:820px}
         <div id="xhead"></div>
         <nav id="crumbs" aria-label="Caminho"></nav>
         <div class="doc-filters" id="filters"></div>
+        <div class="doc-badges" id="hbadges"></div>
       </div>
     </section>
     <div class="doc-alerts" id="banner"></div>
@@ -1299,9 +1304,12 @@ function renderNav(){
 }
 function prazoStrip(){
   const k=S.home?null:S.area;if(k==='lix'||k==='fav')return '';
-  const sem=prazoSemana(k),ven=prazoVencidos(k);if(!sem.length&&!ven.length)return '';
+  const sem=prazoSemana(k),ven=prazoVencidos(k);
   const hoje=sem.filter(f=>f.deadline===0).length;
+  const st=S.q?[]:(k?prazoFiles(k):allFiles()).filter(f=>!f.tipo);
+  if(!sem.length&&!ven.length&&!st.length)return '';
   return `<div class="prz-strip" role="status">
+    ${st.length?`<span class="prz-chip prz-chip--neutral">${ic('tag',14)}<b>${st.length}</b> sem classificação<button type="button" class="prz-chip__link" data-act="classify">Classificar agora</button></span>`:''}
     ${sem.length?`<button type="button" class="prz-chip prz-chip--warn" data-act="prz-go" data-prz="semana">${ic('clock',14)}<b>${sem.length}</b> arquivo${sem.length>1?'s':''} com prazo nos próximos 7 dias${hoje?`<span class="prz-chip__tag">${hoje} hoje</span>`:''}${ic('chev',14)}</button>`:''}
     ${ven.length?`<button type="button" class="prz-chip prz-chip--crit" data-act="prz-go" data-prz="vencidos">${ic('clock',14)}<b>${ven.length}</b> vencido${ven.length>1?'s':''}${ic('chev',14)}</button>`:''}
   </div>`;}
@@ -1314,7 +1322,7 @@ function untypedNote(){
     acoes:`<div class="d-flex align-items-center gap-2 flex-shrink-0"><button type="button" class="btn btn-sm btn-primary rounded-pill" data-act="classify">${ic('spark',14)}Classificar agora</button><button type="button" class="btn-close" data-act="tnote-hide" aria-label="Lembrar depois">${ic('x',16)}</button></div>`});
 }
 function renderBanner(){
-  const el=$('#banner');const note=prazoStrip()+untypedNote();
+  const el=$('#banner');$('#hbadges').innerHTML=prazoStrip();const note='';
   if(S.area!=='proc'){el.innerHTML=note;return;}
   const list=allFiles('proc').filter(f=>f.deadline!=null&&f.deadline<=7).sort((a,b)=>a.deadline-b.deadline);
   if(!list.length){el.innerHTML=note;return;}
@@ -1387,7 +1395,7 @@ function renderHome(v){
       <span class="home-card__name">${esc(a.nome)}</span>
       <span class="home-card__meta tabular-nums">${n} arquivo${n!==1?'s':''} · ${fmtSize(b)}</span>
       <span class="home-card__bar" aria-hidden="true"><i style="width:${Math.max(p,n?3:0)}%"></i></span>
-      <span class="home-card__foot">${sc?`<span class="small text-secondary">${ic('tag',12)} ${sc} sem classificação</span>`:`<span class="small text-secondary">${p}% do armazenamento</span>`}<span class="home-card__go">${ic('chev',16)}</span></span>
+      <span class="home-card__foot">${sc?`<span class="sc-mini">${ic('tag',12)}${sc} sem classificação</span>`:`<span class="small text-secondary">${p}% do armazenamento</span>`}<span class="home-card__go">${ic('chev',16)}</span></span>
     </button>`;}).join('')}</div>`;
 }
 
