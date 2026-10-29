@@ -12,12 +12,12 @@ PRÓXIMAS IMPLEMENTAÇÕES
 [ ] 6. Varredura de .md soltos criados no projeto
 
 DECISÕES SUAS
-[ ] 7. Mock com botões quadrados: adotar ou descartar
-[ ] 8. Índices do banco
-[ ] 9. Limpeza de dados antigos de etiquetas/acessos
-[ ] 10. Histórico do GitHub: apagar a Issue 24 e as outras que tinham dados internos
+[ ] 7. Índices do banco
+[ ] 8. Limpeza de dados antigos de etiquetas/acessos
+[ ] 9. Histórico do GitHub: apagar a Issue 24 e as outras que tinham dados internos
 
 CONCLUÍDOS RECENTES
+[x] Mock com botões quadrados (descartado)
 [x] Home com categorias + skeleton
 [x] ZIP / Comprimir / Unir (Fase 2 + review)
 [x] Contadores das áreas e "sem classificação"
