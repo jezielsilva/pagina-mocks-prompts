@@ -2626,13 +2626,7 @@ $$('.pv [data-pv]').forEach(b=>b.onclick=()=>{PREVIEW=b.dataset.pv;$$('.pv [data
 /* ---------- Novidades: avisos do sistema + processos em segundo plano (SignalR) ---------- */
 const NT={open:false,tab:'avisos',sub:{avisos:'nao',bg:'nao'},seq:10};
 const minAgo=m=>new Date(Date.now()-m*60000);
-NT.avisos=[
-  {id:'a1',tipo:'docs',ic:'tag',t:'56 arquivos sem classificação',x:'Classifique para encontrar seus documentos mais rápido.',acao:'Classificar',quando:minAgo(12),lida:false},
-  {id:'a2',tipo:'sistema',ic:'settings',t:'Manutenção programada',x:'Sábado, 01/11, das 22h às 23h. O sistema pode ficar instável.',quando:minAgo(95),lida:false,fixo:true},
-  {id:'a3',tipo:'novo',ic:'merge',t:'Novo: Unir PDFs de qualquer pasta',x:'Agora você busca arquivos em todos os documentos para unir.',acao:'Ver como funciona',quando:minAgo(60*5),lida:false},
-  {id:'a4',tipo:'docs',ic:'trash',t:'3 itens serão apagados da lixeira em 2 dias',x:'Restaure o que ainda precisar.',acao:'Abrir lixeira',quando:minAgo(60*26),lida:true},
-  {id:'a5',tipo:'sistema',ic:'upload',t:'Armazenamento em 43%',x:'Você ainda tem bastante espaço disponível.',quando:minAgo(60*50),lida:true}
-];
+NT.avisos=[]; /* Avisos = notificações atuais do sistema, sem mudanças (conteúdo e lógica como já existem) */
 NT.jobs=[
   {id:'j1',tipo:'comprimir',nome:'Contrato social (2).pdf - comprimido.pdf',qtd:1,p:38,etapa:'Processando página 5 de 12',status:'andamento',quando:minAgo(1),lida:false},
   {id:'j2',tipo:'unir',nome:'Unificado - 29-10-2026 0940.pdf',qtd:4,p:100,status:'concluido',baixado:false,expira:52,quando:minAgo(8),lida:false},
@@ -2674,12 +2668,12 @@ function avisoCard(a){return `<article class="nt-card ${a.lida?'':'is-unread'}" 
 function ntBody(){const tab=NT.tab,sub=NT.sub[tab];
   const src=tab==='avisos'?NT.avisos:NT.jobs;const nao=src.filter(x=>!x.lida),lid=src.filter(x=>x.lida);
   const list=(sub==='nao'?nao:lid).slice().sort((a,b)=>b.quando-a.quando);
-  const empty=sub==='nao'?{t:'Tudo em dia por aqui',x:tab==='avisos'?'Você não tem avisos não lidos.':'Nenhum processo em andamento ou aguardando você.'}:{t:'Nada por aqui ainda',x:tab==='avisos'?'Os avisos lidos ficam guardados por 30 dias.':'Os processos concluídos ficam no histórico por 7 dias.'};
+  const empty=sub==='nao'?{t:'Tudo em dia por aqui',x:tab==='avisos'?'Você não tem notificações não lidas.':'Nenhum processo em andamento ou aguardando você.'}:{t:'Nada por aqui ainda',x:tab==='avisos'?'Os avisos lidos ficam guardados por 30 dias.':'Os processos concluídos ficam no histórico por 7 dias.'};
   return `<div class="nt-subbar"><div class="nt-seg" role="tablist" aria-label="Filtro de leitura">
       <button type="button" role="tab" data-sub="nao" aria-selected="${sub==='nao'}" class="${sub==='nao'?'on':''}">Não lidas${nao.length?` <span class="nt-count">${nao.length}</span>`:''}</button>
       <button type="button" role="tab" data-sub="lid" aria-selected="${sub==='lid'}" class="${sub==='lid'?'on':''}">Lidas</button></div>
     ${sub==='nao'&&nao.some(x=>tab==='avisos'||!(x.status==='andamento'||x.status==='fila'))?`<button type="button" class="btn btn-sm btn-link" data-act="nt-readall">Marcar todas como lidas</button>`:''}</div>
-    ${tab==='bg'&&sub==='nao'?`<div class="nt-hint text-secondary">${ic('status',13)}Atualização em tempo real. Você pode sair desta tela: avisamos quando terminar.</div>`:''}
+    ${tab==='avisos'?`<div class="nt-hint text-secondary">${ic('bell',13)}Conteúdo e regras das notificações atuais do sistema, sem mudanças.</div>`:''}${tab==='bg'&&sub==='nao'?`<div class="nt-hint text-secondary">${ic('status',13)}Atualização em tempo real. Você pode sair desta tela: avisamos quando terminar.</div>`:''}
     <div class="nt-list">${list.length?list.map(tab==='avisos'?avisoCard:jobCard).join(''):`<div class="nt-empty">${ic('belloff',30)}<b>${empty.t}</b><span>${empty.x}</span></div>`}</div>`;}
 function ntPaint(){if(!NT.open)return;const el=$('#nt-body');if(!el)return;el.innerHTML=ntBody();
   const ca=NT.avisos.filter(a=>!a.lida).length,cb=NT.jobs.filter(j=>!j.lida).length;
@@ -2688,7 +2682,7 @@ function ntPaint(){if(!NT.open)return;const el=$('#nt-body');if(!el)return;el.in
 function ntOpen(tab){NT.open=true;if(tab)NT.tab=tab;const r=$('#notif-root');
   r.innerHTML=`<div class="drawer-backdrop" data-ntx></div><aside class="drawer drawer-end nt-drawer" role="dialog" aria-modal="true" aria-label="Novidades">
     <header class="nt-head"><h2>Novidades</h2><button type="button" class="btn btn-icon" data-ntx aria-label="Fechar">${ic('x',20)}</button></header>
-    <nav class="nt-tabs" role="tablist"><button type="button" role="tab" data-tab="avisos">${ic('bell',15)}Avisos<span class="nt-pill" id="nt-ca"></span></button>
+    <nav class="nt-tabs" role="tablist"><button type="button" role="tab" data-tab="avisos">${ic('bell',15)}Notificações<span class="nt-pill" id="nt-ca"></span></button>
       <button type="button" role="tab" data-tab="bg">${ic('cpu',15)}Em segundo plano<span class="nt-pill" id="nt-cb"></span></button></nav>
     <div id="nt-body" class="nt-scroll"></div></aside>`;ntPaint();}
 function ntClose(){NT.open=false;$('#notif-root').innerHTML='';}
