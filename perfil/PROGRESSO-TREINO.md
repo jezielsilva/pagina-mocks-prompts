@@ -28,7 +28,7 @@
 ## Histórico de treinos
 | Data | Acertos | Temas | Observações |
 |---|---|---|---|
-| 2026-10-28 | (aguardando resposta) | switch expression+LINQ, switchMap/debounce, async sem await, unsubscribe (3º round), ?./??+guard clauses | Gerado; corrigir no próximo treino. |
+| 2026-10-29 | (aguardando resposta) | Task.WhenAll, Mongo filtro no banco + índice, unsubscribe (4º round), constantes × valores mágicos, forkJoin + ?./?? + async pipe | Gerado; corrigir no próximo treino. (28/10 já corrigido no chat — sem Issue aberta.) |
 | 2026-10-28 | ~2,5/5 (q1 ½, q2 ✓, q3 ≈✓, q4 ≈¼, q5 ½) | switch expression+LINQ, switchMap, async sem await, takeUntilDestroyed, ?./?? + guard clauses | Melhor resultado até agora. Escolheu switchMap certo; entendeu que Task sem await 'dá sucesso e continua executando'. Unsubscribe ainda errado (3º dia): marcou o HTTP e esqueceu Subject/BehaviorSubject. Escreveu guard clauses, mas com else if desnecessário. Ainda não dá o resultado concreto pedido. |
 | 2026-10-27 | ~1,5/5 (q1 ≈½, q2 ✓ parcial, q3 ✗, q4 ≈⅓, q5 ≈¼) | forkJoin/?./??, ReplaceOne×$set, unsubscribe, guard clauses, genéricos/extension | Acertou a escolha do $set (evolução vs 26/10). Unsubscribe errado pela 2ª vez → prioridade máxima. Não conhecia o termo 'guard clause' (já usa a ideia). Confundiu 'where' de genérico com LINQ. |
 | 2026-10-26 | ~1,5/5 (q1 ½, q2 ✗, q3 ¼, q4 ¼, q5 ½) | GroupBy, switchMap, unsubscribe, ReplaceOne×$set, switch expression | Lê a intenção geral, mas falta precisão no resultado. Repetir: ReplaceOne×$set, takeUntilDestroyed, switchMap (com versão sem pipe ao lado) |
