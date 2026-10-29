@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-28T17:23",
+  "atualizado": "2026-10-28T23:13",
   "itens": [
     {
       "id": "documentos-mock",
@@ -45,14 +45,6 @@
       "titulo": "TESTE — Mock com botões quadrados (cantos arredondados) — temporário",
       "data": "2026-10-27T17:09",
       "arquivo": "artefatos/documentos-mock-botoes-quadrados.html"
-    },
-    {
-      "id": "prompt-docs-zip-fase2",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — ZIP/Comprimir/Unir Fase 2 (causa do 0%, sem salvar na plataforma, download em segundo plano)",
-      "data": "2026-10-28T17:20",
-      "arquivo": "prompts/documentos-zip-fase2.txt"
     }
   ]
 }
