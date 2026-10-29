@@ -2642,7 +2642,7 @@ function paintBell(){$$('.nt-bell').forEach(b=>{b.querySelector('.nt-bell__ic').
 const _ntRender=render;render=function(){_ntRender.apply(this,arguments);paintBell();};
 
 function etapaTxt(j){if(j.status==='fila')return 'Na fila…';if(j.status==='erro')return 'Erro';if(j.status==='cancelado')return 'Cancelado';
-  if(j.status==='concluido')return j.baixado?'Concluído · baixado':`Pronto para baixar · expira em ${j.expira||60} min`;return j.etapa||'Processando…';}
+  if(j.status==='concluido')return 'Concluído';return j.etapa||'Processando…';}
 function jobCard(j){const t=JT[j.tipo],run=j.status==='andamento'||j.status==='fila';
   const cls=j.status==='erro'?'danger':j.status==='concluido'?'success':'primary';
   return `<article class="nt-card ${j.lida?'':'is-unread'}" data-job="${j.id}">
@@ -2654,8 +2654,6 @@ function jobCard(j){const t=JT[j.tipo],run=j.status==='andamento'||j.status==='f
         :`<div class="nt-prog"><div class="progressbar"><div class="progressbar__fill nt-fill-${cls}" style="width:${Math.min(j.p,100)}%"></div></div><span>${Math.round(Math.min(j.p,100))}%</span></div>`}
       <div class="nt-card__foot"><small class="text-secondary">${run?`<span class="nt-live"></span>`:''}${esc(etapaTxt(j))}</small>
         <span class="nt-card__acts">${run?`<button type="button" class="btn btn-sm btn-outline-secondary" data-jact="cancel">Cancelar</button>`:''}
-        ${j.status==='concluido'&&!j.baixado?`<button type="button" class="btn btn-sm btn-primary" data-jact="dl">${ic('download',13)}Baixar</button>`:''}
-        ${j.status==='concluido'&&j.baixado?`<button type="button" class="btn btn-sm btn-outline-secondary" data-jact="dl">${ic('download',13)}Baixar de novo</button>`:''}
         ${j.status==='erro'||j.status==='cancelado'?`<button type="button" class="btn btn-sm btn-outline-secondary" data-jact="retry">Tentar de novo</button>`:''}
         ${!run&&!j.lida?`<button type="button" class="btn btn-sm btn-link" data-jact="read">Marcar como lida</button>`:''}</span></div>
     </div></article>`;}
