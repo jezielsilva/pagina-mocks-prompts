@@ -1,0 +1,24 @@
+PENDÊNCIAS — elaw adv · Documentos (Nova Cloud)
+Atualizado em 29/10/2026
+
+SEUS TESTES MANUAIS
+[ ] 1. S3: conferir os envios e depois apagar os endpoints antigos de upload
+[ ] 2. Celular e tablet
+[ ] 3. Usuário adicional (escopo restrito)
+[ ] 4. Limpar itens de QA (arquivos QA-*, pasta QA-Pasta-Rodada2, tipo "QA-Tipo teste 2")
+
+PRÓXIMAS IMPLEMENTAÇÕES
+[ ] 5. Visualização de arquivos nas outras telas (componentização fase 3)
+[ ] 6. Varredura de .md soltos criados no projeto
+
+DECISÕES SUAS
+[ ] 7. Mock com botões quadrados: adotar ou descartar
+[ ] 8. Índices do banco
+[ ] 9. Limpeza de dados antigos de etiquetas/acessos
+[ ] 10. Histórico do GitHub: apagar a Issue 24 e as outras que tinham dados internos
+
+CONCLUÍDOS RECENTES
+[x] Home com categorias + skeleton
+[x] ZIP / Comprimir / Unir (Fase 2 + review)
+[x] Contadores das áreas e "sem classificação"
+[x] Renomear, mover pasta/lote, excluir/restaurar pasta, reativar tipo

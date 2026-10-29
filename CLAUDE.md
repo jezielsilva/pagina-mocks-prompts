@@ -23,3 +23,4 @@
   - Issues que chegarem com esse tipo de conteúdo: depois de lidas, esvaziar o corpo ("(conteúdo removido — já processado no chat)") e fechar; avisar o usuário que ele pode apagar a Issue pelo site para sumir o histórico de edição.
   - No chat entre o Claude e o usuário pode tudo; a regra vale só para o que fica no GitHub.
 - Instruções com comandos (PowerShell, passos de instalação, diagnóstico) vão para o PORTAL (página própria no portal), não só no chat; no chat, só um resumo curto e o nome do item.
+- Pendências: `pendencias/PENDENCIAS.txt` (item FIXO `"id":"pendencias"`); atualizar sempre que o usuário fechar/abrir pendências.

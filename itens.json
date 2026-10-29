@@ -1,6 +1,15 @@
 {
-  "atualizado": "2026-10-29T09:57",
+  "atualizado": "2026-10-29T10:09",
   "itens": [
+    {
+      "id": "pendencias",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "PENDÊNCIAS — Documentos",
+      "data": "2026-10-29T10:09",
+      "arquivo": "pendencias/PENDENCIAS.txt",
+      "fixo": true
+    },
     {
       "id": "documentos-mock",
       "tipo": "artefato",
