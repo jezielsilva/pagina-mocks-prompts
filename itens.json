@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-29T10:09",
+  "atualizado": "2026-10-29T10:57",
   "itens": [
     {
       "id": "pendencias",
@@ -14,8 +14,8 @@
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (home com categorias em grade)",
-      "data": "2026-10-28T16:45",
+      "titulo": "Mock — Documentos (Unir PDFs com busca em todos os documentos)",
+      "data": "2026-10-29T10:57",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true

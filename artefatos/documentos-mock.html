@@ -425,6 +425,23 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .order-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px}
 .order-item.is-dragging{opacity:.4}
 .order-item .grip{cursor:grab;display:inline-flex}
+.mg-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:16px}
+.mg-order .order-item>.small{display:none}
+.mg-order .order-item{gap:6px}
+.mg-col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mg-col__head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.mg-search{position:relative}.mg-search__ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);display:inline-flex}.mg-search .form-control{padding-left:36px}
+.mg-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.mg-filters .form-select{width:auto;flex:1;min-width:140px}
+.mg-res-list,.mg-order{height:300px;overflow:auto;border:1px solid var(--color-slate-200);border-radius:12px;padding:4px}
+.mg-res{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid transparent;border-radius:10px;background:none;text-align:left;cursor:pointer}
+.mg-res:hover{border-color:var(--color-primary)}
+.mg-res:focus-visible{outline:2px solid var(--color-primary);outline-offset:-2px}
+.mg-res__txt{flex:1;min-width:0;display:flex;flex-direction:column}.mg-res__txt small{font-size:12px;color:var(--text-color-secondary)}
+.mg-res__add{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--color-primary);border:1px solid var(--color-primary);flex-shrink:0}
+.mg-res mark{background:oklch(from var(--color-warning) l c h / .3);padding:0;border-radius:2px;color:inherit}
+.mg-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:16px}
+@media (max-width:760px){.mg-grid{grid-template-columns:1fr}.mg-res-list,.mg-order{height:220px}}
+
 /* Sidebar — EXCEÇÃO SOLICITADA: visual anterior mantido (proposta de evolução do UI-Kit). Só tokens do tema. */
 .pal-1{--c:var(--chart-color-1)}.pal-2{--c:var(--chart-color-2)}.pal-3{--c:var(--chart-color-3)}.pal-4{--c:var(--chart-color-4)}.pal-5{--c:var(--chart-color-5)}.pal-6{--c:var(--chart-color-6)}.pal-7{--c:var(--chart-color-7)}.pal-8{--c:var(--chart-color-8)}
 .new-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:none;padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,var(--color-primary-light),var(--color-primary));color:var(--color-white);box-shadow:0 4px 14px oklch(from var(--color-primary) l c h / .28);transition:transform .15s,box-shadow .15s,filter .15s}
@@ -1443,7 +1460,7 @@ function renderBatch(){
   const count=`<span class="batch-count fw-bold text-nowrap">${items.length} selecionado${items.length>1?'s':''}</span>`;
   const clear=`<button type="button" data-batch="clear" aria-label="Limpar seleção">${ic('x',16)}</button>`;
   const inner=S.area==='lix'?b('restore','restore','Restaurar')+b('purge','trash','Excluir definitivamente',{danger:true})
-    :b('merge','merge','Unir PDFs',{dis:!(allMerge&&items.length>=2),why:'Disponível para 2 ou mais PDFs/imagens'})+b('compress','compress','Comprimir',{dis:!allMerge,why:'Disponível para PDFs/imagens'})
+    :b('merge','merge','Unir PDFs',{dis:!allMerge,why:'Disponível para PDFs/imagens'})+b('compress','compress','Comprimir',{dis:!allMerge,why:'Disponível para PDFs/imagens'})
      +b('move','move','Mover')+b('classify','tag','Classificar',{dis:files.length!==items.length,why:'Disponível só para arquivos'})+b('download','download','Baixar')+b('trash','trash','Excluir',{danger:true});
   el.innerHTML=`<div class="batch-bar fade-in" role="toolbar" aria-label="Ações em lote">${count}${inner}${clear}</div>`;
 }
@@ -1603,7 +1620,7 @@ function menuFor(it,{multi=false}={}){
     const items=selItems(),allMerge=items.every(isMergeable),allFiles=items.every(i=>i.type==='file');
     if(S.area==='lix')return [{ic:'restore',t:`Restaurar ${items.length} itens`,fn:()=>doRestore(items)},'-',{ic:'trash',t:'Excluir definitivamente',danger:true,fn:()=>doPurge(items)}];
     return [
-      {ic:'merge',t:'Unir PDFs…',dis:!(allMerge&&items.length>=2),why:'Selecione 2 ou mais PDFs/imagens',fn:()=>dlgMerge(items)},
+      {ic:'merge',t:'Unir PDFs…',dis:!allMerge,why:'Disponível para PDFs/imagens',fn:()=>dlgMerge(items)},
       {ic:'compress',t:'Comprimir para protocolo…',dis:!allMerge,why:'Disponível para PDFs/imagens',fn:()=>dlgCompress(items)},
       {ic:'move',t:'Mover para…',fn:()=>dlgMove(items)},
       {ic:'tag',t:'Classificar documento…',dis:!allFiles,why:'Disponível só para arquivos',fn:()=>dlgSetTipo(items)},
@@ -1782,42 +1799,67 @@ function dlgMove(items){
 /* ---------- Diálogo: Unir PDFs ---------- */
 const progress=(id,pct=0)=>`<div class="progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div class="progressbar__fill" ${id?`id="${id}"`:''} data-pct="${pct}"></div></div>`;
 const setPct=(el,p)=>{if(el){el.style.width=Math.min(p,100)+'%';el.parentElement.setAttribute('aria-valuenow',Math.round(Math.min(p,100)));}};
-function dlgMerge(items,pickMore=false){
+function dlgMerge(items){
   let order=items.filter(isMergeable);
-  const base=order[0];const dest=base.parent||ROOT.meus;
-  const candidates=pickMore?sortItems(dest.children.filter(c=>isMergeable(c)&&!order.includes(c))):[];
-  const def=`Unificado — ${base.proc?base.proc.slice(0,7):pad(NOW.getDate())+'-'+pad(NOW.getMonth()+1)}.pdf`;
-  const list=()=>order.map((f,i)=>`<div class="order-item border-bottom" draggable="true" data-o="${i}"><span class="grip text-secondary">${ic('grip',14)}</span>${badge('primary',String(i+1))}${typeIcon(f,16)}<span class="flex-fill text-truncate">${esc(f.name)}</span><span class="small text-secondary">${fmtSize(f.size)}</span>
-    <button type="button" class="btn btn-icon btn-sm" data-up="${i}" ${i===0?'disabled':''} aria-label="Subir ${esc(f.name)}">${ic('up',14)}</button><button type="button" class="btn btn-icon btn-sm" data-dn="${i}" ${i===order.length-1?'disabled':''} aria-label="Descer ${esc(f.name)}">${ic('down',14)}</button><button type="button" class="btn btn-icon btn-sm" data-rm="${i}" aria-label="Remover ${esc(f.name)} da lista">${ic('x',14)}</button></div>`).join('');
-  const total=()=>order.reduce((s,f)=>s+f.size,0);
-  const paint=a=>{$('#mg-list').innerHTML=list();$('#mg-sum').textContent=`${order.length} arquivos · ${fmtSize(total())} no total`;
-    const add=$('#mg-add');if(add){const rest=candidates.filter(c=>!order.includes(c));add.innerHTML=rest.length?`<option value="">Adicionar arquivo desta pasta…</option>`+rest.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join(''):'<option value="">Nenhum outro PDF/imagem nesta pasta</option>';}
-    a.setActions([{label:'Cancelar',fn:x=>x.close()},{label:`${ic('merge',14)}Unir ${order.length} arquivos`,kind:'pri',disabled:order.length<2,fn:run}]);};
-  const run=a=>{
-    let name=$('#mg-name').value.trim()||def;if(!/\.pdf$/i.test(name))name+='.pdf';
-    a.body.innerHTML=`<div><span class="form-label">Unindo ${order.length} arquivos em “${esc(name)}”</span>${progress('mg-p')}<span id="mg-s" class="form-text">Na fila…</span></div>`;
-    a.setActions([{label:'Cancelar',fn:x=>x.close()},{label:'Unindo…',kind:'pri',loading:true}]);
-    let p=0;const t=setInterval(()=>{p+=7+Math.random()*12;const el=$('#mg-p');if(!el){clearInterval(t);return;}
-      setPct(el,p);$('#mg-s').textContent=p<15?'Na fila…':p<100?`Processando página ${Math.ceil(p/100*order.length*3)} de ${order.length*3}…`:'Concluído';
-      if(p>=100){clearInterval(t);
-        const nf=fi(uniqueName(dest,name),total()*0.92/1024,0,{proc:base.proc,x:order.map(f=>f.text).filter(Boolean).join('\n')});nf.mtime=new Date();
-        dest.children.push(nf);link(nf,dest,dest.area);log('unido',nf,order.map(f=>f.name).join(' + '));
-        a.body.insertAdjacentHTML('beforeend',eAlert('positive',{html:`Arquivo criado em <b>${esc(dest.name)}</b>: ${esc(nf.name)} (${fmtSize(nf.size)}). Os originais foram mantidos.`}));
-        a.setActions([{label:'Fechar',fn:x=>x.close()},{label:'Abrir arquivo',kind:'pri',fn:x=>{x.close();openPanel(nf);}}]);S.sel.clear();render();}},180);
+  const base=order[0];const here=base?(base.parent||ROOT.meus):ROOT.meus;
+  let q='',area='',escopo='pasta';
+  const def=`Unificado - ${pad(NOW.getDate())}-${pad(NOW.getMonth()+1)}-${NOW.getFullYear()} ${pad(NOW.getHours())}${pad(NOW.getMinutes())}.pdf`;
+  const norm=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  const where=f=>pathOf(f).slice(0,-1).map(x=>x.name).join(' / ');
+  const results=()=>{
+    let pool=escopo==='pasta'&&!q?here.children.filter(c=>c.type==='file'):allFiles(area||undefined);
+    pool=pool.filter(f=>isMergeable(f)&&!order.includes(f));
+    if(q){const t=norm(q);pool=pool.filter(f=>norm(f.name).includes(t));}
+    return pool.sort((a,b)=>(b.mtime||0)-(a.mtime||0)).slice(0,30);
   };
+  const hl=n=>{if(!q)return esc(n);const i=norm(n).indexOf(norm(q));return i<0?esc(n):esc(n.slice(0,i))+'<mark>'+esc(n.slice(i,i+q.length))+'</mark>'+esc(n.slice(i+q.length));};
+  const resHtml=()=>{const r=results();
+    if(!r.length)return `<div class="mg-empty text-secondary small">${ic('search',18)}<span>${q?`Nenhum PDF ou imagem encontrado para “${esc(q)}”.`:'Nenhum outro PDF ou imagem nesta pasta. Pesquise pelo nome para buscar em todos os documentos.'}</span></div>`;
+    return r.map(f=>`<button type="button" class="mg-res" data-add="${f.id}" aria-label="Adicionar ${esc(f.name)}">${typeIcon(f,18)}<span class="mg-res__txt"><span class="text-truncate">${hl(f.name)}</span><small class="text-truncate">${esc(where(f))}</small></span><span class="small text-secondary">${fmtSize(f.size)}</span><span class="mg-res__add">${ic('plus',14)}</span></button>`).join('');};
+  const list=()=>order.length?order.map((f,i)=>`<div class="order-item border-bottom" draggable="true" data-o="${i}"><span class="grip text-secondary">${ic('grip',14)}</span>${badge('primary',String(i+1))}${typeIcon(f,16)}<span class="mg-res__txt"><span class="text-truncate">${esc(f.name)}</span><small class="text-truncate">${esc(where(f))}</small></span><span class="small text-secondary">${fmtSize(f.size)}</span>
+    <button type="button" class="btn btn-icon btn-sm" data-up="${i}" ${i===0?'disabled':''} aria-label="Subir ${esc(f.name)}">${ic('up',14)}</button><button type="button" class="btn btn-icon btn-sm" data-dn="${i}" ${i===order.length-1?'disabled':''} aria-label="Descer ${esc(f.name)}">${ic('down',14)}</button><button type="button" class="btn btn-icon btn-sm" data-rm="${i}" aria-label="Remover ${esc(f.name)} da lista">${ic('x',14)}</button></div>`).join('')
+    :`<div class="mg-empty text-secondary small">${ic('merge',18)}<span>Adicione pelo menos 2 arquivos pela busca ao lado.</span></div>`;
+  const total=()=>order.reduce((s,f)=>s+f.size,0);
+  const paintRes=()=>{$('#mg-res').innerHTML=resHtml();$('#mg-res-tit').textContent=q?'Resultados da busca':(escopo==='pasta'?`Nesta pasta: ${here.name}`:(area?areaOf(area).nome:'Todos os documentos'));};
+  const paint=a=>{$('#mg-list').innerHTML=list();paintRes();$('#mg-sum').textContent=`${order.length} ${order.length===1?'arquivo':'arquivos'} · ${fmtSize(total())}${order.length>20?' · máximo de 20':''}`;
+    a.setActions([{label:'Cancelar',fn:x=>x.close()},{label:`${ic('download',14)}Unir e baixar`,kind:'pri',disabled:order.length<2||order.length>20,fn:run}]);};
+  const run=a=>{let name=$('#mg-name').value.trim()||def;if(!/\.pdf$/i.test(name))name+='.pdf';const n=order.length;
+    a.close();toast('Preparando seu download…');
+    setTimeout(()=>toast(`Download pronto: ${name} (${n} arquivos unidos)`,{kind:'ok'}),2200);S.sel.clear();render();};
+  const areaOpts=AREAS.filter(x=>!['fav','lix','tar','prz'].includes(x.k)).map(x=>`<option value="${x.k}">${esc(x.nome)}</option>`).join('');
   dialog({title:'Unir PDFs',icon:'merge',wide:true,
-    body:`${eAlert('info',{html:'Arraste para definir a ordem das páginas. Imagens (JPG/PNG) são convertidas em páginas PDF. Os arquivos originais não são alterados.'})}
-      <div id="mg-list"></div>${pickMore?`<select id="mg-add" class="form-select" aria-label="Adicionar arquivo desta pasta"></select>`:''}<span id="mg-sum" class="form-text"></span>
-      <div><label class="form-label" for="mg-name">Nome do arquivo final</label><input type="text" class="form-control" id="mg-name" value="${esc(def)}"></div>
-      <span class="form-text">${ic('folder',13)} Será salvo em: <b>${esc(pathOf(dest).map(x=>x.name).join(' / '))}</b></span>`,
-    onMount:a=>{paint(a);let from=null;const L=$('#mg-list');
+    body:`${eAlert('info',{html:'Busque arquivos em <b>qualquer pasta ou área</b> e monte a ordem. Imagens (JPG/PNG) viram páginas do PDF. Os originais não são alterados e o resultado é <b>baixado</b> (não fica salvo na plataforma).'})}
+      <div class="mg-grid">
+        <section class="mg-col" aria-label="Buscar arquivos">
+          <div class="mg-search"><span class="mg-search__ic text-secondary">${ic('search',16)}</span><input type="search" class="form-control" id="mg-q" placeholder="Buscar PDF ou imagem pelo nome…" autocomplete="off"></div>
+          <div class="mg-filters">
+            <div class="btn-group" role="group" aria-label="Onde buscar"><button type="button" class="btn btn-sm" data-esc="pasta">Esta pasta</button><button type="button" class="btn btn-sm" data-esc="todos">Todos os documentos</button></div>
+            <select id="mg-area" class="form-select form-select-sm" aria-label="Filtrar por área"><option value="">Todas as áreas</option>${areaOpts}</select>
+          </div>
+          <span class="form-label" id="mg-res-tit"></span>
+          <div id="mg-res" class="mg-res-list"></div>
+        </section>
+        <section class="mg-col" aria-label="Ordem da união">
+          <div class="mg-col__head"><span class="form-label">Ordem da união</span><span id="mg-sum" class="form-text"></span></div>
+          <div id="mg-list" class="mg-order"></div>
+          <div><label class="form-label" for="mg-name">Nome do arquivo final</label><input type="text" class="form-control" id="mg-name" value="${esc(def)}"></div>
+        </section>
+      </div>`,
+    onMount:a=>{
+      const segs=()=>$$('[data-esc]').forEach(b=>{const on=b.dataset.esc===escopo;b.className='btn btn-sm '+(on?'btn-primary':'btn-outline-secondary');b.setAttribute('aria-pressed',on);});
+      const sel=$('#mg-area');sel.disabled=escopo==='pasta';segs();paint(a);
+      let t=null;$('#mg-q').oninput=e=>{clearTimeout(t);t=setTimeout(()=>{q=e.target.value.trim();if(q&&escopo==='pasta'){escopo='todos';sel.disabled=false;segs();}paintRes();},250);};
+      $$('[data-esc]').forEach(b=>b.onclick=()=>{escopo=b.dataset.esc;sel.disabled=escopo==='pasta';if(escopo==='pasta'){area='';sel.value='';}segs();paintRes();});
+      sel.onchange=()=>{area=sel.value;paintRes();};
+      $('#mg-res').onclick=e=>{const b=e.target.closest('[data-add]');if(!b)return;const n=NODES.get(b.dataset.add);if(n&&order.length<20){order.push(n);paint(a);}};
+      let from=null;const L=$('#mg-list');
       L.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const i=+(b.dataset.up??b.dataset.dn??b.dataset.rm);
         if(b.dataset.up!=null)[order[i-1],order[i]]=[order[i],order[i-1]];else if(b.dataset.dn!=null)[order[i+1],order[i]]=[order[i],order[i+1]];else order.splice(i,1);paint(a);});
       L.addEventListener('dragstart',e=>{const o=e.target.closest('[data-o]');if(!o)return;from=+o.dataset.o;o.classList.add('is-dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','o');});
       L.addEventListener('dragover',e=>{const o=e.target.closest('[data-o]');if(!o||from==null)return;e.preventDefault();e.stopPropagation();});
       L.addEventListener('drop',e=>{const o=e.target.closest('[data-o]');if(!o||from==null)return;e.preventDefault();e.stopPropagation();const to=+o.dataset.o;const [m]=order.splice(from,1);order.splice(to,0,m);from=null;paint(a);});
       L.addEventListener('dragend',()=>{from=null;$$('.order-item',L).forEach(x=>x.classList.remove('is-dragging'));});
-      const add=$('#mg-add');if(add)add.onchange=()=>{const n=NODES.get(add.value);if(n){order.push(n);paint(a);}};}});
+      setTimeout(()=>$('#mg-q').focus(),50);}});
 }
 
 /* ---------- Diálogo: Comprimir (níveis de compressão) ---------- */
