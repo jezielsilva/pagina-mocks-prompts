@@ -418,6 +418,16 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .manage-stats .card-body{padding:8px 12px}
 .manage-sub{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 40px minmax(120px,auto);gap:8px;align-items:center}
 .manage-cat-edit{display:flex;align-items:center;gap:8px;padding:8px}
+/* Prazos próximos */
+.prz-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.prz-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid;font-size:13px;cursor:pointer;background:var(--card-bg)}
+.prz-chip--warn{border-color:var(--color-warning);color:var(--color-warning-dark);background:var(--color-warning-lightest)}
+.prz-chip--crit{border-color:var(--color-negative);color:var(--color-negative-dark);background:var(--color-negative-lightest)}
+.prz-chip:hover{filter:brightness(.97)}
+.prz-chip b{font-weight:700}
+.prz-chip__tag{background:var(--color-negative);color:var(--color-white);border-radius:999px;padding:0 7px;font:700 11px/18px var(--font-body)}
+.home-card__top{display:flex;align-items:flex-start;justify-content:space-between}
+.prz-mini{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--color-warning-lightest);color:var(--color-warning-dark);font:700 12px var(--font-body)}
 /* Novidades (sino + drawer) */
 .nt-bell{position:relative;margin-left:auto}
 .app-header .nt-bell+.ah-user{margin-left:4px}
@@ -1156,6 +1166,13 @@ const IMG_SAMPLES=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHB
 </script>
 <script>
 'use strict';
+
+/* PRAZOS EXTRA (mock): alguns arquivos de outras áreas vinculados a prazos */
+[['pre',[4]],['cli',[5,12]],['proc',[3,6,-2]],['fin',[7]]].forEach(([k,ds])=>{const fs=allFiles(k).filter(f=>f.deadline==null&&kind(f.ext)==='pdf');ds.forEach((dd,i)=>{if(fs[i])fs[i].deadline=dd;});});
+const prazoFiles=k=>!k||k==='prz'?allFiles():k==='tar'?calcList('tar'):ROOT[k]?allFiles(k):[];
+const prazoSemana=k=>prazoFiles(k).filter(f=>f.deadline!=null&&f.deadline>=0&&f.deadline<=7);
+const prazoVencidos=k=>prazoFiles(k).filter(f=>f.deadline!=null&&f.deadline<0);
+
 /* =====================================================================
    4. ESTADO DA TELA
    ===================================================================== */
@@ -1280,6 +1297,14 @@ function renderNav(){
     <div class="acc-b" id="acc-b"><div><nav class="d-flex flex-column gap-1" aria-label="Categorias">${rows}<hr>${calc}</nav></div></div>`;
   $$('#acc .nb i').forEach(x=>x.style.width=x.dataset.pct+'%');
 }
+function prazoStrip(){
+  const k=S.home?null:S.area;if(k==='lix'||k==='fav')return '';
+  const sem=prazoSemana(k),ven=prazoVencidos(k);if(!sem.length&&!ven.length)return '';
+  const hoje=sem.filter(f=>f.deadline===0).length;
+  return `<div class="prz-strip" role="status">
+    ${sem.length?`<button type="button" class="prz-chip prz-chip--warn" data-act="prz-go" data-prz="semana">${ic('clock',14)}<b>${sem.length}</b> arquivo${sem.length>1?'s':''} com prazo nos próximos 7 dias${hoje?`<span class="prz-chip__tag">${hoje} hoje</span>`:''}${ic('chev',14)}</button>`:''}
+    ${ven.length?`<button type="button" class="prz-chip prz-chip--crit" data-act="prz-go" data-prz="vencidos">${ic('clock',14)}<b>${ven.length}</b> vencido${ven.length>1?'s':''}${ic('chev',14)}</button>`:''}
+  </div>`;}
 function untypedNote(){
   if(S.tnoteHidden||S.q)return '';
   const st=semTipo();if(!st.length)return '';
@@ -1289,7 +1314,7 @@ function untypedNote(){
     acoes:`<div class="d-flex align-items-center gap-2 flex-shrink-0"><button type="button" class="btn btn-sm btn-primary rounded-pill" data-act="classify">${ic('spark',14)}Classificar agora</button><button type="button" class="btn-close" data-act="tnote-hide" aria-label="Lembrar depois">${ic('x',16)}</button></div>`});
 }
 function renderBanner(){
-  const el=$('#banner');const note=untypedNote();
+  const el=$('#banner');const note=prazoStrip()+untypedNote();
   if(S.area!=='proc'){el.innerHTML=note;return;}
   const list=allFiles('proc').filter(f=>f.deadline!=null&&f.deadline<=7).sort((a,b)=>a.deadline-b.deadline);
   if(!list.length){el.innerHTML=note;return;}
@@ -1358,7 +1383,7 @@ function renderHome(v){
   const pend=k=>(k==='tar'||k==='prz'?calcList(k):allFiles(k)).filter(f=>!f.tipo).length;
   v.innerHTML=`<div class="home-grid" role="list" aria-label="Categorias de documentos">${areas.map(a=>{const n=cnt(a.k),b=bytes(a.k),p=Math.round(b/total*100),sc=pend(a.k);
     return `<button type="button" class="home-card pal-${a.pal}" role="listitem" data-area="${a.k}" aria-label="Abrir ${esc(a.nome)}: ${n} arquivos">
-      <span class="home-card__top"><span class="home-card__ic">${ic(a.ic,20)}</span></span>
+      <span class="home-card__top"><span class="home-card__ic">${ic(a.ic,20)}</span>${(()=>{const ps=prazoSemana(a.k).length;return ps?`<span class="prz-mini" title="${ps} arquivo${ps>1?'s':''} com prazo nos próximos 7 dias">${ic('clock',12)}${ps}</span>`:'';})()}</span>
       <span class="home-card__name">${esc(a.nome)}</span>
       <span class="home-card__meta tabular-nums">${n} arquivo${n!==1?'s':''} · ${fmtSize(b)}</span>
       <span class="home-card__bar" aria-hidden="true"><i style="width:${Math.max(p,n?3:0)}%"></i></span>
@@ -2406,6 +2431,7 @@ document.addEventListener('click',e=>{
     if(k==='clear-filters'){S.f={proc:null,autor:null,prazo:null,tipo:null,ano:null,dtipo:null};closePop();render();return;}
     if(k==='empty-trash')return emptyTrash();
     if(k==='tl-more'){TL_LIMIT+=20;render();return;}
+    if(k==='prz-go'){const v=a.dataset.prz;setArea('prz');S.f.prazo=v;render();return;}
     if(k==='classify')return dlgClassify();
     if(k==='manage-cls'){closeSide();closePop();return dlgTipos();}
     if(k==='tnote-hide'){S.tnoteHidden=true;render();toast('Lembraremos você depois',{action:{label:'Classificar',fn:()=>dlgClassify()}});return;}
