@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-29T11:14",
+  "atualizado": "2026-10-29T12:03",
   "itens": [
     {
       "id": "pendencias",
@@ -14,8 +14,8 @@
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (Unir PDFs com busca em todos os documentos)",
-      "data": "2026-10-29T10:57",
+      "titulo": "Mock — Documentos (Novidades: avisos + segundo plano; Unir PDFs com busca)",
+      "data": "2026-10-29T12:03",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true

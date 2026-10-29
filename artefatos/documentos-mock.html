@@ -418,6 +418,55 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .manage-stats .card-body{padding:8px 12px}
 .manage-sub{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 40px minmax(120px,auto);gap:8px;align-items:center}
 .manage-cat-edit{display:flex;align-items:center;gap:8px;padding:8px}
+/* Novidades (sino + drawer) */
+.nt-bell{position:relative;margin-left:auto}
+.app-header .nt-bell+.ah-user{margin-left:4px}
+.nt-bell__ic{display:inline-flex}
+.nt-bell__badge{position:absolute;top:2px;right:2px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--color-negative);color:var(--color-white);font:700 10px/17px var(--font-body);text-align:center;border:2px solid var(--card-bg);box-sizing:content-box}
+.nt-bell.is-running::after{content:"";position:absolute;inset:3px;border-radius:50%;border:2px solid transparent;border-top-color:var(--color-primary);animation:nt-spin 1s linear infinite}
+@keyframes nt-spin{to{transform:rotate(360deg)}}
+.nt-drawer{width:420px;max-width:100%;box-shadow:-8px 0 24px -12px oklch(0 0 0 / .25)}
+.nt-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 14px 20px;background:linear-gradient(135deg,var(--color-primary),var(--color-primary-darken));color:var(--color-white)}
+.nt-head h2{font:700 17px/1.2 var(--font-head);color:var(--color-white)}
+.nt-head .btn-icon{color:var(--color-white)}.nt-head .btn-icon:hover{background:oklch(from var(--color-white) l c h / .15)}
+.nt-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--color-slate-200);background:var(--card-bg)}
+.nt-tabs button{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 8px;border:none;background:none;font:600 13px var(--font-head);color:var(--text-color-secondary);border-bottom:2px solid transparent;cursor:pointer}
+.nt-tabs button.on{color:var(--color-primary);border-bottom-color:var(--color-primary)}
+.nt-pill{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--color-primary-lightest);color:var(--color-primary);font:700 11px/18px var(--font-body)}
+.nt-pill:empty{display:none}
+.nt-pill.is-running{background:var(--color-primary);color:var(--color-white)}
+.nt-scroll{flex:1;overflow:auto;display:flex;flex-direction:column}
+.nt-subbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px;border-bottom:1px solid var(--color-slate-200)}
+.nt-seg{display:inline-flex;background:var(--color-slate-100);border:1px solid var(--color-slate-200);border-radius:12px;padding:3px}
+.nt-seg button{border:none;background:none;padding:6px 14px;border-radius:9px;font:600 12px var(--font-head);color:var(--text-color-secondary);cursor:pointer;display:flex;align-items:center;gap:6px}
+.nt-seg button.on{background:var(--card-bg);color:var(--text-color);box-shadow:0 1px 3px oklch(0 0 0 / .12)}
+.nt-count{min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--color-primary);color:var(--color-white);font:700 10px/16px var(--font-body)}
+.nt-hint{display:flex;align-items:center;gap:6px;font-size:12px;padding:8px 16px 0}
+.nt-list{display:flex;flex-direction:column;gap:8px;padding:12px 16px 16px}
+.nt-card{display:flex;gap:12px;padding:12px;border:1px solid var(--color-slate-200);border-radius:14px;background:var(--card-bg)}
+.nt-card.is-unread{border-left:3px solid var(--color-primary)}
+.nt-card__ic{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.nt-primary{background:var(--color-primary-lightest);color:var(--color-primary)}
+.nt-success{background:var(--color-positive-lightest);color:var(--color-positive-dark)}
+.nt-danger{background:var(--color-negative-lightest);color:var(--color-negative-dark)}
+.nt-warning{background:var(--color-warning-lightest);color:var(--color-warning-dark)}
+.nt-secondary{background:var(--color-slate-100);color:var(--color-slate-700)}
+.nt-card__body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.nt-card__top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.nt-card__top b{font:600 13px var(--font-head);color:var(--text-color);min-width:0}
+.nt-card__top small{font-size:11px;color:var(--text-color-secondary);white-space:nowrap}
+.nt-card__body>small{font-size:12px}
+.nt-prog{display:flex;align-items:center;gap:8px}.nt-prog .progressbar{flex:1}.nt-prog span{font:600 12px var(--font-body);color:var(--text-color);min-width:34px;text-align:right}
+.nt-fill-success{background:var(--color-positive)}
+.nt-err{display:flex;align-items:flex-start;gap:6px;font-size:12px;color:var(--color-negative-dark);background:var(--color-negative-lightest);border-radius:8px;padding:6px 8px}
+.nt-card__foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.nt-card__foot small{display:flex;align-items:center;gap:6px;font-size:12px}
+.nt-card__acts{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.nt-live{width:8px;height:8px;border-radius:50%;background:var(--color-positive);animation:nt-pulse 1.2s ease-in-out infinite}
+@keyframes nt-pulse{50%{opacity:.3}}
+.nt-empty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:56px 24px;text-align:center;color:var(--text-color-secondary);font-size:13px}
+.nt-empty svg{color:var(--color-primary)}.nt-empty b{color:var(--text-color);font:600 14px var(--font-head)}
+#device.m .nt-drawer{top:auto;left:0;right:0;width:auto;height:88%;border-radius:20px 20px 0 0;overflow:hidden}
 /* Mover, Unir, Comprimir */
 .tree{max-height:340px;overflow:auto;padding:6px}
 .tree-node{padding-top:6px;padding-bottom:6px}
@@ -712,7 +761,7 @@ body.framed #device.t:not(.m){width:820px}
 <body>
 <div id="device">
 <div class="app-shell">
-<header class="app-header" aria-label="Header global (produção)"><span class="ah-title">☰ Documentos <span class="text-secondary">ⓘ</span></span><div class="ah-search">🔍 Buscar processos, clientes, tarefas... <kbd>Ctrl + K</kbd></div><div class="ah-user"><span class="ah-av">JS</span><span><b>JEZIEL SILVA</b>OAB 999999 AP</span></div></header>
+<header class="app-header" aria-label="Header global (produção)"><span class="ah-title">☰ Documentos <span class="text-secondary">ⓘ</span></span><div class="ah-search">🔍 Buscar processos, clientes, tarefas... <kbd>Ctrl + K</kbd></div><button type="button" class="btn btn-icon nt-bell" data-act="notif" aria-label="Novidades"><span class="nt-bell__ic"></span><span class="nt-bell__badge" hidden></span></button><div class="ah-user"><span class="ah-av">JS</span><span><b>JEZIEL SILVA</b>OAB 999999 AP</span></div></header>
 <div class="doc-app">
   <!-- ================= CONTEÚDO ================= -->
   <main class="doc-main" id="main">
@@ -771,7 +820,7 @@ body.framed #device.t:not(.m){width:820px}
 <div id="panel"></div>
 <div id="layer"></div>
 <div class="snackbar-container" id="snackbars" role="status" aria-live="polite"></div>
-<div id="side-back" class="drawer-backdrop"></div>
+<div id="side-back" class="drawer-backdrop"></div><div id="notif-root"></div>
 <div class="dropzone-overlay" id="dropfx" aria-hidden="true"><div class="dropzone-frame"></div><div class="card dropzone-card"><span class="section-icon" id="dfx-ic"></span><span class="card-title" id="dfx-t">Solte para enviar</span><span class="badge badge-primary" id="dfx-s">em Meus documentos</span></div></div>
 </div><!-- /#device -->
 <!-- Controle apenas do protótipo — não implementar -->
@@ -834,7 +883,7 @@ const ICP={
   trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',
   more:'<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',
   chev:'<path d="M9 18l6-6-6-6"/>', chevLeft:'<path d="M15 18l-6-6 6-6"/>', chevDown:'<path d="M6 9l6 6 6-6"/>',
-  x:'<path d="M18 6L6 18M6 6l12 12"/>', check:'<path d="M20 6L9 17l-5-5"/>', plus:'<path d="M12 5v14M5 12h14"/>',
+  x:'<path d="M18 6L6 18M6 6l12 12"/>', check:'<path d="M20 6L9 17l-5-5"/>', plus:'<path d="M12 5v14M5 12h14"/>', bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>', belloff:'<path d="M8.7 3A6 6 0 0 1 18 8a21.3 21.3 0 0 0 .6 5"/><path d="M17 17H3s3-2 3-9a4.67 4.67 0 0 1 .3-1.7"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M2 2l20 20"/>', cpu:'<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9zM9 1v4M15 1v4M9 19v4M15 19v4M1 9h4M1 15h4M19 9h4M19 15h4"/>',
   eye:'<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
   open:'<path d="M14 3h7v7M10 14L21 3M21 14v7H3V3h7"/>',
   download:'<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/>', upload:'<path d="M12 21V9m0 0l-4 4m4-4l4 4M4 3h16"/>',
@@ -1475,7 +1524,7 @@ function renderMobileHead(){
     const sub=S.q?'Resultados da busca':S.home?'Todas as categorias':f.isRoot?(a.calc?'Visão automática':`${allFiles(S.area).length} arquivos`):S.path.slice(0,-1).map(p=>p.name).join(' › ');
     top=`<div class="app-bar">${back?`<button type="button" class="btn btn-icon" data-act="m-back" aria-label="Voltar">${ic('back',22)}</button>`:`<button type="button" class="btn btn-icon" data-act="open-side" aria-label="Áreas e armazenamento">${ic('menu',22)}</button>`}
       <div class="app-bar-title"><span class="card-title d-block text-truncate text-primary">${esc(S.home?'Documentos':f.isRoot?a.nome:f.name)}</span><span class="small text-secondary d-flex align-items-center gap-1 text-truncate">${!S.home&&!a.calc&&!f.isRoot?badge(d===MAX_DEPTH?'warning':'secondary',`Nível ${d}/${MAX_DEPTH}`):''}${esc(sub)}</span></div>
-      <button type="button" class="btn btn-icon" data-act="m-search" aria-label="Buscar">${ic('search',21)}</button>
+      <button type="button" class="btn btn-icon" data-act="m-search" aria-label="Buscar">${ic('search',21)}</button><button type="button" class="btn btn-icon nt-bell" data-act="notif" aria-label="Novidades"><span class="nt-bell__ic"></span><span class="nt-bell__badge" hidden></span></button>
       ${S.area==='lix'?'':`<button type="button" class="btn btn-icon btn-success" data-act="create-menu" aria-label="Novo">${ic('plus',22,2.4)}</button>`}
       <button type="button" class="btn btn-icon" data-act="m-more" aria-label="Mais opções da pasta">${ic('more',22)}</button></div>`;
   }
@@ -1766,8 +1815,7 @@ function doDownload(items){
   if(PNL.item)renderPanel();
   if(items.length===1&&items[0].type==='file'){toast(`Download iniciado: <b>${esc(items[0].name)}</b>${audit}`,{kind:'ok'});return;}
   const name=(items.length===1?items[0].name:'documentos')+'.zip';
-  snackbar({tipo:'info',texto:`Preparando <b>${esc(name)}</b> em segundo plano. Você pode continuar usando o sistema.`,duration:4000});
-  setTimeout(()=>snackbar({tipo:'success',titulo:'Download pronto',texto:`${esc(name)} · ${files.length} arquivo${files.length!==1?'s':''}${audit}`,duration:15000}),1800);
+  bgJob('zip',`Documentos - ${pad(NOW.getDate())}-${pad(NOW.getMonth()+1)}-${NOW.getFullYear()} ${pad(NOW.getHours())}${pad(NOW.getMinutes())}.zip`,files.length);
 }
 function moveItems(items,dest){
   const errs=[];let ok=0;
@@ -1824,8 +1872,7 @@ function dlgMerge(items){
   const paint=a=>{$('#mg-list').innerHTML=list();paintRes();$('#mg-sum').textContent=`${order.length} ${order.length===1?'arquivo':'arquivos'} · ${fmtSize(total())}${order.length>20?' · máximo de 20':''}`;
     a.setActions([{label:'Cancelar',fn:x=>x.close()},{label:`${ic('download',14)}Unir e baixar`,kind:'pri',disabled:order.length<2||order.length>20,fn:run}]);};
   const run=a=>{let name=$('#mg-name').value.trim()||def;if(!/\.pdf$/i.test(name))name+='.pdf';const n=order.length;
-    a.close();toast('Preparando seu download…');
-    setTimeout(()=>toast(`Download pronto: ${name} (${n} arquivos unidos)`,{kind:'ok'}),2200);S.sel.clear();render();};
+    a.close();bgJob('unir',name,n);S.sel.clear();render();};
   const areaOpts=AREAS.filter(x=>!['fav','lix','tar','prz'].includes(x.k)).map(x=>`<option value="${x.k}">${esc(x.nome)}</option>`).join('');
   dialog({title:'Unir PDFs',icon:'merge',wide:true,
     body:`${eAlert('info',{html:'Busque arquivos em <b>qualquer pasta ou área</b> e monte a ordem. Imagens (JPG/PNG) viram páginas do PDF. Os originais não são alterados e o resultado é <b>baixado</b> (não fica salvo na plataforma).'})}
@@ -2576,6 +2623,103 @@ $$('.pv [data-pv]').forEach(b=>b.onclick=()=>{PREVIEW=b.dataset.pv;$$('.pv [data
   const pet=cob.children.find(c=>c.name.startsWith('Modelo — Petição'));selectOnly(pet);
   syncQ();render();
 })();
+/* ---------- Novidades: avisos do sistema + processos em segundo plano (SignalR) ---------- */
+const NT={open:false,tab:'avisos',sub:{avisos:'nao',bg:'nao'},seq:10};
+const minAgo=m=>new Date(Date.now()-m*60000);
+NT.avisos=[
+  {id:'a1',tipo:'docs',ic:'tag',t:'56 arquivos sem classificação',x:'Classifique para encontrar seus documentos mais rápido.',acao:'Classificar',quando:minAgo(12),lida:false},
+  {id:'a2',tipo:'sistema',ic:'settings',t:'Manutenção programada',x:'Sábado, 01/11, das 22h às 23h. O sistema pode ficar instável.',quando:minAgo(95),lida:false,fixo:true},
+  {id:'a3',tipo:'novo',ic:'merge',t:'Novo: Unir PDFs de qualquer pasta',x:'Agora você busca arquivos em todos os documentos para unir.',acao:'Ver como funciona',quando:minAgo(60*5),lida:false},
+  {id:'a4',tipo:'docs',ic:'trash',t:'3 itens serão apagados da lixeira em 2 dias',x:'Restaure o que ainda precisar.',acao:'Abrir lixeira',quando:minAgo(60*26),lida:true},
+  {id:'a5',tipo:'sistema',ic:'upload',t:'Armazenamento em 43%',x:'Você ainda tem bastante espaço disponível.',quando:minAgo(60*50),lida:true}
+];
+NT.jobs=[
+  {id:'j1',tipo:'comprimir',nome:'Contrato social (2).pdf - comprimido.pdf',qtd:1,p:38,etapa:'Processando página 5 de 12',status:'andamento',quando:minAgo(1),lida:false},
+  {id:'j2',tipo:'unir',nome:'Unificado - 29-10-2026 0940.pdf',qtd:4,p:100,status:'concluido',baixado:false,expira:52,quando:minAgo(8),lida:false},
+  {id:'j3',tipo:'comprimir',nome:'Procuração assinada.pdf',qtd:1,p:20,status:'erro',erro:'PDF protegido por senha. Remova a senha e tente de novo.',quando:minAgo(20),lida:false},
+  {id:'j4',tipo:'zip',nome:'Documentos - 28-10-2026 1712.zip',qtd:18,p:100,status:'concluido',baixado:true,quando:minAgo(60*17),lida:true},
+  {id:'j5',tipo:'unir',nome:'Unificado - 28-10-2026 1530.pdf',qtd:3,p:100,status:'concluido',baixado:true,quando:minAgo(60*19),lida:true}
+];
+const JT={zip:{ic:'download',nome:'ZIP'},unir:{ic:'merge',nome:'Unir PDFs'},comprimir:{ic:'compress',nome:'Comprimir'}};
+const ago=d=>{const m=Math.round((Date.now()-d)/60000);return m<1?'agora':m<60?`há ${m} min`:m<1440?`há ${Math.round(m/60)} h`:`há ${Math.round(m/1440)} d`;};
+const ntUnread=()=>NT.avisos.filter(a=>!a.lida).length+NT.jobs.filter(j=>!j.lida).length;
+const ntRunning=()=>NT.jobs.some(j=>j.status==='andamento'||j.status==='fila');
+function paintBell(){$$('.nt-bell').forEach(b=>{b.querySelector('.nt-bell__ic').innerHTML=ic('bell',20);const n=ntUnread(),bd=b.querySelector('.nt-bell__badge');bd.hidden=!n;bd.textContent=n>9?'9+':n;b.classList.toggle('is-running',ntRunning());b.setAttribute('aria-label',`Novidades${n?` (${n} não lidas)`:''}`);});}
+const _ntRender=render;render=function(){_ntRender.apply(this,arguments);paintBell();};
+
+function etapaTxt(j){if(j.status==='fila')return 'Na fila…';if(j.status==='erro')return 'Erro';if(j.status==='cancelado')return 'Cancelado';
+  if(j.status==='concluido')return j.baixado?'Concluído · baixado':`Pronto para baixar · expira em ${j.expira||60} min`;return j.etapa||'Processando…';}
+function jobCard(j){const t=JT[j.tipo],run=j.status==='andamento'||j.status==='fila';
+  const cls=j.status==='erro'?'danger':j.status==='concluido'?'success':'primary';
+  return `<article class="nt-card ${j.lida?'':'is-unread'}" data-job="${j.id}">
+    <span class="nt-card__ic nt-${cls}">${ic(t.ic,18)}</span>
+    <div class="nt-card__body">
+      <div class="nt-card__top"><b class="text-truncate" title="${esc(j.nome)}">${esc(j.nome)}</b><small>${ago(j.quando)}</small></div>
+      <small class="text-secondary">${t.nome} · ${j.qtd} ${j.qtd===1?'arquivo':'arquivos'}</small>
+      ${j.status==='erro'?`<div class="nt-err">${ic('x',13)}${esc(j.erro)}</div>`
+        :`<div class="nt-prog"><div class="progressbar"><div class="progressbar__fill nt-fill-${cls}" style="width:${Math.min(j.p,100)}%"></div></div><span>${Math.round(Math.min(j.p,100))}%</span></div>`}
+      <div class="nt-card__foot"><small class="text-secondary">${run?`<span class="nt-live"></span>`:''}${esc(etapaTxt(j))}</small>
+        <span class="nt-card__acts">${run?`<button type="button" class="btn btn-sm btn-outline-secondary" data-jact="cancel">Cancelar</button>`:''}
+        ${j.status==='concluido'&&!j.baixado?`<button type="button" class="btn btn-sm btn-primary" data-jact="dl">${ic('download',13)}Baixar</button>`:''}
+        ${j.status==='concluido'&&j.baixado?`<button type="button" class="btn btn-sm btn-outline-secondary" data-jact="dl">${ic('download',13)}Baixar de novo</button>`:''}
+        ${j.status==='erro'||j.status==='cancelado'?`<button type="button" class="btn btn-sm btn-outline-secondary" data-jact="retry">Tentar de novo</button>`:''}
+        ${!run&&!j.lida?`<button type="button" class="btn btn-sm btn-link" data-jact="read">Marcar como lida</button>`:''}</span></div>
+    </div></article>`;}
+function avisoCard(a){return `<article class="nt-card ${a.lida?'':'is-unread'}" data-av="${a.id}">
+    <span class="nt-card__ic nt-${a.tipo==='novo'?'primary':a.tipo==='sistema'?'warning':'secondary'}">${ic(a.ic,18)}</span>
+    <div class="nt-card__body"><div class="nt-card__top"><b>${esc(a.t)}</b><small>${ago(a.quando)}</small></div>
+      <small class="text-secondary">${esc(a.x)}</small>
+      ${a.acao||!a.lida?`<div class="nt-card__foot"><span></span><span class="nt-card__acts">${a.acao?`<button type="button" class="btn btn-sm btn-outline-secondary" data-aact="go">${esc(a.acao)}</button>`:''}${!a.lida?`<button type="button" class="btn btn-sm btn-link" data-aact="read">Marcar como lida</button>`:''}</span></div>`:''}
+    </div></article>`;}
+function ntBody(){const tab=NT.tab,sub=NT.sub[tab];
+  const src=tab==='avisos'?NT.avisos:NT.jobs;const nao=src.filter(x=>!x.lida),lid=src.filter(x=>x.lida);
+  const list=(sub==='nao'?nao:lid).slice().sort((a,b)=>b.quando-a.quando);
+  const empty=sub==='nao'?{t:'Tudo em dia por aqui',x:tab==='avisos'?'Você não tem avisos não lidos.':'Nenhum processo em andamento ou aguardando você.'}:{t:'Nada por aqui ainda',x:tab==='avisos'?'Os avisos lidos ficam guardados por 30 dias.':'Os processos concluídos ficam no histórico por 7 dias.'};
+  return `<div class="nt-subbar"><div class="nt-seg" role="tablist" aria-label="Filtro de leitura">
+      <button type="button" role="tab" data-sub="nao" aria-selected="${sub==='nao'}" class="${sub==='nao'?'on':''}">Não lidas${nao.length?` <span class="nt-count">${nao.length}</span>`:''}</button>
+      <button type="button" role="tab" data-sub="lid" aria-selected="${sub==='lid'}" class="${sub==='lid'?'on':''}">Lidas</button></div>
+    ${sub==='nao'&&nao.some(x=>tab==='avisos'||!(x.status==='andamento'||x.status==='fila'))?`<button type="button" class="btn btn-sm btn-link" data-act="nt-readall">Marcar todas como lidas</button>`:''}</div>
+    ${tab==='bg'&&sub==='nao'?`<div class="nt-hint text-secondary">${ic('status',13)}Atualização em tempo real. Você pode sair desta tela: avisamos quando terminar.</div>`:''}
+    <div class="nt-list">${list.length?list.map(tab==='avisos'?avisoCard:jobCard).join(''):`<div class="nt-empty">${ic('belloff',30)}<b>${empty.t}</b><span>${empty.x}</span></div>`}</div>`;}
+function ntPaint(){if(!NT.open)return;const el=$('#nt-body');if(!el)return;el.innerHTML=ntBody();
+  const ca=NT.avisos.filter(a=>!a.lida).length,cb=NT.jobs.filter(j=>!j.lida).length;
+  $$('[data-tab]').forEach(b=>{const on=b.dataset.tab===NT.tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});
+  $('#nt-ca').textContent=ca||'';$('#nt-cb').textContent=cb||'';$('#nt-cb').classList.toggle('is-running',ntRunning());paintBell();}
+function ntOpen(tab){NT.open=true;if(tab)NT.tab=tab;const r=$('#notif-root');
+  r.innerHTML=`<div class="drawer-backdrop" data-ntx></div><aside class="drawer drawer-end nt-drawer" role="dialog" aria-modal="true" aria-label="Novidades">
+    <header class="nt-head"><h2>Novidades</h2><button type="button" class="btn btn-icon" data-ntx aria-label="Fechar">${ic('x',20)}</button></header>
+    <nav class="nt-tabs" role="tablist"><button type="button" role="tab" data-tab="avisos">${ic('bell',15)}Avisos<span class="nt-pill" id="nt-ca"></span></button>
+      <button type="button" role="tab" data-tab="bg">${ic('cpu',15)}Em segundo plano<span class="nt-pill" id="nt-cb"></span></button></nav>
+    <div id="nt-body" class="nt-scroll"></div></aside>`;ntPaint();}
+function ntClose(){NT.open=false;$('#notif-root').innerHTML='';}
+function ntDownload(j){j.baixado=true;j.lida=true;toast(`Download iniciado: <b>${esc(j.nome)}</b>`,{kind:'ok'});}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-act="notif"]')){e.preventDefault();e.stopPropagation();NT.open?ntClose():ntOpen();return;}
+  const r=e.target.closest('#notif-root');if(!r)return;
+  if(e.target.closest('[data-ntx]')){ntClose();return;}
+  const tb=e.target.closest('[data-tab]');if(tb){NT.tab=tb.dataset.tab;ntPaint();return;}
+  const sb=e.target.closest('[data-sub]');if(sb){NT.sub[NT.tab]=sb.dataset.sub;ntPaint();return;}
+  if(e.target.closest('[data-act="nt-readall"]')){(NT.tab==='avisos'?NT.avisos:NT.jobs.filter(j=>!(j.status==='andamento'||j.status==='fila'))).forEach(x=>x.lida=true);ntPaint();return;}
+  const jb=e.target.closest('[data-jact]');if(jb){const j=NT.jobs.find(x=>x.id===jb.closest('[data-job]').dataset.job),k=jb.dataset.jact;
+    if(k==='dl')ntDownload(j);else if(k==='cancel'){j.status='cancelado';j.lida=true;toast('Processo cancelado.');}
+    else if(k==='retry'){j.status='fila';j.p=0;j.lida=false;j.quando=new Date();j.erro=null;}else if(k==='read')j.lida=true;ntPaint();return;}
+  const ab=e.target.closest('[data-aact]');if(ab){const a=NT.avisos.find(x=>x.id===ab.closest('[data-av]').dataset.av);a.lida=true;
+    if(ab.dataset.aact==='go'){ntClose();toast(`Abrindo: ${esc(a.acao)}`);paintBell();return;}ntPaint();}
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&NT.open)ntClose();});
+
+/* Simulação do SignalR: progresso chega em tempo real */
+function bgJob(tipo,nome,qtd){const j={id:'j'+(++NT.seq),tipo,nome,qtd,p:0,status:'fila',quando:new Date(),lida:false};NT.jobs.push(j);
+  snackbar({tipo:'info',texto:`Preparando <b>${esc(nome)}</b> em segundo plano. Acompanhe em Novidades.`,acao:{label:'Acompanhar',fn:()=>ntOpen('bg')},duration:5000});paintBell();ntPaint();}
+setInterval(()=>{let mudou=false;NT.jobs.forEach(j=>{
+  if(j.status==='fila'){if(Math.random()<.5){j.status='andamento';mudou=true;}return;}
+  if(j.status!=='andamento')return;mudou=true;j.p+=3+Math.random()*7;
+  const tot=j.tipo==='unir'?j.qtd*3:j.tipo==='zip'?j.qtd:12;
+  j.etapa=j.p<20?`Baixando arquivos (${Math.max(1,Math.ceil(j.p/20*j.qtd))} de ${j.qtd})`:j.p<90?(j.tipo==='zip'?`Compactando ${Math.ceil(j.p/100*tot)} de ${tot}`:`Processando página ${Math.ceil(j.p/100*tot)} de ${tot}`):'Finalizando…';
+  if(j.p>=100){j.p=100;j.status='concluido';j.expira=60;
+    if(!NT.open)snackbar({tipo:'success',titulo:'Download pronto',texto:esc(j.nome),acao:{label:'Baixar',fn:()=>{ntDownload(j);paintBell();ntPaint();}},duration:12000});}});
+  if(mudou){paintBell();ntPaint();}},700);
+paintBell();
 </script>
 </body>
 </html>
