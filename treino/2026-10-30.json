@@ -1,0 +1,59 @@
+{
+ "data": "2026-10-30",
+ "dataExibicao": "sexta, 30/10",
+ "minutos": 15,
+ "intro": "Sexta! Hoje: extension method + maiúsculas, a busca com switchMap, o 5º round do unsubscribe (contando logs), guard clauses sem else e um switch expression para traduzir. Responda sempre com o RESULTADO concreto (números, texto final).",
+ "feedbackAnterior": "<p><b>Lembretes do treino de 29/10</b> (já corrigido, ~1,5/5). Você foi bem em <b>constantes</b> e em <b>filtrar no Mongo</b> 👏. Fixe estes antes de começar:</p>\n<ul>\n<li><b>Unsubscribe (5º round hoje, q3):</b> ter <code>.subscribe()</code> NÃO faz o Observable terminar. Tabela fixa: <b>termina sozinho</b> = HTTP (1 resposta e acabou). <b>NÃO termina</b> = <code>Subject</code>, <code>BehaviorSubject</code>, hub do chat, <code>interval</code>, <code>valueChanges</code>. Hoje a pergunta é de <b>contar logs</b>: imagine a tela abrindo e fechando.</li>\n<li><b>Task sem await já começa a rodar:</b> <code>var t1 = ObterA(); var t2 = ObterB(); await Task.WhenAll(t1, t2);</code> = as duas em paralelo, o tempo é o da mais lenta.</li>\n<li><b>Maiúsculas importam:</b> <code>\"pendente\" == \"PENDENTE\"</code> é <code>false</code> (aparece de novo na q1).</li>\n<li><b><code>??</code> só troca null/undefined</b>; texto vazio <code>\"\"</code> passa direto.</li>\n<li><b>forkJoin</b> = 1 emissão com os resultados juntos, quando todos completam.</li>\n</ul>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "Extension method + LINQ Count + comparação de texto",
+   "tipo": "Leitura",
+   "enunciado": "O que este código faz? Responda: (1) o que o 'this' no parâmetro significa; (2) qual o valor FINAL de 'pendentes' e de 'semStatus'; (3) por que o OrdinalIgnoreCase importa aqui.",
+   "codigo": "// Extension method: \"gruda\" um método novo na List<Documento>\npublic static class DocumentoExtensions\n{\n    public static int ContarPorStatus(this List<Documento> documentos, string status)\n    {\n        if (documentos == null)\n            return 0;\n\n        return documentos\n            .Count(d => string.Equals(d.Status, status, StringComparison.OrdinalIgnoreCase));\n    }\n}\n\n// Uso no Business:\nvar documentos = new List<Documento>\n{\n    new Documento { Nome = \"Contrato.pdf\",   Status = \"PENDENTE\" },\n    new Documento { Nome = \"Procuracao.pdf\", Status = \"pendente\" },\n    new Documento { Nome = \"RG.jpg\",         Status = \"ASSINADO\" },\n    new Documento { Nome = \"Peticao.docx\",   Status = null }\n};\n\nvar pendentes = documentos.ContarPorStatus(\"Pendente\");\nvar semStatus = documentos.ContarPorStatus(null);",
+   "gabarito": "(1) 'this List<Documento> documentos' transforma o método estático em extension method: dá para chamar como se fosse da lista (documentos.ContarPorStatus(...)), que equivale a DocumentoExtensions.ContarPorStatus(documentos, ...). (2) pendentes = 2 ('PENDENTE' e 'pendente' batem com 'Pendente' ignorando maiúsculas; ASSINADO e null não). semStatus = 1 (string.Equals(null, null) é true, então só o Peticao.docx conta). (3) Sem OrdinalIgnoreCase, 'Pendente' == 'PENDENTE' é false e o resultado seria 0.",
+   "explicacao": "Extension method é só açúcar de sintaxe: método static numa classe static, com 'this' no 1º parâmetro. string.Equals com StringComparison não estoura com null (null==null é true, null x texto é false). O '==' padrão diferencia maiúsculas."
+  },
+  {
+   "id": "q2",
+   "tema": "RxJS: debounceTime + switchMap (busca)",
+   "tipo": "Escolha",
+   "enunciado": "Campo de busca de clientes. Qual forma você escreveria? Explique o porquê e diga o problema concreto das outras se o usuário digitar 'maria' rápido (5 letras).",
+   "codigo": "// Campo de busca de clientes (digita e lista)\n// A\nthis.buscaControl.valueChanges.subscribe(texto => {\n  this.clienteService.buscar(texto).subscribe(lista => this.clientes = lista);\n});\n\n// B\nthis.clientes$ = this.buscaControl.valueChanges.pipe(\n  debounceTime(300),\n  distinctUntilChanged(),\n  switchMap(texto => this.clienteService.buscar(texto))\n);\n// no template: @for (c of clientes$ | async; track c.id) { ... }\n\n// C\nthis.clientes$ = this.buscaControl.valueChanges.pipe(\n  debounceTime(300),\n  map(texto => this.clienteService.buscar(texto))\n);",
+   "opcoes": [
+    "A — subscribe dentro de subscribe",
+    "B — debounceTime + distinctUntilChanged + switchMap + async pipe",
+    "C — debounceTime + map"
+   ],
+   "gabarito": "B. debounceTime(300) espera o usuário parar de digitar (1 chamada em vez de 5); distinctUntilChanged não repete a mesma busca; switchMap cancela a requisição anterior se vier texto novo (não aparece resultado velho); o async pipe faz o unsubscribe sozinho. A: 5 requisições ('m','ma','mar'...), a resposta de 'ma' pode chegar depois da de 'maria' e mostrar a lista errada, e o subscribe externo (valueChanges) nunca termina = vazamento. C: o map devolve um Observable DENTRO do Observable (Observable<Observable<Cliente[]>>): a requisição nem é feita, o template recebe um Observable e não a lista.",
+   "explicacao": "Regra: quando a função dentro do pipe devolve outro Observable (chamada HTTP), use switchMap (ou mergeMap/concatMap), nunca map. Versão sem pipe = A, que é exatamente o que dá race condition."
+  },
+  {
+   "id": "q3",
+   "tema": "Unsubscribe / takeUntilDestroyed (5º round — contar logs)",
+   "tipo": "Ache o bug",
+   "enunciado": "O usuário abre a tela do chat, fica 10 segundos, sai; repete isso 3 vezes; depois fica 10 segundos em OUTRA tela. (1) Quantas vezes 'marcando como lidas' aparece no console NESSES últimos 10 segundos (fora do chat)? (2) Quais dos 3 subscribes vazam? (3) Mostre a correção.",
+   "codigo": "@Component({ selector: 'app-chat-cliente', templateUrl: './chat-cliente.html' })\nexport class ChatClienteComponent implements OnInit {\n  private chatService = inject(ChatService);   // serviço singleton (providedIn: 'root')\n  mensagens: Mensagem[] = [];\n\n  ngOnInit(): void {\n    // a cada 5 segundos marca as mensagens como lidas\n    interval(5000).subscribe(() => {\n      console.log('marcando como lidas');\n      this.chatService.marcarComoLidas();\n    });\n\n    // mensagens novas que chegam pelo hub (BehaviorSubject no serviço)\n    this.chatService.mensagens$.subscribe(lista => this.mensagens = lista);\n\n    // histórico vem da API (HTTP)\n    this.chatService.obterHistorico().subscribe(h => this.mensagens = h);\n  }\n}",
+   "gabarito": "(1) 6 logs: cada abertura criou um interval que nunca para (3 intervals vivos) e cada um loga a cada 5 s → 3 × 2 = 6, mesmo fora da tela (e chamando marcarComoLidas 6 vezes!). (2) Vazam o interval e o mensagens$ (BehaviorSubject no serviço root nunca completa). O obterHistorico (HTTP) termina sozinho. (3) Adicionar .pipe(takeUntilDestroyed(this.destroyRef)) (ou takeUntilDestroyed() direto no constructor/field) no interval e no mensagens$; ou trocar o mensagens$ por async pipe no template. Ex.: private destroyRef = inject(DestroyRef); interval(5000).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(...)",
+   "explicacao": "O componente morre ao sair da tela, mas o subscribe fica preso ao Observable, que continua vivo. Ter .subscribe não termina nada: quem termina é o Observable (HTTP completa após a resposta). takeUntilDestroyed completa a assinatura quando o componente é destruído."
+  },
+  {
+   "id": "q4",
+   "tema": "Guard clauses / retorno antecipado",
+   "tipo": "Conceito",
+   "enunciado": "Este método funciona, mas está difícil de ler. (1) Qual técnica de clean code resolve isso e qual o nome dela? (2) Reescreva no seu estilo (sem else, sem if aninhado). (3) Por que o 'else' depois de um 'return' é desnecessário?",
+   "codigo": "// Retorna o documento para download, validando acesso.\npublic async Task<Retorno> ObterParaDownload(string usuarioId, string documentoId)\n{\n    var documento = await _repository.GetById(documentoId);\n    if (documento != null)\n    {\n        if (!documento.Excluido)\n        {\n            if (await _permissao.PodeVer(usuarioId, documento.ClienteId))\n            {\n                var url = await _storage.GerarUrlTemporaria(documento.Caminho);\n                return Retorno.Ok(url);\n            }\n            else\n            {\n                return Retorno.Erro(\"Sem permissão\");\n            }\n        }\n        else\n        {\n            return Retorno.Erro(\"Documento excluído\");\n        }\n    }\n    else\n    {\n        return Retorno.Erro(\"Documento não encontrado\");\n    }\n}",
+   "gabarito": "(1) Guard clauses (retorno antecipado): checar os casos de erro no topo e sair com return. (2)\nvar documento = await _repository.GetById(documentoId);\nif (documento == null)\n    return Retorno.Erro(\"Documento não encontrado\");\n\nif (documento.Excluido)\n    return Retorno.Erro(\"Documento excluído\");\n\nvar podeVer = await _permissao.PodeVer(usuarioId, documento.ClienteId);\nif (!podeVer)\n    return Retorno.Erro(\"Sem permissão\");\n\nvar url = await _storage.GerarUrlTemporaria(documento.Caminho);\nreturn Retorno.Ok(url);\n(3) Porque o return já encerra o método: se entrou no if, nunca chega à linha seguinte; o código de baixo só roda quando a condição é falsa, então o else não acrescenta nada.",
+   "explicacao": "Inverta cada condição (documento != null → == null) e retorne o erro. O caminho feliz fica no fim, sem indentação. Mesma lógica, mesmos retornos."
+  },
+  {
+   "id": "q5",
+   "tema": "switch expression + ?. (traduzir)",
+   "tipo": "Traduza",
+   "enunciado": "Reescreva no seu estilo (if com retorno antecipado ou switch clássico, sem ?.) OU explique linha a linha. Depois diga o texto retornado se hoje é 30/10 e o Prazo for: (a) 05/11; (b) null com documento preenchido; (c) documento == null.",
+   "codigo": "// Texto do badge de prazo de um documento\npublic string TextoPrazo(Documento documento) => documento?.Prazo switch\n{\n    null => \"Sem prazo\",\n    var p when p < DateTime.Today => \"Vencido\",\n    var p when p == DateTime.Today => \"Vence hoje\",\n    var p when p <= DateTime.Today.AddDays(7) => $\"Vence em {(p.Value - DateTime.Today).Days} dias\",\n    _ => \"No prazo\"\n};",
+   "gabarito": "Versão simples:\npublic string TextoPrazo(Documento documento)\n{\n    if (documento == null || documento.Prazo == null)\n        return \"Sem prazo\";\n\n    var prazo = documento.Prazo.Value;\n    var hoje = DateTime.Today;\n\n    if (prazo < hoje)\n        return \"Vencido\";\n\n    if (prazo == hoje)\n        return \"Vence hoje\";\n\n    if (prazo <= hoje.AddDays(7))\n        return $\"Vence em {(prazo - hoje).Days} dias\";\n\n    return \"No prazo\";\n}\n(a) 05/11 → 'Vence em 6 dias' (31/10 a 05/11; está dentro dos 7 dias). (b) 'Sem prazo'. (c) 'Sem prazo' — documento?.Prazo vira null, cai no case null (não estoura).",
+   "explicacao": "switch expression = cada linha é um caso testado de cima para baixo; o primeiro que bater ganha. 'var p when ...' = guarda o valor em p e testa a condição. '_' = default. '=>' no método = corpo de uma linha (return). ?. evita o NullReferenceException devolvendo null."
+  }
+ ]
+}
