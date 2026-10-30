@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-29T12:03",
+  "atualizado": "2026-10-30T08:07",
   "itens": [
     {
       "id": "pendencias",
@@ -28,6 +28,14 @@
       "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
       "data": "2026-10-23T11:50:00-03:00",
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    },
+    {
+      "id": "prompt-docs-badges-prazos",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Badges: classificação (visual) + arquivos com prazo nos próximos 7 dias",
+      "data": "2026-10-30T08:07",
+      "arquivo": "prompts/documentos-badges-prazos.txt"
     }
   ]
 }
