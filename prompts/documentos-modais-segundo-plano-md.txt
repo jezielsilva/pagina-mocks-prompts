@@ -1,0 +1,56 @@
+[Área: Frontend (Angular) + Documentação | Skills: Frontend/UI-Kit do projeto]
+
+DOCUMENTOS — MODAIS UNIR/COMPRIMIR + "EM SEGUNDO PLANO" (CONCLUÍDOS) + VARREDURA DE .MD
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Escopo: front e documentação. Não alterar API, contratos nem banco. Reutilizar componentes do UI-Kit/sistema (abas, modal, inputs, botões, alert/info). Nada de componente novo se já existir equivalente.
+
+1. MODAL "UNIR PDFs" — MELHORAR LAYOUT
+- Hoje está solto e sem hierarquia. Reorganizar:
+  - Cabeçalho padrão das modais do sistema (mesma altura/tipografia das outras modais; título "Unir PDFs").
+  - Remover a caixa azul grande do topo. Trocar por uma linha de texto secundário (12–13px) logo abaixo do título ou no rodapé: "Imagens viram páginas do PDF. Os originais não são alterados e o resultado é baixado."
+  - Duas colunas com o mesmo peso visual, mesma altura e mesmo estilo de cartão (borda do token, raio do UI-Kit, cabeçalho de coluna com título + contador):
+    - Esquerda "Adicionar arquivos": busca (input do UI-Kit com ícone) + ABAS "Esta pasta" | "Todos os documentos" usando O MESMO componente de abas de Lista/Grade da página de Documentos (sublinhado roxo, mesmo tamanho) + filtro "Todas as áreas" (select do UI-Kit) só na aba "Todos os documentos" + lista de resultados (ícone do tipo, nome, caminho em cinza, tamanho, botão "+" à direita).
+    - Direita "Ordem da união" com "N arquivos · tamanho": itens numerados com alça de arrastar, ícone, nome + caminho, ações subir/descer/remover como botões-ícone discretos do UI-Kit (sem borda quadrada destacada no X).
+  - Estado vazio das duas listas centralizado, com ícone em círculo claro e texto curto.
+  - "Nome do arquivo final" em largura total abaixo das colunas (input do UI-Kit).
+  - Rodapé: à esquerda o resumo ("3 arquivos · 2,4 MB"); à direita Cancelar (outline) + "Unir e baixar" (primário, desabilitado com menos de 2).
+- Responsivo: tablet mantém 2 colunas mais estreitas; celular empilha (Adicionar acima, Ordem abaixo) e a modal vira tela cheia/bottom sheet como as outras.
+- Comportamento atual (busca, limites, envio em segundo plano) não muda.
+
+2. MODAL "COMPRIMIR" — MELHORAR LAYOUT
+- Cabeçalho padrão; título "Comprimir arquivo" e, abaixo dele em texto secundário, o nome do arquivo (truncado com tooltip) — não o nome inteiro no título.
+- Card do arquivo no topo: ícone do tipo, nome, tamanho atual.
+- "Nível de compressão": 3 opções como cartões selecionáveis lado a lado (desktop) — Leve / Equilibrada (selo "Recomendada") / Máxima — cada um com título e uma linha de descrição (melhor qualidade de leitura / ideal para protocolo / menor tamanho). Radio do UI-Kit; selecionado = borda primária + fundo primário bem leve. No celular, empilhados.
+- REMOVER a seção "Resultado da compressão" e a opção "Substituir o arquivo original".
+- "Criar uma cópia comprimida" deixa de ser opção: vira informação (texto secundário com ícone de info, sem caixa azul grande): "Será gerada uma cópia comprimida para download. O original não é alterado. O tamanho final aparece ao concluir."
+- Rodapé: Cancelar (outline) + "Comprimir" (primário).
+- Remover do código/template qualquer estado/flag que só existia para a opção de substituir (sem mudar o contrato da API).
+
+3. "EM SEGUNDO PLANO" — ITENS CONCLUÍDOS
+- Item concluído E já lido (aba Lidas): NÃO mostrar barra nem "100%". No lugar, uma linha de informação com ícone de relógio: "Disponível para download por mais N min".
+  - N calculado a partir da expiração que a API já devolve (limite de 1 hora). Se a API não devolver a data de expiração, usar a data de conclusão + 60 min e anotar na entrega.
+  - Atualizar a contagem a cada minuto enquanto o drawer estiver aberto.
+  - Menos de 1 min: "Disponível por menos de 1 min". Expirado: "Download expirado" (texto cinza) e ocultar o botão Baixar.
+- Itens concluídos ainda não lidos e itens em andamento: manter como está (barra + %).
+- Botão "Baixar" como está.
+
+4. VARREDURA DE .MD DE DOCUMENTOS
+- Procurar no front e no back todos os arquivos .md (e .txt de documentação) relacionados ao módulo de Documentos/Nova Cloud que estejam fora do documento consolidado geral de Documentos criado nesta branch.
+- Para cada um: levar o conteúdo útil para a seção certa do consolidado (sem duplicar o que já existe; o mais recente vence em caso de conflito, registrando a divergência), e então apagar o arquivo solto.
+- Não mexer em README geral do projeto nem em docs de outros módulos.
+- Na entrega: lista dos arquivos encontrados (caminho → seção do consolidado onde entrou → apagado/mantido e por quê).
+
+Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: checklist 1–4, arquivos alterados (trechos relevantes), a lista da varredura e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

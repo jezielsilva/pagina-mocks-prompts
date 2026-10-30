@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-30T13:35",
+  "atualizado": "2026-10-30T13:41",
   "itens": [
     {
       "id": "pendencias",
@@ -46,6 +46,14 @@
       "titulo": "Prompt — Badges (correção) + prazo no preview + registro clicável nas colunas",
       "data": "2026-10-30T13:35",
       "arquivo": "prompts/documentos-badges-links.txt"
+    },
+    {
+      "id": "prompt-docs-modais-md",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Modais Unir/Comprimir + segundo plano (concluídos) + varredura de .md",
+      "data": "2026-10-30T13:41",
+      "arquivo": "prompts/documentos-modais-segundo-plano-md.txt"
     }
   ]
 }
