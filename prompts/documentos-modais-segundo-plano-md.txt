@@ -4,6 +4,16 @@ DOCUMENTOS — MODAIS UNIR/COMPRIMIR + "EM SEGUNDO PLANO" (CONCLUÍDOS) + VARRED
 Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
 Escopo: front e documentação (exceção: estimativa de tamanho do item 2, se não existir no back). Não alterar banco nem contratos existentes. Reutilizar componentes do UI-Kit/sistema (abas, modal, inputs, botões, alert/info). Nada de componente novo se já existir equivalente.
 
+MODO DE EXECUÇÃO (obrigatório — siga na ordem)
+- Faça UMA etapa por vez, na ordem dos números. Ao terminar cada etapa, PARE e me mostre: arquivos alterados + resumo em 3 linhas. Só continue quando eu disser "ok, próxima".
+- Antes de alterar, LOCALIZE e me diga quais arquivos vai mexer (caminho + motivo). Não crie arquivo novo se já existir componente/serviço equivalente — procure primeiro.
+- Não invente nomes de campos, rotas ou componentes: se não encontrar algo no código, PARE e pergunte.
+- Não reescreva arquivos inteiros: altere só os trechos necessários e mostre o diff.
+- Não toque em nada fora do escopo de cada etapa (sem refatorar, sem renomear, sem "melhorias" extras).
+- Se o link do mock não abrir no seu ambiente, use SOMENTE as medidas e textos escritos neste prompt.
+- Dúvida entre duas formas? Escolha a mais simples e explique na entrega.
+
+
 1. MODAL "UNIR PDFs" — MELHORAR LAYOUT
 - Hoje está solto e sem hierarquia. Reorganizar:
   - Cabeçalho padrão das modais do sistema (mesma altura/tipografia das outras modais; título "Unir PDFs").
