@@ -1,0 +1,57 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: Frontend/UI-Kit, Backend e Mongo do projeto]
+
+DOCUMENTOS — BADGES (CORREÇÃO) + PRAZO NO PREVIEW + REGISTRO CLICÁVEL NAS COLUNAS
+Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
+Banco: NÃO alterar. Controllers: não criar nenhuma nova. Reutilizar as modais que JÁ existem no sistema (processo, pré-processo, cliente, fornecedor, financeiro, tarefa, prazo) — não criar modal nova.
+
+1. BADGE DE CLASSIFICAÇÃO (não foi aplicado — corrigir)
+- Hoje continua como linha solta "N arquivos sem classificação  Classificar agora". Deve virar PÍLULA:
+  fundo cinza claro (slate-100), borda 1px slate-200, raio 999px, padding 6px 12px, 13px, alinhada à esquerda na linha de badges do cabeçalho.
+- Conteúdo: ícone de etiqueta + número em negrito + "sem classificação" + divisor vertical fino (1px slate-300, altura do texto) + link "Classificar agora" (cor primária, semibold, sublinhado) abrindo o fluxo de classificação atual.
+- Cartões da home: rodapé "N sem classificação" vira mini pílula cinza (12px semibold). Contagem igual à de hoje.
+
+2. BADGES DE PRAZO NO CABEÇALHO (não aparecem — implementar)
+- Regra: contar ARQUIVOS vinculados a prazos não concluídos, com vencimento de hoje até 7 dias (data local do Brasil) e, separado, os vencidos. Fora: prazo concluído/cancelado, arquivo na lixeira ou pendente. Respeitar permissões/escopo do adicional; sem permissão de Prazos ExibirLista → não mostrar.
+- Back: contagem no Mongo (agregação, não em memória), total + venceHoje + vencidos + por área, no resumo que a tela já consome ou em método novo na MESMA controller. Explicar na entrega como arquivo↔prazo se ligam.
+- Front, na mesma linha, à direita do badge de classificação:
+  - pílula amarela (warning-lightest / borda warning / texto warning-dark): relógio + número + "arquivo(s) com prazo nos próximos 7 dias" + selo vermelho "N hoje" (só se > 0) + chevron;
+  - pílula vermelha (negative-lightest / negative / negative-dark): relógio + número + "vencido(s)" + chevron (só se > 0).
+- Home = tudo; dentro da área = só aquela área; nada em Lixeira/Favoritos. Ocultar com 0.
+- Clique: abre a área Prazos filtrada ("Próximos 7 dias" / "Vencidos") listando os arquivos.
+- Home: mini pílula amarela (relógio + número) no canto superior direito do cartão da área.
+- Front só exibe números do back.
+
+3. SELO DE PRAZO NO ARQUIVO (lista/grade)
+- Manter só o ícone (sem texto "vence em X dias" na lista).
+- Corrigir: o ícone de relógio não está centralizado na bolinha laranja. Bolinha com tamanho fixo e display:grid; place-items:center; ícone ~12px.
+- Tooltip no selo: "Vence hoje" / "Vence em N dias" / "Vencido há N dias".
+
+4. PRAZO NO PREVIEW DO ARQUIVO (drawer/painel)
+- Junto do badge que já existe, mostrar o aviso do prazo vinculado: "Este prazo vence hoje" (vermelho), "Vence em N dias" (amarelo até 7 dias; neutro depois), "Vencido há N dias" (vermelho), com nome do prazo e data.
+- O nome do prazo vira link (cor primária) que abre a MODAL DE PRAZO padrão do sistema. Só clicável com permissão de Prazos; sem permissão, texto normal.
+- Mais de um prazo vinculado: listar todos (o mais próximo primeiro).
+
+5. REGISTRO CLICÁVEL NO TOPO DA COLUNA
+- Ao abrir um registro nas colunas (ex.: Processos → número do processo), o título da coluna desse registro vira LINK roxo (cor primária, hover sublinhado, cursor pointer, foco visível) que abre a MODAL PADRÃO daquele registro com todas as informações:
+  Processos → processo; Pré-processos → pré-processo; Clientes → cliente; Fornecedores → fornecedor; Financeiro → lançamento; Tarefas → tarefa; Prazos → prazo.
+- Aplicar também no título do cabeçalho da página (ao lado de Lista/Grade) e no último item do breadcrumb quando for registro.
+- Só para registros de áreas automáticas (não em pastas comuns nem nas raízes das áreas).
+- Respeitar a permissão de cada área (as chaves já usadas); sem permissão → texto normal, sem link.
+- Tooltip: "Abrir processo" (cliente, tarefa…). Fechar a modal volta para a mesma tela, sem recarregar a lista.
+- Registro excluído/inexistente: snackbar "Registro não encontrado" e manter o texto.
+
+Seguir o UI-Kit (tokens, pílulas, links). Responsivo: pílulas quebram linha no tablet/celular; no celular textos curtos ("8 em 7 dias", "1 vencido").
+Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: checklist 1–5, como arquivo↔prazo se ligam, arquivos alterados (trechos relevantes) e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
