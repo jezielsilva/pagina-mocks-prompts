@@ -7,6 +7,7 @@ SEUS TESTES MANUAIS
 [ ] 3. Usuário adicional (escopo restrito)
 
 PRÓXIMAS IMPLEMENTAÇÕES
+[ ] 5. dar uma olhada nos logs em geral
 [ ] 6. Varredura de .md soltos criados no projeto
 
 DECISÕES SUAS
