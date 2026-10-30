@@ -7,7 +7,6 @@ SEUS TESTES MANUAIS
 [ ] 3. Usuário adicional (escopo restrito)
 
 PRÓXIMAS IMPLEMENTAÇÕES
-[ ] 4. verificar se em prod fornecedor ta salvando igual na nossa branch pra validar e prazo provalemente ta diferente tambem
 [ ] 5. aplicar documentos vinculados a prazos e badges como no mock
 [ ] 6. Varredura de .md soltos criados no projeto
 
