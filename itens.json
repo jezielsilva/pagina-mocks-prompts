@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-10-30T09:50",
+  "atualizado": "2026-10-30T13:35",
   "itens": [
     {
       "id": "pendencias",
@@ -30,14 +30,6 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "prompt-docs-badges-prazos",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Codex",
-      "titulo": "Prompt — Badges: classificação (visual) + arquivos com prazo nos próximos 7 dias",
-      "data": "2026-10-30T08:07",
-      "arquivo": "prompts/documentos-badges-prazos.txt"
-    },
-    {
       "id": "treino-2026-10-30",
       "tipo": "artefato",
       "treino": true,
@@ -46,6 +38,14 @@
       "titulo": "Treino de sexta, 30/10 — 5 perguntas",
       "data": "2026-10-30T09:50:00-03:00",
       "arquivo": "treino/index.html?d=2026-10-30"
+    },
+    {
+      "id": "prompt-docs-badges-links",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Badges (correção) + prazo no preview + registro clicável nas colunas",
+      "data": "2026-10-30T13:35",
+      "arquivo": "prompts/documentos-badges-links.txt"
     }
   ]
 }
