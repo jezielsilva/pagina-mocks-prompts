@@ -2,7 +2,7 @@
 
 DOCUMENTOS — MODAIS UNIR/COMPRIMIR + "EM SEGUNDO PLANO" (CONCLUÍDOS) + VARREDURA DE .MD
 Mock: https://jezielsilva.github.io/pagina-mocks-prompts/#documentos-mock
-Escopo: front e documentação. Não alterar API, contratos nem banco. Reutilizar componentes do UI-Kit/sistema (abas, modal, inputs, botões, alert/info). Nada de componente novo se já existir equivalente.
+Escopo: front e documentação (exceção: estimativa de tamanho do item 2, se não existir no back). Não alterar banco nem contratos existentes. Reutilizar componentes do UI-Kit/sistema (abas, modal, inputs, botões, alert/info). Nada de componente novo se já existir equivalente.
 
 1. MODAL "UNIR PDFs" — MELHORAR LAYOUT
 - Hoje está solto e sem hierarquia. Reorganizar:
@@ -22,7 +22,11 @@ Escopo: front e documentação. Não alterar API, contratos nem banco. Reutiliza
 - Card do arquivo no topo: ícone do tipo, nome, tamanho atual.
 - "Nível de compressão": 3 opções como cartões selecionáveis lado a lado (desktop) — Leve / Equilibrada (selo "Recomendada") / Máxima — cada um com título e uma linha de descrição (melhor qualidade de leitura / ideal para protocolo / menor tamanho). Radio do UI-Kit; selecionado = borda primária + fundo primário bem leve. No celular, empilhados.
 - REMOVER a seção "Resultado da compressão" e a opção "Substituir o arquivo original".
-- "Criar uma cópia comprimida" deixa de ser opção: vira informação (texto secundário com ícone de info, sem caixa azul grande): "Será gerada uma cópia comprimida para download. O original não é alterado. O tamanho final aparece ao concluir."
+- "Criar uma cópia comprimida" deixa de ser opção: vira informação (texto secundário com ícone de info, sem caixa azul grande): "Será gerada uma cópia comprimida para download. O original não é alterado."
+- TAMANHO ESTIMADO (como no mock): abaixo dos níveis, linha "Tamanho estimado: 2,3 MB → ~1,0 MB (−55%)", atualizada ao trocar o nível.
+  - A estimativa vem do BACK (fator por nível e tipo de arquivo que o worker já usa: leve/equilibrada/máxima). Se ainda não existir, criar um método leve de estimativa na MESMA controller de processamento (sem processar o arquivo, só cálculo por fator) e explicar na entrega.
+  - Exibir com "~" e texto secundário "estimativa; o tamanho real aparece ao concluir". Em PDF já otimizado (fator ≥ 0,95), mostrar "Este arquivo já parece otimizado; a redução pode ser pequena".
+  - Remover o aviso antigo "O tamanho final será informado após a compressão".
 - Rodapé: Cancelar (outline) + "Comprimir" (primário).
 - Remover do código/template qualquer estado/flag que só existia para a opção de substituir (sem mudar o contrato da API).
 
