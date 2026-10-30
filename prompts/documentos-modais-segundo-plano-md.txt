@@ -10,7 +10,13 @@ Escopo: front e documentação (exceção: estimativa de tamanho do item 2, se n
   - Remover a caixa azul grande do topo. Trocar por uma linha de texto secundário (12–13px) logo abaixo do título ou no rodapé: "Imagens viram páginas do PDF. Os originais não são alterados e o resultado é baixado."
   - Duas colunas com o mesmo peso visual, mesma altura e mesmo estilo de cartão (borda do token, raio do UI-Kit, cabeçalho de coluna com título + contador):
     - Esquerda "Adicionar arquivos": busca (input do UI-Kit com ícone) + ABAS "Esta pasta" | "Todos os documentos" usando O MESMO componente de abas de Lista/Grade da página de Documentos (sublinhado roxo, mesmo tamanho) + filtro "Todas as áreas" (select do UI-Kit) só na aba "Todos os documentos" + lista de resultados (ícone do tipo, nome, caminho em cinza, tamanho, botão "+" à direita).
-    - Direita "Ordem da união" com "N arquivos · tamanho": itens numerados com alça de arrastar, ícone, nome + caminho, ações subir/descer/remover como botões-ícone discretos do UI-Kit (sem borda quadrada destacada no X).
+    - Direita "Ordem da união": copiar EXATAMENTE o layout do mock (abrir Unir PDFs no mock e comparar):
+      - cabeçalho da coluna: "Ordem da união" (form-label) à esquerda e "N arquivos · tamanho" (texto secundário 12px) à direita, na mesma linha;
+      - lista dentro de uma caixa com borda 1px do token (slate-200), raio 12px, padding 4px, altura fixa ~300px com rolagem interna;
+      - cada item em linha (gap ~6–10px, padding 8px 10px, raio 10px, divisor fino entre itens): alça de arrastar (grip cinza) → número em badge roxo claro redondo → ícone do tipo → bloco de texto com nome (truncado) e, embaixo, o caminho/área em 12px cinza → botões-ícone pequenos sem borda: subir ↑, descer ↓ (desabilitados no primeiro/último) e remover ✕;
+      - sem mostrar o tamanho de cada item na linha (só no total do cabeçalho);
+      - arrastando: item com opacidade reduzida; arrastar-e-soltar + botões funcionam juntos;
+      - vazio: ícone de unir + "Adicione pelo menos 2 arquivos pela busca ao lado." centralizado.
   - Estado vazio das duas listas centralizado, com ícone em círculo claro e texto curto.
   - "Nome do arquivo final" em largura total abaixo das colunas (input do UI-Kit).
   - Rodapé: à esquerda o resumo ("3 arquivos · 2,4 MB"); à direita Cancelar (outline) + "Unir e baixar" (primário, desabilitado com menos de 2).
