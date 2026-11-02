@@ -1,0 +1,60 @@
+{
+ "data": "2026-11-02",
+ "dataExibicao": "segunda, 02/11",
+ "minutos": 15,
+ "intro": "Começo de semana! Hoje: Task.WhenAll com tempo real, o 6º round do unsubscribe (agora escolhendo a forma certa), First em lista vazia, índice composto no Mongo e ?. + ?? para traduzir. Responda sempre com o RESULTADO concreto (números, texto final).",
+ "feedbackAnterior": "<p><b>O treino de sexta (30/10) ficou sem resposta</b> — sem problema, ele continua no portal se quiser fazer. Hoje o <b>unsubscribe</b> volta (q2) num formato novo: em vez de achar o bug, você escolhe a forma certa.</p>\n<ul>\n<li><b>Tabela fixa:</b> termina sozinho = HTTP. NÃO termina = <code>Subject</code>, <code>BehaviorSubject</code>, hub do chat, <code>interval</code>, <code>valueChanges</code>. Ter <code>.subscribe()</code> não faz terminar.</li>\n<li><b>Task sem await já começa a rodar</b>; <code>await Task.WhenAll(t1, t2)</code> = paralelo, tempo da mais lenta (q1).</li>\n<li><b><code>??</code> só troca null</b>; texto vazio <code>\"\"</code> passa direto (q5).</li>\n</ul>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "async/await + Task.WhenAll",
+   "tipo": "Leitura",
+   "enunciado": "O que este código faz? Responda: (1) as 3 consultas rodam em sequência ou ao mesmo tempo? Em que linha cada uma COMEÇA? (2) Quanto tempo, mais ou menos, o método leva no total? (3) O que o dashboard retorna se o cliente tiver 4 documentos (1 com Pendente = true), 2 prazos e 10 mensagens (3 não lidas)?",
+   "codigo": "// Monta o resumo do cliente para o dashboard.\n// Tempos médios: documentos = 300 ms, prazos = 500 ms, mensagens = 200 ms\npublic async Task<ResumoClienteDto> ObterResumo(string clienteId)\n{\n    var tarefaDocumentos = _documentoRepository.ListarPorCliente(clienteId);\n    var tarefaPrazos = _prazoRepository.ListarPorCliente(clienteId);\n    var tarefaMensagens = _mensagemRepository.ListarPorCliente(clienteId);\n\n    await Task.WhenAll(tarefaDocumentos, tarefaPrazos, tarefaMensagens);\n\n    var documentos = tarefaDocumentos.Result;\n    var prazos = tarefaPrazos.Result;\n    var mensagens = tarefaMensagens.Result;\n\n    return new ResumoClienteDto\n    {\n        TotalDocumentos = documentos.Count,\n        DocumentosPendentes = documentos.Count(d => d.Pendente),\n        TotalPrazos = prazos.Count,\n        MensagensNaoLidas = mensagens.Count(m => !m.Lida)\n    };\n}",
+   "gabarito": "(1) Ao mesmo tempo: cada uma COMEÇA na própria linha 'var tarefaX = ...ListarPorCliente(...)' (chamar um método async sem await já dispara a consulta e devolve a Task 'em andamento'). O await Task.WhenAll só espera as 3 terminarem. (2) ~500 ms (o tempo da mais lenta, prazos), e não 300+500+200 = 1000 ms. (3) TotalDocumentos = 4, DocumentosPendentes = 1, TotalPrazos = 2, MensagensNaoLidas = 3.",
+   "explicacao": "Task = 'promessa de resultado'. A consulta começa quando o método é chamado; o await é só 'espere aqui'. Com await em cada linha (var docs = await ...; var prazos = await ...) seria sequencial = ~1000 ms. Depois do WhenAll, .Result não trava porque a Task já terminou (poderia ser 'await tarefaDocumentos' também)."
+  },
+  {
+   "id": "q2",
+   "tema": "Unsubscribe / takeUntilDestroyed (6º round — escolher)",
+   "tipo": "Escolha",
+   "enunciado": "O serviço FiltroDocumentosService (providedIn: 'root') tem um filtros$ que é um BehaviorSubject. O componente da lista precisa reagir a cada mudança de filtro. Qual (ou quais) forma(s) você escreveria? Para CADA opção diga: vaza ou não vaza, e por quê. Bônus: se o usuário abrir e fechar a tela 4 vezes com a opção A e depois mudar o filtro 1 vez em outra tela, quantas vezes 'filtro mudou' aparece no console?",
+   "codigo": "// A\nngOnInit(): void {\n  this.filtroService.filtros$.subscribe(filtros => {\n    console.log('filtro mudou');\n    this.carregar(filtros);\n  });\n}\n\n// B\nprivate destroyRef = inject(DestroyRef);\nngOnInit(): void {\n  this.filtroService.filtros$\n    .pipe(takeUntilDestroyed(this.destroyRef))\n    .subscribe(filtros => {\n      console.log('filtro mudou');\n      this.carregar(filtros);\n    });\n}\n\n// C\nngOnInit(): void {\n  this.filtroService.filtros$\n    .pipe(take(1))\n    .subscribe(filtros => this.carregar(filtros));\n}\n\n// D  (no template: @if (filtros$ | async; as filtros) { ... })\nfiltros$ = this.filtroService.filtros$;",
+   "opcoes": [
+    "A — subscribe simples no ngOnInit",
+    "B — pipe(takeUntilDestroyed(this.destroyRef)) + subscribe",
+    "C — pipe(take(1)) + subscribe",
+    "D — async pipe no template"
+   ],
+   "gabarito": "B (no seu estilo) ou D. A: VAZA — o BehaviorSubject vive no serviço root e nunca completa; cada abertura da tela deixa uma assinatura viva. Bônus: 4 logs (as 4 assinaturas antigas continuam ouvindo, mesmo fora da tela, e chamam carregar 4 vezes). B: não vaza — takeUntilDestroyed encerra a assinatura quando o componente é destruído. C: não vaza (take(1) pega o 1º valor e completa), MAS está ERRADO para o requisito: só lê o filtro atual uma vez e ignora as mudanças seguintes. D: não vaza — o async pipe faz subscribe/unsubscribe sozinho junto com o template.",
+   "explicacao": "Quem decide se termina é o Observable, não o subscribe. BehaviorSubject em serviço root = vive enquanto o app estiver aberto. take(1) resolve vazamento, mas muda o comportamento (só 1 valor). Regra prática do seu perfil: todo subscribe em Subject/BehaviorSubject/hub/interval/valueChanges leva .pipe(takeUntilDestroyed(this.destroyRef))."
+  },
+  {
+   "id": "q3",
+   "tema": "LINQ: First × FirstOrDefault (lista vazia)",
+   "tipo": "Ache o bug",
+   "enunciado": "Este método estoura em produção para alguns clientes. (1) Qual linha estoura, com qual exceção e em que situação? (2) Corrija no seu estilo (guard clause + objeto de resultado). (3) Por que o '?? \"Sem telefone\"' NÃO protege aqui?",
+   "codigo": "// Retorna o telefone do contato principal do cliente para o envio de aviso.\npublic async Task<Retorno> ObterTelefonePrincipal(string clienteId)\n{\n    var cliente = await _clienteRepository.GetById(clienteId);\n    if (cliente == null)\n        return Retorno.Erro(\"Cliente não encontrado\");\n\n    var contatoPrincipal = cliente.Contatos\n        .Where(c => c.Ativo)\n        .First(c => c.Principal);\n\n    var telefone = contatoPrincipal.Telefone ?? \"Sem telefone\";\n\n    return Retorno.Ok(telefone);\n}",
+   "gabarito": "(1) A linha do '.First(c => c.Principal)': lança InvalidOperationException ('Sequence contains no matching element') quando o cliente não tem nenhum contato ativo marcado como principal (ou não tem contatos). Se cliente.Contatos vier null do Mongo, estoura antes com ArgumentNullException no Where. (2)\nif (cliente.Contatos == null)\n    return Retorno.Erro(\"Cliente sem contatos\");\n\nvar contatoPrincipal = cliente.Contatos\n    .Where(c => c.Ativo)\n    .FirstOrDefault(c => c.Principal);\n\nif (contatoPrincipal == null)\n    return Retorno.Erro(\"Cliente sem contato principal ativo\");\n\nvar telefone = contatoPrincipal.Telefone ?? \"Sem telefone\";\nreturn Retorno.Ok(telefone);\n(3) Porque a exceção acontece ANTES, dentro do First; a linha do ?? nem chega a rodar. O ?? só trata Telefone == null, não 'contato inexistente'.",
+   "explicacao": "First = 'tem que existir, senão exceção'. FirstOrDefault = 'se não existir, devolve null' (para classes). Use First só quando a ausência for um erro inesperado; para regra de negócio, FirstOrDefault + if == null + Retorno.Erro."
+  },
+  {
+   "id": "q4",
+   "tema": "Mongo: índice composto (ordem dos campos)",
+   "tipo": "Conceito",
+   "enunciado": "A tela de documentos faz SEMPRE esta consulta (abaixo) e a coleção tem 2 milhões de documentos. (1) Qual índice você criaria: A, B ou C? Por quê? (2) O que acontece no Mongo se não houver índice nenhum (diga o nome do plano: COLLSCAN ou IXSCAN)? (3) Por que a ordem dos campos dentro do índice importa?",
+   "codigo": "// Consulta da lista de documentos do cliente (mais recentes primeiro)\nvar filtro = Builders<Documento>.Filter.Eq(d => d.ClienteId, clienteId)\n           & Builders<Documento>.Filter.Eq(d => d.Excluido, false);\n\nvar documentos = await _colecao\n    .Find(filtro)\n    .SortByDescending(d => d.DataCriacao)\n    .Limit(50)\n    .ToListAsync();\n\n// Opções de índice:\n// A: { DataCriacao: -1 }\n// B: { ClienteId: 1, Excluido: 1, DataCriacao: -1 }\n// C: { DataCriacao: -1, Excluido: 1, ClienteId: 1 }",
+   "gabarito": "(1) B. Primeiro os campos de igualdade (ClienteId, Excluido), depois o campo de ordenação (DataCriacao): o Mongo vai direto para 'os documentos daquele cliente, não excluídos', já na ordem de data, e lê só os 50 que precisa. A só ajuda a ordenar: percorre os documentos de todos os clientes por data até achar 50 do cliente. C começa pela data, então também mistura todos os clientes. (2) COLLSCAN: lê os 2 milhões de documentos, filtra e ainda ordena em memória (pode até estourar o limite de memória do sort). Com B o plano é IXSCAN. (3) O índice é como uma lista telefônica ordenada por sobrenome, depois nome: dá para achar 'Silva, Jeziel' rápido, mas não 'todos os Jeziel'. O índice só é bem aproveitado a partir do PRIMEIRO campo.",
+   "explicacao": "Regra ESR: Igualdade → Sort (ordenação) → Range (faixa, ex.: data >= x). Crie o índice pensando na consulta que a tela faz SEMPRE. Para conferir: .explain() no Mongo e procure IXSCAN × COLLSCAN e 'totalDocsExamined'."
+  },
+  {
+   "id": "q5",
+   "tema": "Nulos: ?. e ?? (traduzir)",
+   "tipo": "Traduza",
+   "enunciado": "Reescreva no seu estilo (if explícito, sem ?. e ??) OU explique linha a linha. Depois diga o valor de 'nomeExibicao' e de 'cidade' em cada caso: (a) cliente com Apelido = \"Zé\", Nome = \"José\", Endereco.Cidade = \"Recife\"; (b) Apelido = null, Nome = \"Maria\", Endereco = null; (c) Apelido = \"\" (texto vazio), Nome = \"Ana\", Endereco.Cidade = null; (d) cliente == null.",
+   "codigo": "// Monta os textos do card do cliente\nvar nomeExibicao = cliente?.Apelido ?? cliente?.Nome ?? \"Sem nome\";\nvar cidade = cliente?.Endereco?.Cidade ?? \"Sem cidade\";",
+   "gabarito": "Versão simples:\nvar nomeExibicao = \"Sem nome\";\nif (cliente != null && cliente.Apelido != null)\n    nomeExibicao = cliente.Apelido;\nelse if (cliente != null && cliente.Nome != null)\n    nomeExibicao = cliente.Nome;\n\nvar cidade = \"Sem cidade\";\nif (cliente != null && cliente.Endereco != null && cliente.Endereco.Cidade != null)\n    cidade = cliente.Endereco.Cidade;\n(a) \"Zé\" / \"Recife\". (b) \"Maria\" / \"Sem cidade\" (Endereco null → ?. devolve null → ??). (c) \"\" (texto VAZIO, não 'Ana' — ?? só troca null) / \"Sem cidade\". (d) \"Sem nome\" / \"Sem cidade\" (não estoura).",
+   "explicacao": "?. = 'se o da esquerda for null, pare e devolva null' (sem NullReferenceException). ?? = 'se o da esquerda for null, use o da direita'; lê-se da esquerda para a direita e o primeiro não-null ganha. Texto vazio não é null: para tratar também \"\", use string.IsNullOrWhiteSpace(cliente.Apelido)."
+  }
+ ]
+}
