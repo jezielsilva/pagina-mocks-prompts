@@ -674,8 +674,28 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 #device.m .batch-bar .batch-count{display:none}
 #device.m .uploads-dock{left:8px;right:8px;width:auto;bottom:16px}
 #device.m .snackbar-container{left:12px;right:12px;align-items:stretch}
-#device.m .classify-row{flex-wrap:wrap}
-#device.m .classify-row .picker-trigger{flex:1;max-width:none}
+/* Classificar — celular/tablet (desktop inalterado) */
+.classify-label,.classify-ok__txt,.classify-prog,.classify-help{display:none}
+#device.m .classify-prog,#device.t .classify-prog{display:flex;align-items:center;gap:10px;margin-top:8px}
+.classify-prog .progressbar{flex:1}.classify-prog span{font:600 13px var(--font-body);color:var(--text-color-secondary);white-space:nowrap}
+#device.m .classify-help,#device.t .classify-help{display:block;margin-top:6px;font-size:14px;color:var(--text-color-secondary);line-height:1.4}
+#device.m .classify-head .card-title,#device.t .classify-head .card-title{font-size:17px}
+#device.m .classify-list,#device.t .classify-list{display:flex;flex-direction:column;gap:10px;border-top:none!important;padding-top:12px}
+#device.m .classify-row,#device.t .classify-row{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px 12px;align-items:start;padding:14px;border:1px solid var(--color-slate-200)!important;border-radius:14px;background:var(--card-bg);max-height:none}
+#device.m .classify-row .compact-thumb,#device.t .classify-row .compact-thumb{width:48px;height:48px}
+#device.m .classify-row .fw-semibold,#device.t .classify-row .fw-semibold{font-size:16px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#device.m .classify-row .small,#device.t .classify-row .small{font-size:13px}
+#device.m .classify-field,#device.t .classify-field{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+#device.m .classify-label,#device.t .classify-label{display:block;font:600 14px var(--font-head);color:var(--text-color)}
+#device.m .classify-row .picker-trigger,#device.t .classify-row .picker-trigger{width:100%;max-width:none;min-height:48px;font-size:16px;padding:10px 14px;border-radius:12px}
+#device.m .classify-ok,#device.t .classify-ok{grid-column:1/-1;min-height:48px;font-size:16px;font-weight:600;gap:8px;justify-content:center;border-radius:999px}
+#device.m .classify-ok__txt,#device.t .classify-ok__txt{display:inline}
+#device.m .classify-ok:disabled,#device.t .classify-ok:disabled{background:var(--color-slate-100);border-color:var(--color-slate-200);color:var(--text-color-secondary);opacity:1}
+#device.t:not(.m) .classify-row{grid-template-columns:48px minmax(0,1fr) minmax(260px,1.1fr) auto;align-items:center}
+#device.t:not(.m) .classify-field{grid-column:auto}
+#device.t:not(.m) .classify-ok{grid-column:auto;padding:0 20px;align-self:end}
+#device.m .picker-inline,#device.t .picker-inline{padding:12px;margin:-4px 0 6px;border:1px solid var(--color-primary)!important;border-radius:14px;font-size:15px}
+#device.m .picker-inline .list-group-item,#device.t .picker-inline .list-group-item,#device.m .picker-inline button,#device.t .picker-inline button{min-height:44px}
 #device.m .manage-sub{grid-template-columns:1fr 40px auto}
 #device.m .manage-sub [data-kw]{grid-column:1/-1;grid-row:2}
 #device.m .manage-sub-head{display:none}
@@ -2025,11 +2045,14 @@ function dlgClassify(files){
     <div class="flex-fill d-flex flex-column gap-1"><span class="fw-semibold text-truncate">${esc(f.name)}</span><span class="small text-secondary text-truncate">${esc(locationOf(f))}</span>
       ${s?`<span class="d-flex align-items-center gap-1 flex-wrap small">${ic('spark',12)}Sugestão: ${catBadge(t.cor,esc(curto(t.nome)))}<span class="text-secondary">${esc(t.cat.grupo)} › ${esc(t.cat.nome)}</span>${confBadge(s.conf)}</span><span class="small text-secondary">${esc(s.why.join(' · '))}</span>`:''}
       ${p.sug.length>1?`<span class="d-flex gap-1 flex-wrap">${p.sug.slice(1).map(a=>`<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-alt="${f.id}|${a.tipo}">${esc(curto(tipoById(a.tipo).nome))} ${a.conf}%</button>`).join('')}</span>`:''}</div>
-    ${pickerTrigger(pk,`data-edit="${f.id}" aria-expanded="${editing===f.id}"`)}
-    <button type="button" class="btn btn-sm btn-success rounded-pill" data-ok="${f.id}" ${p.pick?'':'disabled'} aria-label="Confirmar classificação de ${esc(f.name)}">${ic('check',14,3)}</button></div>
+    <div class="classify-field"><span class="classify-label">Tipo do documento</span>${pickerTrigger(pk,`data-edit="${f.id}" aria-expanded="${editing===f.id}"`)}</div>
+    <button type="button" class="btn btn-sm btn-success rounded-pill classify-ok" data-ok="${f.id}" ${p.pick?'':'disabled'} aria-label="Confirmar classificação de ${esc(f.name)}">${ic('check',14,3)}<span class="classify-ok__txt">${p.pick?'Salvar':'Escolha o tipo'}</span></button></div>
     ${editing===f.id?`<div class="picker-inline border-bottom" data-pk="${f.id}"></div>`:''}`;};
   const head=()=>{const left=pend.size,conf=[...pend.values()].filter(p=>p.sug[0]&&p.sug[0].conf>=80).length;
-    return `<div class="d-flex align-items-center gap-3 flex-wrap"><div class="flex-fill"><span class="card-title d-block">${left} arquivo${left!==1?'s':''} sem classificação</span>${done?`<span class="small text-secondary">${done} classificado${done>1?'s':''} agora</span>`:''}</div>
+    const tot=left+done,pct=tot?Math.round(done/tot*100):0;
+    return `<div class="d-flex align-items-center gap-3 flex-wrap classify-head"><div class="flex-fill"><span class="card-title d-block">${left} arquivo${left!==1?'s':''} sem classificação</span>${done?`<span class="small text-secondary">${done} classificado${done>1?'s':''} agora</span>`:''}
+      <div class="classify-prog"><div class="progressbar"><div class="progressbar__fill" style="width:${pct}%"></div></div><span>${done} de ${tot}</span></div>
+      <span class="classify-help">Escolha o tipo de cada arquivo e toque em <b>Salvar</b>. Você pode parar quando quiser.</span></div>
       ${conf?`<button type="button" class="btn btn-sm btn-success rounded-pill" data-bulk>${ic('spark',14)}Aplicar ${conf} sugest${conf>1?'ões':'ão'} confiáve${conf>1?'is':'l'} (≥ 80%)</button>`:''}</div>`;};
   const paint=a=>{a.body.innerHTML=head()+(pend.size?`<div class="classify-list border-top">${[...pend.values()].map(row).join('')}</div>`:eAlert('positive',{titulo:'Tudo classificado!',html:learned.length?`O sistema aprendeu: ${learned.map(l=>`“${esc(l.w)}” → ${esc(l.t)}`).join(', ')}.`:''}));
     if(editing){const box=$(`[data-pk="${editing}"]`,a.body),p=pend.get(editing);if(box&&p)mountPicker(box,{q:'',pick:p.pick,sug:p.sug,open:new Set()},id=>{p.pick=id;editing=null;paint(a);});}};
