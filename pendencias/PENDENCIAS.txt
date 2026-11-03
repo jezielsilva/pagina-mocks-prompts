@@ -9,6 +9,7 @@ SEUS TESTES MANUAIS
 PRÓXIMAS IMPLEMENTAÇÕES
 [ ] 5. dar uma olhada nos logs em geral
 [ ] 6. Varredura de .md soltos criados no projeto
+[ ] 7. verificar permissionamento em geral
 
 DECISÕES SUAS
 [ ] 7. Índices do banco
