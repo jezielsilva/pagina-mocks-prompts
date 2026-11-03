@@ -25,7 +25,7 @@
 | Lógica no template × componente | 2 | Template simples |
 | Constantes × valores mágicos | 2 | 29/10: viu os 3 lugares, o risco e que o dono é o back; faltou escrever 25 * 1024 * 1024 |
 
-## FORMATO DO TREINO (a partir de 04/11/2026 — obrigatório para a rotina)
+## FORMATO DO TREINO (aplicado a partir do treino de 03/11/2026 — obrigatório para a rotina)
 - Notas estagnadas em ~1,5/5 por 2 semanas → mudar de "só exercício" para "AULA + EXERCÍCIO GUIADO".
 - Cada treino = 1 conceito principal (no máximo 2), não 5 temas diferentes.
 - Estrutura: (1) AULA curta no campo intro/feedbackAnterior: o que é, analogia do dia a dia, exemplo mínimo de 5–10 linhas, a versão "simples equivalente" no estilo dele, e o erro mais comum; (2) 3 perguntas em degrau: q1 leitura com resultado concreto (valores), q2 achar o bug, q3 escrever/traduzir uma versão curta; (3) cada pergunta com UMA tarefa só (nada de 3 subperguntas).
@@ -35,6 +35,7 @@
 ## Histórico de treinos
 | Data | Acertos | Temas | Observações |
 |---|---|---|---|
+| 2026-11-03 | (aguardando respostas) | Vazamento de assinatura — aula + 3 perguntas (1º dia do novo formato) | Conceito 1 da fila, do zero: analogia jornal × encomenda, interval, Subject do hub × HTTP, takeUntilDestroyed. |
 | 2026-11-02 | ~1,8/5 (q1 ≈✓, q2 ✗, q3 ¼, q4 ½, q5 ¼) | Task.WhenAll, unsubscribe (6º), First×FirstOrDefault, índice composto, ?./?? | EVOLUÇÃO no WhenAll (acertou paralelo + valores; faltou ~500 ms). Disse que não entende o conceito de "vazar" → causa raiz dos 6 rounds errados. Escolheu índice B certo, sem COLLSCAN. Na tradução do ?? devolveu o Nome quando Apelido != null (lógica invertida). |
 | 2026-10-30 | ~1,4/5 (q1 ½, q2 ✗, q3 ✗, q4 ¼, q5 ½) | extension method, debounce+switchMap, unsubscribe (5º), guard clauses, switch expression | Acertou pendentes=2 e semStatus=1 e o papel do OrdinalIgnoreCase. Não conhece o 'this' de extension. Escolheu map no lugar de switchMap. Unsubscribe: respondeu regra de negócio, não o vazamento. Leu bem o switch expression, mas errou o caso 05/11 (é "Vence em 6 dias"). |
 | 2026-10-30 | não respondido | extension method + OrdinalIgnoreCase, debounceTime+switchMap, unsubscribe (5º round), guard clauses sem else, switch expression + ?. | Sem penalidade. Em 02/11 repetido o unsubscribe (6º round, formato escolha). Treino de 30/10 mantido no portal. |

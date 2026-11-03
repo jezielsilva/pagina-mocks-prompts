@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-03T08:23",
+  "atualizado": "2026-11-03T09:30",
   "itens": [
     {
       "id": "pendencias",
@@ -44,6 +44,16 @@
       "titulo": "Prompt — Modais Unir/Comprimir + segundo plano (concluídos) + varredura de .md",
       "data": "2026-10-30T13:41",
       "arquivo": "prompts/documentos-modais-segundo-plano-md.txt"
+    },
+    {
+      "id": "treino-2026-11-03",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de terça, 03/11 — aula + 3 perguntas",
+      "data": "2026-11-03T09:30:00-03:00",
+      "arquivo": "treino/index.html?d=2026-11-03"
     }
   ]
 }
