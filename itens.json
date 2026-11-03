@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-03T17:38",
+  "atualizado": "2026-11-03T18:05",
   "itens": [
     {
       "id": "pendencias",
@@ -14,8 +14,8 @@
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (prazos nos próximos 7 dias; Novidades; Unir PDFs com busca)",
-      "data": "2026-10-29T12:03",
+      "titulo": "Mock — Documentos (arquivo no celular/tablet: seções recolhíveis + barra de ações)",
+      "data": "2026-11-03T18:05",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true

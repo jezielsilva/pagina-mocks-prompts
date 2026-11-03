@@ -695,8 +695,12 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .doc-viewer-info details>summary{list-style:none;cursor:pointer}
 .doc-viewer-info details>summary::-webkit-details-marker{display:none}
 .doc-viewer-info details[open] .chevron{transform:rotate(180deg)}
-.doc-viewer-actions{flex-shrink:0;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
-.doc-viewer-actions .btn{flex-direction:column;gap:2px;min-height:52px;padding:6px 4px;font-size:12px}
+.doc-viewer-actions{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:var(--card-bg)}
+.doc-viewer-actions .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:44px;border-radius:999px;padding:0 16px;font-size:14px;white-space:nowrap}
+#device.m .doc-viewer-actions .btn[data-pa=more]{width:44px;padding:0;flex-shrink:0}
+.doc-viewer-info details.card{border:1px solid var(--color-slate-200);border-radius:12px;overflow:hidden;box-shadow:none}
+.doc-viewer-info details.card+details.card{margin-top:8px}
+.doc-viewer-info details.card:not([open]) .card-header{border-bottom:none}
 
 /* =====================================================================
    SIMULAÇÃO — miniatura da 1ª página e páginas do documento (produção: imagem gerada no back-end e
@@ -2185,19 +2189,19 @@ function renderMobileViewer(){
   el.innerHTML=`<div class="drawer drawer-end doc-viewer" role="dialog" aria-modal="true" aria-label="Documento ${esc(f.name)}">
     <header class="doc-viewer-head border-bottom"><button type="button" class="btn btn-icon" data-pclose id="pnl-x" aria-label="Voltar">${ic('back',22)}</button>
       <div class="flex-fill"><span class="card-title d-block text-truncate">${esc(f.name)}</span><span class="small text-secondary d-block text-truncate">${esc(f.ext)} · ${fmtSize(f.size)} · ${esc(locationOf(f))}</span></div>
-      ${inTrash?'':favBtn(f,21)}<button type="button" class="btn btn-icon" data-pa="more" aria-label="Mais ações">${ic('more',22)}</button></header>
+      ${inTrash?'':favBtn(f,21)}</header>
     <div class="doc-viewer-scroll">
-      <div class="doc-viewer-doc file-list-item-thumb">${pagesHTML(f)}<div class="small text-secondary text-center mt-2">Página 1 de ${pages} · role para ver as informações</div></div>
+      <div class="doc-viewer-doc file-list-item-thumb">${pagesHTML(f)}<div class="small text-secondary text-center mt-2">Página 1 de ${pages}</div></div>
       <div class="doc-viewer-info">
         ${badges(f)}
-        <section class="card"><div class="card-header"><span class="text-secondary d-flex">${ic('file',15)}</span><span class="card-title">Detalhes</span></div><div class="card-body">${detailList(f)}</div></section>
+        ${det('file','Detalhes',detailList(f))}
         ${det('history',`Histórico (${evs.length})`,eventsHTML(evs,true))}
         ${det('shield',`Acessos (${f.access.length})`,accessList(f.access.slice().sort((a,b)=>b.date-a.date).map(a=>({f,a})),false))}
       </div>
     </div>
     <nav class="doc-viewer-actions border-top" aria-label="Ações do documento">${inTrash
-      ?btn('restore','restore','Restaurar','btn-success')+btn('purge','trash','Excluir definitivamente','btn-danger')
-      :btn('download','download','Baixar','btn-primary')+btn('compress','compress','Comprimir','btn-outline-secondary',!m)+btn('merge','merge','Unir','btn-outline-secondary',!m)+btn('move','move','Mover')+btn('trash','trash','Excluir','btn-danger')}</nav></div>`;
+      ?`<button type="button" class="btn btn-success flex-fill" data-pa="restore">${ic('restore',18)}Restaurar</button><button type="button" class="btn btn-outline-danger" data-pa="purge">${ic('trash',18)}Excluir</button>`
+      :`<button type="button" class="btn btn-primary flex-fill" data-pa="download">${ic('download',18)}Baixar</button>${isM()?'':`<button type="button" class="btn btn-outline-secondary" data-pa="settipo">${ic('tag',18)}Classificar</button><button type="button" class="btn btn-outline-secondary" data-pa="move">${ic('move',18)}Mover</button>`}<button type="button" class="btn btn-outline-secondary" data-pa="more" aria-label="Mais ações">${ic('more',18)}${isM()?'':'Mais'}</button>`}</nav></div>`;
   const ns=$('.doc-viewer-scroll');if(ns)ns.scrollTop=scroll;
 }
 /* Peças compartilhadas entre o drawer e a visualização rápida (mesmas ações, mesmas abas) */
