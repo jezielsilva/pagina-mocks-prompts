@@ -1,0 +1,62 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — BUGS DE PASTAS + EMPTY STATE + HEADER RECARREGANDO
+Banco: NÃO alterar. Controllers: não criar nova; usar os endpoints de pastas/listagem que já existem.
+
+MODO DE EXECUÇÃO (obrigatório)
+- Uma etapa por vez, na ordem. Ao fim de cada etapa, PARE e mostre arquivos alterados + resumo em 3 linhas. Só continue com "ok, próxima".
+- Antes de alterar, LOCALIZE e diga quais arquivos vai mexer e por quê. Não invente nomes; se não achar, pergunte.
+- Altere só o necessário, mostre o diff, sem refatorar fora do escopo.
+
+1. NOVA PASTA MOSTRA DADOS DA PASTA QUE ESTAVA ABERTA
+- Cenário: estou dentro de uma pasta (vendo os itens dela) e crio uma pasta em um nível anterior (qualquer nível). A pasta nova é criada e aberta, mas a coluna/lista mostra os itens da pasta que estava aberta antes.
+- Causa provável: ao criar, a tela reaproveita o estado/cache da seleção anterior em vez de buscar a pasta nova.
+- Correção:
+  - Após o sucesso da criação, selecionar a pasta nova pelo Id devolvido pelo back e fazer UMA requisição de conteúdo dessa pasta (o mesmo endpoint usado ao abrir uma pasta).
+  - Antes da requisição, limpar as colunas/lista à direita da pasta nova (fechar os níveis mais profundos da seleção anterior) e mostrar o skeleton só nessa área.
+  - Resultado vazio → empty state (etapa 2).
+  - Resposta atrasada: se o usuário trocar de pasta antes de a resposta chegar, ignorar a resposta antiga (comparar o Id pedido com a pasta selecionada atual, ou cancelar a requisição anterior).
+  - Atualizar o contador do pai (+1 pasta) sem recarregar a página.
+  - Vale para lista e grade, em todos os níveis.
+
+2. EMPTY STATE PADRÃO DO SISTEMA
+- Varredura no módulo Documentos (todas as áreas, lista e grade, colunas, lixeira, favoritos, busca/filtro sem resultado, pasta vazia): trocar todo "vazio" feito à mão pelo COMPONENTE DE EMPTY STATE padrão do sistema (localizar o existente; ele já tem template de botões).
+- Textos (ajustar ao componente):
+  - pasta vazia: "Esta pasta está vazia" + botão "Enviar arquivos" (o MESMO botão/ação de upload que já existe na tela), respeitando permissão e as regras de onde pode enviar (raiz de área automática não permite);
+  - busca/filtro sem resultado: "Nenhum arquivo encontrado" + botão "Limpar filtros";
+  - lixeira vazia / favoritos vazios: só texto, sem botão.
+- Listar na entrega cada lugar trocado.
+
+3. CAMPO "NOVA PASTA" CRIA AO CLICAR FORA
+- Hoje: o campo inline "Nova pasta" cria a pasta no blur mesmo sem alterar o nome.
+- Regra nova:
+  - Blur/clique fora COM nome alterado (diferente de "Nova pasta" e não vazio após trim) → cria.
+  - Blur/clique fora SEM alteração ou vazio → remove o campo da tela e NÃO chama o back.
+  - Enter → mesma regra do blur. Esc → sempre cancela.
+- Evitar criação duplicada (Enter + blur no mesmo ciclo): flag "salvando" até a resposta.
+- Nome duplicado/inválido: manter a mensagem de erro atual e o campo aberto para corrigir.
+
+4. HEADER RECARREGANDO A CADA CLIQUE
+- Hoje: todo clique em pasta, arquivo ou item (lista e grade) recarrega o bloco do header inteiro (título, Lista/Grade, breadcrumb, filtros de busca, badges). Provável causa: o caminho (breadcrumb) muda e o header todo é re-renderizado/recriado (ex.: @if/ngIf em volta do header, troca de referência do objeto de estado, rota/queryParam recriando o componente, ou chamada de API do header disparada a cada navegação).
+- Correção:
+  - Ao clicar em pasta/arquivo, atualizar SOMENTE: o breadcrumb (adicionar/remover o trecho do caminho) e o conteúdo da pasta clicada (colunas/lista/grade). Clique em arquivo só atualiza a seleção/preview.
+  - Header, filtros, valores digitados, badges e contadores NÃO são recriados nem refeitos; não piscar, não perder foco, não limpar o que estiver digitado/selecionado nos filtros.
+  - Nenhuma requisição do header (filtros, contadores, badges, autores, classificações) deve disparar em navegação entre pastas; só quando a ÁREA muda ou quando os dados realmente mudam (upload, exclusão, classificação).
+  - Se a navegação usa rota/queryParams, garantir que o componente da página não seja destruído e recriado (reutilizar o componente e reagir só ao parâmetro do caminho).
+  - Separar o breadcrumb em componente/estado próprio se hoje ele obriga o header inteiro a renderizar de novo; usar trackBy/track nos @for do breadcrumb.
+- Na entrega: dizer qual era a causa exata.
+
+Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: checklist 1–4, arquivos alterados (trechos relevantes), lista de lugares com empty state trocado, causa do recarregamento do header e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.

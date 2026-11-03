@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-03T09:30",
+  "atualizado": "2026-11-03T12:31",
   "itens": [
     {
       "id": "pendencias",
@@ -54,6 +54,14 @@
       "titulo": "Treino de terça, 03/11 — aula + 3 perguntas",
       "data": "2026-11-03T09:30:00-03:00",
       "arquivo": "treino/index.html?d=2026-11-03"
+    },
+    {
+      "id": "prompt-docs-bugs-pastas",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Bugs de pastas + empty state + header recarregando",
+      "data": "2026-11-03T12:31",
+      "arquivo": "prompts/documentos-bugs-pastas.txt"
     }
   ]
 }
