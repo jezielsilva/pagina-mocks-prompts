@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-03T12:40",
+  "atualizado": "2026-11-03T12:54",
   "itens": [
     {
       "id": "pendencias",
@@ -44,6 +44,14 @@
       "titulo": "Prompt — Modais Unir/Comprimir + segundo plano (concluídos) + varredura de .md",
       "data": "2026-10-30T13:41",
       "arquivo": "prompts/documentos-modais-segundo-plano-md.txt"
+    },
+    {
+      "id": "prompt-docs-pastas-header-lixeira",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Nova pasta sem nome + header recarregando + lixeira de pastas",
+      "data": "2026-11-03T12:54",
+      "arquivo": "prompts/documentos-pastas-header-lixeira.txt"
     }
   ]
 }

@@ -1,0 +1,59 @@
+[Área: Frontend (Angular) + Backend (.NET) | Skills: Frontend/UI-Kit e Backend do projeto]
+
+DOCUMENTOS — NOVA PASTA SEM NOME + HEADER RECARREGANDO + LIXEIRA DE PASTAS
+Banco: NÃO alterar. Controllers: não criar nova. A rodada anterior NÃO resolveu os itens 1 e 2 abaixo: antes de mudar, ENCONTRE a causa real e me mostre a evidência (trecho de código).
+
+MODO DE EXECUÇÃO (obrigatório)
+- Uma etapa por vez, na ordem. Ao fim de cada etapa, PARE e mostre arquivos alterados + resumo em 3 linhas. Só continue com "ok, próxima".
+- Antes de alterar, LOCALIZE e diga quais arquivos vai mexer e por quê. Não invente nomes; se não achar, pergunte.
+- Altere só o necessário, mostre o diff, sem refatorar fora do escopo.
+
+1. NOVA PASTA: SÓ CRIA SE O NOME FOI ALTERADO (lista E grade)
+- Hoje: o campo inline "Nova pasta" cria a pasta ao clicar fora, mesmo sem alterar o nome.
+- A pasta nova existe só em memória (no front) até ser confirmada. Regra:
+  - Clique fora / blur / Enter com o nome IGUAL a "Nova pasta" (comparar após trim) ou vazio → NÃO chamar o back; remover o item temporário da lista/grade e fechar o campo.
+  - Clique fora / blur / Enter com nome DIFERENTE de "Nova pasta" e não vazio → chamar o back e criar.
+  - Esc → sempre remove o item temporário, sem chamar o back.
+- Verificar TODOS os pontos que disparam a criação (blur, Enter, clique em outro item, troca de pasta, troca de modo lista/grade, componente de grade separado do de lista) e aplicar a mesma função de validação em todos — o bug provavelmente está em um caminho que chama o criar direto.
+- Evitar criação duplicada (Enter + blur no mesmo ciclo): flag "salvando" até a resposta.
+- Nome duplicado/inválido: manter a mensagem de erro atual e o campo aberto.
+
+2. HEADER RECARREGANDO (ao abrir pasta E ao trocar de categoria)
+- Hoje: (a) clicar em uma pasta para abrir o conteúdo e (b) clicar em uma categoria (Processos, Pré-processos, Tarefas, Clientes etc.) recarrega o header INTEIRO (título, Lista/Grade, breadcrumb, campos de busca/filtros, badges).
+- Esperado: só o CONTEÚDO (colunas/lista/grade) carrega, com skeleton só nessa área. No header, a única coisa que muda é o caminho (breadcrumb) — adicionar/remover o trecho da pasta e, na troca de categoria, o título/caminho da categoria. Filtros, campos de busca e o que estiver digitado/selecionado NÃO são recriados (sem piscar, sem perder foco).
+- Diagnóstico obrigatório antes de corrigir (mostrar qual é o caso):
+  - o header está dentro de um @if/ngIf ligado a "carregando"/"conteúdo" (ex.: @if (!loading) envolvendo header + conteúdo)?
+  - o componente da página é destruído e recriado ao mudar rota/queryParam (área/pasta)? (colocar um console.log no constructor/ngOnInit para provar)
+  - o objeto de estado do header é substituído inteiro a cada navegação (nova referência) forçando o re-render?
+  - alguma chamada de API do header (filtros, autores, classificações, contadores, badges) dispara a cada navegação?
+- Correção conforme a causa:
+  - tirar o header de dentro de qualquer condição de loading; o skeleton/loading fica só na área do conteúdo;
+  - reutilizar o componente ao mudar parâmetros (reagir ao paramMap/queryParamMap em vez de recriar; se houver RouteReuseStrategy/onSameUrlNavigation, ajustar);
+  - breadcrumb com estado próprio e @for com track; atualizar só o array do caminho;
+  - requisições do header só quando a área muda (contadores/badges da área) ou quando os dados mudam (upload, exclusão, classificação) — nunca ao abrir uma pasta.
+
+3. MOVER PASTA PARA A LIXEIRA (não faz nada hoje)
+- Hoje: "Mover para a lixeira" em PASTA não tem efeito (nem confirmação). Em arquivo funciona com confirmação.
+- Esperado: o MESMO comportamento do arquivo:
+  - abrir a mesma modal de confirmação usada para arquivos, com texto: "Mover a pasta <nome> para a lixeira? Todos os arquivos e subpastas dentro dela também irão para a lixeira. Você poderá restaurar por 30 dias." (mostrar quantos arquivos/subpastas, se o back já devolver);
+  - ao confirmar: chamar o back; a pasta e TODO o conteúdo (arquivos e subpastas, em todos os níveis) vão para a lixeira;
+  - na restauração, a pasta volta com todo o conteúdo, na mesma estrutura.
+- Verificar no back se já existe o fluxo de lixeira para pasta (há lixeira com pastas implementada); se existir, só ligar o front a ele. Se o back só move a pasta e não o conteúdo, ajustar no Business (Mongo com $set só dos campos de lixeira).
+- Permissão: mesma regra do arquivo (Remover na área). Pastas raiz e registros de áreas automáticas não podem ir para a lixeira (manter desabilitado com tooltip).
+- Depois de mover: remover a pasta da lista sem recarregar a página, atualizar contadores (pai, área, lixeira) e mostrar o snackbar padrão com "Desfazer", como no arquivo.
+- Também em lote (seleção com pastas + arquivos).
+
+Sem testes, sem lint, sem scripts de validação.
+
+ENTREGA: checklist 1–3, a causa encontrada em cada item (com trecho), arquivos alterados (trechos relevantes) e seção "Explicações".
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
