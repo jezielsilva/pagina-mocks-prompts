@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-03T12:54",
+  "atualizado": "2026-11-03T16:11",
   "itens": [
     {
       "id": "pendencias",
@@ -28,6 +28,14 @@
       "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
       "data": "2026-10-23T11:50:00-03:00",
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    },
+    {
+      "id": "prompt-docs-lixeira-badge-grafico",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Codex",
+      "titulo": "Prompt — Lixeira quebrada + modal de pasta + badge sem classificação + gráfico por tipo",
+      "data": "2026-11-03T16:11",
+      "arquivo": "prompts/documentos-lixeira-badge-grafico.txt"
     }
   ]
 }
