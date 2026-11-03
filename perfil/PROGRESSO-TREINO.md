@@ -21,7 +21,7 @@
 | RxJS pipe + map/filter/tap | 2 | Confortável |
 | RxJS switchMap/combineLatest/forkJoin/debounce/takeUntil | 0 | 29/10: trocou forkJoin por 2 subscribes soltos; ainda não lê forkJoin + map |
 | Signals / async pipe | 1 | Usa variáveis + subscribe |
-| Unsubscribe / takeUntilDestroyed (memory leak) | 0 | 29/10 (4º round): ainda acha que ter subscribe = termina sozinho; disse que interval termina sozinho |
+| Unsubscribe / takeUntilDestroyed (memory leak) | 2 | 29/10 (4º round): ainda acha que ter subscribe = termina sozinho; disse que interval termina sozinho |
 | Lógica no template × componente | 2 | Template simples |
 | Constantes × valores mágicos | 2 | 29/10: viu os 3 lugares, o risco e que o dono é o back; faltou escrever 25 * 1024 * 1024 |
 
@@ -35,6 +35,7 @@
 ## Histórico de treinos
 | Data | Acertos | Temas | Observações |
 |---|---|---|---|
+| 2026-11-03 | ~2,4/3 (≈80%) — 1º treino no formato aula + exercício | Vazamento de assinatura (takeUntilDestroyed) | MELHOR RESULTADO. Entendeu que o interval continua depois de fechar a tela (errou só a numeração: pulou o tick 3). Acertou que o 2º (Subject) vaza; faltou dizer que o HTTP termina sozinho. Escreveu o pipe(takeUntilDestroyed) certo, mas esqueceu a linha private destroyRef = inject(DestroyRef). Conceito 1 = 1º acerto; repetir mais 1 dia (regra: 2 seguidos) com variação (BehaviorSubject/valueChanges + async pipe). |
 | 2026-11-03 | (aguardando respostas) | Vazamento de assinatura — aula + 3 perguntas (1º dia do novo formato) | Conceito 1 da fila, do zero: analogia jornal × encomenda, interval, Subject do hub × HTTP, takeUntilDestroyed. |
 | 2026-11-02 | ~1,8/5 (q1 ≈✓, q2 ✗, q3 ¼, q4 ½, q5 ¼) | Task.WhenAll, unsubscribe (6º), First×FirstOrDefault, índice composto, ?./?? | EVOLUÇÃO no WhenAll (acertou paralelo + valores; faltou ~500 ms). Disse que não entende o conceito de "vazar" → causa raiz dos 6 rounds errados. Escolheu índice B certo, sem COLLSCAN. Na tradução do ?? devolveu o Nome quando Apelido != null (lógica invertida). |
 | 2026-10-30 | ~1,4/5 (q1 ½, q2 ✗, q3 ✗, q4 ¼, q5 ½) | extension method, debounce+switchMap, unsubscribe (5º), guard clauses, switch expression | Acertou pendentes=2 e semStatus=1 e o papel do OrdinalIgnoreCase. Não conhece o 'this' de extension. Escolheu map no lugar de switchMap. Unsubscribe: respondeu regra de negócio, não o vazamento. Leu bem o switch expression, mas errou o caso 05/11 (é "Vence em 6 dias"). |
