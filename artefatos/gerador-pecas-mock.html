@@ -391,6 +391,22 @@ body.t .peek,body.m .peek{position:fixed}
 .badge.b-pend{background:var(--color-warning-lightest);color:var(--color-warning-dark)}
 @container app (max-width:900px){.proc-page{grid-template-columns:1fr}}
 @container app (max-width:520px){.sugg{min-width:240px}}
+
+/* ===== Ajustes 15:39 ===== */
+html .a4,html .peek-b .a4,html .ed-canvas .a4{font-size:var(--fz,13px)!important}
+.mini-a4{position:relative}.mini-a4.wm::before{content:"";position:absolute;inset:0;background:var(--wm) center/55% no-repeat;opacity:var(--wmo,.1);pointer-events:none}
+.idgrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}.idside{position:sticky;top:0;display:flex;flex-direction:column;gap:8px}
+.idprev{max-width:100%!important;margin:0;font-size:6.5px!important;padding:10%!important}
+@container app (max-width:700px){.idgrid{grid-template-columns:1fr}}@media (max-width:700px){.idgrid{grid-template-columns:1fr}}body.m .idgrid,body.t .idgrid{grid-template-columns:1fr}
+.peek-f{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.peek-f .btn-primary{grid-column:1/-1;height:48px!important;font-size:16px!important}
+.peek-f .btn-outline{height:42px;width:100%}
+body.m .peek-f .btn-outline{height:44px}
+.drafts-badge{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--color-warning);background:var(--color-warning-lightest);color:var(--color-warning-dark);font:700 13px var(--font-body);cursor:pointer}
+.drafts-badge.on{background:var(--color-warning);color:#fff}
+.drafts{margin:0 16px 14px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+.drafts .pz{cursor:pointer}.drafts .pz:hover{background:var(--s50)}
+.rcol{display:flex;flex-direction:column;gap:14px}
 </style>
 </head>
 <body>
@@ -735,7 +751,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();if((e.ke
 /* permissões refletidas na UI + contadores dinâmicos */
 const _rl=renderLib;renderLib=function(){_rl();if(!can())$$('[data-act="novo"]').forEach(b=>{b.disabled=true;b.title='Seu perfil não pode criar modelos';});
   const st=$('.store b');if(st)st.textContent=MB.toFixed(1).replace('.',',')+' MB';const sm=$('.store .small.muted');if(sm&&sm.nextElementSibling)sm.nextElementSibling.querySelector('.small').textContent='· '+GERADAS+' arquivos';};
-const _om=openMenu;openMenu=function(id,btn){_om(id,btn);if(!can())$$('[data-ma="edit"],[data-ma="dup"],[data-ma="del"]').forEach(b=>{b.disabled=true;b.title='Sem permissão de editar modelos';});};
+const _om=openMenu;openMenu=function(id,btn){const peek=btn.closest('.peek')?$('#menu-root').innerHTML:null;const br=btn.getBoundingClientRect();_om(id,btn);if(peek!=null){const m=$('#menu-root .menu');$('#menu-root').innerHTML=peek;$('#menu-root').appendChild(m);const r=br;m.style.position='fixed';m.style.zIndex=95;m.style.top=Math.max(8,r.top-m.offsetHeight-6)+'px';m.style.left=Math.max(8,r.right-m.offsetWidth)+'px';}if(!can())$$('[data-ma="edit"],[data-ma="dup"],[data-ma="del"]').forEach(b=>{b.disabled=true;b.title='Sem permissão de editar modelos';});};
 const _ro=renderOrigem;renderOrigem=function(){if(PICK.manual&&!S.origem){S.origem='manual';PICK.manual=false;}_ro();};
 const _re=renderEditor;renderEditor=function(){_re();if(!can()){const ed=$('#ed-a4');if(ed)ed.contentEditable='false';$$('.ed-bar button,.ed-bar select,[data-act="salvar-modelo"]').forEach(b=>b.disabled=true);$('.ed-bar').insertAdjacentHTML('beforeend','<span class="small muted" style="margin-left:8px">'+ic('lock',12)+' Somente leitura no seu perfil</span>');}};
 
@@ -766,23 +782,24 @@ function renderProc(){const p=PROCS.find(x=>x.id===S.procView)||PROCS[0];const z
    <span class="label" style="margin-top:16px">Peças geradas neste processo</span><div class="card" style="overflow:hidden">${pecas.map(x=>`<div class="pz"><span class="mini-sheet" style="--c:var(--c4)"></span><span style="flex:1"><b>${x[0]}</b><br><span class="small muted">gerada em ${x[1]} · Jeziel Silva</span></span><button class="btn btn-sm btn-outline" data-act="dup-peca">${ic('copy',13)}Duplicar para outro processo</button></div>`).join('')}</div></section>
    <aside class="card" style="padding:16px"><span class="label">Outros processos (exemplo)</span>${PROCS.map(x=>`<button class="rec ${x.id===p.id?'on':''}" data-procview="${x.id}" style="width:100%;border:1px solid var(--border);border-radius:12px;margin-bottom:8px"><span class="t"><b>${esc(x.t)}</b><span>${esc(x.d['cliente.nome'])}</span></span>${ic('chev',15)}</button>`).join('')}</aside></div><div style="height:80px"></div>`;}
 function startFrom(tplId,procId){closeMenu();S.tpl=TPL.find(t=>t.id===tplId);S.origem='proc';S.rec=procId;S.lote=false;S.sel.clear();S.nome='';S.pasta='';S.mstep=0;loadVals();S.view='rev';render();window.scrollTo(0,0);}
-function idModal(){modal('Identidade do escritório',`<span class="muted small">Aplicado automaticamente em todas as peças geradas.</span>
+function idModal(){modal('Identidade do escritório',`<div class="idgrid"><div><span class="muted small">Aplicado automaticamente em todas as peças geradas.</span>
   <div class="tgl"><span><b>Usar identidade nas peças</b><br><span class="small muted">Cabeçalho, rodapé e marca d'água</span></span><button class="switch ${ID.on?'on':''}" data-idt="on"><i></i></button></div>
   <label class="label" for="id-n" style="margin-top:10px">Nome do escritório</label><input class="input" id="id-n" value="${esc(ID.nome)}">
   <label class="label" for="id-s" style="margin-top:10px">Linha do cabeçalho</label><input class="input" id="id-s" value="${esc(ID.sub)}">
   <label class="label" for="id-r" style="margin-top:10px">Rodapé</label><input class="input" id="id-r" value="${esc(ID.rod)}">
   <div class="form" style="margin-top:10px"><div><label class="label" for="id-f">Fonte das peças</label><select class="select" id="id-f">${['Georgia','Times New Roman','Arial','Calibri'].map(f=>`<option ${f===ID.font?'selected':''}>${f}</option>`).join('')}</select></div><div><label class="label" for="id-c">Cor do logo</label><input class="input" id="id-c" type="color" value="${ID.cor}" style="padding:4px"></div></div>
   <div class="tgl" style="margin-top:6px"><span><b>Marca d'água com o logo</b><br><span class="small muted">Logo clarinho no centro de cada página</span></span><button class="switch ${ID.wm?'on':''}" data-idt="wm"><i></i></button></div>
-  <label class="label" for="id-o">Intensidade da marca d'água</label><input id="id-o" type="range" min="3" max="20" value="${Math.round(ID.wmo*100)}" style="width:100%">
-  <div class="mini-a4 ${ID.on&&ID.wm?'wm':''}" style="max-width:180px;margin:12px auto 0">${docHTML({})}</div>`,`<button class="btn btn-outline" data-act="peek-close">Cancelar</button><button class="btn btn-primary" data-act="id-ok">${ic('check',15,3)}Salvar identidade</button>`);applyIdentity();}
+  <label class="label" for="id-o">Intensidade da marca d'água <span id="id-o-v" class="muted">${Math.round(ID.wmo*100)}%</span></label><input id="id-o" type="range" min="3" max="40" value="${Math.round(ID.wmo*100)}" style="width:100%">
+  </div><div class="idside"><span class="label">Pré-visualização</span><div class="mini-a4 idprev ${ID.on&&ID.wm?'wm':''}">${docHTML({})}</div><span class="small muted">Mexa nos campos e veja na hora.</span></div></div>`,`<button class="btn btn-outline" data-act="peek-close">Cancelar</button><button class="btn btn-primary" data-act="id-ok">${ic('check',15,3)}Salvar identidade</button>`);const dg=$('#menu-root [role=dialog]');dg.style.width='min(900px,calc(100% - 32px))';applyIdentity();}
 function cfgModal(){modal('Configurações do gerador',`<div class="tgl"><span><b>Exigir aprovação das peças</b><br><span class="small muted">Toda peça gerada fica <b>pendente</b> até um aprovador liberar. Desligado: a peça já sai aprovada.</span></span><button class="switch ${CFG.aprov?'on':''}" data-cfg="aprov"><i></i></button></div>
   <div class="tgl"><span><b>Quem aprova</b><br><span class="small muted">Usuários com a permissão “Aprovar peças”</span></span><span class="badge b-esc">Titular · Ana Costa</span></div>
   <div class="tgl"><span><b>Criar tarefa ao gerar</b><br><span class="small muted">“Revisar e protocolar” para quem gerou (padrão ligado)</span></span><button class="switch ${S.tarefa?'on':''}" data-cfg="tarefa"><i></i></button></div>`,`<button class="btn btn-primary" data-act="peek-close">Concluir</button>`);}
 function aprovModal(){modal('Aprovações pendentes',APROV.length?APROV.map((a,i)=>`<div class="pz" style="padding:12px 0"><span class="mini-sheet" style="--c:${CATS[a.cat].c}"></span><span style="flex:1;min-width:0"><b>${esc(a.nome)}</b><br><span class="small muted">gerada por ${esc(a.por)} · agora</span></span><button class="btn btn-sm btn-outline" data-apv="${i}" data-ok="0">Devolver</button><button class="btn btn-sm btn-success" data-apv="${i}" data-ok="1">${ic('check',13,3)}Aprovar</button></div>`).join(''):'<div class="empty-panel">Nenhuma peça aguardando aprovação.</div>',`<button class="btn btn-outline" data-act="peek-close">Fechar</button>`);}
 
 /* pós-render */
-const _rl2=renderLib;renderLib=function(){_rl2();const side=$('.side .card');if(side)side.insertAdjacentHTML('afterend',`<div class="card" style="padding:8px"><nav class="nav"><button data-act="open-proc">${ic('scale',16)}Abrir de um processo<span class="n">exemplo</span></button><button data-act="id-open">${ic('pen',16)}Identidade do escritório</button>${CFG.aprov?`<button data-act="aprov-open">${ic('check',16)}Aprovações<span class="n" style="color:var(--color-warning-dark)">${APROV.length}</span></button>`:''}<button data-act="cfg-open">${ic('lock',16)}Configurações</button></nav></div>`);
-  const cr=$('.crumb');if(cr&&!S.gq&&!S.cat&&S.filter==='todos')cr.insertAdjacentHTML('afterend',stripsHTML());};
+const _rl2=renderLib;renderLib=function(){_rl2();const side=$('.rcol .store');if(side)side.insertAdjacentHTML('afterend',`<div class="card" style="padding:8px"><nav class="nav"><button data-act="open-proc">${ic('scale',16)}Abrir de um processo<span class="n">exemplo</span></button><button data-act="id-open">${ic('pen',16)}Identidade do escritório</button>${CFG.aprov?`<button data-act="aprov-open">${ic('check',16)}Aprovações<span class="n" style="color:var(--color-warning-dark)">${APROV.length}</span></button>`:''}<button data-act="cfg-open">${ic('lock',16)}Configurações</button></nav></div>`);
+  const h1=$('.mhead .muted.small');if(h1&&DRAFTS.length)h1.insertAdjacentHTML('afterend',`<button class="drafts-badge ${S.showDrafts?'on':''}" data-act="drafts-toggle">${ic('history',14)}Continuar de onde parei · ${DRAFTS.length}</button>`);
+  const cr=$('.crumb');if(cr&&S.showDrafts&&DRAFTS.length)cr.insertAdjacentHTML('afterend',`<div class="drafts">${DRAFTS.map((d,i)=>{const t=TPL.find(x=>x.id===d.tpl);if(!t)return'';const p=PROCS.find(x=>x.id===d.rec);return `<div class="pz" data-draft="${i}"><span class="mini-sheet" style="--c:${CATS[t.cat].c}"></span><span style="flex:1;min-width:0"><b>${esc(t.nome)}</b><br><span class="small muted">${p?esc(p.d['cliente.nome'])+' · '+esc(p.t)+' · ':''}parou em ${d.view==='save'?'Salvar':'Revisão'}</span></span><button class="btn btn-sm btn-primary" data-draft="${i}">Continuar</button><button class="btn-icon" data-dropdraft="${i}" aria-label="Descartar rascunho">${ic('trash',15)}</button></div>`;}).join('')}</div>`);};
 const _rv=renderRev;renderRev=function(){_rv();const rq=reqOf();rq.forEach(k=>{const i=$(`[data-field="${k}"]`);if(!i)return;const row=i.closest('.frow');row.querySelector('.label').insertAdjacentHTML('beforeend','<span class="req">Obrigatório</span>');if(isMiss(S.vals,k))row.classList.add('reqmiss');});
   const m=reqMiss();if(m.length){$('.fields').insertAdjacentHTML('afterbegin',`<div class="check err">${ic('alert',16)}<span><b>Preencha os campos obrigatórios</b> deste modelo para continuar: ${m.map(lbl).join(', ')}.</span></div>`);const b=$('[data-act="to-save"]');if(b){b.disabled=true;b.title='Preencha os campos obrigatórios';}}};
 const _rs=renderSave;renderSave=function(){_rs();const sl=$('#tarefa-slot');if(sl)sl.innerHTML=`<div class="tgl" style="border:1px solid var(--border);border-radius:12px;padding:12px 14px"><span><b>${ic('check',14)} Criar tarefa “Revisar e protocolar”</b><br><span class="small muted">Para você, com prazo em</span> <input type="date" class="input" style="display:inline-block;width:auto;height:32px;margin-top:6px" value="2026-11-06"></span><button class="switch ${S.tarefa?'on':''}" data-cfg="tarefa-s"><i></i></button></div>${CFG.aprov?`<div class="check warn">${ic('lock',16)}<span>A aprovação está ligada: a peça vai para <b>Aprovações</b> e fica pendente até ser liberada.</span></div>`:''}`;
@@ -799,10 +816,11 @@ document.addEventListener('click',e=>{const g=k=>e.target.closest(k);let x;
   if(x=g('[data-prazo]')){e.stopPropagation();const z=PRAZOS.find(z=>z.id===x.dataset.prazo);startFrom(z.tpl,z.proc);snack(`Modelo sugerido para o prazo “${esc(z.nome)}”, já com os dados do processo.`);return;}
   if(x=g('[data-procview]')){e.stopPropagation();S.procView=x.dataset.procview;render();return;}
   if(x=g('[data-idt]')){e.stopPropagation();ID[x.dataset.idt]=!ID[x.dataset.idt];x.classList.toggle('on',ID[x.dataset.idt]);const m=$('#menu-root .mini-a4');if(m){m.innerHTML=docHTML({});m.classList.toggle('wm',ID.on&&ID.wm);}return;}
-  if(x=g('[data-cfg]')){e.stopPropagation();const k=x.dataset.cfg;if(k==='aprov')CFG.aprov=!CFG.aprov;else S.tarefa=!S.tarefa;x.classList.toggle('on');if(k==='aprov'){render();cfgModal();}return;}
+  if(x=g('[data-cfg]')){e.stopPropagation();const k=x.dataset.cfg;if(k==='aprov')CFG.aprov=!CFG.aprov;else S.tarefa=!S.tarefa;x.classList.toggle('on');if(k==='aprov'){const rc=$('.rcol');if(rc&&S.view==='lib'){const keep=$('#menu-root').innerHTML;renderLib();$('#menu-root').innerHTML=keep;}}return;}
   if(x=g('[data-apv]')){e.stopPropagation();const a=APROV.splice(+x.dataset.apv,1)[0];snack(x.dataset.ok==='1'?`<b>${esc(a.nome)}</b> aprovada`:`<b>${esc(a.nome)}</b> devolvida para ajustes`);render();aprovModal();return;}
   if(x=g('[data-act]')){const a=x.dataset.act;
     if(a==='lib'&&['rev','manual','save'].includes(S.view)&&Object.keys(S.vals).length>2)saveDraft();
+    if(a==='drafts-toggle'){e.stopPropagation();S.showDrafts=!S.showDrafts;render();return;}
     if(a==='open-proc'){e.stopPropagation();S.view='proc';S.procView=S.procView||'p1';render();window.scrollTo(0,0);return;}
     if(a==='proc-gerar'){e.stopPropagation();const p=S.procView||'p1';const zs=PRAZOS.filter(z=>z.proc===p);modal('Gerar peça para este processo',`${zs.length?`<span class="label">Sugeridas pelos prazos</span>${zs.map(z=>`<button class="sugg warn" style="width:100%;margin-bottom:8px" data-prazo="${z.id}"><span class="oic">${ic('alert',18)}</span><span><b>${esc(TPL.find(t=>t.id===z.tpl).nome)}</b><span>prazo: ${esc(z.nome)} · ${z.dias===0?'vence hoje':'em '+z.dias+' dias'}</span></span></button>`).join('')}`:''}<span class="label" style="margin-top:8px">Todos os modelos</span>${TPL.slice(0,8).map(t=>`<button class="rec" style="width:100%" data-startfrom="${t.id}"><span class="mini-sheet" style="--c:${CATS[t.cat].c}"></span><span class="t"><b>${esc(t.nome)}</b><span>${esc(CATS[t.cat].n)}</span></span>${ic('chev',15)}</button>`).join('')}`,`<button class="btn btn-outline" data-act="peek-close">Cancelar</button>`);return;}
     if(a==='dup-peca'){e.stopPropagation();const t=S.tpl||TPL.find(t=>t.id===2);const keep=JSON.parse(JSON.stringify(S.vals||{}));S.tpl=t;S.origem='proc';S.rec=null;S.sel.clear();S.lote=false;S.nome='';S.pasta='';S.dupVals=keep;S.view='origem';render();snack('Escolha o outro processo: o texto da peça é mantido, só os dados mudam.');return;}
@@ -815,10 +833,10 @@ document.addEventListener('click',e=>{const g=k=>e.target.closest(k);let x;
   }
   if(x=g('[data-startfrom]')){e.stopPropagation();startFrom(+x.dataset.startfrom,S.procView||'p1');return;}
 },true);
-document.addEventListener('input',e=>{if(e.target.id==='id-o'){ID.wmo=(+e.target.value)/100;document.documentElement.style.setProperty('--wmo',ID.wmo);}
+document.addEventListener('input',e=>{if(e.target.id==='id-o'){ID.wmo=(+e.target.value)/100;document.documentElement.style.setProperty('--wmo',ID.wmo);const lb=$('#id-o-v');if(lb)lb.textContent=Math.round(ID.wmo*100)+'%';}
   if(e.target.matches('#id-n,#id-s,#id-r')){const m=$('#menu-root .mini-a4');const o={nome:ID.nome,sub:ID.sub,rod:ID.rod};ID.nome=$('#id-n').value;ID.sub=$('#id-s').value;ID.rod=$('#id-r').value;if(m)m.innerHTML=docHTML({});Object.assign(ID,o);}
   if(e.target.matches('[data-field]')&&S.view==='rev'){const k=e.target.dataset.field;if(reqOf().includes(k)){const row=e.target.closest('.frow');row.classList.toggle('reqmiss',isMiss(S.vals,k));const b=$('[data-act="to-save"]');if(b){b.disabled=reqMiss().length>0;}}}});
-document.addEventListener('change',e=>{if(e.target.id==='id-c'){document.documentElement.style.setProperty('--brand',e.target.value);}});
+document.addEventListener('input',e=>{if(e.target.id==='id-c'){const o=ID.cor;ID.cor=e.target.value;document.documentElement.style.setProperty('--brand',ID.cor);document.documentElement.style.setProperty('--wm',wmURI());ID.cor=o;}});
 /* duplicar: ao escolher o novo processo, mantém o texto */
 const _lv=loadVals;loadVals=function(){_lv();if(S.dupVals){S.dupVals=null;}};
 
