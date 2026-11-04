@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-04T15:57",
+  "atualizado": "2026-11-04T17:21",
   "itens": [
     {
       "id": "pendencias",
@@ -17,6 +17,15 @@
       "titulo": "Mock — Gerador de peças (todas as funções navegáveis)",
       "data": "2026-11-04T15:41",
       "arquivo": "artefatos/gerador-pecas-mock.html",
+      "fixo": true
+    },
+    {
+      "id": "template-apresentacao",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Apresentações",
+      "titulo": "Template — Apresentação de projetos (.pptx, 7 slides)",
+      "data": "2026-11-04T17:21",
+      "arquivo": "templates/template-apresentacao-projetos.pptx",
       "fixo": true
     },
     {

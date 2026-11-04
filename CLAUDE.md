@@ -25,3 +25,4 @@
 - Instruções com comandos (PowerShell, passos de instalação, diagnóstico) vão para o PORTAL (página própria no portal), não só no chat; no chat, só um resumo curto e o nome do item.
 - Pendências: `pendencias/PENDENCIAS.txt` (item FIXO `"id":"pendencias"`); atualizar sempre que o usuário fechar/abrir pendências.
 - Mock do Gerador de peças: `artefatos/gerador-pecas-mock.html` (item FIXO `"id":"gerador-pecas-mock"`); nunca apagar na limpeza.
+- Template de apresentação: `templates/template-apresentacao-projetos.pptx` (item FIXO `"id":"template-apresentacao"`; publicado por decisão do usuário); nunca apagar na limpeza.
