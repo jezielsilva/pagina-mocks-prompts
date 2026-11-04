@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-04T17:30",
+  "atualizado": "2026-11-04T17:35",
   "itens": [
     {
       "id": "pendencias",
@@ -24,7 +24,7 @@
       "tipo": "artefato",
       "projeto": "elaw adv · Apresentações",
       "titulo": "Template — Apresentação de projetos (.pptx, com logo)",
-      "data": "2026-11-04T17:30",
+      "data": "2026-11-04T17:35",
       "arquivo": "templates/template-apresentacao-projetos.pptx",
       "fixo": true
     },
