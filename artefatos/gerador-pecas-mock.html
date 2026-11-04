@@ -253,6 +253,62 @@ body{font-size:15px}
 .stat{padding:6px 12px;min-width:0}.stat b{font-size:15px}
 @container app (max-width:900px){.how b{font-size:14px}.how span{font-size:12px}.qa .oic{width:38px;height:38px}.lib-tools .stats{margin-left:0}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @container app (max-width:520px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.row-scroll{grid-auto-columns:44%}.hero{padding:16px}.hero h1{font-size:21px}.hero p{font-size:15px}.lib-tools{padding:0 16px 16px}.lib-tools .stats{display:none}.how{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.how div{flex-direction:column;text-align:center;gap:6px;padding:10px 6px}.how span{font-size:0}.how b{font-size:12.5px;line-height:1.25}.how i{width:28px;height:28px;font-size:13px}.use-btn{height:44px}.lib-tools{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.lib-tools .chip{flex-shrink:0}.quick{gap:8px}.qa{padding:12px}}
+
+/* ===== Conceito "frase + estante" ===== */
+.frame{background:#f7f4ef}
+.desk{position:relative;border-radius:24px;padding:34px 34px 30px;background:radial-gradient(1200px 300px at 80% -40%,rgba(154,107,181,.35),transparent 60%),linear-gradient(135deg,#4a2661,#70398c 60%,#8a4fa8);color:#fff;overflow:hidden}
+.desk::after{content:"";position:absolute;right:-40px;bottom:-60px;width:260px;height:300px;background:#fff;opacity:.07;transform:rotate(-12deg);border-radius:10px;box-shadow:-40px 20px 0 rgba(255,255,255,.6)}
+.desk .eyebrow{font:600 13px var(--font-body);letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.phrase{position:relative;z-index:1;font:400 30px/1.55 Georgia,"Times New Roman",serif;margin:10px 0 18px;max-width:900px}
+.slot{display:inline-flex;align-items:center;gap:8px;border:0;border-bottom:2px dashed rgba(255,255,255,.7);background:rgba(255,255,255,.12);color:#fff;font:italic 600 28px Georgia,serif;padding:0 12px;border-radius:10px 10px 0 0;cursor:pointer;vertical-align:baseline}
+.slot:hover,.slot:focus-visible{background:rgba(255,255,255,.22);outline:none}
+.slot.filled{border-bottom-style:solid;font-style:normal}
+.slot svg{opacity:.8}
+.desk-go{position:relative;z-index:1;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn-white{background:#fff;color:var(--color-primary-dark);height:48px;padding:0 22px;font-size:16px}
+.btn-white:disabled{opacity:.55}
+.desk-hint{font-size:14px;opacity:.85}
+.pick{position:absolute;z-index:60;background:#fff;color:var(--text);border-radius:16px;box-shadow:0 18px 40px -12px rgba(15,23,42,.45);padding:10px;width:340px;max-height:380px;overflow:auto}
+.pick button{width:100%;display:flex;gap:10px;align-items:center;text-align:left;border:0;background:none;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:15px}
+.pick button:hover{background:var(--color-primary-lightest)}
+.pick .cdot{width:10px;height:10px;border-radius:50%;background:var(--c);flex-shrink:0}
+.pick small{display:block;color:var(--text2);font-size:12px}
+.shelf-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:30px 0 14px}
+.shelf-head h2{font:700 22px Georgia,serif;color:var(--s900)}
+.shelf-head .grow{flex:1}
+.tabs2{display:flex;gap:4px;background:#ede7df;border-radius:999px;padding:4px;overflow-x:auto;scrollbar-width:none}
+.tabs2 button{border:0;background:none;border-radius:999px;padding:8px 14px;font:600 14px var(--font-body);color:var(--s700);cursor:pointer;white-space:nowrap}
+.tabs2 button.on{background:#fff;color:var(--color-primary-dark);box-shadow:0 1px 3px rgba(15,23,42,.15)}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:26px 22px;padding:6px 2px 10px}
+.paper{position:relative;display:flex;flex-direction:column;gap:10px;border:0;background:none;padding:0;cursor:pointer;text-align:center}
+.paper .pg2{position:relative;aspect-ratio:210/297;background:#fff;border-radius:4px;border:1.5px solid #e7e0d6;box-shadow:0 1px 0 #e7e0d6,0 2px 0 -1px #fff,0 3px 0 -1px #e7e0d6,0 10px 18px -12px rgba(60,40,20,.35);display:flex;align-items:center;justify-content:center;padding:16% 12%;transition:border-color .15s}
+.paper:hover .pg2,.paper:focus-visible .pg2,.paper.sel .pg2{border-color:var(--color-primary)}
+.paper:focus-visible{outline:none}
+.paper .rib{position:absolute;top:0;left:12%;width:16px;height:26px;background:var(--c);clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%)}
+.paper .fav{position:absolute;top:6px;right:6px;color:var(--color-warning)}
+.paper .pn{font:700 13.5px/1.3 Georgia,serif;color:var(--s900)}
+.paper .pn::before,.paper .pn::after{content:"";display:block;height:2px;background:#ece6dd;margin:10px auto;width:60%}
+.paper .cap{font-size:12.5px;color:var(--s500);line-height:1.3}
+.paper .cap b{display:block;color:var(--s700);font-weight:600}
+.paper .esc{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font:600 10.5px var(--font-body);color:var(--color-info-dark);background:var(--color-info-lightest);border-radius:999px;padding:1px 8px;white-space:nowrap}
+/* painel de pré-visualização */
+.peek-bg{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,.35)}
+.peek{position:fixed;z-index:81;top:0;right:0;bottom:0;width:min(560px,100%);background:#fff;display:flex;flex-direction:column;box-shadow:-20px 0 40px -20px rgba(15,23,42,.4);animation:pin .2s}
+@keyframes pin{from{transform:translateX(30px);opacity:0}}
+.peek-h{display:flex;align-items:flex-start;gap:12px;padding:20px 22px;border-bottom:1px solid var(--border)}
+.peek-h h2{font:700 21px Georgia,serif}
+.peek-b{flex:1;overflow:auto;padding:20px 22px;background:#f7f4ef;display:flex;flex-direction:column;gap:16px}
+.peek-b .a4{max-width:100%;font-size:11px}
+.peek-f{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap}
+.peek-f .btn-primary{flex:1;height:50px;font-size:16px}
+@container app (max-width:520px){.peek-f .btn-primary{flex-basis:100%}.peek-f .btn-outline{flex:1;height:44px}}
+body.m .peek-f .btn-primary{flex-basis:100%}body.m .peek-f .btn-outline{flex:1;height:44px}
+.pill-list{display:flex;flex-wrap:wrap;gap:6px}
+.pill-list>span{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border)}
+body.t .peek,body.m .peek{position:fixed}
+@container app (max-width:900px){.desk{padding:26px}.phrase{font-size:24px}.slot{font-size:22px}.shelf{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 16px}}
+@container app (max-width:520px){.desk{padding:22px 18px;border-radius:20px}.phrase{font-size:21px;line-height:1.7}.slot{font-size:19px;padding:0 8px}.btn-white{width:100%}.desk-hint{width:100%;text-align:center}
+ .shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}.shelf-head h2{font-size:19px;width:100%}.tabs2{width:100%}.pick{width:calc(100% - 32px);left:16px!important}}
 </style>
 </head>
 <body>
@@ -338,22 +394,32 @@ function tplCard(t){const c=CATS[t.cat];return `<article class="tpl" style="--c:
   <div class="sheet"><span class="sheet-name">${esc(t.nome)}</span><div class="sheet-over"><button class="btn btn-primary" data-use="${t.id}">${ic('pen',15)}Usar modelo</button></div></div>
   <button class="use-btn" data-use="${t.id}">${ic('pen',15)}Usar modelo</button>
   <div class="tpl-foot"><span class="meta">${t.esc?`<span class="badge b-esc">Do escritório</span> ${esc(t.esc)}`:`${esc(t.area)}`}</span><button class="opt-btn" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}" title="Mais opções">Opções${ic('more',16)}</button></div></article>`;}
+const PICK={cat:null,rec:null};
+function paperCard(t){const c=CATS[t.cat];return `<button class="paper" data-peek="${t.id}" style="--c:${c.c}" aria-label="Ver modelo ${esc(t.nome)}"><span class="pg2"><span class="rib"></span>${t.fav?`<span class="fav">${ic('star',15).replace('fill="none"','fill="currentColor"')}</span>`:''}<span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></button>`;}
 function renderLib(){
   const f=S.filter;let list=TPL.slice();
-  if(f==='sis')list=list.filter(t=>!t.esc);if(f==='esc')list=list.filter(t=>t.esc);if(f==='fav')list=list.filter(t=>t.fav);if(f==='rec')list=[2,6,1,4].map(i=>TPL.find(t=>t.id===i));
-  const top=TPL.slice().sort((a,b)=>b.usos-a.usos).slice(0,5);
-  const chip=(k,l,n)=>`<button class="chip ${f===k?'on':''}" data-filter="${k}">${l}${n!=null?` <span style="opacity:.75">${n}</span>`:''}</button>`;
-  app.innerHTML=`<section class="card"><div class="hero"><h1>Gerador de peças</h1><p>Sua peça pronta em 3 passos, já preenchida com os dados do processo.</p>
-    <div class="how"><div><i>1</i><span><b>Escolha o modelo</b>Petição, procuração, contrato…</span></div><div><i>2</i><span><b>Escolha o processo ou cliente</b>Os dados entram sozinhos</span></div><div><i>3</i><span><b>Confira e salve</b>Fica guardada em Documentos</span></div></div>
-    <div class="quick"><button class="qa pri" data-act="quick-proc"><span class="oic">${ic('scale',22)}</span><span><b>Criar peça de um processo</b><span>Comece pelo processo e escolha o modelo</span></span></button>
-      <button class="qa" data-act="quick-fav"><span class="oic">${ic('star',22)}</span><span><b>Meus favoritos</b><span>Os modelos que você mais usa</span></span></button>
-      <button class="qa" data-act="novo"><span class="oic">${ic('plus',22)}</span><span><b>Criar modelo do escritório</b><span>Do zero ou a partir de um pronto</span></span></button></div></div>
-    <div class="lib-tools">${chip('todos','Todos',TPL.length)}${chip('sis','Do sistema',TPL.filter(t=>!t.esc).length)}${chip('esc','Do escritório',TPL.filter(t=>t.esc).length)}${chip('fav','★ Favoritos',TPL.filter(t=>t.fav).length)}${chip('rec','Usados recentemente')}
-      <div class="stats"><div class="stat"><b>148</b><span>peças no mês</span></div><div class="stat"><b>${TPL.length}</b><span>modelos</span></div></div></div></section>
-  ${f==='todos'?`<div class="sec"><h2>Mais usados pelo escritório</h2><span class="small muted">últimos 30 dias</span></div><div class="row-scroll">${top.map(tplCard).join('')}</div>`:''}
-  <div class="sec"><h2>${{todos:'Todos os modelos',sis:'Modelos do sistema',esc:'Modelos do escritório',fav:'Favoritos',rec:'Usados recentemente'}[f]}<small>${list.length} modelos</small></h2></div>
-  <div class="grid">${list.map(tplCard).join('')}</div><div style="height:80px"></div>`;
+  if(PICK.cat)list=list.filter(t=>t.cat===PICK.cat);
+  if(f==='sis')list=list.filter(t=>!t.esc);if(f==='esc')list=list.filter(t=>t.esc);if(f==='fav')list=list.filter(t=>t.fav);if(f==='mais')list.sort((a,b)=>b.usos-a.usos);
+  const cat=PICK.cat?CATS[PICK.cat]:null,rec=PICK.rec?PROCS.find(p=>p.id===PICK.rec):null;
+  const tab=(k,l)=>`<button class="${f===k?'on':''}" data-filter="${k}">${l}</button>`;
+  app.innerHTML=`<section class="desk"><span class="eyebrow">Gerador de peças</span>
+    <div class="phrase">Quero fazer ${cat?'uma':'uma'} <button class="slot ${cat?'filled':''}" data-slot="cat">${cat?esc(cat.n.toLowerCase()):'escolha a peça'}${ic('chev',18)}</button><br>para <button class="slot ${rec?'filled':''}" data-slot="rec">${rec?esc(rec.d['cliente.nome'])+' · '+esc(rec.t.slice(0,12))+'…':'o processo ou cliente'}${ic('chev',18)}</button></div>
+    <div class="desk-go"><button class="btn btn-white" data-act="go-phrase" ${cat?'':'disabled'}>${ic('pen',18)}${cat?`Ver ${list.length} modelo${list.length!==1?'s':''} de ${esc(cat.n.toLowerCase())}`:'Escolha a peça para começar'}</button><span class="desk-hint">${rec?'Os dados de '+esc(rec.d['cliente.nome'])+' entram sozinhos na peça.':'Preencha a frase ou escolha direto na estante abaixo.'}</span></div></section>
+  <div class="shelf-head" id="estante"><h2>${cat?esc(cat.n):'Estante de modelos'}</h2>${cat?`<button class="btn btn-sm btn-outline" data-act="clear-cat">${ic('back',13)}Ver todas as peças</button>`:''}<span class="grow"></span>
+    <div class="tabs2" role="tablist">${tab('todos','Todos')}${tab('mais','Mais usados')}${tab('fav','★ Favoritos')}${tab('sis','Do sistema')}${tab('esc','Do escritório')}</div>
+    <button class="btn btn-outline" data-act="novo">${ic('plus',15)}Novo modelo</button></div>
+  <div class="shelf">${list.map(paperCard).join('')||'<span class="muted">Nenhum modelo aqui ainda.</span>'}</div><div style="height:90px"></div>`;
 }
+function openPick(kind,btn){const r=btn.getBoundingClientRect();let h='';
+  if(kind==='cat'){const cnt=k=>TPL.filter(t=>t.cat===k).length;h=Object.entries(CATS).map(([k,c])=>`<button data-pk="cat" data-v="${k}" style="--c:${c.c}"><span class="cdot"></span><span style="flex:1">${esc(c.n)}<small>${cnt(k)} modelo${cnt(k)!==1?'s':''}</small></span></button>`).join('');}
+  else h=`<span class="small muted" style="padding:6px 12px;display:block">Processos recentes</span>`+PROCS.map(p=>`<button data-pk="rec" data-v="${p.id}">${ic('scale',16)}<span style="flex:1">${esc(p.t)}<small>${esc(p.s)}</small></span></button>`).join('')+`<button data-pk="rec" data-v="">${ic('pen',16)}<span>Prefiro preencher à mão<small>Passo a passo guiado</small></span></button>`;
+  $('#menu-root').innerHTML=`<div class="pick" style="top:${r.bottom+window.scrollY+6}px;left:${r.left}px">${h}</div>`;}
+function openPeek(id){const t=TPL.find(x=>x.id===id),c=CATS[t.cat];const mine=!!t.esc;
+  $('#menu-root').innerHTML=`<div class="peek-bg" data-act="peek-close"></div><aside class="peek" role="dialog" aria-label="${esc(t.nome)}"><div class="peek-h"><div style="flex:1"><span class="badge b-cat" style="--c:${c.c}">${esc(c.n)}</span><h2 style="margin-top:6px">${esc(t.nome)}</h2><span class="muted small">${esc(t.area)} · usado ${t.usos} vezes${mine?' · do escritório ('+esc(t.esc)+')':''}</span></div><button class="btn-icon" data-act="peek-close" aria-label="Fechar">${ic('plus',20).replace('<svg','<svg style="transform:rotate(45deg)"')}</button></div>
+   <div class="peek-b"><div class="a4">${docHTML(PICK.rec?Object.assign({},PROCS.find(p=>p.id===PICK.rec).d,ESC):{})}</div>
+   <div><span class="label">Este modelo preenche sozinho</span><div class="pill-list">${['Número do processo','Vara e comarca','Autores e réus','Qualificação do cliente','Valor por extenso','Data por extenso','Advogado e OAB'].map(x=>`<span>${ic('check',11,3)} ${x}</span>`).join('')}</div></div></div>
+   <div class="peek-f"><button class="btn btn-primary" data-use="${t.id}">${ic('pen',17)}Usar este modelo</button><button class="btn btn-outline" data-fav="${t.id}">${ic('star',15)}${t.fav?'Desfavoritar':'Favoritar'}</button><button class="btn btn-outline" data-menu="${t.id}">Mais ${ic('more',15)}</button></div></aside>`;
+  if(document.body.className){const fr=$('#frame').getBoundingClientRect(),pk=$('.peek'),bg=$('.peek-bg');pk.style.left=fr.left+'px';pk.style.width=fr.width+'px';pk.style.right='auto';bg.style.left=fr.left+'px';bg.style.width=fr.width+'px';}}
 function openMenu(id,btn){const t=TPL.find(x=>x.id===id),r=btn.getBoundingClientRect(),mine=!!t.esc;
   const it=(a,i,l,dis='',cls='')=>`<button data-ma="${a}" data-id="${id}" ${dis?`disabled title="${dis}"`:''} class="${cls}">${ic(i,16)}${l}</button>`;
   $('#menu-root').innerHTML=`<div class="menu" style="top:${r.bottom+window.scrollY+4}px;left:${Math.max(8,r.right-240)}px" role="menu">
@@ -456,16 +522,19 @@ function renderEditor(){const t=S.tpl||TPL[0];const tb=(i,l,on)=>`<button class=
     <aside class="ed-side"><div class="tabs">${[['campos','Campos'],['blocos','Blocos'],['versoes','Versões']].map(([k,l])=>`<button class="${S.edTab===k?'on':''}" data-edtab="${k}">${l}</button>`).join('')}</div><div class="side-body">${side}</div></aside></div><div style="height:80px"></div>`;}
 
 /* ---------- Render ---------- */
-function render(){closeMenu();({lib:renderLib,origem:renderOrigem,rev:renderRev,manual:renderManual,save:renderSave,done:renderDone,editor:renderEditor})[S.view]();}
-function startTpl(id){S.tpl=TPL.find(t=>t.id===id);S.origem=null;S.rec=null;S.sel.clear();S.lote=false;S.vals={};S.nome='';S.pasta='';S.mstep=0;S.view='origem';render();window.scrollTo(0,0);}
+function render(){if(!$('.peek'))closeMenu();({lib:renderLib,origem:renderOrigem,rev:renderRev,manual:renderManual,save:renderSave,done:renderDone,editor:renderEditor})[S.view]();}
+function startTpl(id){closeMenu();S.tpl=TPL.find(t=>t.id===id);S.origem=PICK.rec?'proc':null;S.rec=PICK.rec||null;S.sel.clear();S.lote=false;S.vals={};S.nome='';S.pasta='';S.mstep=0;S.view='origem';render();window.scrollTo(0,0);}
 function loadVals(){const p=PROCS.find(x=>x.id===(S.lote?[...S.sel][0]:S.rec));S.vals=Object.assign({},p?p.d:{},ESC);}
 
 document.addEventListener('click',e=>{
   const pv=e.target.closest('[data-pv]');if(pv){document.body.className=pv.dataset.pv==='d'?'':pv.dataset.pv;$$('[data-pv]').forEach(b=>b.classList.toggle('on',b===pv));render();return;}
-  if(!e.target.closest('.menu')&&!e.target.closest('[data-menu]'))closeMenu();
+  if(!e.target.closest('.menu')&&!e.target.closest('[data-menu]')&&!e.target.closest('.pick')&&!e.target.closest('[data-slot]')&&!e.target.closest('.peek')&&!e.target.closest('[data-peek]'))closeMenu();
   const g=k=>e.target.closest(k);let x;
+  if(x=g('[data-slot]')){openPick(x.dataset.slot,x);return;}
+  if(x=g('[data-pk]')){const k=x.dataset.pk,v=x.dataset.v;if(k==='cat')PICK.cat=v;else PICK.rec=v||null;closeMenu();render();return;}
+  if(x=g('[data-peek]')){openPeek(+x.dataset.peek);return;}
   if(x=g('[data-filter]')){S.filter=x.dataset.filter;render();return;}
-  if(x=g('[data-fav]')){const t=TPL.find(t=>t.id===+x.dataset.fav);t.fav=!t.fav;render();snack(t.fav?'Adicionado aos favoritos':'Removido dos favoritos');return;}
+  if(x=g('[data-fav]')){const t=TPL.find(t=>t.id===+x.dataset.fav);t.fav=!t.fav;const inPeek=!!x.closest('.peek');render();if(inPeek)openPeek(t.id);snack(t.fav?'Adicionado aos favoritos':'Removido dos favoritos');return;}
   if(x=g('[data-use]')){startTpl(+x.dataset.use);return;}
   if(x=g('[data-menu]')){openMenu(+x.dataset.menu,x);return;}
   if(x=g('[data-ma]')){const id=+x.dataset.id,a=x.dataset.ma,t=TPL.find(t=>t.id===id);closeMenu();
@@ -484,6 +553,9 @@ document.addEventListener('click',e=>{
   if(x=g('[data-edtab]')){S.edTab=x.dataset.edtab;render();return;}
   if(x=g('[data-ins]')){snack('Campo inserido: <b>{{'+x.dataset.ins+'}}</b>');return;}
   if(x=g('[data-act]')){const a=x.dataset.act;
+    if(a==='peek-close'){closeMenu();return;}
+    if(a==='clear-cat'){PICK.cat=null;render();return;}
+    if(a==='go-phrase'){$('#estante').scrollIntoView({behavior:'smooth'});return;}
     if(a==='lib'){S.view='lib';render();window.scrollTo(0,0);return;}
     if(a==='quick-fav'){S.filter='fav';render();return;}
     if(a==='quick-proc'){S.filter='todos';render();snack('Escolha o modelo abaixo: o processo será pedido em seguida.');return;}
