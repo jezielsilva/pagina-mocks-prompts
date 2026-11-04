@@ -361,6 +361,36 @@ body.t .peek,body.m .peek{position:fixed}
  .store-top{display:flex!important}.shelf{grid-template-columns:repeat(5,minmax(0,1fr))}}
 .store-top{display:none;align-items:center;gap:12px;margin:0 16px 12px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:13px}.store-top .bar{flex:1;height:8px;border-radius:999px;background:var(--s100);overflow:hidden;display:flex}
 @container app (max-width:520px){.mhead h1{font-size:18px;width:100%}.mini-phrase{font-size:16px}.mini-phrase .slot{font-size:15px}.mini-phrase .btn-white{width:100%;margin:4px 0 0}.shelf{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 10px;padding:4px 12px 16px}.paper .pn{font-size:10.5px}.paper .cap b{font-size:11px}.paper .cap{font-size:10.5px}.paper .kebab{opacity:1;width:24px;height:24px}.ltable .hide-m{display:none}.store-top{font-size:12px}}
+
+/* ===== Extras: identidade, rascunhos, prazos, aprovação, tamanho do texto ===== */
+.a4{font-size:var(--fz,13px);font-family:var(--doc-font,Georgia),"Times New Roman",serif;position:relative}
+.a4.wm::before{content:"";position:absolute;inset:0;background:var(--wm) center/55% no-repeat;opacity:var(--wmo,.08);pointer-events:none}
+.doc-hdr{display:flex;align-items:center;gap:10px;border-bottom:1px solid #ccc;padding-bottom:8px;margin-bottom:14px;text-indent:0}
+.doc-hdr .lg{width:34px;height:34px;border-radius:8px;background:var(--brand,#70398c);color:#fff;display:grid;place-items:center;font:700 13px var(--font-head);flex-shrink:0}
+.doc-hdr b{font-size:1.05em}.doc-hdr span{font-size:.8em;color:#555;display:block}
+.doc-ftr{border-top:1px solid #ccc;margin-top:18px;padding-top:6px;font-size:.75em;color:#666;text-align:center;text-indent:0}
+.fz{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:2px}
+.fz button{border:0;background:none;width:34px;height:30px;border-radius:999px;cursor:pointer;font:700 13px var(--font-head);color:var(--s700)}.fz button:hover{background:var(--s100)}
+.fz span{font-size:12px;color:var(--text2);padding:0 4px;min-width:38px;text-align:center}
+.strip{margin:0 16px 14px;display:flex;flex-direction:column;gap:8px}
+.strip-h{display:flex;align-items:center;gap:8px;font:700 14px var(--font-head)}
+.strip-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.sugg{display:flex;align-items:center;gap:12px;min-width:280px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;text-align:left;cursor:pointer;flex-shrink:0}
+.sugg:hover{border-color:var(--color-primary)}
+.sugg .oic{width:38px;height:38px}.sugg b{display:block;font-size:14px}.sugg span{font-size:12px;color:var(--text2)}
+.sugg.warn .oic{background:var(--color-warning-lightest);color:var(--color-warning-dark)}
+.sugg .x{margin-left:auto;color:var(--s400)}
+.req{display:inline-flex;font:700 10px var(--font-body);color:var(--color-negative-dark);background:var(--color-negative-lightest);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+.frow.reqmiss .input{border-color:var(--color-negative);background:var(--color-negative-lightest)}
+.check.err{background:var(--color-negative-lightest);color:var(--color-negative-dark);border:1px solid #fca5a5}
+.proc-page{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start}
+.pz{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--s100)}.pz:last-child{border-bottom:0}
+.pz .d{width:46px;text-align:center;border-radius:10px;padding:4px 0;background:var(--color-warning-lightest);color:var(--color-warning-dark);font:700 16px var(--font-head);line-height:1}.pz .d small{display:block;font:600 10px var(--font-body)}
+.pz .d.r{background:var(--color-negative-lightest);color:var(--color-negative-dark)}
+.tgl{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--s100)}.tgl:last-child{border-bottom:0}
+.badge.b-pend{background:var(--color-warning-lightest);color:var(--color-warning-dark)}
+@container app (max-width:900px){.proc-page{grid-template-columns:1fr}}
+@container app (max-width:520px){.sugg{min-width:240px}}
 </style>
 </head>
 <body>
@@ -567,6 +597,7 @@ function renderSave(){const v=S.vals,miss=allKeys().filter(k=>isMiss(v,k));const
       <div><label class="label" for="s-pasta">Salvar em</label><select class="select" id="s-pasta">${pastas.map(p=>`<option ${p===S.pasta?'selected':''}>${esc(p)}</option>`).join('')}</select></div>
       <div><label class="label" for="s-cls">Classificação</label><select class="select" id="s-cls"><option>${esc(CATS[t.cat].n)} · ${esc(t.area)}</option><option>Outra…</option></select></div>
       <div class="full"><label class="label" for="s-vinc">Vincular a</label><select class="select" id="s-vinc"><option>Processo ${esc(v['processo.numero']||'')}</option><option>Prazo: Réplica — vence em 5 dias</option><option>Tarefa: Protocolar inicial</option><option>Não vincular</option></select></div>
+      <div class="full" id="tarefa-slot"></div>
       <div class="full"><span class="label">Formatos</span><div class="opts">${of('docx','Word (.docx)')}${of('pdf','PDF')}</div></div>
     </div></div>
     <aside class="side-prev"><span class="label">Prévia</span><div class="mini-a4">${docHTML(v)}</div></aside>
@@ -707,6 +738,89 @@ const _rl=renderLib;renderLib=function(){_rl();if(!can())$$('[data-act="novo"]')
 const _om=openMenu;openMenu=function(id,btn){_om(id,btn);if(!can())$$('[data-ma="edit"],[data-ma="dup"],[data-ma="del"]').forEach(b=>{b.disabled=true;b.title='Sem permissão de editar modelos';});};
 const _ro=renderOrigem;renderOrigem=function(){if(PICK.manual&&!S.origem){S.origem='manual';PICK.manual=false;}_ro();};
 const _re=renderEditor;renderEditor=function(){_re();if(!can()){const ed=$('#ed-a4');if(ed)ed.contentEditable='false';$$('.ed-bar button,.ed-bar select,[data-act="salvar-modelo"]').forEach(b=>b.disabled=true);$('.ed-bar').insertAdjacentHTML('beforeend','<span class="small muted" style="margin-left:8px">'+ic('lock',12)+' Somente leitura no seu perfil</span>');}};
+
+
+/* ================= Extras ================= */
+const ID={on:true,nome:'Jeziel Silva Advocacia',sub:'OAB/AP 999.999 · Rua Exemplo, 100 · Macapá/AP · (96) 99999-0000',rod:'contato@jezielsilva.adv.br · www.jezielsilva.adv.br',font:'Georgia',cor:'#70398c',wm:true,wmo:.1};
+const CFG={aprov:false};let APROV=[],DRAFTS=[],TAREFAS=0;S.fz=13;S.tarefa=true;
+TPL.forEach(t=>{t.req=t.cat==='cont'||t.cat==='rec'?['processo.numero','processo.vara']:t.cat==='ini'?['cliente.cpf','valor']:['cliente.nome'];});
+const PRAZOS=[{id:'z1',proc:'p1',nome:'Réplica à contestação',dias:5,cat:'inter',tpl:11},{id:'z2',proc:'p2',nome:'Contestação',dias:2,cat:'cont',tpl:3},{id:'z3',proc:'p3',nome:'Recurso de apelação',dias:9,cat:'rec',tpl:5},{id:'z4',proc:'p1',nome:'Embargos de declaração',dias:0,cat:'rec',tpl:10}];
+const ini=n=>n.split(' ').filter(w=>w.length>2).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+function wmURI(){const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect x="10" y="10" width="180" height="180" rx="40" fill="${ID.cor}"/><text x="100" y="128" font-family="Arial" font-weight="700" font-size="78" text-anchor="middle" fill="#fff">${ini(ID.nome)}</text></svg>`;return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;}
+function applyIdentity(){const fr=document.documentElement;fr.style.setProperty('--fz',S.fz+'px');fr.style.setProperty('--doc-font',ID.font);fr.style.setProperty('--brand',ID.cor);fr.style.setProperty('--wm',wmURI());fr.style.setProperty('--wmo',ID.wmo);
+  $$('.a4,.mini-a4').forEach(a=>a.classList.toggle('wm',ID.on&&ID.wm));}
+const _doc=docHTML;docHTML=function(v){const b=_doc(v);if(!ID.on)return b;return `<div class="doc-hdr"><span class="lg">${ini(ID.nome)}</span><span><b>${esc(ID.nome)}</b><span>${esc(ID.sub)}</span></span></div>${b}<div class="doc-ftr">${esc(ID.rod)}</div>`;};
+function fzCtl(){return `<span class="fz" role="group" aria-label="Tamanho do texto"><button data-fz="-1" aria-label="Diminuir texto">A−</button><span>${Math.round(S.fz/13*100)}%</span><button data-fz="1" aria-label="Aumentar texto">A+</button></span>`;}
+function addFz(){$$('.preview-wrap').forEach(w=>{if(!w.querySelector('.fz'))w.insertAdjacentHTML('afterbegin',fzCtl());});const pb=$('.peek-b');if(pb&&!pb.querySelector('.fz'))pb.insertAdjacentHTML('afterbegin',`<div style="display:flex;justify-content:flex-end">${fzCtl()}</div>`);const eb=$('.ed-bar');if(eb&&!eb.querySelector('.fz')){eb.insertAdjacentHTML('beforeend','<span class="sep"></span>'+fzCtl());}}
+const reqOf=()=>(S.tpl&&S.tpl.req)||[];const lbl=k=>(GROUPS.flatMap(g=>g.f).find(f=>f[0]===k)||[k,k])[1];
+const reqMiss=()=>reqOf().filter(k=>isMiss(S.vals,k));
+function saveDraft(){if(!S.tpl||!['rev','manual','save'].includes(S.view))return;const d=DRAFTS.find(x=>x.tpl===S.tpl.id&&x.rec===S.rec);const o={tpl:S.tpl.id,rec:S.rec,origem:S.origem,vals:JSON.parse(JSON.stringify(S.vals)),view:S.view,mstep:S.mstep,when:new Date()};if(d)Object.assign(d,o);else DRAFTS.unshift(o);snack('Rascunho salvo. Você pode continuar depois.');}
+function stripsHTML(){let h='';
+  if(DRAFTS.length)h+=`<div class="strip"><span class="strip-h">${ic('history',15)}Continuar de onde parei</span><div class="strip-row">${DRAFTS.map((d,i)=>{const t=TPL.find(x=>x.id===d.tpl);if(!t)return'';const p=PROCS.find(x=>x.id===d.rec);return `<button class="sugg" data-draft="${i}"><span class="oic">${ic('pen',18)}</span><span><b>${esc(t.nome)}</b><span>${p?esc(p.d['cliente.nome'])+' · ':''}rascunho de agora há pouco</span></span><span class="x" data-dropdraft="${i}" title="Descartar rascunho">${ic('trash',14)}</span></button>`;}).join('')}</div></div>`;
+  h+=`<div class="strip"><span class="strip-h">${ic('alert',15)}Peças sugeridas pelos seus prazos</span><div class="strip-row">${PRAZOS.map(z=>{const p=PROCS.find(x=>x.id===z.proc);return `<button class="sugg warn" data-prazo="${z.id}"><span class="oic">${ic('alert',18)}</span><span><b>Gerar ${esc(z.nome.toLowerCase())}</b><span>${z.dias===0?'vence hoje':'vence em '+z.dias+' dias'} · ${esc(p.d['cliente.nome'])}</span></span></button>`;}).join('')}</div></div>`;return h;}
+function renderProc(){const p=PROCS.find(x=>x.id===S.procView)||PROCS[0];const zs=PRAZOS.filter(z=>z.proc===p.id);const pecas=[['Procuração Ad Judicia et Extra','01/10'],['Ação de Cobrança','03/10']];
+  app.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><button class="backlink" data-act="lib">${ic('back',16)}Gerador de peças</button><span class="small muted">· exemplo da tela de Processo</span></div>
+  <div class="proc-page"><section class="card" style="padding:18px 20px"><span class="small muted">Processo</span><h1 style="color:var(--text)">${esc(p.t)}</h1><span class="muted">${esc(p.s)}</span>
+   <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap"><button class="btn btn-primary" data-act="proc-gerar">${ic('pen',16)}Gerar peça</button><button class="btn btn-outline">${ic('folder',15)}Documentos</button><button class="btn btn-outline">${ic('history',15)}Histórico</button></div>
+   <span class="label">Prazos em aberto</span><div class="card" style="overflow:hidden">${zs.map(z=>`<div class="pz"><span class="d ${z.dias<=2?'r':''}">${z.dias}<small>${z.dias===1?'dia':'dias'}</small></span><span style="flex:1"><b>${esc(z.nome)}</b><br><span class="small muted">${z.dias===0?'vence hoje':'vence em '+z.dias+' dias'}</span></span><button class="btn btn-sm btn-outline" data-prazo="${z.id}">${ic('pen',13)}Gerar ${esc(z.nome.split(' ')[0].toLowerCase())}</button></div>`).join('')||'<div class="pz muted">Sem prazos em aberto.</div>'}</div>
+   <span class="label" style="margin-top:16px">Peças geradas neste processo</span><div class="card" style="overflow:hidden">${pecas.map(x=>`<div class="pz"><span class="mini-sheet" style="--c:var(--c4)"></span><span style="flex:1"><b>${x[0]}</b><br><span class="small muted">gerada em ${x[1]} · Jeziel Silva</span></span><button class="btn btn-sm btn-outline" data-act="dup-peca">${ic('copy',13)}Duplicar para outro processo</button></div>`).join('')}</div></section>
+   <aside class="card" style="padding:16px"><span class="label">Outros processos (exemplo)</span>${PROCS.map(x=>`<button class="rec ${x.id===p.id?'on':''}" data-procview="${x.id}" style="width:100%;border:1px solid var(--border);border-radius:12px;margin-bottom:8px"><span class="t"><b>${esc(x.t)}</b><span>${esc(x.d['cliente.nome'])}</span></span>${ic('chev',15)}</button>`).join('')}</aside></div><div style="height:80px"></div>`;}
+function startFrom(tplId,procId){closeMenu();S.tpl=TPL.find(t=>t.id===tplId);S.origem='proc';S.rec=procId;S.lote=false;S.sel.clear();S.nome='';S.pasta='';S.mstep=0;loadVals();S.view='rev';render();window.scrollTo(0,0);}
+function idModal(){modal('Identidade do escritório',`<span class="muted small">Aplicado automaticamente em todas as peças geradas.</span>
+  <div class="tgl"><span><b>Usar identidade nas peças</b><br><span class="small muted">Cabeçalho, rodapé e marca d'água</span></span><button class="switch ${ID.on?'on':''}" data-idt="on"><i></i></button></div>
+  <label class="label" for="id-n" style="margin-top:10px">Nome do escritório</label><input class="input" id="id-n" value="${esc(ID.nome)}">
+  <label class="label" for="id-s" style="margin-top:10px">Linha do cabeçalho</label><input class="input" id="id-s" value="${esc(ID.sub)}">
+  <label class="label" for="id-r" style="margin-top:10px">Rodapé</label><input class="input" id="id-r" value="${esc(ID.rod)}">
+  <div class="form" style="margin-top:10px"><div><label class="label" for="id-f">Fonte das peças</label><select class="select" id="id-f">${['Georgia','Times New Roman','Arial','Calibri'].map(f=>`<option ${f===ID.font?'selected':''}>${f}</option>`).join('')}</select></div><div><label class="label" for="id-c">Cor do logo</label><input class="input" id="id-c" type="color" value="${ID.cor}" style="padding:4px"></div></div>
+  <div class="tgl" style="margin-top:6px"><span><b>Marca d'água com o logo</b><br><span class="small muted">Logo clarinho no centro de cada página</span></span><button class="switch ${ID.wm?'on':''}" data-idt="wm"><i></i></button></div>
+  <label class="label" for="id-o">Intensidade da marca d'água</label><input id="id-o" type="range" min="3" max="20" value="${Math.round(ID.wmo*100)}" style="width:100%">
+  <div class="mini-a4 ${ID.on&&ID.wm?'wm':''}" style="max-width:180px;margin:12px auto 0">${docHTML({})}</div>`,`<button class="btn btn-outline" data-act="peek-close">Cancelar</button><button class="btn btn-primary" data-act="id-ok">${ic('check',15,3)}Salvar identidade</button>`);applyIdentity();}
+function cfgModal(){modal('Configurações do gerador',`<div class="tgl"><span><b>Exigir aprovação das peças</b><br><span class="small muted">Toda peça gerada fica <b>pendente</b> até um aprovador liberar. Desligado: a peça já sai aprovada.</span></span><button class="switch ${CFG.aprov?'on':''}" data-cfg="aprov"><i></i></button></div>
+  <div class="tgl"><span><b>Quem aprova</b><br><span class="small muted">Usuários com a permissão “Aprovar peças”</span></span><span class="badge b-esc">Titular · Ana Costa</span></div>
+  <div class="tgl"><span><b>Criar tarefa ao gerar</b><br><span class="small muted">“Revisar e protocolar” para quem gerou (padrão ligado)</span></span><button class="switch ${S.tarefa?'on':''}" data-cfg="tarefa"><i></i></button></div>`,`<button class="btn btn-primary" data-act="peek-close">Concluir</button>`);}
+function aprovModal(){modal('Aprovações pendentes',APROV.length?APROV.map((a,i)=>`<div class="pz" style="padding:12px 0"><span class="mini-sheet" style="--c:${CATS[a.cat].c}"></span><span style="flex:1;min-width:0"><b>${esc(a.nome)}</b><br><span class="small muted">gerada por ${esc(a.por)} · agora</span></span><button class="btn btn-sm btn-outline" data-apv="${i}" data-ok="0">Devolver</button><button class="btn btn-sm btn-success" data-apv="${i}" data-ok="1">${ic('check',13,3)}Aprovar</button></div>`).join(''):'<div class="empty-panel">Nenhuma peça aguardando aprovação.</div>',`<button class="btn btn-outline" data-act="peek-close">Fechar</button>`);}
+
+/* pós-render */
+const _rl2=renderLib;renderLib=function(){_rl2();const side=$('.side .card');if(side)side.insertAdjacentHTML('afterend',`<div class="card" style="padding:8px"><nav class="nav"><button data-act="open-proc">${ic('scale',16)}Abrir de um processo<span class="n">exemplo</span></button><button data-act="id-open">${ic('pen',16)}Identidade do escritório</button>${CFG.aprov?`<button data-act="aprov-open">${ic('check',16)}Aprovações<span class="n" style="color:var(--color-warning-dark)">${APROV.length}</span></button>`:''}<button data-act="cfg-open">${ic('lock',16)}Configurações</button></nav></div>`);
+  const cr=$('.crumb');if(cr&&!S.gq&&!S.cat&&S.filter==='todos')cr.insertAdjacentHTML('afterend',stripsHTML());};
+const _rv=renderRev;renderRev=function(){_rv();const rq=reqOf();rq.forEach(k=>{const i=$(`[data-field="${k}"]`);if(!i)return;const row=i.closest('.frow');row.querySelector('.label').insertAdjacentHTML('beforeend','<span class="req">Obrigatório</span>');if(isMiss(S.vals,k))row.classList.add('reqmiss');});
+  const m=reqMiss();if(m.length){$('.fields').insertAdjacentHTML('afterbegin',`<div class="check err">${ic('alert',16)}<span><b>Preencha os campos obrigatórios</b> deste modelo para continuar: ${m.map(lbl).join(', ')}.</span></div>`);const b=$('[data-act="to-save"]');if(b){b.disabled=true;b.title='Preencha os campos obrigatórios';}}};
+const _rs=renderSave;renderSave=function(){_rs();const sl=$('#tarefa-slot');if(sl)sl.innerHTML=`<div class="tgl" style="border:1px solid var(--border);border-radius:12px;padding:12px 14px"><span><b>${ic('check',14)} Criar tarefa “Revisar e protocolar”</b><br><span class="small muted">Para você, com prazo em</span> <input type="date" class="input" style="display:inline-block;width:auto;height:32px;margin-top:6px" value="2026-11-06"></span><button class="switch ${S.tarefa?'on':''}" data-cfg="tarefa-s"><i></i></button></div>${CFG.aprov?`<div class="check warn">${ic('lock',16)}<span>A aprovação está ligada: a peça vai para <b>Aprovações</b> e fica pendente até ser liberada.</span></div>`:''}`;
+  const m=reqMiss();if(m.length){const g=$('[data-act="gerar"]');g.disabled=true;g.title='Campos obrigatórios vazios';$('.save .check').outerHTML=`<div class="check err" style="margin-bottom:16px">${ic('alert',16)}<span><b>Campos obrigatórios vazios:</b> ${m.map(lbl).join(', ')}. Volte e preencha para gerar.</span></div>`;}};
+const _rd=renderDone;renderDone=function(){_rd();const kv=$('.kv');if(S.tarefa&&kv)kv.insertAdjacentHTML('beforeend',`<dt>Tarefa</dt><dd>Revisar e protocolar · até 06/11 · para você</dd>`);if(CFG.aprov){$('.ok-ic').outerHTML=`<span class="ok-ic" style="background:var(--color-warning-lightest);color:var(--color-warning-dark)">${ic('history',24)}</span>`;$('.done-card h1').textContent='Peça enviada para aprovação';$('.done-card h1').nextElementSibling.textContent='Está em Documentos com o status Pendente até um aprovador liberar.';kv.insertAdjacentHTML('beforeend','<dt>Status</dt><dd><span class="badge b-pend">Pendente de aprovação</span></dd>');}
+  $('.acts').insertAdjacentHTML('beforeend',`<button class="btn btn-outline" data-act="dup-peca">${ic('copy',15)}Duplicar para outro processo</button>`);};
+const _r2=render;render=function(){if(S.view==='proc'){closeMenu();renderProc();}else _r2();applyIdentity();addFz();};
+const _op=openPeek;openPeek=function(id){_op(id);applyIdentity();addFz();};
+
+document.addEventListener('click',e=>{const g=k=>e.target.closest(k);let x;
+  if(x=g('[data-fz]')){e.stopPropagation();S.fz=Math.max(10,Math.min(20,S.fz+(+x.dataset.fz)));applyIdentity();$$('.fz span').forEach(s=>s.textContent=Math.round(S.fz/13*100)+'%');return;}
+  if(x=g('[data-dropdraft]')){e.stopPropagation();DRAFTS.splice(+x.dataset.dropdraft,1);render();snack('Rascunho descartado');return;}
+  if(x=g('[data-draft]')){e.stopPropagation();const d=DRAFTS[+x.dataset.draft];S.tpl=TPL.find(t=>t.id===d.tpl);S.rec=d.rec;S.origem=d.origem;S.vals=d.vals;S.mstep=d.mstep||0;S.view=d.view;S.lote=false;render();snack('Continuando o rascunho');return;}
+  if(x=g('[data-prazo]')){e.stopPropagation();const z=PRAZOS.find(z=>z.id===x.dataset.prazo);startFrom(z.tpl,z.proc);snack(`Modelo sugerido para o prazo “${esc(z.nome)}”, já com os dados do processo.`);return;}
+  if(x=g('[data-procview]')){e.stopPropagation();S.procView=x.dataset.procview;render();return;}
+  if(x=g('[data-idt]')){e.stopPropagation();ID[x.dataset.idt]=!ID[x.dataset.idt];x.classList.toggle('on',ID[x.dataset.idt]);const m=$('#menu-root .mini-a4');if(m){m.innerHTML=docHTML({});m.classList.toggle('wm',ID.on&&ID.wm);}return;}
+  if(x=g('[data-cfg]')){e.stopPropagation();const k=x.dataset.cfg;if(k==='aprov')CFG.aprov=!CFG.aprov;else S.tarefa=!S.tarefa;x.classList.toggle('on');if(k==='aprov'){render();cfgModal();}return;}
+  if(x=g('[data-apv]')){e.stopPropagation();const a=APROV.splice(+x.dataset.apv,1)[0];snack(x.dataset.ok==='1'?`<b>${esc(a.nome)}</b> aprovada`:`<b>${esc(a.nome)}</b> devolvida para ajustes`);render();aprovModal();return;}
+  if(x=g('[data-act]')){const a=x.dataset.act;
+    if(a==='lib'&&['rev','manual','save'].includes(S.view)&&Object.keys(S.vals).length>2)saveDraft();
+    if(a==='open-proc'){e.stopPropagation();S.view='proc';S.procView=S.procView||'p1';render();window.scrollTo(0,0);return;}
+    if(a==='proc-gerar'){e.stopPropagation();const p=S.procView||'p1';const zs=PRAZOS.filter(z=>z.proc===p);modal('Gerar peça para este processo',`${zs.length?`<span class="label">Sugeridas pelos prazos</span>${zs.map(z=>`<button class="sugg warn" style="width:100%;margin-bottom:8px" data-prazo="${z.id}"><span class="oic">${ic('alert',18)}</span><span><b>${esc(TPL.find(t=>t.id===z.tpl).nome)}</b><span>prazo: ${esc(z.nome)} · ${z.dias===0?'vence hoje':'em '+z.dias+' dias'}</span></span></button>`).join('')}`:''}<span class="label" style="margin-top:8px">Todos os modelos</span>${TPL.slice(0,8).map(t=>`<button class="rec" style="width:100%" data-startfrom="${t.id}"><span class="mini-sheet" style="--c:${CATS[t.cat].c}"></span><span class="t"><b>${esc(t.nome)}</b><span>${esc(CATS[t.cat].n)}</span></span>${ic('chev',15)}</button>`).join('')}`,`<button class="btn btn-outline" data-act="peek-close">Cancelar</button>`);return;}
+    if(a==='dup-peca'){e.stopPropagation();const t=S.tpl||TPL.find(t=>t.id===2);const keep=JSON.parse(JSON.stringify(S.vals||{}));S.tpl=t;S.origem='proc';S.rec=null;S.sel.clear();S.lote=false;S.nome='';S.pasta='';S.dupVals=keep;S.view='origem';render();snack('Escolha o outro processo: o texto da peça é mantido, só os dados mudam.');return;}
+    if(a==='id-open'){e.stopPropagation();idModal();return;}
+    if(a==='id-ok'){e.stopPropagation();ID.nome=$('#id-n').value;ID.sub=$('#id-s').value;ID.rod=$('#id-r').value;ID.font=$('#id-f').value;ID.cor=$('#id-c').value;ID.wmo=(+$('#id-o').value)/100;closeMenu();render();snack('Identidade salva: aplicada em todas as peças');return;}
+    if(a==='cfg-open'){e.stopPropagation();cfgModal();return;}
+    if(a==='aprov-open'){e.stopPropagation();aprovModal();return;}
+    if(a==='gerar'&&CFG.aprov){APROV.push({nome:S.nome||S.tpl.nome,cat:S.tpl.cat,por:'Jeziel Silva'});}
+    if(a==='gerar'){const d=DRAFTS.findIndex(x=>x.tpl===S.tpl.id&&x.rec===S.rec);if(d>=0)DRAFTS.splice(d,1);if(S.tarefa)TAREFAS++;}
+  }
+  if(x=g('[data-startfrom]')){e.stopPropagation();startFrom(+x.dataset.startfrom,S.procView||'p1');return;}
+},true);
+document.addEventListener('input',e=>{if(e.target.id==='id-o'){ID.wmo=(+e.target.value)/100;document.documentElement.style.setProperty('--wmo',ID.wmo);}
+  if(e.target.matches('#id-n,#id-s,#id-r')){const m=$('#menu-root .mini-a4');const o={nome:ID.nome,sub:ID.sub,rod:ID.rod};ID.nome=$('#id-n').value;ID.sub=$('#id-s').value;ID.rod=$('#id-r').value;if(m)m.innerHTML=docHTML({});Object.assign(ID,o);}
+  if(e.target.matches('[data-field]')&&S.view==='rev'){const k=e.target.dataset.field;if(reqOf().includes(k)){const row=e.target.closest('.frow');row.classList.toggle('reqmiss',isMiss(S.vals,k));const b=$('[data-act="to-save"]');if(b){b.disabled=reqMiss().length>0;}}}});
+document.addEventListener('change',e=>{if(e.target.id==='id-c'){document.documentElement.style.setProperty('--brand',e.target.value);}});
+/* duplicar: ao escolher o novo processo, mantém o texto */
+const _lv=loadVals;loadVals=function(){_lv();if(S.dupVals){S.dupVals=null;}};
 
 document.addEventListener('dblclick',e=>{const x=e.target.closest('[data-peek]');if(x)startTpl(+x.dataset.peek);});
 render();
