@@ -24,3 +24,4 @@
   - No chat entre o Claude e o usuário pode tudo; a regra vale só para o que fica no GitHub.
 - Instruções com comandos (PowerShell, passos de instalação, diagnóstico) vão para o PORTAL (página própria no portal), não só no chat; no chat, só um resumo curto e o nome do item.
 - Pendências: `pendencias/PENDENCIAS.txt` (item FIXO `"id":"pendencias"`); atualizar sempre que o usuário fechar/abrir pendências.
+- Mock do Gerador de peças: `artefatos/gerador-pecas-mock.html` (item FIXO `"id":"gerador-pecas-mock"`); nunca apagar na limpeza.
