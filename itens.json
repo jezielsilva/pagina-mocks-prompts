@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-04T17:35",
+  "atualizado": "2026-11-04T18:05",
   "itens": [
     {
       "id": "pendencias",
@@ -46,6 +46,15 @@
       "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
       "data": "2026-10-23T11:50:00-03:00",
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    },
+    {
+      "id": "guia-suporte-documentos",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Guia de funcionalidades para o Suporte (.pptx)",
+      "data": "2026-11-04T18:05",
+      "arquivo": "guias/guia-documentos-suporte.pptx",
+      "fixo": true
     }
   ]
 }
