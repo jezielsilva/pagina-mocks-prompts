@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-03T18:32",
+  "atualizado": "2026-11-04T09:25",
   "itens": [
     {
       "id": "pendencias",
@@ -28,6 +28,16 @@
       "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
       "data": "2026-10-23T11:50:00-03:00",
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    },
+    {
+      "id": "treino-2026-11-04",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de quarta, 04/11 — aula + 3 perguntas",
+      "data": "2026-11-04T09:25:00-03:00",
+      "arquivo": "treino/index.html?d=2026-11-04"
     }
   ]
 }
