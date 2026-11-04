@@ -309,6 +309,55 @@ body.t .peek,body.m .peek{position:fixed}
 @container app (max-width:900px){.desk{padding:26px}.phrase{font-size:24px}.slot{font-size:22px}.shelf{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 16px}}
 @container app (max-width:520px){.desk{padding:22px 18px;border-radius:20px}.phrase{font-size:21px;line-height:1.7}.slot{font-size:19px;padding:0 8px}.btn-white{width:100%}.desk-hint{width:100%;text-align:center}
  .shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}.shelf-head h2{font-size:19px;width:100%}.tabs2{width:100%}.pick{width:calc(100% - 32px);left:16px!important}}
+
+/* ===== Layout estilo Documentos ===== */
+.lay{display:grid;grid-template-columns:250px minmax(0,1fr) 360px;gap:18px;align-items:start}
+.lay.nopanel{grid-template-columns:250px minmax(0,1fr)}
+.side{display:flex;flex-direction:column;gap:14px;position:sticky;top:12px}
+.side .card{padding:14px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;background:none;border-radius:10px;cursor:pointer;text-align:left;font-size:14px;color:var(--s700)}
+.nav button:hover{background:var(--s100)}.nav button.on{background:var(--color-primary-lightest);color:var(--color-primary-dark);font-weight:700}
+.nav button .n{margin-left:auto;font-size:12px;color:var(--text2);font-weight:600}
+.nav .cdot{width:10px;height:10px;border-radius:50%;background:var(--c);flex-shrink:0;margin:0 3px}
+.side h4{font:700 12px var(--font-head);text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin:6px 10px 6px}
+.store b{font:700 20px var(--font-head)}.store .bar{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--s100);margin:10px 0 8px}
+.store .bar i{display:block;height:100%}
+.store .leg{display:flex;flex-direction:column;gap:5px;font-size:12.5px}.store .leg span{display:flex;align-items:center;gap:8px}.store .leg em{margin-left:auto;font-style:normal;color:var(--text2)}
+.mhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px}
+.mhead h1{font:700 20px var(--font-head);color:var(--s900)}
+.seg{display:inline-flex;border-bottom:1px solid var(--border)}
+.seg button{border:0;background:none;padding:8px 12px;font:600 14px var(--font-body);color:var(--text2);border-bottom:2px solid transparent;cursor:pointer;display:flex;gap:6px;align-items:center}.seg button.on{color:var(--color-primary);border-bottom-color:var(--color-primary)}
+.crumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);padding:0 16px 12px}.crumb b{color:var(--text)}
+.mini-phrase{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 16px 14px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#4a2661,#70398c);color:#fff;font:400 18px Georgia,serif}
+.mini-phrase .slot{font-size:17px;padding:2px 10px}
+.mini-phrase .btn-white{height:38px;font-size:14px;margin-left:auto;padding:0 16px}
+.shelf{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:22px 16px;padding:4px 16px 18px}
+.paper .pg2{padding:14% 10%}.paper .pn{font-size:12px}.paper .pn::before,.paper .pn::after{margin:7px auto}
+.paper .rib{width:12px;height:20px}
+.paper .cap{font-size:11.5px}
+.paper .kebab{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:#fff;display:grid;place-items:center;color:var(--s700);opacity:0;box-shadow:0 1px 3px rgba(15,23,42,.15);cursor:pointer}
+.paper:hover .kebab,.paper:focus-within .kebab,.paper.sel .kebab{opacity:1}
+.paper .fav{top:auto;bottom:6px;right:6px}
+.paper.sel .pg2{border-width:2px;border-color:var(--color-primary)}
+.ltable{width:100%;border-collapse:collapse;font-size:14px}
+.ltable th{text-align:left;font:600 12px var(--font-head);color:var(--text2);padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+.ltable td{padding:10px 12px;border-bottom:1px solid var(--s100);vertical-align:middle}
+.ltable tr{cursor:pointer}.ltable tbody tr:hover{background:var(--s50)}.ltable tr.sel{background:var(--color-primary-lightest)}
+.mini-sheet{width:26px;height:34px;border:1.5px solid #e7e0d6;border-radius:3px;background:#fff;position:relative;flex-shrink:0}.mini-sheet::before{content:"";position:absolute;top:0;left:4px;width:6px;height:9px;background:var(--c);clip-path:polygon(0 0,100% 0,100% 100%,50% 75%,0 100%)}
+.lname{display:flex;align-items:center;gap:10px;font-weight:600}
+.panel{position:sticky;top:12px;display:flex;flex-direction:column;max-height:calc(100vh - 24px);overflow:hidden}
+.panel .peek-b{padding:14px}.panel .peek-h{padding:14px 16px}.panel .peek-h h2{font-size:18px}.panel .peek-f{padding:12px 14px}
+.panel .peek-f .btn-primary{height:44px;font-size:15px}
+.kv2{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px}.kv2 dt{color:var(--text2)}.kv2 dd{margin:0;font-weight:600}
+.empty-panel{padding:30px 20px;text-align:center;color:var(--text2)}.empty-panel .mini-sheet{width:54px;height:72px;margin:0 auto 12px;--c:var(--s300)}
+.cat-chips{display:none}.new-sm{display:none}
+@container app (max-width:900px){.new-sm{display:inline-flex}}
+@container app (max-width:1180px){.lay{grid-template-columns:230px minmax(0,1fr)}.lay>.panel{display:none}}
+@container app (max-width:900px){.lay,.lay.nopanel{grid-template-columns:1fr}.side{display:none}.cat-chips{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}.cat-chips .chip{flex-shrink:0}
+ .store-top{display:flex!important}.shelf{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.store-top{display:none;align-items:center;gap:12px;margin:0 16px 12px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:13px}.store-top .bar{flex:1;height:8px;border-radius:999px;background:var(--s100);overflow:hidden;display:flex}
+@container app (max-width:520px){.mhead h1{font-size:18px;width:100%}.mini-phrase{font-size:16px}.mini-phrase .slot{font-size:15px}.mini-phrase .btn-white{width:100%;margin:4px 0 0}.shelf{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 10px;padding:4px 12px 16px}.paper .pn{font-size:10.5px}.paper .cap b{font-size:11px}.paper .cap{font-size:10.5px}.paper .kebab{opacity:1;width:24px;height:24px}.ltable .hide-m{display:none}.store-top{font-size:12px}}
 </style>
 </head>
 <body>
@@ -395,26 +444,44 @@ function tplCard(t){const c=CATS[t.cat];return `<article class="tpl" style="--c:
   <button class="use-btn" data-use="${t.id}">${ic('pen',15)}Usar modelo</button>
   <div class="tpl-foot"><span class="meta">${t.esc?`<span class="badge b-esc">Do escritório</span> ${esc(t.esc)}`:`${esc(t.area)}`}</span><button class="opt-btn" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}" title="Mais opções">Opções${ic('more',16)}</button></div></article>`;}
 const PICK={cat:null,rec:null};
-function paperCard(t){const c=CATS[t.cat];return `<button class="paper" data-peek="${t.id}" style="--c:${c.c}" aria-label="Ver modelo ${esc(t.nome)}"><span class="pg2"><span class="rib"></span>${t.fav?`<span class="fav">${ic('star',15).replace('fill="none"','fill="currentColor"')}</span>`:''}<span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></button>`;}
+S.mode='grid';S.cat=null;S.selT=null;
+const STORE=[['ini',14.2],['proc',3.1],['cont',8.4],['rec',6.0],['contr',2.9],['not',1.8]];
+function paperCard(t){const c=CATS[t.cat];return `<div class="paper ${S.selT===t.id?'sel':''}" data-peek="${t.id}" style="--c:${c.c}" tabindex="0" role="button" aria-label="Modelo ${esc(t.nome)}"><span class="pg2"><span class="rib"></span>${t.fav?`<span class="fav">${ic('star',13).replace('fill="none"','fill="currentColor"')}</span>`:''}<span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><button class="kebab" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}">${ic('more',15)}</button><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></div>`;}
+function storeHTML(){const tot=STORE.reduce((a,x)=>a+x[1],0);return `<div class="card store"><span class="small muted">Peças geradas</span><div><b>${tot.toFixed(1).replace('.',',')} MB</b> <span class="small muted">· 148 arquivos</span></div><div class="bar">${STORE.map(([k,v])=>`<i style="width:${v/tot*100}%;background:${CATS[k].c}"></i>`).join('')}</div><div class="leg">${STORE.map(([k,v])=>`<span><span class="cdot" style="--c:${CATS[k].c};width:8px;height:8px;border-radius:50%;background:${CATS[k].c}"></span>${esc(CATS[k].n)}<em>${v.toFixed(1).replace('.',',')} MB</em></span>`).join('')}</div><span class="small muted" style="display:block;margin-top:8px">Conta no armazenamento de Documentos</span></div>`;}
+function listOf(){let l=TPL.slice();const f=S.filter;if(S.cat)l=l.filter(t=>t.cat===S.cat);if(f==='sis')l=l.filter(t=>!t.esc);if(f==='esc')l=l.filter(t=>t.esc);if(f==='fav')l=l.filter(t=>t.fav);if(f==='mais')l.sort((a,b)=>b.usos-a.usos);return l;}
+function panelHTML(){const t=TPL.find(x=>x.id===S.selT);S.prevT=t;setTimeout(()=>S.prevT=null);if(!t)return `<aside class="card panel"><div class="empty-panel"><div class="mini-sheet"></div><b style="color:var(--text)">Selecione um modelo</b><br>para ver a peça e usá-la.</div></aside>`;
+  const c=CATS[t.cat],v=PICK.rec?Object.assign({},PROCS.find(p=>p.id===PICK.rec).d,ESC):{};
+  return `<aside class="card panel"><div class="peek-h"><div style="flex:1;min-width:0"><span class="badge b-cat" style="--c:${c.c}">${esc(c.n)}</span><h2 style="margin-top:6px;font-family:Georgia,serif">${esc(t.nome)}</h2></div><button class="btn-icon" data-menu="${t.id}" aria-label="Opções">${ic('more',18)}</button></div>
+   <div class="peek-b"><div class="a4">${docHTML(v)}</div><dl class="kv2"><dt>Área</dt><dd>${esc(t.area)}</dd><dt>Origem</dt><dd>${t.esc?'Escritório · '+esc(t.esc):'Sistema'}</dd><dt>Usado</dt><dd>${t.usos} vezes</dd><dt>Versão</dt><dd>3 · atualizado em 28/10</dd><dt>Campos</dt><dd>14 automáticos</dd></dl></div>
+   <div class="peek-f"><button class="btn btn-primary" data-use="${t.id}">${ic('pen',16)}Usar este modelo</button><button class="btn btn-outline" data-fav="${t.id}" aria-label="Favoritar">${ic('star',15)}</button></div></aside>`;}
 function renderLib(){
-  const f=S.filter;let list=TPL.slice();
-  if(PICK.cat)list=list.filter(t=>t.cat===PICK.cat);
-  if(f==='sis')list=list.filter(t=>!t.esc);if(f==='esc')list=list.filter(t=>t.esc);if(f==='fav')list=list.filter(t=>t.fav);if(f==='mais')list.sort((a,b)=>b.usos-a.usos);
-  const cat=PICK.cat?CATS[PICK.cat]:null,rec=PICK.rec?PROCS.find(p=>p.id===PICK.rec):null;
-  const tab=(k,l)=>`<button class="${f===k?'on':''}" data-filter="${k}">${l}</button>`;
-  app.innerHTML=`<section class="desk"><span class="eyebrow">Gerador de peças</span>
-    <div class="phrase">Quero fazer ${cat?'uma':'uma'} <button class="slot ${cat?'filled':''}" data-slot="cat">${cat?esc(cat.n.toLowerCase()):'escolha a peça'}${ic('chev',18)}</button><br>para <button class="slot ${rec?'filled':''}" data-slot="rec">${rec?esc(rec.d['cliente.nome'])+' · '+esc(rec.t.slice(0,12))+'…':'o processo ou cliente'}${ic('chev',18)}</button></div>
-    <div class="desk-go"><button class="btn btn-white" data-act="go-phrase" ${cat?'':'disabled'}>${ic('pen',18)}${cat?`Ver ${list.length} modelo${list.length!==1?'s':''} de ${esc(cat.n.toLowerCase())}`:'Escolha a peça para começar'}</button><span class="desk-hint">${rec?'Os dados de '+esc(rec.d['cliente.nome'])+' entram sozinhos na peça.':'Preencha a frase ou escolha direto na estante abaixo.'}</span></div></section>
-  <div class="shelf-head" id="estante"><h2>${cat?esc(cat.n):'Estante de modelos'}</h2>${cat?`<button class="btn btn-sm btn-outline" data-act="clear-cat">${ic('back',13)}Ver todas as peças</button>`:''}<span class="grow"></span>
-    <div class="tabs2" role="tablist">${tab('todos','Todos')}${tab('mais','Mais usados')}${tab('fav','★ Favoritos')}${tab('sis','Do sistema')}${tab('esc','Do escritório')}</div>
-    <button class="btn btn-outline" data-act="novo">${ic('plus',15)}Novo modelo</button></div>
-  <div class="shelf">${list.map(paperCard).join('')||'<span class="muted">Nenhum modelo aqui ainda.</span>'}</div><div style="height:90px"></div>`;
+  const f=S.filter,list=listOf(),cat=S.cat?CATS[S.cat]:null,rec=PICK.rec?PROCS.find(p=>p.id===PICK.rec):null;
+  const nb=(k,i,l,n)=>`<button class="${f===k&&!S.cat?'on':''}" data-filter="${k}">${ic(i,16)}${l}<span class="n">${n}</span></button>`;
+  const cnt=k=>TPL.filter(t=>t.cat===k).length;
+  const tot=STORE.reduce((a,x)=>a+x[1],0);
+  const title=cat?cat.n:{todos:'Todos os modelos',mais:'Mais usados',fav:'Favoritos',sis:'Modelos do sistema',esc:'Modelos do escritório'}[f];
+  app.innerHTML=`<div class="lay">
+   <aside class="side"><button class="btn btn-primary" style="height:44px" data-act="novo">${ic('plus',16)}Novo modelo</button>
+    <div class="card" style="padding:8px"><nav class="nav">${nb('todos','layers','Todos os modelos',TPL.length)}${nb('mais','chart','Mais usados','')}${nb('fav','star','Favoritos',TPL.filter(t=>t.fav).length)}${nb('esc','users','Do escritório',TPL.filter(t=>t.esc).length)}${nb('sis','lock','Do sistema',TPL.filter(t=>!t.esc).length)}</nav>
+    <h4>Categorias</h4><nav class="nav">${Object.entries(CATS).map(([k,c])=>`<button class="${S.cat===k?'on':''}" data-cat="${k}" style="--c:${c.c}"><span class="cdot"></span>${esc(c.n)}<span class="n">${cnt(k)}</span></button>`).join('')}</nav></div>
+    ${storeHTML()}</aside>
+   <section class="card" style="min-width:0">
+    <div class="mhead"><h1>${esc(title)}</h1><span class="muted small">${list.length} modelo${list.length!==1?'s':''}</span><span style="flex:1"></span><button class="btn btn-primary btn-sm new-sm" data-act="novo">${ic('plus',14)}Novo modelo</button>
+     <div class="seg"><button class="${S.mode==='list'?'on':''}" data-mode="list">${ic('list',15)}Lista</button><button class="${S.mode==='grid'?'on':''}" data-mode="grid">${ic('layers',15)}Grade</button></div></div>
+    <div class="crumb">${ic('layers',13)}Gerador de peças ${ic('chev',12)} <b>${esc(title)}</b>${cat?` <button class="btn btn-sm btn-ghost" data-act="clear-cat">Limpar</button>`:''}</div>
+    <div class="cat-chips"><button class="chip ${!S.cat&&f==='todos'?'on':''}" data-filter="todos">Todos</button><button class="chip ${f==='fav'&&!S.cat?'on':''}" data-filter="fav">★ Favoritos</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${S.cat===k?'on':''}" data-cat="${k}">${esc(c.n)}</button>`).join('')}</div>
+    <div class="store-top">${ic('folder',15)}<span><b>${tot.toFixed(1).replace('.',',')} MB</b> em peças geradas</span><span class="bar">${STORE.map(([k,v])=>`<i style="width:${v/tot*100}%;background:${CATS[k].c}"></i>`).join('')}</span></div>
+    <div class="mini-phrase">Quero fazer <button class="slot ${cat?'filled':''}" data-slot="cat">${cat?esc(cat.n.toLowerCase()):'uma peça'}${ic('chev',15)}</button> para <button class="slot ${rec?'filled':''}" data-slot="rec">${rec?esc(rec.d['cliente.nome']):'um processo'}${ic('chev',15)}</button>${rec?`<span class="small" style="opacity:.85;font-family:var(--font-body)">os dados entram sozinhos</span>`:''}</div>
+    ${S.mode==='grid'?`<div class="shelf">${list.map(paperCard).join('')||'<span class="muted">Nenhum modelo aqui.</span>'}</div>`
+     :`<div style="overflow-x:auto;padding:0 4px 12px"><table class="ltable"><thead><tr><th>Modelo</th><th>Categoria</th><th class="hide-m">Área</th><th class="hide-m">Origem</th><th class="hide-m">Usos</th><th></th></tr></thead><tbody>${list.map(t=>{const c=CATS[t.cat];return `<tr class="${S.selT===t.id?'sel':''}" data-peek="${t.id}"><td><span class="lname"><span class="mini-sheet" style="--c:${c.c}"></span>${esc(t.nome)}${t.fav?`<span style="color:var(--color-warning)">${ic('star',13).replace('fill="none"','fill="currentColor"')}</span>`:''}</span></td><td><span class="badge b-cat" style="--c:${c.c}">${esc(c.n)}</span></td><td class="hide-m">${esc(t.area)}</td><td class="hide-m">${t.esc?'<span class="badge b-esc">Escritório</span>':'Sistema'}</td><td class="hide-m">${t.usos}</td><td style="text-align:right"><button class="btn-icon" data-menu="${t.id}" aria-label="Opções">${ic('more',16)}</button></td></tr>`;}).join('')}</tbody></table></div>`}
+   </section>
+   ${panelHTML()}</div><div style="height:80px"></div>`;
 }
 function openPick(kind,btn){const r=btn.getBoundingClientRect();let h='';
   if(kind==='cat'){const cnt=k=>TPL.filter(t=>t.cat===k).length;h=Object.entries(CATS).map(([k,c])=>`<button data-pk="cat" data-v="${k}" style="--c:${c.c}"><span class="cdot"></span><span style="flex:1">${esc(c.n)}<small>${cnt(k)} modelo${cnt(k)!==1?'s':''}</small></span></button>`).join('');}
   else h=`<span class="small muted" style="padding:6px 12px;display:block">Processos recentes</span>`+PROCS.map(p=>`<button data-pk="rec" data-v="${p.id}">${ic('scale',16)}<span style="flex:1">${esc(p.t)}<small>${esc(p.s)}</small></span></button>`).join('')+`<button data-pk="rec" data-v="">${ic('pen',16)}<span>Prefiro preencher à mão<small>Passo a passo guiado</small></span></button>`;
   $('#menu-root').innerHTML=`<div class="pick" style="top:${r.bottom+window.scrollY+6}px;left:${r.left}px">${h}</div>`;}
-function openPeek(id){const t=TPL.find(x=>x.id===id),c=CATS[t.cat];const mine=!!t.esc;
+function openPeek(id){const t=TPL.find(x=>x.id===id),c=CATS[t.cat];S.prevT=t;setTimeout(()=>S.prevT=null);const mine=!!t.esc;
   $('#menu-root').innerHTML=`<div class="peek-bg" data-act="peek-close"></div><aside class="peek" role="dialog" aria-label="${esc(t.nome)}"><div class="peek-h"><div style="flex:1"><span class="badge b-cat" style="--c:${c.c}">${esc(c.n)}</span><h2 style="margin-top:6px">${esc(t.nome)}</h2><span class="muted small">${esc(t.area)} · usado ${t.usos} vezes${mine?' · do escritório ('+esc(t.esc)+')':''}</span></div><button class="btn-icon" data-act="peek-close" aria-label="Fechar">${ic('plus',20).replace('<svg','<svg style="transform:rotate(45deg)"')}</button></div>
    <div class="peek-b"><div class="a4">${docHTML(PICK.rec?Object.assign({},PROCS.find(p=>p.id===PICK.rec).d,ESC):{})}</div>
    <div><span class="label">Este modelo preenche sozinho</span><div class="pill-list">${['Número do processo','Vara e comarca','Autores e réus','Qualificação do cliente','Valor por extenso','Data por extenso','Advogado e OAB'].map(x=>`<span>${ic('check',11,3)} ${x}</span>`).join('')}</div></div></div>
@@ -447,7 +514,7 @@ function renderOrigem(){
 /* ---------- Texto do modelo (com chaves) ---------- */
 function genero(v){return (v['cliente.genero']||'m')==='f';}
 function fv(k,v,disp){const val=disp!=null?disp:v[k];const miss=val==null||val===''||(Array.isArray(val)&&!val.length);const lbl=(GROUPS.flatMap(g=>g.f).find(f=>f[0]===k)||[k,k])[1];return `<span class="fv ${miss?'miss':''}" data-jump="${k}" title="${esc(lbl)}">${miss?`[${esc(lbl)}]`:esc(val)}</span>`;}
-function docHTML(v){const t=S.tpl||TPL[0],f=genero(v),au=v['autores']||[],re=v['reus']||[];
+function docHTML(v){const t=S.prevT||S.tpl||TPL[0],f=genero(v),au=v['autores']||[],re=v['reus']||[];
   const plA=au.length>1,plR=re.length>1;
   return `<p class="ni">EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA ${fv('processo.vara',v,(v['processo.vara']||'').toUpperCase())} DA COMARCA DE ${fv('processo.comarca',v,(v['processo.comarca']||'').toUpperCase())}/${fv('processo.uf',v)}</p>
   <p class="ni" style="margin:14px 0">Processo nº ${fv('processo.numero',v)}</p>
@@ -531,12 +598,14 @@ document.addEventListener('click',e=>{
   if(!e.target.closest('.menu')&&!e.target.closest('[data-menu]')&&!e.target.closest('.pick')&&!e.target.closest('[data-slot]')&&!e.target.closest('.peek')&&!e.target.closest('[data-peek]'))closeMenu();
   const g=k=>e.target.closest(k);let x;
   if(x=g('[data-slot]')){openPick(x.dataset.slot,x);return;}
-  if(x=g('[data-pk]')){const k=x.dataset.pk,v=x.dataset.v;if(k==='cat')PICK.cat=v;else PICK.rec=v||null;closeMenu();render();return;}
-  if(x=g('[data-peek]')){openPeek(+x.dataset.peek);return;}
-  if(x=g('[data-filter]')){S.filter=x.dataset.filter;render();return;}
+  if(x=g('[data-pk]')){const k=x.dataset.pk,v=x.dataset.v;if(k==='cat'){PICK.cat=v;S.cat=v;}else PICK.rec=v||null;closeMenu();render();return;}
+  if(x=g('[data-menu]')){openMenu(+x.dataset.menu,x);return;}
+  if(x=g('[data-cat]')){S.cat=S.cat===x.dataset.cat?null:x.dataset.cat;render();return;}
+  if(x=g('[data-mode]')){S.mode=x.dataset.mode;render();return;}
+  if(x=g('[data-peek]')){if(e.target.closest('[data-menu]'))return;const id=+x.dataset.peek;S.selT=id;const fr=$('#frame').getBoundingClientRect().width;if(fr>1180){render();}else openPeek(id);return;}
+  if(x=g('[data-filter]')){S.filter=x.dataset.filter;S.cat=null;render();return;}
   if(x=g('[data-fav]')){const t=TPL.find(t=>t.id===+x.dataset.fav);t.fav=!t.fav;const inPeek=!!x.closest('.peek');render();if(inPeek)openPeek(t.id);snack(t.fav?'Adicionado aos favoritos':'Removido dos favoritos');return;}
   if(x=g('[data-use]')){startTpl(+x.dataset.use);return;}
-  if(x=g('[data-menu]')){openMenu(+x.dataset.menu,x);return;}
   if(x=g('[data-ma]')){const id=+x.dataset.id,a=x.dataset.ma,t=TPL.find(t=>t.id===id);closeMenu();
     if(a==='use')return startTpl(id);if(a==='fav'){t.fav=!t.fav;render();return;}
     if(a==='dup'){const n=Object.assign({},t,{id:Date.now(),nome:t.nome+' (escritório)',esc:'Jeziel Silva',fav:false,usos:0,novo:false});TPL.unshift(n);S.filter='esc';render();snack('Cópia criada em <b>Do escritório</b>. O modelo do sistema continua intacto.');return;}
@@ -554,7 +623,7 @@ document.addEventListener('click',e=>{
   if(x=g('[data-ins]')){snack('Campo inserido: <b>{{'+x.dataset.ins+'}}</b>');return;}
   if(x=g('[data-act]')){const a=x.dataset.act;
     if(a==='peek-close'){closeMenu();return;}
-    if(a==='clear-cat'){PICK.cat=null;render();return;}
+    if(a==='clear-cat'){PICK.cat=null;S.cat=null;render();return;}
     if(a==='go-phrase'){$('#estante').scrollIntoView({behavior:'smooth'});return;}
     if(a==='lib'){S.view='lib';render();window.scrollTo(0,0);return;}
     if(a==='quick-fav'){S.filter='fav';render();return;}
@@ -573,6 +642,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('input',e=>{const f=e.target.closest('[data-field]');if(!f)return;const k=f.dataset.field;S.vals[k]=(k==='autores'||k==='reus')?f.value.split(';').map(s=>s.trim()).filter(Boolean):f.value;
   const a4=$('#a4');if(a4){a4.innerHTML=docHTML(S.vals);const el=a4.querySelector(`[data-jump="${k}"]`);if(el){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),600);}}
   const row=f.closest('.frow');if(row){const m=isMiss(S.vals,k);row.classList.toggle('miss',m);row.querySelector('.st').className='st '+(m?'wc':'okc');row.querySelector('.st').innerHTML=ic(m?'alert':'check',15);}});
+document.addEventListener('dblclick',e=>{const x=e.target.closest('[data-peek]');if(x)startTpl(+x.dataset.peek);});
 render();
 </script>
 </body>
