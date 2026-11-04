@@ -311,7 +311,8 @@ body.t .peek,body.m .peek{position:fixed}
  .shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}.shelf-head h2{font-size:19px;width:100%}.tabs2{width:100%}.pick{width:calc(100% - 32px);left:16px!important}}
 
 /* ===== Layout estilo Documentos ===== */
-.lay{display:grid;grid-template-columns:250px minmax(0,1fr) 360px;gap:18px;align-items:start}
+.rcol{position:sticky;top:12px}.rcol .card{padding:16px}
+.lay{display:grid;grid-template-columns:250px minmax(0,1fr) 260px;gap:18px;align-items:start}
 .lay.nopanel{grid-template-columns:250px minmax(0,1fr)}
 .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:12px}
 .side .card{padding:14px}
@@ -329,8 +330,10 @@ body.t .peek,body.m .peek{position:fixed}
 .seg{display:inline-flex;border-bottom:1px solid var(--border)}
 .seg button{border:0;background:none;padding:8px 12px;font:600 14px var(--font-body);color:var(--text2);border-bottom:2px solid transparent;cursor:pointer;display:flex;gap:6px;align-items:center}.seg button.on{color:var(--color-primary);border-bottom-color:var(--color-primary)}
 .crumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);padding:0 16px 12px}.crumb b{color:var(--text)}
-.mini-phrase{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 16px 14px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#4a2661,#70398c);color:#fff;font:400 18px Georgia,serif}
-.mini-phrase .slot{font-size:17px;padding:2px 10px}
+.mini-phrase{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 16px 14px;padding:8px 12px;border-radius:12px;background:var(--s50);border:1px solid var(--border);color:var(--s700);font:400 15px var(--font-body)}
+.mini-phrase .slot{font:600 14px var(--font-body);font-style:normal;color:var(--color-primary-dark);background:#fff;border:1px solid var(--s300);border-radius:999px;padding:3px 10px;gap:4px}
+.mini-phrase .slot:hover{border-color:var(--color-primary);background:#fff}.mini-phrase .slot.filled{background:var(--color-primary-lightest);border-color:var(--color-primary-lighten)}
+@container app (max-width:520px){.mini-phrase .slot{font-size:13px}}
 .mini-phrase .btn-white{height:38px;font-size:14px;margin-left:auto;padding:0 16px}
 .shelf{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:22px 16px;padding:4px 16px 18px}
 .paper .pg2{padding:14% 10%}.paper .pn{font-size:12px}.paper .pn::before,.paper .pn::after{margin:7px auto}
@@ -353,7 +356,7 @@ body.t .peek,body.m .peek{position:fixed}
 .empty-panel{padding:30px 20px;text-align:center;color:var(--text2)}.empty-panel .mini-sheet{width:54px;height:72px;margin:0 auto 12px;--c:var(--s300)}
 .cat-chips{display:none}.new-sm{display:none}
 @container app (max-width:900px){.new-sm{display:inline-flex}}
-@container app (max-width:1180px){.lay{grid-template-columns:230px minmax(0,1fr)}.lay>.panel{display:none}}
+@container app (max-width:1180px){.lay{grid-template-columns:230px minmax(0,1fr)}.lay>.rcol{display:none}.lay .store-top{display:flex}}
 @container app (max-width:900px){.lay,.lay.nopanel{grid-template-columns:1fr}.side{display:none}.cat-chips{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}.cat-chips .chip{flex-shrink:0}
  .store-top{display:flex!important}.shelf{grid-template-columns:repeat(5,minmax(0,1fr))}}
 .store-top{display:none;align-items:center;gap:12px;margin:0 16px 12px;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;font-size:13px}.store-top .bar{flex:1;height:8px;border-radius:999px;background:var(--s100);overflow:hidden;display:flex}
@@ -464,18 +467,18 @@ function renderLib(){
    <aside class="side"><button class="btn btn-primary" style="height:44px" data-act="novo">${ic('plus',16)}Novo modelo</button>
     <div class="card" style="padding:8px"><nav class="nav">${nb('todos','layers','Todos os modelos',TPL.length)}${nb('mais','chart','Mais usados','')}${nb('fav','star','Favoritos',TPL.filter(t=>t.fav).length)}${nb('esc','users','Do escritório',TPL.filter(t=>t.esc).length)}${nb('sis','lock','Do sistema',TPL.filter(t=>!t.esc).length)}</nav>
     <h4>Categorias</h4><nav class="nav">${Object.entries(CATS).map(([k,c])=>`<button class="${S.cat===k?'on':''}" data-cat="${k}" style="--c:${c.c}"><span class="cdot"></span>${esc(c.n)}<span class="n">${cnt(k)}</span></button>`).join('')}</nav></div>
-    ${storeHTML()}</aside>
+    </aside>
    <section class="card" style="min-width:0">
     <div class="mhead"><h1>${esc(title)}</h1><span class="muted small">${list.length} modelo${list.length!==1?'s':''}</span><span style="flex:1"></span><button class="btn btn-primary btn-sm new-sm" data-act="novo">${ic('plus',14)}Novo modelo</button>
      <div class="seg"><button class="${S.mode==='list'?'on':''}" data-mode="list">${ic('list',15)}Lista</button><button class="${S.mode==='grid'?'on':''}" data-mode="grid">${ic('layers',15)}Grade</button></div></div>
     <div class="crumb">${ic('layers',13)}Gerador de peças ${ic('chev',12)} <b>${esc(title)}</b>${cat?` <button class="btn btn-sm btn-ghost" data-act="clear-cat">Limpar</button>`:''}</div>
     <div class="cat-chips"><button class="chip ${!S.cat&&f==='todos'?'on':''}" data-filter="todos">Todos</button><button class="chip ${f==='fav'&&!S.cat?'on':''}" data-filter="fav">★ Favoritos</button>${Object.entries(CATS).map(([k,c])=>`<button class="chip ${S.cat===k?'on':''}" data-cat="${k}">${esc(c.n)}</button>`).join('')}</div>
     <div class="store-top">${ic('folder',15)}<span><b>${tot.toFixed(1).replace('.',',')} MB</b> em peças geradas</span><span class="bar">${STORE.map(([k,v])=>`<i style="width:${v/tot*100}%;background:${CATS[k].c}"></i>`).join('')}</span></div>
-    <div class="mini-phrase">Quero fazer <button class="slot ${cat?'filled':''}" data-slot="cat">${cat?esc(cat.n.toLowerCase()):'uma peça'}${ic('chev',15)}</button> para <button class="slot ${rec?'filled':''}" data-slot="rec">${rec?esc(rec.d['cliente.nome']):'um processo'}${ic('chev',15)}</button>${rec?`<span class="small" style="opacity:.85;font-family:var(--font-body)">os dados entram sozinhos</span>`:''}</div>
+    <div class="mini-phrase">Quero fazer <button class="slot ${cat?'filled':''}" data-slot="cat">${cat?esc(cat.n.toLowerCase()):'uma peça'}${ic('chev',15)}</button> para <button class="slot ${rec?'filled':''}" data-slot="rec">${rec?esc(rec.d['cliente.nome']):'um processo'}${ic('chev',15)}</button>${rec?`<span class="small muted">· os dados entram sozinhos</span>`:''}</div>
     ${S.mode==='grid'?`<div class="shelf">${list.map(paperCard).join('')||'<span class="muted">Nenhum modelo aqui.</span>'}</div>`
      :`<div style="overflow-x:auto;padding:0 4px 12px"><table class="ltable"><thead><tr><th>Modelo</th><th>Categoria</th><th class="hide-m">Área</th><th class="hide-m">Origem</th><th class="hide-m">Usos</th><th></th></tr></thead><tbody>${list.map(t=>{const c=CATS[t.cat];return `<tr class="${S.selT===t.id?'sel':''}" data-peek="${t.id}"><td><span class="lname"><span class="mini-sheet" style="--c:${c.c}"></span>${esc(t.nome)}${t.fav?`<span style="color:var(--color-warning)">${ic('star',13).replace('fill="none"','fill="currentColor"')}</span>`:''}</span></td><td><span class="badge b-cat" style="--c:${c.c}">${esc(c.n)}</span></td><td class="hide-m">${esc(t.area)}</td><td class="hide-m">${t.esc?'<span class="badge b-esc">Escritório</span>':'Sistema'}</td><td class="hide-m">${t.usos}</td><td style="text-align:right"><button class="btn-icon" data-menu="${t.id}" aria-label="Opções">${ic('more',16)}</button></td></tr>`;}).join('')}</tbody></table></div>`}
    </section>
-   ${panelHTML()}</div><div style="height:80px"></div>`;
+   <aside class="rcol">${storeHTML()}</aside></div><div style="height:80px"></div>`;
 }
 function openPick(kind,btn){const r=btn.getBoundingClientRect();let h='';
   if(kind==='cat'){const cnt=k=>TPL.filter(t=>t.cat===k).length;h=Object.entries(CATS).map(([k,c])=>`<button data-pk="cat" data-v="${k}" style="--c:${c.c}"><span class="cdot"></span><span style="flex:1">${esc(c.n)}<small>${cnt(k)} modelo${cnt(k)!==1?'s':''}</small></span></button>`).join('');}
@@ -589,7 +592,7 @@ function renderEditor(){const t=S.tpl||TPL[0];const tb=(i,l,on)=>`<button class=
     <aside class="ed-side"><div class="tabs">${[['campos','Campos'],['blocos','Blocos'],['versoes','Versões']].map(([k,l])=>`<button class="${S.edTab===k?'on':''}" data-edtab="${k}">${l}</button>`).join('')}</div><div class="side-body">${side}</div></aside></div><div style="height:80px"></div>`;}
 
 /* ---------- Render ---------- */
-function render(){if(!$('.peek'))closeMenu();({lib:renderLib,origem:renderOrigem,rev:renderRev,manual:renderManual,save:renderSave,done:renderDone,editor:renderEditor})[S.view]();}
+function render(){closeMenu();({lib:renderLib,origem:renderOrigem,rev:renderRev,manual:renderManual,save:renderSave,done:renderDone,editor:renderEditor})[S.view]();}
 function startTpl(id){closeMenu();S.tpl=TPL.find(t=>t.id===id);S.origem=PICK.rec?'proc':null;S.rec=PICK.rec||null;S.sel.clear();S.lote=false;S.vals={};S.nome='';S.pasta='';S.mstep=0;S.view='origem';render();window.scrollTo(0,0);}
 function loadVals(){const p=PROCS.find(x=>x.id===(S.lote?[...S.sel][0]:S.rec));S.vals=Object.assign({},p?p.d:{},ESC);}
 
@@ -602,7 +605,7 @@ document.addEventListener('click',e=>{
   if(x=g('[data-menu]')){openMenu(+x.dataset.menu,x);return;}
   if(x=g('[data-cat]')){S.cat=S.cat===x.dataset.cat?null:x.dataset.cat;render();return;}
   if(x=g('[data-mode]')){S.mode=x.dataset.mode;render();return;}
-  if(x=g('[data-peek]')){if(e.target.closest('[data-menu]'))return;const id=+x.dataset.peek;S.selT=id;const fr=$('#frame').getBoundingClientRect().width;if(fr>1180){render();}else openPeek(id);return;}
+  if(x=g('[data-peek]')){if(e.target.closest('[data-menu]'))return;const id=+x.dataset.peek;S.selT=id;render();openPeek(id);return;}
   if(x=g('[data-filter]')){S.filter=x.dataset.filter;S.cat=null;render();return;}
   if(x=g('[data-fav]')){const t=TPL.find(t=>t.id===+x.dataset.fav);t.fav=!t.fav;const inPeek=!!x.closest('.peek');render();if(inPeek)openPeek(t.id);snack(t.fav?'Adicionado aos favoritos':'Removido dos favoritos');return;}
   if(x=g('[data-use]')){startTpl(+x.dataset.use);return;}

@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-04T14:35",
+  "atualizado": "2026-11-04T15:01",
   "itens": [
     {
       "id": "pendencias",
@@ -15,7 +15,7 @@
       "tipo": "artefato",
       "projeto": "elaw adv · Gerador de peças",
       "titulo": "Mock — Gerador de peças (layout de Documentos: lista/grade, categorias, prévia, espaço)",
-      "data": "2026-11-04T14:35",
+      "data": "2026-11-04T15:01",
       "arquivo": "artefatos/gerador-pecas-mock.html",
       "fixo": true
     },
