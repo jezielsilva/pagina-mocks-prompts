@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-05T17:45",
+  "atualizado": "2026-11-05T17:50",
   "itens": [
     {
       "id": "pendencias",
@@ -47,6 +47,14 @@
       "titulo": "Treino de quinta, 05/11 — 3 perguntas",
       "data": "2026-11-05T09:25:00-03:00",
       "arquivo": "treino/index.html?d=2026-11-05"
+    },
+    {
+      "id": "documentos-lista-card-armazenamento",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Lista de categorias dentro do card de armazenamento",
+      "data": "2026-11-05T17:50",
+      "arquivo": "prompts/documentos-lista-no-card-armazenamento.txt"
     }
   ]
 }

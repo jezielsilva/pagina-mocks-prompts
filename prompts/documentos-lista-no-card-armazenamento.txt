@@ -1,0 +1,46 @@
+PROMPT — Documentos: tirar "Todos os documentos" e levar a lista para o card de armazenamento (Angular)
+
+CONTEXTO
+No painel lateral direito do módulo Documentos existe:
+1) o card de armazenamento (uso total, "Por categoria / Por tipo", gráfico de barra e legenda de bolinhas com %);
+2) logo abaixo, o acordeão "Todos os documentos", que abre a lista de categorias (ícone, nome, nº de arquivos, tamanho, % e barrinha; Tarefas e Prazos depois de um divisor; clicar abre a categoria).
+Localize esses dois componentes no código (painel lateral de Documentos).
+
+OBJETIVO
+- REMOVER o acordeão "Todos os documentos" (HTML, estilos, estado de aberto/fechado e qualquer preferência salva dele).
+- O card de armazenamento passa a ocupar todo o espaço livre até o card "Amplie o seu armazenamento" (que continua fixo no rodapé).
+- Dentro do card, ABAIXO do gráfico, mostrar uma LISTA que substitui a legenda de bolinhas (remover a legenda):
+  • Aba "Por categoria": as mesmas linhas do acordeão removido — ícone/cor da categoria, nome, nº de arquivos, tamanho, % e barrinha de proporção; divisor; Tarefas e Prazos. Clique na linha = mesma navegação de antes (abrir a categoria, destaque da categoria ativa, alvo de arrastar e soltar se já existia).
+  • Aba "Por tipo": uma linha por tipo (PDFs, Imagens, Documentos, Planilhas, Outros) com ícone, nome, nº de arquivos, tamanho, % e barrinha. Não clicável.
+  • Mesma ordem e mesmas cores do gráfico.
+- Linha compacta (uma linha de texto: nome + nº de arquivos à esquerda, tamanho + % à direita; barrinha fina embaixo), para caber TUDO sem rolagem sempre que possível.
+- Só se não couber: rolagem APENAS dentro da lista (scrollbar fina). O resto do painel (Novo arquivo, Favoritos/Lixeira, Classificações, topo do card, upgrade) nunca rola.
+- Tablet/celular (painel em gaveta): mesma lista dentro do card; ali pode rolar a gaveta normalmente.
+
+REGRAS
+- Front "burro": usar os dados que o front JÁ recebe hoje para o acordeão e para o gráfico. NÃO criar regra de negócio no front, NÃO criar endpoint/controller novo, NÃO mexer no banco. Se faltar algum dado (ex.: nº de arquivos por tipo), PARE e me diga o que falta antes de alterar o back.
+- Reaproveitar o componente/template de linha do acordeão em vez de criar outro do zero.
+- NÃO criar nem rodar testes.
+
+MODO DE EXECUÇÃO (um passo por vez)
+1. Localize os componentes e me mostre uma mini-spec (arquivos que vai mexer, o que sai, o que entra). Espere meu OK.
+2. Remova o acordeão.
+3. Monte a lista dentro do card (Por categoria / Por tipo) e remova a legenda.
+4. Ajuste o layout (card estica até o upgrade; rolagem só na lista).
+5. Entregue.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
+
+ENTREGA
+- Lista de arquivos alterados com o diff relevante.
+- Seção "Explicações" (o que fez, por quê, versão simples equivalente, como debugar).
