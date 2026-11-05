@@ -3,13 +3,10 @@ Atualizado em 29/10/2026
 
 SEUS TESTES MANUAIS
 [ ] 1. S3: conferir os envios e depois apagar os endpoints antigos de upload
-[ ] 2. Celular e tablet
 [ ] 3. Usuário adicional (escopo restrito)
 
 PRÓXIMAS IMPLEMENTAÇÕES
-[ ] 6. Varredura de .md soltos criados no projeto
 [ ] 7. verificar permissionamento em geral
 
 DECISÕES SUAS
-[ ] 7. Índices do banco
 [ ] 8. Limpeza de dados antigos de etiquetas/acessos
