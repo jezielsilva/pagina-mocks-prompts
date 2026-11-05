@@ -537,7 +537,7 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 .st-seg button{flex:1;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--text-color-secondary);padding:5px 0;border-radius:999px;cursor:pointer;transition:background-color var(--input-switch-transition-duration) var(--input-switch-transition-easing)}
 .st-seg button.on{background:var(--color-primary);color:var(--color-white)}
 .st-chart{width:100%;height:26px;margin:6px 0 8px}
-.st-types{display:flex;flex-wrap:wrap;gap:5px 12px;margin:0 2px;font-size:12px;color:var(--color-slate-700)}
+.st-types{display:none;flex-wrap:wrap;gap:5px 12px;margin:0 2px;font-size:12px;color:var(--color-slate-700)}
 .st-types span{display:flex;align-items:center;gap:5px;white-space:nowrap}
 .st-types em{font-style:normal;color:var(--text-color-secondary)}
 .acc{border:1px solid var(--color-slate-200);border-radius:16px;background:var(--color-white);display:flex;flex-direction:column;min-height:0}
@@ -625,7 +625,23 @@ mark{background:var(--mark-bg);color:inherit;border-radius:3px;padding:0 2px}
 #device:not(.t) .stc{padding:12px 14px}
 #device:not(.t) .cta{padding:12px 14px;gap:10px}
 #device:not(.t) .cta{flex-shrink:0;margin-top:auto}
-#device:not(.t) .stc{flex-shrink:0}
+/* Card de armazenamento ocupa todo o espaço até o upgrade; a lista só rola se não couber */
+#device:not(.t) .side-scroll{min-height:0}
+#device:not(.t) .stc{flex:1 1 auto!important;min-height:0;display:flex;flex-direction:column}
+#device:not(.t) .stc .st-list{flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--color-slate-300) transparent}
+.st-list{display:flex;flex-direction:column;gap:0;margin:4px -6px 0;padding:0 2px}
+.st-list hr{border:none;border-top:1px solid var(--color-slate-200);margin:4px 8px}
+.st-list .st-static{cursor:default}
+/* Linhas compactas: nome + nº de arquivos numa linha só, para caber tudo sem rolar */
+.st-list .nav-c{padding:4px 6px 8px;gap:8px}
+.st-list .nav-ic{width:24px;height:24px;border-radius:7px}
+.st-list .nt{display:flex;align-items:baseline;gap:6px;min-width:0}
+.st-list .nt b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-list .nt small{font-size:11px;white-space:nowrap}
+.st-list .ns{display:flex;align-items:baseline;gap:6px;font-size:11px;white-space:nowrap}
+.st-list .ns b{font-size:12px}
+.st-list .nav-c .nb{bottom:3px;left:38px}
+.st-list .st-static:hover{background:transparent}
 
 /* =====================================================================
    RESPONSIVIDADE — .t = até 1024px (tablet e celular) · .m = até 768px (celular)
@@ -890,8 +906,8 @@ body.framed #device.t:not(.m){width:820px}
       </div>
       <div id="st-chart" class="st-chart" role="img" aria-label="Gráfico de uso de armazenamento"></div>
       <div class="st-types" id="st-types"></div>
+      <div class="st-list" id="st-list"></div>
     </div>
-    <section class="acc" id="acc"></section>
     </div><!-- /.side-scroll -->
     <div class="cta lv-ok" id="cta">
       <div class="tank" aria-hidden="true"><svg class="wave" viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0 8 Q25 0 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 V16 H0Z"/></svg><svg class="wave w2" viewBox="0 0 400 16" preserveAspectRatio="none"><path d="M0 8 Q25 16 50 8 T100 8 T150 8 T200 8 T250 8 T300 8 T350 8 T400 8 V16 H0Z"/></svg></div>
@@ -1362,17 +1378,7 @@ function renderNav(){
   /* Favoritos (borda de destaque) e Lixeira lado a lado */
   $('#fav-slot').innerHTML=`<button type="button" class="fav-hi ${S.area==='fav'?'on':''}" data-area="fav" aria-current="${S.area==='fav'?'page':'false'}"><span class="fi">${ic('star',16)}</span><span><b>Favoritos</b><small>${fv} ${fv===1?'item':'itens'}</small></span></button>
     <button type="button" class="lix-q ${S.area==='lix'?'on':''}" data-area="lix" aria-current="${S.area==='lix'?'page':'false'}"><span class="li">${ic('trash',15)}</span><span><b>Lixeira</b><small>${lx} ${lx===1?'item':'itens'} · ${fmtSize(bytes('lix'))}</small></span></button>`;
-  /* "Todos os documentos": acordeão (começa fechado) com categorias + Tarefas e Prazos */
-  const all=content.reduce((s,a)=>s+cnt(a.k),0),allB=content.reduce((s,a)=>s+bytes(a.k),0);
-  const row=(a,c,b)=>{const p=b/total*100;return `<button type="button" class="nav-c pal-${a.pal} ${S.area===a.k?'on':''}" data-area="${a.k}" ${ROOT[a.k]?`data-drop="${ROOT[a.k].id}"`:''} aria-current="${S.area===a.k?'page':'false'}"><span class="nav-ic">${ic(a.ic,15)}</span><span class="nt"><b>${esc(a.nome)}</b><small>${c} arquivo${c!==1?'s':''}</small></span><span class="ns tabular-nums"><b>${fmtSize(b)}</b>${Math.round(p)}%</span><span class="nb"><i data-pct="${Math.max(2,p)}"></i></span></button>`;};
-  const rows=content.map(a=>row(a,cnt(a.k),bytes(a.k))).join('');
-  const calc=['tar','prz'].map(k=>{const fs=calcList(k);return row(areaOf(k),fs.length,fs.reduce((x,f)=>x+f.size,0));}).join('');
   $('#cls-slot').innerHTML=`<button type="button" class="cls-entry" data-act="manage-cls"><span class="tpi">${ic('tag',15)}</span><span><b>Classificações</b><small>${GRUPOS.length} categorias · ${CATS.length} subcategorias · ${SUBS.length} tipos</small></span>${pend?`<span class="hot" aria-label="${pend} arquivos sem classificação">${pend}</span>`:''}<span class="go">${ic('chev',15)}</span></button>`;
-  const open=S.accOpen??(store.get('accOpen','0')==='1');
-  $('#acc').className='acc'+(open?' open':'');
-  $('#acc').innerHTML=`<button type="button" class="acc-h" data-acc aria-expanded="${open}" aria-controls="acc-b"><span class="ai">${ic('folder',16)}</span><span><b>Todos os documentos</b><small>${all} arquivos · ${fmtSize(allB)}</small></span><span class="chv">${ic('chevDown',18)}</span></button>
-    <div class="acc-b" id="acc-b"><div><nav class="d-flex flex-column gap-1" aria-label="Categorias">${rows}<hr>${calc}</nav></div></div>`;
-  $$('#acc .nb i').forEach(x=>x.style.width=x.dataset.pct+'%');
 }
 function prazoStrip(){
   const k=S.home?null:S.area;if(k==='lix'||k==='fav')return '';
@@ -2405,15 +2411,32 @@ function storageData(){
   TRASH.forEach(t=>walk(t.item,n=>{if(n.type==='file')g[kind(n.ext)].b+=n.size;}));
   return Object.values(g).filter(r=>r.b>0).sort((a,b)=>b.b-a.b);
 }
+function stRow(nome,ic0,pal,c,b,total,area){const p=b/total*100;const tag=area?'button':'div';
+  return `<${tag} ${area?`type="button" data-area="${area}" ${ROOT[area]?`data-drop="${ROOT[area].id}"`:''} aria-current="${S.area===area?'page':'false'}"`:''} class="nav-c pal-${pal} ${area&&S.area===area?'on':''} ${area?'':'st-static'}"><span class="nav-ic">${ic(ic0,15)}</span><span class="nt"><b>${esc(nome)}</b><small>${c}</small></span><span class="ns tabular-nums"><b>${fmtSize(b)}</b>${Math.round(p)}%</span><span class="nb"><i style="width:${Math.max(2,p)}%"></i></span></${tag}>`;}
+function renderStList(total){
+  let h;
+  if(S.stMode==='area'){
+    const content=AREAS.filter(a=>!a.calc);
+    h=content.map(a=>stRow(a.nome,a.ic,a.pal,allFiles(a.k).length,allFiles(a.k).reduce((x,f)=>x+f.size,0),total,a.k)).join('')+'<hr>'+
+      ['tar','prz'].map(k=>{const fs=calcList(k),a=areaOf(k);return stRow(a.nome,a.ic,a.pal,fs.length,fs.reduce((x,f)=>x+f.size,0),total,k);}).join('');
+  }else{
+    const n={pdf:0,docx:0,xlsx:0,img:0,outro:0},ics={pdf:'file',docx:'file',xlsx:'file',img:'file',outro:'file'};
+    allFiles().forEach(f=>n[kind(f.ext)]++);TRASH.forEach(t=>walk(t.item,x=>{if(x.type==='file')n[kind(x.ext)]++;}));
+    const key={PDFs:'pdf',Documentos:'docx',Planilhas:'xlsx',Imagens:'img',Outros:'outro'};
+    h=storageData().map(r=>stRow(r.nome,ics[key[r.nome]]||'file',r.pal,n[key[r.nome]]||0,r.b,total,null)).join('');
+  }
+  $('#st-list').innerHTML=h;
+}
 function renderStorage(){
   const d=storageData(),total=d.reduce((s,r)=>s+r.b,0),p=SIM??total/LIMIT*100;
-  const sig=S.stMode+'|'+SIM+'|'+d.map(r=>r.nome+r.b).join(',');if(sig===stSig)return;stSig=sig;
+  const sig=S.stMode+'|'+S.area+'|'+SIM+'|'+d.map(r=>r.nome+r.b).join(',');if(sig===stSig)return;stSig=sig;
   applyTank(p);
   $('#st-used').innerHTML=`${fmtSize(SIM!=null?LIMIT*SIM/100:total)}<small>de ${fmtSize(LIMIT)}</small>`;
   $('#st-pct').textContent=fmtPct(p)+' usado';
   $('#stc').classList.toggle('alert',p>=80);
   $$('.st-seg button').forEach(b=>{const on=b.dataset.st===S.stMode;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});
   $('#st-types').innerHTML=d.map(r=>`<span><i class="chart-swatch chart-color-${r.pal}"></i>${esc(r.nome)} <em>${Math.round(r.b/total*100)}%</em></span>`).join('');
+  renderStList(total);
   const el=$('#st-chart');
   if(!window.echarts){el.innerHTML='';return;}
   if(!stChart){const canvasOk=!!document.createElement('canvas').getContext?.('2d');stChart=echarts.init(el,null,{renderer:canvasOk?'canvas':'svg'});new ResizeObserver(()=>stChart.resize()).observe(el);}
@@ -2440,7 +2463,6 @@ function applyTank(p){
   $('#cta-sub').textContent=lv==='crit'?'Libere espaço ou faça upgrade para não parar':lv==='warn'?'Planeje o upgrade antes de lotar':'';
 }
 $('#sim').addEventListener('input',e=>{SIM=+e.target.value;$('#sim-v').textContent=SIM+'%';renderStorage();});
-document.addEventListener('click',e=>{const h=e.target.closest('[data-acc]');if(!h)return;S.accOpen=!$('#acc').classList.contains('open');store.set('accOpen',S.accOpen?'1':'0');$('#acc').classList.toggle('open',S.accOpen);h.setAttribute('aria-expanded',S.accOpen);});
 $('.st-seg').addEventListener('click',e=>{const b=e.target.closest('[data-st]');if(!b)return;S.stMode=b.dataset.st;renderStorage();});
 $('#btn-upgrade').onclick=()=>toast('Abrir a tela de planos');
 

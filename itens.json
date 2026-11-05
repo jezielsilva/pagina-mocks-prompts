@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-05T09:25",
+  "atualizado": "2026-11-05T17:45",
   "itens": [
     {
       "id": "pendencias",
@@ -23,8 +23,8 @@
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (Gerenciar classificações + Classificar no celular/tablet)",
-      "data": "2026-11-03T18:32",
+      "titulo": "Mock — Documentos (lista de categorias dentro do card de armazenamento)",
+      "data": "2026-11-05T17:45",
       "arquivo": "artefatos/documentos-mock.html",
       "principal": true,
       "fixo": true
