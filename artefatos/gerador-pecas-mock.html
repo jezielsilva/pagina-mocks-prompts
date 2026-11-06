@@ -407,6 +407,120 @@ body.m .peek-f .btn-outline{height:44px}
 .drafts{margin:0 16px 14px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
 .drafts .pz{cursor:pointer}.drafts .pz:hover{background:var(--s50)}
 .rcol{display:flex;flex-direction:column;gap:14px}
+
+/* ===== v3 (06/11) ===== */
+/* switch: o <i> é inline por padrão e ignorava largura/altura */
+.switch{border:0;background:none;padding:0}
+.switch i{display:inline-block;flex-shrink:0;width:42px;height:24px;border-radius:999px;background:var(--s300);position:relative;transition:background .18s}
+.switch i::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.3);transition:left .18s}
+.switch.on i{background:var(--color-primary)}.switch.on i::after{left:21px}
+.switch:focus-visible i{outline:2px solid var(--color-primary);outline-offset:2px}
+.tgl .switch{flex-shrink:0}
+/* zoom */
+.preview-wrap .a4,.ed-canvas .a4{zoom:var(--zoom,1)}
+.preview-wrap{align-items:safe center}
+/* drawer largo */
+.peek.peek-wide{width:min(1240px,76vw);container-type:inline-size}
+.peek-grid{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px}
+.peek-doc{display:flex;flex-direction:column;min-height:0;background:#efe9e0}
+.peek-doc-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:1px solid #e3dccf}
+.peek-doc-s{flex:1;min-height:0;overflow:auto;padding:12px;display:flex;justify-content:safe center;align-items:flex-start}
+.peek-doc .a4{width:600px;max-width:none;flex-shrink:0;padding:9% 10%}
+.peek-doc .a4.tl{padding:0!important}
+.peek-info{overflow:auto;padding:18px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:12px}
+.peek-info .label{margin:0}
+.peek-acts{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.peek-acts .btn-primary{height:48px;font-size:16px}.peek-acts .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@container (max-width:760px){.peek-grid{grid-template-columns:1fr;overflow:auto}.peek-doc{min-height:70vh}.peek-info{border-left:0;border-top:1px solid var(--border);overflow:visible}}
+.cpath{display:inline-flex;align-items:center;gap:6px;color:var(--s700);font-size:12.5px}
+.cpath.box{display:flex;padding:10px 12px;border-radius:12px;background:var(--color-primary-lightest);color:var(--color-primary-dark);font-weight:600;line-height:1.35}
+.cpath.sm{display:block;font-size:11.5px;color:var(--text2);margin:2px 0 0 32px}
+/* classificações */
+.cls-entry{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:1px solid var(--border);border-radius:14px;background:#fff;cursor:pointer;text-align:left}
+.cls-entry:hover{border-color:var(--color-primary)}
+.cls-entry .tpi{width:32px;height:32px;border-radius:10px;background:var(--color-primary-lightest);color:var(--color-primary);display:grid;place-items:center;flex-shrink:0}
+.cls-entry b{display:block;font-size:14px}.cls-entry small{font-size:12px;color:var(--text2)}.cls-entry .go{margin-left:auto;color:var(--s400)}
+.cnav .tchv{display:inline-flex;transition:transform .15s;color:var(--s400)}.cnav .tchv.o{transform:rotate(90deg)}
+.ctree{display:flex;flex-direction:column;margin:0 0 4px 22px;border-left:1px solid var(--border);padding-left:6px}
+.ctree button{font-size:13px!important;padding:6px 8px!important}
+.cls-top{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.cg{border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.cg-h{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--s50);border-bottom:1px solid var(--border)}
+.cs{padding:10px 14px;border-bottom:1px solid var(--s100)}.cs:last-child{border-bottom:0}
+.cs-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.ctp button{border:0;background:none;cursor:pointer;color:var(--s400);padding:0 0 0 2px;font-size:14px;line-height:1}.ctp button:hover{color:var(--color-negative)}
+.ctp.hit{border-color:var(--color-primary)!important;background:var(--color-primary-lightest)!important}
+.input-sm{height:34px;font-size:13px}
+/* origem: partes do processo */
+.badge.b-recm{background:var(--color-positive-lightest);color:var(--color-positive-dark);vertical-align:1px}
+.badge.b-a{background:var(--color-info-lightest);color:var(--color-info-dark)}.badge.b-r{background:var(--s100);color:var(--s700)}
+.partes{margin-top:14px;border:1px solid var(--border);border-radius:14px;background:#fff;overflow:hidden}
+.partes-h{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--s50);border-bottom:1px solid var(--border)}.partes-h .small{margin-left:auto}
+.wtx{color:var(--color-warning-dark);font-weight:600}
+.pt{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--s100)}
+.d-b{display:block}
+.ok-tag{display:inline-flex;align-items:center;gap:4px;font:600 12px var(--font-body);color:var(--color-positive-dark)}
+.cad{display:inline-flex;align-items:center;gap:6px;font:600 12.5px var(--font-body);color:var(--color-primary-dark);cursor:pointer;white-space:nowrap}
+.cad input{width:16px;height:16px;accent-color:var(--color-primary)}
+.cadrow{border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px}
+.cad-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cad-g{display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:10px}
+@media (max-width:640px){.cad-g{grid-template-columns:1fr}}body.m .cad-g{grid-template-columns:1fr}
+.cmp2{display:flex;align-items:center;gap:12px}.cmp2>div{flex:1;border:1px solid var(--border);border-radius:12px;padding:10px 12px}.cmp2>div b{display:flex;align-items:center;gap:6px;margin-top:2px}
+.cmp2 .to{border-color:var(--color-warning);background:var(--color-warning-lightest)}.cmp2 .arr{color:var(--s400)}
+/* template personalizado */
+.a4.tl,.mini-a4.tl{padding:0!important;overflow:hidden;aspect-ratio:210/297}
+.tl-page{position:absolute;inset:0;container-type:inline-size;--mm:calc(100cqw / 210);font-family:var(--doc-font,Georgia),"Times New Roman",serif;color:#111;text-indent:0;line-height:1.35}
+.tlb{position:absolute;overflow:hidden}
+.tlb p{margin:0}
+.tlb-corpo .cbody{height:100%;overflow:hidden}
+.tlb-corpo p{text-align:justify;text-indent:2.5em;margin:0 0 .55em}.tlb-corpo p.ni,.tlb-corpo .center{text-indent:0}.tlb-corpo .center{text-align:center}
+.tlb-corpo h3{font-size:1em!important;text-align:center;margin:.3em 0 .8em;text-transform:uppercase;letter-spacing:.04em}
+.tlb-esc b{font-size:1.3em;display:inline-block;margin-bottom:.15em}.tlb-esc span{color:#555}
+.tlb-dados{color:#444}
+.tlb-linha{overflow:visible}.tlb-linha::before{content:"";position:absolute;left:0;right:0;top:50%;height:var(--esp);min-height:1px;background:var(--lc);transform:translateY(-50%)}
+.tlb-assin .sl{display:block;border-top:1px solid #111;margin:0 12% .35em}
+.tlb-rod{color:#666}
+.tlb-wm{pointer-events:none}
+.tlb img{width:100%;height:100%;object-fit:contain;display:block}
+.lgx{width:100%;height:100%;display:grid;place-items:center;color:#fff;font:700 calc(7*var(--mm)) system-ui,sans-serif;border-radius:22%}.lgx.big{font-size:calc(34*var(--mm))}
+.tlb .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:6px;border:1px dashed var(--s300);color:var(--s500);font:600 calc(3*var(--mm)) system-ui,sans-serif}
+.tl-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tl-sw{display:inline-flex;align-items:center;gap:8px;padding:0 6px}
+.tl-ed{display:grid;grid-template-columns:240px minmax(0,1fr) 280px;gap:14px;align-items:start}
+.tl-l,.tl-r{padding:14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:12px;max-height:calc(100vh - 40px);overflow:auto}
+.tl-r .label{margin:6px 0 4px}
+.le{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:10px;cursor:pointer;font-size:13px}.le:hover{background:var(--s100)}
+.le.on{background:var(--color-primary-lightest);color:var(--color-primary-dark);font-weight:600}.le.hid>span{opacity:.45}
+.le .btn-icon{width:28px;height:28px}
+.lic{width:26px;height:26px;border-radius:8px;background:var(--s100);display:grid;place-items:center;flex-shrink:0;color:var(--s700)}
+.tl-add{display:grid;grid-template-columns:1fr 1fr;gap:6px}.tl-add .opt{padding:8px 10px;font-size:12.5px}
+.tl-chk{display:flex;align-items:center;gap:6px;margin-top:10px;color:var(--s700)}
+.tl-canvas{background:#e9e4dc;border-radius:16px;overflow:hidden;min-width:0}
+.tl-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid #ddd5c8}
+.tl-scroll{overflow:auto;padding:28px 20px 30px;display:flex;justify-content:safe center;max-height:calc(100vh - 150px)}
+#tl-a4{width:560px;max-width:none;flex-shrink:0;padding:0!important;overflow:visible;user-select:none;-webkit-user-select:none}
+#tl-a4.grid .tl-page{background-image:linear-gradient(rgba(112,57,140,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(112,57,140,.07) 1px,transparent 1px);background-size:calc(10*var(--mm)) calc(10*var(--mm))}
+#tl-a4.grid .tl-mg{position:absolute;left:calc(20*var(--mm));right:calc(20*var(--mm));top:calc(12*var(--mm));bottom:calc(10*var(--mm));border:1px dashed rgba(112,57,140,.3);pointer-events:none}
+.tl-edit .tlb{cursor:move;overflow:visible;outline:1px dashed rgba(100,116,139,.35);touch-action:none}
+.tl-edit .tlb:hover{outline-color:var(--s500)}
+.tl-edit .tlb.on{outline:2px solid var(--color-primary);z-index:5}
+.tl-edit .tlb:focus-visible{outline:2px solid var(--color-primary)}
+.tl-edit .tlb.hid{opacity:.25}
+.tl-edit .tlb-wm{pointer-events:auto}.tl-edit .tlb-corpo{background:rgba(112,57,140,.035)}.tl-edit .tlb-corpo .cbody{opacity:.55}
+.tl-edit .tlb .tg{position:absolute;bottom:100%;left:-2px;margin-bottom:2px;font:600 10px system-ui,sans-serif;background:var(--color-primary);color:#fff;padding:1px 6px;border-radius:4px;white-space:nowrap;display:none;opacity:1}
+.tl-edit .tlb.on .tg{display:block}
+.tl-edit .rh{position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;background:#fff;border:2px solid var(--color-primary);border-radius:4px;cursor:nwse-resize;display:none}
+.tl-edit .tlb.on .rh{display:block}.tl-edit .tlb-linha .rh{bottom:-6px;cursor:ew-resize}
+.tl-edit .tlb-wm.on{opacity:1!important}
+.guide{position:absolute;background:var(--color-negative);display:none;z-index:9;pointer-events:none}.guide.gv{top:0;bottom:0;width:1px}.guide.gh{left:0;right:0;height:1px}
+.lp-h{display:flex;align-items:center;gap:8px;font-size:15px}
+.lp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.lp-grid .label{font-size:12px;color:var(--text2)}
+.lal{gap:4px;flex-wrap:nowrap}.lal .opt{padding:6px 9px}
+.lp-acts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.lp-acts .danger{color:var(--color-negative-dark)}
+.up-btn{cursor:pointer;align-self:flex-start;margin-top:6px}
+@container app (max-width:1180px){.tl-ed{grid-template-columns:220px minmax(0,1fr)}.tl-r{grid-column:1/-1;position:static;max-height:none}}
+@container app (max-width:760px){.tl-ed{grid-template-columns:1fr}.tl-l{position:static;max-height:none}.tl-scroll{max-height:none;padding:22px 10px}}
 </style>
 </head>
 <body>
@@ -648,7 +762,7 @@ function loadVals(){const id=S.lote?[...S.sel][0]:S.rec;let d={};const p=PROCS.f
 
 document.addEventListener('click',e=>{
   const pv=e.target.closest('[data-pv]');if(pv){document.body.className=pv.dataset.pv==='d'?'':pv.dataset.pv;$$('[data-pv]').forEach(b=>b.classList.toggle('on',b===pv));render();return;}
-  if(!e.target.closest('.menu')&&!e.target.closest('[data-menu]')&&!e.target.closest('.pick')&&!e.target.closest('[data-slot]')&&!e.target.closest('.peek')&&!e.target.closest('[data-peek]'))closeMenu();
+  if(!e.target.closest('.menu')&&!e.target.closest('[data-menu]')&&!e.target.closest('.pick')&&!e.target.closest('[data-slot]')&&!e.target.closest('.peek')&&!e.target.closest('[data-peek]')&&!e.target.closest('[role=dialog]'))closeMenu();
   const g=k=>e.target.closest(k);let x;
   if(x=g('[data-slot]')){openPick(x.dataset.slot,x);return;}
   if(x=g('[data-pk]')){const k=x.dataset.pk,v=x.dataset.v;if(k==='cat'){PICK.cat=v;S.cat=v;}else PICK.rec=v||null;closeMenu();render();return;}
@@ -797,7 +911,7 @@ function cfgModal(){modal('Configurações do gerador',`<div class="tgl"><span><
 function aprovModal(){modal('Aprovações pendentes',APROV.length?APROV.map((a,i)=>`<div class="pz" style="padding:12px 0"><span class="mini-sheet" style="--c:${CATS[a.cat].c}"></span><span style="flex:1;min-width:0"><b>${esc(a.nome)}</b><br><span class="small muted">gerada por ${esc(a.por)} · agora</span></span><button class="btn btn-sm btn-outline" data-apv="${i}" data-ok="0">Devolver</button><button class="btn btn-sm btn-success" data-apv="${i}" data-ok="1">${ic('check',13,3)}Aprovar</button></div>`).join(''):'<div class="empty-panel">Nenhuma peça aguardando aprovação.</div>',`<button class="btn btn-outline" data-act="peek-close">Fechar</button>`);}
 
 /* pós-render */
-const _rl2=renderLib;renderLib=function(){_rl2();const side=$('.rcol .store');if(side)side.insertAdjacentHTML('afterend',`<div class="card" style="padding:8px"><nav class="nav"><button data-act="open-proc">${ic('scale',16)}Abrir de um processo<span class="n">exemplo</span></button><button data-act="id-open">${ic('pen',16)}Identidade do escritório</button>${CFG.aprov?`<button data-act="aprov-open">${ic('check',16)}Aprovações<span class="n" style="color:var(--color-warning-dark)">${APROV.length}</span></button>`:''}<button data-act="cfg-open">${ic('lock',16)}Configurações</button></nav></div>`);
+const _rl2=renderLib;renderLib=function(){_rl2();const side=$('.rcol .store');if(side)side.insertAdjacentHTML('afterend',`<div class="card" style="padding:8px"><nav class="nav"><button data-act="id-open">${ic('pen',16)}Identidade do escritório</button>${CFG.aprov?`<button data-act="aprov-open">${ic('check',16)}Aprovações<span class="n" style="color:var(--color-warning-dark)">${APROV.length}</span></button>`:''}<button data-act="cfg-open">${ic('lock',16)}Configurações</button></nav></div>`);
   const h1=$('.mhead .muted.small');if(h1&&DRAFTS.length)h1.insertAdjacentHTML('afterend',`<button class="drafts-badge ${S.showDrafts?'on':''}" data-act="drafts-toggle">${ic('history',14)}Continuar de onde parei · ${DRAFTS.length}</button>`);
   const cr=$('.crumb');if(cr&&S.showDrafts&&DRAFTS.length)cr.insertAdjacentHTML('afterend',`<div class="drafts">${DRAFTS.map((d,i)=>{const t=TPL.find(x=>x.id===d.tpl);if(!t)return'';const p=PROCS.find(x=>x.id===d.rec);return `<div class="pz" data-draft="${i}"><span class="mini-sheet" style="--c:${CATS[t.cat].c}"></span><span style="flex:1;min-width:0"><b>${esc(t.nome)}</b><br><span class="small muted">${p?esc(p.d['cliente.nome'])+' · '+esc(p.t)+' · ':''}parou em ${d.view==='save'?'Salvar':'Revisão'}</span></span><button class="btn btn-sm btn-primary" data-draft="${i}">Continuar</button><button class="btn-icon" data-dropdraft="${i}" aria-label="Descartar rascunho">${ic('trash',15)}</button></div>`;}).join('')}</div>`);};
 const _rv=renderRev;renderRev=function(){_rv();const rq=reqOf();rq.forEach(k=>{const i=$(`[data-field="${k}"]`);if(!i)return;const row=i.closest('.frow');row.querySelector('.label').insertAdjacentHTML('beforeend','<span class="req">Obrigatório</span>');if(isMiss(S.vals,k))row.classList.add('reqmiss');});
@@ -841,6 +955,253 @@ document.addEventListener('input',e=>{if(e.target.id==='id-c'){const o=ID.cor;ID
 const _lv=loadVals;loadVals=function(){_lv();if(S.dupVals){S.dupVals=null;}};
 
 document.addEventListener('dblclick',e=>{const x=e.target.closest('[data-peek]');if(x)startTpl(+x.dataset.peek);});
+
+/* ================= v3 (06/11): template personalizado, drawer largo, zoom, origem com cadastro de partes, classificações ================= */
+S.zoom=1;S.cad={};S.lsel=null;S.lgrid=true;
+
+/* ---------- Classificações (mesma estrutura de Documentos: Categoria › Subcategoria › Tipo) ---------- */
+const CLS_GRUPOS=['Petições iniciais','Petições intermediárias','Recursos','Documentos de apoio'];
+const GRP_OF={ini:'Petições iniciais',cont:'Petições intermediárias',inter:'Petições intermediárias',rec:'Recursos',proc:'Documentos de apoio',decl:'Documentos de apoio',contr:'Documentos de apoio',not:'Documentos de apoio'};
+let CLS=CLS_GRUPOS.map(g=>({g,subs:[]}));
+const uid=p=>p+Math.random().toString(36).slice(2,8);
+function clsSub(g,n,own){const G=CLS.find(x=>x.g===g);let s=G.subs.find(x=>x.n===n);if(!s){s={id:uid('s'),n,tipos:[],own:!!own};G.subs.push(s);}return s;}
+function clsTipo(s,n,own){let t=s.tipos.find(x=>x.n===n);if(!t){t={id:uid('t'),n,own:!!own};s.tipos.push(t);}return t;}
+TPL.forEach(t=>{const g=GRP_OF[t.cat];const s=clsSub(g,g==='Documentos de apoio'?CATS[t.cat].n:t.area);t.cls={g,s:s.id,t:clsTipo(s,t.nome).id};});
+[['Petições iniciais','Direito Civil',['Ação Monitória','Ação de Usucapião']],['Petições intermediárias','Processo Civil',['Réplica','Manifestação sobre laudo','Pedido de tutela de urgência']],['Recursos','Processo Civil',['Recurso Especial','Recurso Extraordinário']]].forEach(([g,s,ts])=>{const x=clsSub(g,s);ts.forEach(n=>clsTipo(x,n));});
+function tipoById(id){for(const G of CLS)for(const s of G.subs)for(const t of s.tipos)if(t.id===id)return {G,s,t};return null;}
+function subById(id){for(const G of CLS)for(const s of G.subs)if(s.id===id)return {G,s};return null;}
+const clsPath=t=>{const x=t&&t.cls&&tipoById(t.cls.t);return x?`${x.G.g} › ${x.s.n} › ${x.t.n}`:'Sem classificação';};
+const nSubs=()=>CLS.reduce((a,G)=>a+G.subs.length,0),nTipos=()=>CLS.reduce((a,G)=>a+G.subs.reduce((b,s)=>b+s.tipos.length,0),0);
+const usoSub=id=>TPL.filter(t=>t.cls&&t.cls.s===id).length,usoTipo=id=>TPL.filter(t=>t.cls&&t.cls.t===id).length;
+
+const _lo=listOf;listOf=function(){let l=_lo();if(S.clsS)l=l.filter(t=>t.cls&&t.cls.s===S.clsS);else if(S.clsG)l=l.filter(t=>t.cls&&t.cls.g===S.clsG);return l;};
+function clsTree(){return CLS.map(G=>{const n=TPL.filter(t=>t.cls&&t.cls.g===G.g).length,open=S.clsOpen===G.g||S.clsG===G.g;
+  return `<button class="${S.clsG===G.g&&!S.clsS?'on':''}" data-clsg="${esc(G.g)}" aria-expanded="${open}"><span class="tchv ${open?'o':''}">${ic('chev',13)}</span>${esc(G.g)}<span class="n">${n}</span></button>${open?`<div class="ctree">${G.subs.map(s=>`<button class="${S.clsS===s.id?'on':''}" data-clss="${s.id}">${esc(s.n)}<span class="n">${usoSub(s.id)}</span></button>`).join('')}</div>`:''}`;}).join('');}
+
+/* ---------- Origem dos dados: base do modelo, troca com aviso, cadastro das partes ---------- */
+const BASE_OF={ini:'proc',cont:'proc',inter:'proc',rec:'proc',proc:'cli',decl:'cli',contr:'cli',not:'cli'};
+const ONOME={proc:'Processo',cli:'Cliente',forn:'Fornecedor',manual:'Preenchimento manual'};
+const PERDE={proc:[],manual:[],cli:['processo.numero','processo.tribunal','processo.vara','reus'],forn:['processo.numero','processo.tribunal','processo.vara','autores','cliente.cpf','cliente.estadoCivil','cliente.profissao']};
+const isCli=n=>CLIENTES.some(c=>c.t===n);
+function partesPend(){const ids=S.lote?[...S.sel]:[S.rec],r=[];ids.forEach(id=>{const p=PROCS.find(x=>x.id===id);if(!p)return;[['Autor',p.d.autores||[]],['Réu',p.d.reus||[]]].forEach(([pap,l])=>l.forEach(n=>{if(!r.some(x=>x.n===n))r.push({n,pap,proc:p.t,ok:isCli(n)});}));});return r;}
+const cadOn=p=>S.cad[p.n]!=null?S.cad[p.n]:p.pap==='Autor';
+const pj=n=>/ltda|s\.a\.|s\/a|eireli|me$|banco|construtora|imobili/i.test(n);
+function goRev(){S.cadDone=false;loadVals();S.view='rev';render();window.scrollTo(0,0);}
+function cadModal(l){modal(`Cadastrar ${l.length>1?l.length+' partes':'parte'} como cliente`,`<span class="small muted">Estas partes do processo ainda não estão em Clientes. Cadastre agora para os dados entrarem nesta e nas próximas peças.</span>
+  ${l.map((p,i)=>`<div class="cadrow"><div class="cad-h"><span class="badge ${p.pap==='Autor'?'b-a':'b-r'}">${p.pap}</span><b>${esc(p.n)}</b></div><div class="cad-g"><div><label class="label" for="cn-${i}">Nome</label><input class="input" id="cn-${i}" data-cn="${i}" value="${esc(p.n)}"></div><div><label class="label" for="ct-${i}">Pessoa</label><select class="select" id="ct-${i}"><option ${pj(p.n)?'':'selected'}>Física</option><option ${pj(p.n)?'selected':''}>Jurídica</option></select></div><div><label class="label" for="cd-${i}">${pj(p.n)?'CNPJ':'CPF'}</label><input class="input" id="cd-${i}" placeholder="${pj(p.n)?'00.000.000/0000-00':'000.000.000-00'}"></div></div></div>`).join('')}`,
+  `<button class="btn btn-outline" data-act="peek-close">Voltar</button><button class="btn btn-ghost" data-act="cad-skip">Pular e continuar</button><button class="btn btn-primary" data-act="cad-ok">${ic('check',15,3)}Cadastrar e continuar</button>`);
+  const dg=$('#menu-root [role=dialog]');dg.style.width='min(640px,calc(100% - 32px))';S.cadList=l;}
+function origemModal(k){const base=BASE_OF[S.tpl.cat],cur=S.origem,mism=k!=='manual'&&k!==base,rec=S.lote?(S.sel.size?S.sel.size+' registros':''):((PROCS.concat(CLIENTES,FORNS).find(r=>r.id===S.rec)||{}).t||'');
+  const perde=PERDE[k].filter(x=>!PERDE[base].includes(x));
+  modal(mism?`Gerar com base em ${ONOME[k]}?`:'Trocar a origem dos dados?',`${mism?`<div class="cmp2"><div><span class="small muted">Este modelo foi feito para</span><b>${ic(base==='proc'?'scale':'users',15)} ${ONOME[base]}</b></div><span class="arr">${ic('chev',18)}</span><div class="to"><span class="small muted">Você escolheu</span><b>${ic(k==='proc'?'scale':k==='forn'?'truck':'users',15)} ${ONOME[k]}</b></div></div>
+    ${perde.length?`<p style="margin:14px 0 8px">Estes campos não existem em <b>${ONOME[k]}</b> e vão ficar <b>vazios</b> para você completar na revisão:</p><div class="pill-list">${perde.map(f=>`<span>${ic('alert',11)} ${esc(lbl(f))}</span>`).join('')}</div>`:`<p style="margin:14px 0 0">Os dados de ${ONOME[k]} cobrem os campos deste modelo.</p>`}`:''}
+    ${rec&&cur?`<div class="check warn" style="margin-top:14px">${ic('alert',16)}<span>${S.lote?'A seleção de':'O '+ONOME[cur].toLowerCase()} <b>${esc(rec)}</b> será descartad${S.lote?'a':'o'}.</span></div>`:''}`,
+  `<button class="btn btn-outline" data-act="peek-close">Manter ${cur?ONOME[cur]:ONOME[base]}</button><button class="btn btn-primary" data-act="origem-ok">Usar ${ONOME[k]}</button>`);S.origemPend=k;}
+
+const _ro2=renderOrigem;renderOrigem=function(){_ro2();S.pecaCls=null;const base=BASE_OF[S.tpl.cat];
+  const ob=$(`[data-origem="${base}"] b`);if(ob)ob.insertAdjacentHTML('beforeend',' <span class="badge b-recm">Recomendado</span>');
+  if(S.origem&&S.origem!=='manual'&&S.origem!==base)$('.origins').insertAdjacentHTML('afterend',`<div class="check warn" style="margin-top:12px">${ic('alert',16)}<span>Gerando com base em <b>${ONOME[S.origem]}</b>, mas este modelo foi feito para <b>${ONOME[base]}</b>. Alguns campos ficarão vazios na revisão.</span></div>`);
+  const rl=$('.reclist');if(rl&&S.origem==='proc'&&(S.lote?S.sel.size:S.rec)){const ps=partesPend(),pend=ps.filter(p=>!p.ok);
+    rl.insertAdjacentHTML('afterend',`<div class="partes"><div class="partes-h">${ic('users',16)}<b>Partes ${S.lote?'dos processos selecionados':'do processo'}</b><span class="small ${pend.length?'wtx':'muted'}">${pend.length?pend.length+' sem cadastro em Clientes':'todas cadastradas'}</span></div>
+      ${ps.map(p=>`<div class="pt"><span class="badge ${p.pap==='Autor'?'b-a':'b-r'}">${p.pap}</span><span style="flex:1;min-width:0"><b>${esc(p.n)}</b>${S.lote?`<span class="small muted d-b">${esc(p.proc)}</span>`:''}</span>${p.ok?`<span class="ok-tag">${ic('check',13,3)}Cliente cadastrado</span>`:`<label class="cad"><input type="checkbox" data-cad="${esc(p.n)}" ${cadOn(p)?'checked':''}>Cadastrar como cliente</label>`}</div>`).join('')}
+      ${pend.length?`<div class="small muted" style="padding:8px 14px 12px">Marcadas são cadastradas antes da revisão. Desmarcadas entram só nesta peça. A parte contrária (réu) vem desmarcada.</div>`:''}</div>`);
+    const n=pend.filter(cadOn).length,b=$('[data-act="to-rev"]');if(b&&n)b.innerHTML=`${ic('users',15)}Cadastrar ${n} e continuar ${ic('chev',15)}`;}};
+
+/* ---------- Revisão: só uma seção aberta por vez + aviso de base diferente ---------- */
+const _rv2=renderRev;renderRev=function(){_rv2();const ds=$$('.fgroup');if(!ds.length)return;const f=ds.find(d=>d.querySelector('.frow.miss'))||ds[0];ds.forEach(d=>d.open=d===f);
+  const base=BASE_OF[S.tpl.cat];if(S.origem&&S.origem!=='manual'&&S.origem!==base)$('.fields').insertAdjacentHTML('afterbegin',`<div class="check warn">${ic('alert',16)}<span>Peça gerada com base em <b>${ONOME[S.origem]}</b> (o modelo é de <b>${ONOME[base]}</b>).</span></div>`);};
+document.addEventListener('toggle',e=>{const d=e.target;if(!d.matches||!d.matches('.fgroup')||!d.open)return;$$('.fgroup').forEach(o=>{if(o!==d)o.open=false;});},true);
+
+/* ---------- Salvar / concluído: classificação vinda do modelo ---------- */
+function clsOptions(cur){return CLS.map(G=>G.subs.map(s=>`<optgroup label="${esc(G.g+' › '+s.n)}">${s.tipos.map(t=>`<option value="${t.id}" ${t.id===cur?'selected':''}>${esc(t.n)}</option>`).join('')}</optgroup>`).join('')).join('');}
+const _rs2=renderSave;renderSave=function(){_rs2();const sel=$('#s-cls');if(!sel)return;const cur=S.pecaCls||(S.tpl.cls&&S.tpl.cls.t);sel.innerHTML=clsOptions(cur);sel.closest('div').insertAdjacentHTML('beforeend',`<span class="small muted" style="display:block;margin-top:4px">${ic('tag',11)} Vem do modelo. A peça já entra classificada em Documentos.</span>`);};
+const _rd2=renderDone;renderDone=function(){_rd2();const dt=$$('.kv dt').find(d=>d.textContent==='Classificação');const x=tipoById(S.pecaCls||(S.tpl.cls&&S.tpl.cls.t));if(dt&&x)dt.nextElementSibling.innerHTML=`<span class="cpath">${ic('tag',13)}${esc(x.G.g)} › ${esc(x.s.n)} › <b>${esc(x.t.n)}</b></span>`;};
+
+/* ---------- Biblioteca: árvore de classificações, entrada de gerenciar, sem "Abrir de um processo" ---------- */
+const _rl3=renderLib;renderLib=function(){_rl3();
+  const h4=$$('.side h4').find(h=>h.textContent==='Categorias');if(h4){h4.textContent='Classificações';const nav=h4.nextElementSibling;nav.innerHTML=clsTree();nav.classList.add('cnav');
+    h4.closest('.card').insertAdjacentHTML('beforebegin',`<button class="cls-entry" data-act="cls-open"><span class="tpi">${ic('tag',15)}</span><span><b>Classificações</b><small>${CLS.length} categorias · ${nSubs()} subcategorias · ${nTipos()} tipos</small></span><span class="go">${ic('chev',15)}</span></button>`);
+    h4.closest('.card').insertAdjacentHTML('beforeend',`<h4>Escritório</h4><nav class="nav"><button data-act="tl-open">${ic('layers',16)}Template personalizado</button><button data-act="id-open">${ic('pen',16)}Identidade do escritório</button></nav>`);}
+  const rn=$('.rcol [data-act="id-open"]');if(rn)rn.insertAdjacentHTML('beforebegin',`<button data-act="tl-open">${ic('layers',16)}Template personalizado<span class="n">novo</span></button>`);
+  if(S.clsG){const x=S.clsS&&subById(S.clsS),t=x?x.s.n:S.clsG;const h=$('.mhead h1');if(h&&!S.gq)h.textContent=t;const cr=$('.crumb b');if(cr)cr.innerHTML=x?`${esc(S.clsG)} ${ic('chev',12)} ${esc(x.s.n)}`:esc(S.clsG);if(cr&&!$('.crumb [data-act="clear-cls"]'))cr.insertAdjacentHTML('afterend',` <button class="btn btn-sm btn-ghost" data-act="clear-cls">Limpar</button>`);}
+  $$('.ltable tbody tr[data-peek]').forEach(tr=>{const t=TPL.find(x=>x.id===+tr.dataset.peek);const td=tr.querySelector('td');if(t&&td)td.insertAdjacentHTML('beforeend',`<span class="cpath sm">${esc(clsPath(t).split(' › ').slice(1).join(' › '))}</span>`);});
+  $$('.paper[data-peek]').forEach(p=>{const t=TPL.find(x=>x.id===+p.dataset.peek);const cap=p.querySelector('.cap');if(t&&cap)cap.title=clsPath(t);});};
+
+/* ---------- Gerenciar classificações ---------- */
+function clsBody(){const q=(S.clsQ||'').toLowerCase(),m=s=>!q||s.n.toLowerCase().includes(q)||s.tipos.some(t=>t.n.toLowerCase().includes(q));
+  return `<div class="cls-top"><input class="input" id="cls-q" placeholder="Buscar subcategoria ou tipo…" value="${esc(S.clsQ||'')}"><span class="small muted">${ic('tag',12)} As mesmas classificações de Documentos: o que mudar aqui vale lá também.</span></div>
+  ${CLS.map(G=>`<div class="cg"><div class="cg-h">${ic('lock',13)}<b>${esc(G.g)}</b><span class="small muted">categoria do sistema</span><span style="flex:1"></span><button class="btn btn-sm btn-outline" data-clsadd-s="${esc(G.g)}">${ic('plus',13)}Subcategoria</button></div>
+    ${S.clsNew&&S.clsNew.g===G.g?`<div class="cs"><input class="input input-sm" data-clsnew placeholder="Nome da subcategoria e Enter" autofocus></div>`:''}
+    ${G.subs.filter(m).map(s=>`<div class="cs"><div class="cs-h">${S.clsEdit===s.id?`<input class="input input-sm" data-clsren="${s.id}" value="${esc(s.n)}" style="max-width:260px">`:`<b>${esc(s.n)}</b>`}<span class="small muted">${s.tipos.length} tipo${s.tipos.length!==1?'s':''} · ${usoSub(s.id)} modelo${usoSub(s.id)!==1?'s':''}</span><span style="flex:1"></span><button class="btn-icon" data-clsedit="${s.id}" title="Renomear" aria-label="Renomear ${esc(s.n)}">${ic('edit',15)}</button><button class="btn-icon" data-clsdel="${s.id}" title="Excluir" aria-label="Excluir ${esc(s.n)}">${ic('trash',15)}</button><button class="btn btn-sm btn-ghost" data-clsadd-t="${s.id}">${ic('plus',13)}Tipo</button></div>
+      <div class="pill-list">${s.tipos.map(t=>`<span class="ctp ${q&&t.n.toLowerCase().includes(q)?'hit':''}">${esc(t.n)}${usoTipo(t.id)?` <small class="muted">${usoTipo(t.id)}</small>`:''}<button data-clsdel-t="${t.id}" aria-label="Remover ${esc(t.n)}">×</button></span>`).join('')}${S.clsNew&&S.clsNew.s===s.id?`<input class="input input-sm" data-clsnew placeholder="Novo tipo e Enter" style="width:200px">`:''}</div></div>`).join('')}</div>`).join('')}`;}
+function clsModal(){const old=$('#menu-root [role=dialog] > div:nth-child(2)'),top=old?old.scrollTop:0;
+  modal('Gerenciar classificações',clsBody(),`<span class="small muted" style="margin-right:auto">${CLS.length} categorias · ${nSubs()} subcategorias · ${nTipos()} tipos</span><button class="btn btn-primary" data-act="cls-done">Concluir</button>`);
+  const dg=$('#menu-root [role=dialog]');dg.style.width='min(860px,calc(100% - 32px))';const b=dg.children[1];b.style.maxHeight='70vh';b.scrollTop=top;const f=dg.querySelector('[data-clsnew],[data-clsren]');if(f){f.focus();f.select&&f.select();}}
+
+/* ---------- Template personalizado (layout por arraste, em mm de uma folha A4) ---------- */
+const TL={on:true,logo:null,blocks:[]};
+const TL_DEF=()=>[
+ {id:'logo',k:'logo',n:'Logo',x:20,y:12,w:20,h:20},
+ {id:'esc',k:'esc',n:'Dados do escritório',x:44,y:13,w:146,h:18,fs:10,al:'left'},
+ {id:'l1',k:'linha',n:'Linha de divisão',x:20,y:36,w:170,h:2,esp:1.2},
+ {id:'dados',k:'dados',n:'Dados do processo',x:20,y:40,w:170,h:7,fs:8.5,al:'left'},
+ {id:'corpo',k:'corpo',n:'Texto da peça',x:20,y:50,w:170,h:192,fs:10.5},
+ {id:'data',k:'data',n:'Local e data',x:20,y:246,w:170,h:7,fs:10,al:'center'},
+ {id:'assin',k:'assin',n:'Assinatura',x:60,y:256,w:90,h:16,fs:10,al:'center'},
+ {id:'l2',k:'linha',n:'Linha do rodapé',x:20,y:279,w:170,h:2,esp:.6},
+ {id:'rod',k:'rod',n:'Rodapé',x:20,y:282,w:170,h:6,fs:7.5,al:'center'},
+ {id:'wm',k:'wm',n:"Marca d'água",x:55,y:98,w:100,h:100,op:.08}];
+TL.blocks=TL_DEF();let TL_SAVED=JSON.stringify(TL.blocks);
+const TL_IC={logo:'star',esc:'users',linha:'list',dados:'scale',corpo:'file',data:'history',assin:'pen',rod:'list',wm:'eye',txt:'edit',img:'layers',campo:'tag'};
+const TEXTO=['esc','dados','corpo','data','assin','rod','txt','campo'];
+function corpoHTML(v){return _doc(v).replace(/<p class="center" style="margin-top:22px">[\s\S]*?<\/p>/,'').replace(/<p class="center" style="margin-top:28px">[\s\S]*?<\/p>/,'');}
+function logoHTML(big){return TL.logo?`<img src="${TL.logo}" alt="Logo do escritório">`:`<span class="lgx ${big?'big':''}" style="background:${ID.cor}">${ini(ID.nome)}</span>`;}
+function tlInner(b,v){switch(b.k){
+  case 'logo':return logoHTML();case 'wm':return logoHTML(true);
+  case 'esc':return `<b>${esc(ID.nome)}</b><br><span>${esc(ID.sub)}</span>`;
+  case 'linha':return '';
+  case 'dados':return `Processo nº ${fv('processo.numero',v)} · ${fv('processo.vara',v)} · Cliente: ${fv('cliente.nome',v)}`;
+  case 'corpo':return `<div class="cbody">${corpoHTML(v)}</div>`;
+  case 'data':return `${fv('processo.comarca',v)}, ${fv('data',v,dataExt(v['data']))}.`;
+  case 'assin':return `<span class="sl"></span>${fv('adv.nome',v)}<br>${fv('adv.oab',v)}`;
+  case 'rod':return esc(ID.rod);
+  case 'txt':return esc(b.txt||'Texto livre').replace(/\n/g,'<br>');
+  case 'campo':return `${b.pre?esc(b.pre)+' ':''}${fv(b.fk||'cliente.nome',v)}`;
+  case 'img':return b.src?`<img src="${b.src}" alt="">`:`<span class="ph">${ic('layers',18)}Imagem</span>`;}return '';}
+function tlStyle(b){const u='var(--mm)';let s=`left:calc(${b.x}*${u});top:calc(${b.y}*${u});width:calc(${b.w}*${u});height:calc(${b.h}*${u});`;
+  if(TEXTO.includes(b.k))s+=`font-size:calc(${b.fs||10}*.3528*${u});text-align:${b.al||'left'};`;
+  if(b.k==='linha')s+=`--esp:calc(${b.esp||1}*.3528*${u});--lc:${b.cor||ID.cor};`;
+  if(b.k==='wm')s+=`opacity:${b.op??.08};`;return s;}
+function tlPage(v,ed){const show=b=>ed||(!b.hid&&(ID.on||!['logo','esc','rod','wm'].includes(b.k)));
+  return `<div class="tl-page">${ed?'<div class="tl-mg"></div>':''}${TL.blocks.filter(show).map(b=>`<div class="tlb tlb-${b.k} ${ed&&S.lsel===b.id?'on':''} ${b.hid?'hid':''}" ${ed?`data-lb="${b.id}" tabindex="0" aria-label="${esc(b.n)}"`:''} style="${tlStyle(b)}">${tlInner(b,v)}${ed?`<span class="tg">${esc(b.n)}</span><span class="rh" aria-hidden="true"></span>`:''}</div>`).join('')}${ed?'<div class="guide gv"></div><div class="guide gh"></div>':''}</div>`;}
+const _doc3=docHTML;docHTML=function(v){if(!TL.on||S.view==='editor')return _doc3(v);return tlPage(v||{},false);};
+
+function propsHTML(b){const n=(k,l,st=1)=>`<div><label class="label" for="lp-${k}">${l}</label><input class="input input-sm" id="lp-${k}" type="number" step="${st}" data-lp="${k}" value="${+(+b[k]).toFixed(1)}"></div>`;
+  const al=['left','center','right'].map(a=>`<button class="opt ${b.al===a?'on':''}" data-lal="${a}" title="${{left:'Esquerda',center:'Centro',right:'Direita'}[a]}">${ic({left:'al',center:'ac',right:'aj'}[a],14)}</button>`).join('');
+  return `<div class="lp-h"><span class="lic">${ic(TL_IC[b.k],15)}</span><b>${esc(b.n)}</b></div>
+   <span class="small muted">Posição e tamanho em milímetros (folha A4: 210 × 297)</span>
+   <div class="lp-grid">${n('x','X')}${n('y','Y')}${n('w','Largura')}${b.k==='linha'?'':n('h','Altura')}</div>
+   ${TEXTO.includes(b.k)?`<div class="lp-grid">${n('fs','Fonte (pt)',.5)}<div><span class="label">Alinhar</span><div class="opts lal">${al}</div></div></div>`:''}
+   ${b.k==='esc'?`<label class="label" for="lp-nome">Nome do escritório</label><input class="input input-sm" id="lp-nome" data-lid="nome" value="${esc(ID.nome)}"><label class="label" for="lp-sub">Linha de dados</label><textarea class="input" id="lp-sub" data-lid="sub" style="height:70px;padding:8px 10px">${esc(ID.sub)}</textarea>`:''}
+   ${b.k==='rod'?`<label class="label" for="lp-rod">Texto do rodapé</label><input class="input input-sm" id="lp-rod" data-lid="rod" value="${esc(ID.rod)}">`:''}
+   ${b.k==='txt'?`<label class="label" for="lp-txt">Texto</label><textarea class="input" id="lp-txt" data-lp="txt" style="height:80px;padding:8px 10px">${esc(b.txt||'')}</textarea>`:''}
+   ${b.k==='campo'?`<label class="label" for="lp-pre">Rótulo antes do campo</label><input class="input input-sm" id="lp-pre" data-lp="pre" value="${esc(b.pre||'')}"><label class="label" for="lp-fk">Campo</label><select class="select" id="lp-fk" data-lp="fk">${GROUPS.map(g=>`<optgroup label="${g.n}">${g.f.map(f=>`<option value="${f[0]}" ${b.fk===f[0]?'selected':''}>${esc(f[1])}</option>`).join('')}</optgroup>`).join('')}</select>`:''}
+   ${b.k==='linha'?`<div class="lp-grid">${n('esp','Espessura (pt)',.2)}<div><label class="label" for="lp-cor">Cor</label><input class="input input-sm" id="lp-cor" type="color" data-lp="cor" value="${b.cor||ID.cor}" style="padding:3px"></div></div>`:''}
+   ${b.k==='wm'?`<label class="label" for="lp-op">Intensidade <span class="muted" id="lp-op-v">${Math.round((b.op??.08)*100)}%</span></label><input id="lp-op" type="range" min="2" max="40" data-lp="op" value="${Math.round((b.op??.08)*100)}" style="width:100%">`:''}
+   ${b.k==='logo'||b.k==='wm'?`<label class="btn btn-outline btn-sm up-btn">${ic('download',14)}Trocar logo<input type="file" accept="image/*" data-llogo hidden></label>`:''}
+   ${b.k==='img'?`<label class="btn btn-outline btn-sm up-btn">${ic('download',14)}Escolher imagem<input type="file" accept="image/*" data-limg hidden></label>`:''}
+   <div class="lp-acts"><button class="btn btn-sm btn-outline" data-lcen="h">Centralizar na largura</button><button class="btn btn-sm btn-outline" data-lhide="${b.id}">${b.hid?'Mostrar':'Ocultar'}</button>${b.own?`<button class="btn btn-sm btn-outline danger" data-ldel="${b.id}">${ic('trash',13)}Remover</button>`:''}</div>
+   <span class="small muted">${ic('spark',11)} Dica: setas do teclado movem 1 mm (Shift: 5 mm).</span>`;}
+function renderTL(){const v=S.tlData?Object.assign({},PROCS[0].d,ESC,{data:'2026-11-06',valor:'15000'}):{};const b=TL.blocks.find(x=>x.id===S.lsel);
+  app.innerHTML=`<div class="tl-top"><button class="backlink" data-act="lib">${ic('back',16)}Modelos</button><div style="flex:1;min-width:220px"><h2>Template personalizado do escritório</h2><span class="small muted">Arraste os elementos na folha. Vale para todas as peças geradas.</span></div>
+   <span class="tl-sw"><span class="small">Usar nas peças</span><button class="switch ${TL.on?'on':''}" data-tl="on" role="switch" aria-checked="${TL.on}" aria-label="Usar template nas peças"><i></i></button></span>
+   <button class="btn btn-outline btn-sm" data-tl="data">${ic('eye',14)}${S.tlData?'Ver nomes dos campos':'Ver com dados reais'}</button><button class="btn btn-outline btn-sm" data-tl="reset">${ic('history',14)}Restaurar padrão</button><button class="btn btn-primary" data-tl="save">${ic('check',15,3)}Salvar template</button></div>
+  <div class="tl-ed"><aside class="card tl-l"><span class="label">Elementos da folha</span>${TL.blocks.map(x=>`<div class="le ${S.lsel===x.id?'on':''} ${x.hid?'hid':''}" data-lsel="${x.id}" role="button" tabindex="0"><span class="lic">${ic(TL_IC[x.k],14)}</span><span style="flex:1;min-width:0">${esc(x.n)}</span><button class="btn-icon" data-lhide="${x.id}" title="${x.hid?'Mostrar':'Ocultar'}" aria-label="${x.hid?'Mostrar':'Ocultar'} ${esc(x.n)}">${ic(x.hid?'lock':'eye',15)}</button></div>`).join('')}
+    <span class="label" style="margin-top:12px">Adicionar</span><div class="tl-add"><button class="opt" data-ladd="txt">${ic('edit',14)}Texto livre</button><button class="opt" data-ladd="campo">${ic('tag',14)}Campo de dados</button><button class="opt" data-ladd="linha">${ic('list',14)}Linha</button><button class="opt" data-ladd="img">${ic('layers',14)}Imagem</button></div>
+    <label class="small tl-chk"><input type="checkbox" data-tl="grid" ${S.lgrid?'checked':''}> Mostrar grade (1 cm) e margens</label></aside>
+   <div class="tl-canvas"><div class="tl-bar"><span class="small muted">Folha A4 · ${TL.blocks.filter(x=>!x.hid).length} elementos visíveis</span>${fzCtl()}</div><div class="tl-scroll"><div class="a4 tl-edit ${S.lgrid?'grid':''}" id="tl-a4">${tlPage(v,true)}</div></div></div>
+   <aside class="card tl-r">${b?propsHTML(b):`<div class="empty-panel">${ic('layers',22)}<br><b style="color:var(--text)">Clique num elemento</b><br>da folha para mover, redimensionar e ajustar o estilo.</div>`}</aside></div><div style="height:80px"></div>`;
+  fitTL();}
+function fitTL(){const a=$('#tl-a4'),s=$('.tl-scroll');if(!a||!s)return;const f=Math.min(1,(s.clientWidth-10)/560);a.style.zoom=(f*S.zoom).toFixed(3);}
+function tlSel(id){S.lsel=id;$$('#tl-a4 [data-lb]').forEach(e=>e.classList.toggle('on',e.dataset.lb===id));$$('.le').forEach(e=>e.classList.toggle('on',e.dataset.lsel===id));const b=TL.blocks.find(x=>x.id===id);$('.tl-r').innerHTML=b?propsHTML(b):'';}
+function tlPlace(b){const e=$(`#tl-a4 [data-lb="${b.id}"]`);if(e)e.style.cssText=tlStyle(b);['x','y','w','h'].forEach(k=>{const i=$(`[data-lp="${k}"]`);if(i&&document.activeElement!==i)i.value=+(+b[k]).toFixed(1);});}
+function tlRefresh(b){const e=$(`#tl-a4 [data-lb="${b.id}"]`);if(!e)return;const v=S.tlData?Object.assign({},PROCS[0].d,ESC,{data:'2026-11-06'}):{};e.style.cssText=tlStyle(b);e.innerHTML=tlInner(b,v)+`<span class="tg">${esc(b.n)}</span><span class="rh" aria-hidden="true"></span>`;}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),snap=v=>Math.round(v*2)/2;
+document.addEventListener('pointerdown',e=>{const el=e.target.closest('#tl-a4 [data-lb]');if(!el)return;e.preventDefault();const b=TL.blocks.find(x=>x.id===el.dataset.lb);if(S.lsel!==b.id)tlSel(b.id);el.focus({preventScroll:true});
+  const rs=!!e.target.closest('.rh'),mm=$('#tl-a4').getBoundingClientRect().width/210,st={x:b.x,y:b.y,w:b.w,h:b.h,px:e.clientX,py:e.clientY},gv=$('#tl-a4 .gv'),gh=$('#tl-a4 .gh');
+  const mv=ev=>{const dx=(ev.clientX-st.px)/mm,dy=(ev.clientY-st.py)/mm;let sv=null,sh=null;
+    if(rs){b.w=clamp(snap(st.w+dx),4,210-b.x);if(b.k!=='linha')b.h=clamp(snap(st.h+dy),3,297-b.y);if(b.k==='logo'&&ev.shiftKey)b.h=b.w;}
+    else{let nx=snap(st.x+dx),ny=snap(st.y+dy);const cx=nx+b.w/2;
+      if(Math.abs(cx-105)<2){nx=105-b.w/2;sv=105;}else if(Math.abs(nx-20)<1.5){nx=20;sv=20;}else if(Math.abs(nx+b.w-190)<1.5){nx=190-b.w;sv=190;}
+      if(Math.abs(ny+b.h/2-148.5)<2){ny=148.5-b.h/2;sh=148.5;}
+      TL.blocks.forEach(o=>{if(o===b||o.hid||sh!=null)return;if(Math.abs(ny-o.y)<1.2){ny=o.y;sh=o.y;}else if(Math.abs(ny-(o.y+o.h))<1.2){ny=o.y+o.h;sh=ny;}});
+      b.x=clamp(nx,0,210-b.w);b.y=clamp(ny,0,297-b.h);}
+    gv.style.display=sv!=null?'block':'none';gv.style.left=`calc(${sv}*var(--mm))`;gh.style.display=sh!=null?'block':'none';gh.style.top=`calc(${sh}*var(--mm))`;tlPlace(b);};
+  const up=()=>{document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);gv.style.display=gh.style.display='none';};
+  document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);});
+
+/* ---------- Zoom de verdade (folha inteira escala) ---------- */
+fzCtl=function(){return `<span class="fz" role="group" aria-label="Zoom da folha"><button data-zm="-1" aria-label="Diminuir zoom">−</button><span>${Math.round(S.zoom*100)}%</span><button data-zm="1" aria-label="Aumentar zoom">+</button><button data-zm="0" aria-label="Ajustar à tela" title="Ajustar à tela">${ic('layers',13)}</button></span>`;};
+function fitPeek(){const a=$('.peek-doc .a4'),c=$('.peek-doc-s');if(!a||!c)return;const f=Math.min((c.clientWidth-24)/600,(c.clientHeight-24)/848);a.style.zoom=(Math.max(.3,f)*S.zoom).toFixed(3);}
+const _ai=applyIdentity;applyIdentity=function(){_ai();document.documentElement.style.setProperty('--zoom',S.zoom);
+  $$('.a4,.mini-a4').forEach(a=>{if(a.id==='tl-a4'){a.classList.remove('wm');return;}const on=TL.on&&a.id!=='ed-a4';a.classList.toggle('tl',on);if(on)a.classList.remove('wm');});fitPeek();fitTL();};
+window.addEventListener('resize',()=>{fitPeek();fitTL();});
+
+/* ---------- Drawer largo: documento inteiro à esquerda, dados à direita ---------- */
+openPeek=function(id){const t=TPL.find(x=>x.id===id),c=CATS[t.cat],mine=!!t.esc;S.prevT=t;setTimeout(()=>S.prevT=null);const rp=PICK.rec&&PROCS.find(p=>p.id===PICK.rec),v=rp?Object.assign({},rp.d,ESC):{};
+  $('#menu-root').innerHTML=`<div class="peek-bg" data-act="peek-close"></div><aside class="peek peek-wide" role="dialog" aria-label="${esc(t.nome)}"><div class="peek-h"><div style="flex:1;min-width:0"><span class="badge b-cat" style="--c:${c.c}">${esc(c.n)}</span><h2 style="margin-top:6px">${esc(t.nome)}</h2><span class="muted small">${esc(t.area)} · usado ${t.usos} vezes${mine?' · do escritório ('+esc(t.esc)+')':''}</span></div><button class="btn-icon" data-act="peek-close" aria-label="Fechar">${ic('plus',20).replace('<svg','<svg style="transform:rotate(45deg)"')}</button></div>
+   <div class="peek-grid"><div class="peek-doc"><div class="peek-doc-bar"><span class="small muted">${rp?'Com dados de '+esc(rp.d['cliente.nome']):'Pré-visualização do modelo'}</span>${fzCtl()}</div><div class="peek-doc-s"><div class="a4">${docHTML(v)}</div></div></div>
+    <div class="peek-info"><span class="label">Classificação</span><div class="cpath box">${ic('tag',14)}<span>${esc(clsPath(t))}</span></div>
+     <dl class="kv2"><dt>Origem</dt><dd>${t.esc?'Escritório · '+esc(t.esc):'Sistema'}</dd><dt>Base</dt><dd>${ONOME[BASE_OF[t.cat]]}</dd><dt>Usado</dt><dd>${t.usos} vezes</dd><dt>Versão</dt><dd>3 · atualizado em 28/10</dd><dt>Obrigatórios</dt><dd>${(t.req||[]).map(lbl).join(', ')||'—'}</dd><dt>Layout</dt><dd>${TL.on?'Template do escritório':'Padrão'}</dd></dl>
+     <span class="label">Preenche sozinho</span><div class="pill-list">${['Número do processo','Vara e comarca','Autores e réus','Qualificação do cliente','Valor por extenso','Data por extenso','Advogado e OAB'].map(x=>`<span>${ic('check',11,3)} ${x}</span>`).join('')}</div>
+     <div class="peek-acts"><button class="btn btn-primary" data-use="${t.id}">${ic('pen',17)}Usar este modelo</button><div class="two"><button class="btn btn-outline" data-fav="${t.id}">${ic('star',15)}${t.fav?'Desfavoritar':'Favoritar'}</button><button class="btn btn-outline" data-menu="${t.id}">Mais ${ic('more',15)}</button></div></div></div></div></aside>`;
+  if(document.body.className){const fr=$('#frame').getBoundingClientRect(),pk=$('.peek'),bg=$('.peek-bg');pk.style.left=fr.left+'px';pk.style.width=fr.width+'px';pk.style.right='auto';bg.style.left=fr.left+'px';bg.style.width=fr.width+'px';}
+  applyIdentity();requestAnimationFrame(fitPeek);};
+
+/* ---------- Render ---------- */
+const _r3=render;render=function(){if(S.view==='tl'){closeMenu();renderTL();applyIdentity();return;}_r3();};
+
+/* ---------- Eventos (captura) ---------- */
+document.addEventListener('click',e=>{const g=k=>e.target.closest(k);let x;
+  if(x=g('[data-zm]')){e.stopPropagation();const d=+x.dataset.zm;S.zoom=d===0?1:Math.max(.5,Math.min(2.5,Math.round((S.zoom+d*.1)*10)/10));$$('.fz span').forEach(s=>s.textContent=Math.round(S.zoom*100)+'%');applyIdentity();return;}
+  if(x=g('[data-clsg]')){e.stopPropagation();const k=x.dataset.clsg;if(S.clsG===k&&!S.clsS){S.clsG=null;S.clsOpen=S.clsOpen===k?null:k;}else{S.clsG=k;S.clsS=null;S.clsOpen=k;}S.cat=null;S.filter='todos';render();return;}
+  if(x=g('[data-clss]')){e.stopPropagation();const k=x.dataset.clss;S.clsS=S.clsS===k?null:k;S.cat=null;S.filter='todos';render();return;}
+  if(x=g('[data-cat]')||g('[data-filter]')){S.clsG=null;S.clsS=null;}
+  if(x=g('[data-origem]')){const k=x.dataset.origem,base=BASE_OF[S.tpl.cat];if(k===S.origem){e.stopPropagation();return;}
+    const mism=k!=='manual'&&k!==base,lose=!!(S.rec||S.sel.size);if(mism||lose){e.stopPropagation();origemModal(k);return;}}
+  if(x=g('[data-clsadd-s]')){e.stopPropagation();S.clsNew={g:x.dataset.clsaddS};clsModal();return;}
+  if(x=g('[data-clsadd-t]')){e.stopPropagation();S.clsNew={s:x.dataset.clsaddT};clsModal();return;}
+  if(x=g('[data-clsedit]')){e.stopPropagation();S.clsEdit=x.dataset.clsedit;clsModal();return;}
+  if(x=g('[data-clsdel]')){e.stopPropagation();const r=subById(x.dataset.clsdel),u=usoSub(r.s.id);if(u){snack(`<b>${esc(r.s.n)}</b> tem ${u} modelo${u>1?'s':''}. Mova para outra subcategoria antes de excluir.`);return;}r.G.subs=r.G.subs.filter(s=>s!==r.s);clsModal();snack('Subcategoria excluída');return;}
+  if(x=g('[data-clsdel-t]')){e.stopPropagation();const r=tipoById(x.dataset.clsdelT),u=usoTipo(r.t.id);if(u){snack(`<b>${esc(r.t.n)}</b> está em ${u} modelo${u>1?'s':''}. Troque a classificação deles antes.`);return;}r.s.tipos=r.s.tipos.filter(t=>t!==r.t);clsModal();return;}
+  if(x=g('[data-lsel]')&&!g('[data-lhide]')&&g('[data-lsel]')){e.stopPropagation();tlSel(x.dataset.lsel);return;}
+  if(x=g('[data-lhide]')){e.stopPropagation();const b=TL.blocks.find(z=>z.id===x.dataset.lhide);b.hid=!b.hid;renderTL();applyIdentity();return;}
+  if(x=g('[data-ldel]')){e.stopPropagation();TL.blocks=TL.blocks.filter(z=>z.id!==x.dataset.ldel);S.lsel=null;renderTL();applyIdentity();snack('Elemento removido');return;}
+  if(x=g('[data-ladd]')){e.stopPropagation();const k=x.dataset.ladd,id=uid('b'),b={id,k,own:true,n:{txt:'Texto livre',campo:'Campo de dados',linha:'Linha',img:'Imagem'}[k],x:20,y:140,w:k==='img'?40:k==='linha'?170:80,h:k==='img'?30:k==='linha'?2:8,fs:10,al:'left',esp:1,txt:'Escreva aqui',fk:'cliente.nome',pre:'Cliente:'};TL.blocks.push(b);S.lsel=id;renderTL();applyIdentity();return;}
+  if(x=g('[data-lal]')){e.stopPropagation();const b=TL.blocks.find(z=>z.id===S.lsel);b.al=x.dataset.lal;tlRefresh(b);$$('.lal .opt').forEach(o=>o.classList.toggle('on',o===x));return;}
+  if(x=g('[data-lcen]')){e.stopPropagation();const b=TL.blocks.find(z=>z.id===S.lsel);b.x=snap(105-b.w/2);tlPlace(b);return;}
+  if(x=g('[data-tl]')&&!g('input[data-tl]')&&g('[data-tl]')){e.stopPropagation();const k=x.dataset.tl;
+    if(k==='on'){TL.on=!TL.on;x.classList.toggle('on',TL.on);x.setAttribute('aria-checked',TL.on);snack(TL.on?'Template ligado: as peças usam este layout':'Template desligado: as peças usam o cabeçalho padrão');return;}
+    if(k==='data'){S.tlData=!S.tlData;renderTL();applyIdentity();return;}
+    if(k==='reset'){modal('Restaurar layout padrão?','<p style="margin:0">Os elementos voltam às posições originais. Elementos que você adicionou são removidos.</p>',`<button class="btn btn-outline" data-act="peek-close">Cancelar</button><button class="btn btn-primary" data-act="tl-reset-ok">Restaurar</button>`);return;}
+    if(k==='save'){TL_SAVED=JSON.stringify(TL.blocks);snack('Template salvo: as próximas peças saem com este layout. Peças já geradas não mudam.');return;}}
+  if(x=g('[data-act]')){const a=x.dataset.act;
+    if(a==='tl-open'){e.stopPropagation();closeMenu();if(!can()){snack('Seu perfil não pode alterar o template do escritório.');return;}S.view='tl';S.lsel=null;render();window.scrollTo(0,0);return;}
+    if(a==='tl-reset-ok'){e.stopPropagation();TL.blocks=TL_DEF();S.lsel=null;closeMenu();renderTL();applyIdentity();snack('Layout padrão restaurado');return;}
+    if(a==='lib'&&S.view==='tl'&&JSON.stringify(TL.blocks)!==TL_SAVED){e.stopPropagation();modal('Sair sem salvar?','<p style="margin:0">Você mexeu no template e ainda não salvou.</p>',`<button class="btn btn-outline" data-act="tl-discard">Descartar</button><button class="btn btn-primary" data-act="tl-save-exit">Salvar e sair</button>`);return;}
+    if(a==='tl-discard'||a==='tl-save-exit'){e.stopPropagation();if(a==='tl-discard')TL.blocks=JSON.parse(TL_SAVED);else{TL_SAVED=JSON.stringify(TL.blocks);snack('Template salvo');}S.view='lib';render();return;}
+    if(a==='cls-open'){e.stopPropagation();S.clsQ='';S.clsNew=null;S.clsEdit=null;clsModal();return;}
+    if(a==='cls-done'){e.stopPropagation();closeMenu();render();return;}
+    if(a==='clear-cls'){e.stopPropagation();S.clsG=S.clsS=null;render();return;}
+    if(a==='origem-ok'){e.stopPropagation();S.origem=S.origemPend;S.rec=null;S.sel.clear();S.cad={};closeMenu();render();return;}
+    if(a==='to-rev'&&S.view==='origem'&&S.origem==='proc'){const l=partesPend().filter(p=>!p.ok&&cadOn(p));if(l.length){e.stopPropagation();cadModal(l);return;}}
+    if(a==='cad-ok'){e.stopPropagation();(S.cadList||[]).forEach((p,i)=>{const nm=($('#cn-'+i)||{}).value||p.n,doc=($('#cd-'+i)||{}).value||'';if(!isCli(nm))CLIENTES.push({id:uid('c'),t:nm,s:(doc?(pj(nm)?'CNPJ ':'CPF ')+doc+' · ':'')+'cadastrado agora'});S.cad[p.n]=false;});const n=(S.cadList||[]).length;closeMenu();goRev();snack(`${n} cliente${n>1?'s':''} cadastrado${n>1?'s':''} em Clientes`);return;}
+    if(a==='cad-skip'){e.stopPropagation();closeMenu();goRev();snack('Partes usadas só nesta peça, sem cadastro');return;}
+    if(a==='id-open'){setTimeout(()=>{const p=$('#menu-root .idside');if(p&&!p.querySelector('[data-act="tl-open"]'))p.insertAdjacentHTML('beforeend',`<button class="btn btn-outline btn-sm" data-act="tl-open">${ic('layers',14)}Mudar posições no template</button>`);});}
+    if(a==='novo'){setTimeout(()=>{const c=$('#nm-c');if(c&&!$('#nm-cls')){S.nmCls=null;c.insertAdjacentHTML('afterend',`<div style="height:12px"></div><label class="label" for="nm-cls">Classificação</label><select class="select" id="nm-cls"><option value="">Escolher depois</option>${clsOptions(null)}</select>`);}});}
+    if(a==='nm-ok'){setTimeout(()=>{const t=TPL[0];if(t&&t.novo&&!t.cls){const x=S.nmCls&&tipoById(S.nmCls);if(x)t.cls={g:x.G.g,s:x.s.id,t:x.t.id};else{const s=clsSub(GRP_OF[t.cat],'Do escritório',true);t.cls={g:GRP_OF[t.cat],s:s.id,t:clsTipo(s,t.nome,true).id};}}});}
+  }
+},true);
+document.addEventListener('change',e=>{const t=e.target;
+  if(t.matches('[data-cad]')){S.cad[t.dataset.cad]=t.checked;const y=window.scrollY;render();window.scrollTo(0,y);}
+  if(t.id==='s-cls')S.pecaCls=t.value;if(t.id==='nm-cls')S.nmCls=t.value;
+  if(t.matches('input[data-tl="grid"]')){S.lgrid=t.checked;$('#tl-a4').classList.toggle('grid',S.lgrid);}
+  if(t.matches('[data-llogo],[data-limg]')&&t.files[0]){const r=new FileReader();r.onload=()=>{if(t.matches('[data-llogo]'))TL.logo=r.result;else TL.blocks.find(z=>z.id===S.lsel).src=r.result;renderTL();applyIdentity();snack('Imagem aplicada');};r.readAsDataURL(t.files[0]);}
+  if(t.matches('select[data-lp]')){const b=TL.blocks.find(z=>z.id===S.lsel);b[t.dataset.lp]=t.value;tlRefresh(b);}});
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.id==='cls-q'){S.clsQ=t.value;const p=t.selectionStart;clsModal();const i=$('#cls-q');i.focus();i.setSelectionRange(p,p);return;}
+  if(t.matches('input[data-lp],textarea[data-lp]')){const b=TL.blocks.find(z=>z.id===S.lsel);if(!b)return;const k=t.dataset.lp;
+    if(['txt','pre','cor'].includes(k))b[k]=t.value;else if(k==='op'){b.op=+t.value/100;$('#lp-op-v').textContent=t.value+'%';}else{const n=parseFloat(t.value);if(isNaN(n))return;b[k]=k==='x'?clamp(n,0,210-b.w):k==='y'?clamp(n,0,297-b.h):k==='w'?clamp(n,2,210-b.x):k==='h'?clamp(n,1,297-b.y):clamp(n,.2,72);}
+    tlRefresh(b);}
+  if(t.matches('[data-lid]')){ID[t.dataset.lid]=t.value;TL.blocks.filter(b=>b.k===(t.dataset.lid==='rod'?'rod':'esc')||b.k==='logo'||b.k==='wm').forEach(tlRefresh);}});
+document.addEventListener('keydown',e=>{
+  if(e.target.matches('[data-clsnew]')&&e.key==='Enter'){const v=e.target.value.trim();if(v){if(S.clsNew.g)clsSub(S.clsNew.g,v,true);else clsTipo(subById(S.clsNew.s).s,v,true);snack(`<b>${esc(v)}</b> criado`);}S.clsNew=null;clsModal();e.preventDefault();return;}
+  if(e.target.matches('[data-clsren]')&&e.key==='Enter'){const v=e.target.value.trim();if(v)subById(e.target.dataset.clsren).s.n=v;S.clsEdit=null;clsModal();e.preventDefault();return;}
+  if(e.target.matches('[data-clsnew],[data-clsren]')&&e.key==='Escape'){S.clsNew=null;S.clsEdit=null;e.stopPropagation();clsModal();return;}
+  if(S.view==='tl'&&S.lsel&&e.target.closest&&e.target.closest('#tl-a4')&&e.key.startsWith('Arrow')){e.preventDefault();const b=TL.blocks.find(z=>z.id===S.lsel),d=e.shiftKey?5:1;
+    if(e.key==='ArrowLeft')b.x=clamp(b.x-d,0,210-b.w);if(e.key==='ArrowRight')b.x=clamp(b.x+d,0,210-b.w);if(e.key==='ArrowUp')b.y=clamp(b.y-d,0,297-b.h);if(e.key==='ArrowDown')b.y=clamp(b.y+d,0,297-b.h);tlPlace(b);}
+  if(e.target.matches&&e.target.matches('.le')&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tlSel(e.target.dataset.lsel);}},true);
+
 render();
 </script>
 </body>
