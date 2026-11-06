@@ -1,0 +1,43 @@
+{
+ "data": "2026-11-06",
+ "dataExibicao": "sexta, 06/11",
+ "minutos": 15,
+ "intro": "4º dia do conceito \"vazamento de assinatura\" — hoje UMA pergunta guia tudo: esse Observable termina sozinho ou fica vivo para sempre? (Se o treino de ontem ainda estiver aberto, pode responder os dois: eles se completam.)",
+ "feedbackAnterior": "<p><b>Treino de 05/11:</b> ainda não respondido — sem problema, ele continua no portal. Hoje o assunto é o mesmo, mas visto por outro lado: em vez de contar logs do BehaviorSubject, você vai separar o que <b>termina sozinho</b> do que <b>nunca termina</b>.</p>",
+ "aula": "<p><b>A ideia do dia:</b> o <code>subscribe</code> fica ouvindo até o Observable <b>terminar</b> (completar). Fechar a tela <b>não</b> é terminar. Então a única pergunta que importa é: <b>ele termina sozinho?</b></p><p>Analogia: o HTTP é um <b>motoboy</b> — entrega o pedido uma vez e vai embora. O Subject do serviço é um <b>rádio ligado</b> — continua tocando mesmo depois que você saiu da sala. Se você não desligar, cada vez que entrar na sala liga mais um rádio.</p><table><tr><th>Observable</th><th>Termina sozinho?</th><th>Precisa de takeUntilDestroyed?</th></tr><tr><td><code>this.http.get(...)</code></td><td>✅ sim, depois da resposta</td><td>não obrigatório (mas não faz mal)</td></tr><tr><td><code>Subject</code> / <code>BehaviorSubject</code> de serviço root</td><td>❌ nunca</td><td><b>sim</b></td></tr><tr><td><code>interval(1000)</code></td><td>❌ nunca</td><td><b>sim</b></td></tr><tr><td><code>form.valueChanges</code> / hub SignalR</td><td>❌ não</td><td><b>sim</b></td></tr></table><pre>// motoboy: 1 log e acabou\nthis.http.get('/api/clientes').subscribe(c =&gt; console.log('chegou'));\n\n// rádio: loga para sempre, mesmo com a tela fechada\ninterval(1000).subscribe(n =&gt; console.log('tick ' + n));\n\n// rádio com botão de desligar: para quando a tela fecha\ninterval(1000)\n  .pipe(takeUntilDestroyed(this.destroyRef))\n  .subscribe(n =&gt; console.log('tick ' + n));</pre><p><b>Atalho que já desliga sozinho:</b> o <code>| async</code> no HTML. Ele assina quando a tela abre e cancela quando a tela fecha — você não escreve <code>subscribe</code> nenhum.</p><pre>// .ts\nnaoLidas$ = this.chatService.naoLidas$;\n\n&lt;!-- .html --&gt;\n&lt;span&gt;{{ naoLidas$ | async }}&lt;/span&gt;</pre><p><b>Erro mais comum:</b> achar que \"ter .subscribe\" ou \"fechar a tela\" faz terminar. Não faz. Quem termina é o próprio Observable (HTTP) ou o seu botão de desligar (takeUntilDestroyed / | async).</p>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "Vazamento de assinatura",
+   "tipo": "Leitura (contar logs)",
+   "enunciado": "O usuário abre a tela de Documentos, espera 3 segundos e fecha. Depois espera mais 2 segundos com a tela fechada. Quantas vezes aparece 'HTTP: chegou' e quantas vezes aparece 'tick' no console NO TOTAL? Responda só: HTTP = __ vezes | tick = __ vezes (e 1 frase do porquê).",
+   "codigo": "// DocumentosComponent\nngOnInit(): void {\n  this.documentoService.listar().subscribe(docs => {\n    // listar() faz this.http.get(...) e a resposta chega na hora\n    console.log('HTTP: chegou');\n    this.documentos = docs;\n  });\n\n  interval(1000).subscribe(n => {\n    console.log('tick ' + n);\n  });\n}",
+   "gabarito": "HTTP = 1 vez | tick = 5 vezes (tick 0, 1, 2 com a tela aberta e tick 3, 4 com ela fechada). O HTTP termina sozinho depois da resposta; o interval nunca termina e não tem takeUntilDestroyed, então continua depois de fechar.",
+   "explicacao": "Se responder tick = 3, ainda acha que fechar a tela cancela (erro do conceito). Aceitar 4–5 se explicar que continua depois de fechar (contagem exata é detalhe). Ponto-chave: HTTP 1 vez + tick continua depois de fechar."
+  },
+  {
+   "id": "q2",
+   "tema": "Vazamento de assinatura",
+   "tipo": "Ache o bug (escolha)",
+   "enunciado": "Três telas do elawadv. Só UMA vaza (continua ouvindo depois de fechada). Qual? Escolha e diga em 1 frase o porquê usando a tabela 'termina sozinho?'.",
+   "codigo": "// A) ClienteDetalheComponent\nthis.clienteService.obter(id).subscribe(c => this.cliente = c);   // http.get\n\n// B) ChatComponent\nthis.chatHub.novaMensagem$     // Subject do serviço root\n  .pipe(takeUntilDestroyed(this.destroyRef))\n  .subscribe(m => this.mensagens.push(m));\n\n// C) FiltroComponent\nthis.form.get('busca')!.valueChanges.subscribe(texto => {\n  this.filtroService.buscar(texto);\n});",
+   "opcoes": [
+    "A — o subscribe do HTTP nunca é cancelado",
+    "B — o Subject do chat nunca termina",
+    "C — o valueChanges do formulário não termina sozinho e está sem takeUntilDestroyed",
+    "Nenhuma vaza, porque todas têm subscribe"
+   ],
+   "gabarito": "C. valueChanges não termina sozinho e não tem botão de desligar. A é HTTP (motoboy: termina depois da resposta). B tem takeUntilDestroyed, então desliga quando a tela fecha.",
+   "explicacao": "A é a armadilha clássica dele (marcar o HTTP). B testa se ele entende que takeUntilDestroyed resolve mesmo com Subject. D é o erro 'ter subscribe = termina'. Aceitar C com motivo 'não termina sozinho/falta takeUntilDestroyed'."
+  },
+  {
+   "id": "q3",
+   "tema": "async pipe",
+   "tipo": "Complete as lacunas",
+   "enunciado": "Hoje o contador de não lidas usa subscribe e vaza. Copie a versão nova e troque os 2 ____ para usar o | async (sem nenhum subscribe).",
+   "codigo": "// ANTES (vaza)\nngOnInit(): void {\n  this.chatService.naoLidas$.subscribe(total => this.naoLidas = total);\n}\n// <span>{{ naoLidas }}</span>\n\n// DEPOIS (.ts) — sem ngOnInit, sem subscribe\nnaoLidas$ = this.chatService.____;\n\n// DEPOIS (.html)\n<span>{{ naoLidas$ | ____ }}</span>",
+   "gabarito": "naoLidas$ = this.chatService.naoLidas$;\n<span>{{ naoLidas$ | async }}</span>",
+   "explicacao": "2 lacunas: naoLidas$ (passar o Observable, não o valor) e async. Se escrever o subscribe de novo, não entendeu que o | async assina e cancela sozinho. Acertando q1 (tick continua) + q2 (C) + q3, conta como acerto do conceito."
+  }
+ ]
+}
