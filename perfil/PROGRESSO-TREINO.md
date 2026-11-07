@@ -21,7 +21,7 @@
 | RxJS pipe + map/filter/tap | 2 | Confortável |
 | RxJS switchMap/combineLatest/forkJoin/debounce/takeUntil | 0 | 29/10: trocou forkJoin por 2 subscribes soltos; ainda não lê forkJoin + map |
 | Signals / async pipe | 1 | Usa variáveis + subscribe |
-| Unsubscribe / takeUntilDestroyed (memory leak) | 2 | 29/10 (4º round): ainda acha que ter subscribe = termina sozinho; disse que interval termina sozinho |
+| Unsubscribe / takeUntilDestroyed (memory leak) | 2 | 05/11: explicou sozinho que o Subject não termina e precisa cancelar; falta decorar inject(DestroyRef) |
 | Lógica no template × componente | 2 | Template simples |
 | Constantes × valores mágicos | 2 | 29/10: viu os 3 lugares, o risco e que o dono é o back; faltou escrever 25 * 1024 * 1024 |
 
@@ -36,7 +36,7 @@
 | Data | Acertos | Temas | Observações |
 |---|---|---|---|
 | 2026-11-06 | (aguardando respostas) | Vazamento de assinatura — 4º dia (ângulo: 'termina sozinho?' + async pipe) | Sem penalidade pelo 05/11. q1 contar logs HTTP × interval, q2 escolha entre 3 telas (valueChanges vaza), q3 lacunas do | async. |
-| 2026-11-05 | não respondido (mantido no portal) | BehaviorSubject (último valor ao assinar) + vazamento — 3º dia | Aula com uma ideia só; q1 tabela de 5 passos, q2 escolha (Subject do chat, som 3x), q3 completar 3 lacunas (inject, pipe, destroyRef). |
+| 2026-11-05 | ~1,7/3 (q1 ✗, q2 ✓, q3 ⅔) — respondido em 06/11 | BehaviorSubject + vazamento — 3º dia | EVOLUÇÃO (0,75 → 1,7). q2: escolheu B com o motivo certo nas próprias palavras ('o Subject não termina sozinho') — 1ª vez que explica o vazamento sem ajuda. q3: acertou pipe e destroyRef, não lembrou do inject. q1: disse que não entendeu o enunciado (tabela de passos confusa) → nos próximos, enunciado com exemplo preenchido do 1º passo. Conceito 1 ainda não fechado (q1 BehaviorSubject sem resposta). |
 | 2026-11-04 | ~0,75/3 (q1 ✗, q2 ¼, q3 ½) | Vazamento: BehaviorSubject + async pipe (2º dia) | Não fechou o conceito. Disse que não sabe a q1 e não entendeu a q2 (chutou B, certo, sem motivo). Na q3 descreveu a posição certa (destroyRef no topo, pipe antes do subscribe) mas não escreveu o código. Lacuna nova: o que é BehaviorSubject (entrega o valor atual ao assinar) e o que o async pipe faz. Próximo: 3º dia no mesmo conceito, aula com UMA ideia (BehaviorSubject = 'já entrega a última edição'), exercício só de contar logs passo a passo com tabela pronta para preencher, e q3 pedindo para COPIAR e completar um código com lacunas (não escrever do zero). |
 | 2026-11-03 | ~2,4/3 (≈80%) — 1º treino no formato aula + exercício | Vazamento de assinatura (takeUntilDestroyed) | MELHOR RESULTADO. Entendeu que o interval continua depois de fechar a tela (errou só a numeração: pulou o tick 3). Acertou que o 2º (Subject) vaza; faltou dizer que o HTTP termina sozinho. Escreveu o pipe(takeUntilDestroyed) certo, mas esqueceu a linha private destroyRef = inject(DestroyRef). Conceito 1 = 1º acerto; repetir mais 1 dia (regra: 2 seguidos) com variação (BehaviorSubject/valueChanges + async pipe). |
 | 2026-11-02 | ~1,8/5 (q1 ≈✓, q2 ✗, q3 ¼, q4 ½, q5 ¼) | Task.WhenAll, unsubscribe (6º), First×FirstOrDefault, índice composto, ?./?? | EVOLUÇÃO no WhenAll (acertou paralelo + valores; faltou ~500 ms). Disse que não entende o conceito de "vazar" → causa raiz dos 6 rounds errados. Escolheu índice B certo, sem COLLSCAN. Na tradução do ?? devolveu o Nome quando Apelido != null (lógica invertida). |
