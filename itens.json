@@ -1,70 +1,70 @@
 {
- "atualizado": "2026-11-09T09:30",
- "itens": [
-  {
-   "id": "pendencias",
-   "tipo": "prompt",
-   "projeto": "elaw adv · Documentos",
-   "titulo": "PENDÊNCIAS — Documentos",
-   "data": "2026-10-29T10:09",
-   "arquivo": "pendencias/PENDENCIAS.txt",
-   "fixo": true
-  },
-  {
-   "id": "gerador-pecas-mock",
-   "tipo": "artefato",
-   "projeto": "elaw adv · Gerador de peças",
-   "titulo": "Mock — Gerador de peças (template por arraste, drawer largo, classificações)",
-   "data": "2026-11-06T17:40",
-   "arquivo": "artefatos/gerador-pecas-mock.html",
-   "fixo": true
-  },
-  {
-   "id": "documentos-mock",
-   "tipo": "artefato",
-   "projeto": "elaw adv · Documentos",
-   "titulo": "Mock — Documentos (lista de categorias dentro do card de armazenamento)",
-   "data": "2026-11-05T17:45",
-   "arquivo": "artefatos/documentos-mock.html",
-   "principal": true,
-   "fixo": true
-  },
-  {
-   "id": "perfil-codigo",
-   "tipo": "prompt",
-   "fixo": true,
-   "projeto": "Jeziel · Perfil",
-   "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
-   "data": "2026-10-23T11:50:00-03:00",
-   "arquivo": "perfil/PERFIL-DE-CODIGO.md"
-  },
-  {
-   "id": "documentos-lista-card-armazenamento",
-   "tipo": "prompt",
-   "projeto": "elaw adv · Documentos",
-   "titulo": "Prompt — Lista de categorias dentro do card de armazenamento",
-   "data": "2026-11-05T17:50",
-   "arquivo": "prompts/documentos-lista-no-card-armazenamento.txt"
-  },
-  {
-   "id": "treino-2026-11-06",
-   "tipo": "artefato",
-   "treino": true,
-   "fixo": true,
-   "projeto": "Jeziel · Treino",
-   "titulo": "Treino de sexta, 06/11 — 3 perguntas",
-   "data": "2026-11-06T09:25:00-03:00",
-   "arquivo": "treino/index.html?d=2026-11-06"
-  },
-  {
-   "id": "treino-2026-11-09",
-   "tipo": "artefato",
-   "treino": true,
-   "fixo": true,
-   "projeto": "Jeziel · Treino",
-   "titulo": "Treino de segunda, 09/11 — 3 perguntas",
-   "data": "2026-11-09T09:30:00-03:00",
-   "arquivo": "treino/index.html?d=2026-11-09"
-  }
- ]
+  "atualizado": "2026-11-09T14:50",
+  "itens": [
+    {
+      "id": "pendencias",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "PENDÊNCIAS — Documentos",
+      "data": "2026-10-29T10:09",
+      "arquivo": "pendencias/PENDENCIAS.txt",
+      "fixo": true
+    },
+    {
+      "id": "gerador-pecas-mock",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Mock — Gerador de peças (template por arraste, drawer largo, classificações)",
+      "data": "2026-11-09T14:50",
+      "arquivo": "artefatos/gerador-pecas-mock.html",
+      "fixo": true
+    },
+    {
+      "id": "documentos-mock",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Mock — Documentos (lista de categorias dentro do card de armazenamento)",
+      "data": "2026-11-05T17:45",
+      "arquivo": "artefatos/documentos-mock.html",
+      "principal": true,
+      "fixo": true
+    },
+    {
+      "id": "perfil-codigo",
+      "tipo": "prompt",
+      "fixo": true,
+      "projeto": "Jeziel · Perfil",
+      "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
+      "data": "2026-10-23T11:50:00-03:00",
+      "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    },
+    {
+      "id": "documentos-lista-card-armazenamento",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Prompt — Lista de categorias dentro do card de armazenamento",
+      "data": "2026-11-05T17:50",
+      "arquivo": "prompts/documentos-lista-no-card-armazenamento.txt"
+    },
+    {
+      "id": "treino-2026-11-06",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de sexta, 06/11 — 3 perguntas",
+      "data": "2026-11-06T09:25:00-03:00",
+      "arquivo": "treino/index.html?d=2026-11-06"
+    },
+    {
+      "id": "treino-2026-11-09",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de segunda, 09/11 — 3 perguntas",
+      "data": "2026-11-09T09:30:00-03:00",
+      "arquivo": "treino/index.html?d=2026-11-09"
+    }
+  ]
 }

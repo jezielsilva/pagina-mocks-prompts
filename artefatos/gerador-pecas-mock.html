@@ -521,6 +521,17 @@ body.m .peek-f .btn-outline{height:44px}
 .up-btn{cursor:pointer;align-self:flex-start;margin-top:6px}
 @container app (max-width:1180px){.tl-ed{grid-template-columns:220px minmax(0,1fr)}.tl-r{grid-column:1/-1;position:static;max-height:none}}
 @container app (max-width:760px){.tl-ed{grid-template-columns:1fr}.tl-l{position:static;max-height:none}.tl-scroll{max-height:none;padding:22px 10px}}
+
+/* ===== v4 (09/11): sem coluna esquerda, tudo na direita ===== */
+.lay.nos{grid-template-columns:minmax(0,1fr) 300px}
+.lay.nos>.side{display:none}
+@container app (max-width:1180px){.lay.nos>.rcol{display:flex}.lay.nos .store-top{display:none}}
+@container app (max-width:900px){.lay.nos{grid-template-columns:1fr}.lay.nos>.rcol{display:none}.lay.nos .store-top{display:flex}}
+.rcol .newbtn{height:46px;width:100%}
+.rcol .clscard{padding:8px!important}.rcol .clscard .cls-entry{border:0;padding:8px}
+.rcol .clscard .cnav{border-top:1px solid var(--border);margin-top:4px;padding-top:6px}
+.rcol .nav hr{border:0;border-top:1px solid var(--border);margin:6px 4px}
+.peek .rside{display:flex;flex-direction:column;gap:12px}
 </style>
 </head>
 <body>
@@ -1201,6 +1212,17 @@ document.addEventListener('keydown',e=>{
   if(S.view==='tl'&&S.lsel&&e.target.closest&&e.target.closest('#tl-a4')&&e.key.startsWith('Arrow')){e.preventDefault();const b=TL.blocks.find(z=>z.id===S.lsel),d=e.shiftKey?5:1;
     if(e.key==='ArrowLeft')b.x=clamp(b.x-d,0,210-b.w);if(e.key==='ArrowRight')b.x=clamp(b.x+d,0,210-b.w);if(e.key==='ArrowUp')b.y=clamp(b.y-d,0,297-b.h);if(e.key==='ArrowDown')b.y=clamp(b.y+d,0,297-b.h);tlPlace(b);}
   if(e.target.matches&&e.target.matches('.le')&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tlSel(e.target.dataset.lsel);}},true);
+
+/* ---------- v4: coluna da esquerda vai para a direita (mais espaço para as peças) ---------- */
+function filtrosHTML(){const f=S.filter,on=k=>f===k&&!S.cat&&!S.clsG?'on':'',b=(k,i,l,n)=>`<button class="${on(k)}" data-filter="${k}">${ic(i,16)}${l}<span class="n">${n}</span></button>`;
+  return b('todos','layers','Todos os modelos',TPL.length)+b('mais','chart','Mais usados','')+b('fav','star','Favoritos',TPL.filter(t=>t.fav).length)+b('esc','users','Do escritório',TPL.filter(t=>t.esc).length)+b('sis','lock','Do sistema',TPL.filter(t=>!t.esc).length)+'<hr>';}
+const _rl4=renderLib;renderLib=function(){_rl4();const lay=$('.lay'),rc=$('.rcol'),st=rc&&rc.querySelector('.store');if(!lay||!st)return;lay.classList.add('nos');
+  st.insertAdjacentHTML('beforebegin',`<button class="btn btn-primary newbtn" data-act="novo">${ic('plus',16)}Novo modelo</button>`);
+  const ce=$('.side .cls-entry');const tree=$('.side .cnav');st.insertAdjacentHTML('afterend',`<div class="card clscard"></div>`);const cc=rc.querySelector('.clscard');if(ce)cc.appendChild(ce);if(tree)cc.appendChild(tree);
+  const nv=rc.querySelector('.card .nav [data-act="id-open"]');if(nv)nv.parentElement.insertAdjacentHTML('afterbegin',filtrosHTML());
+  if(!can())$$('.rcol [data-act="novo"]').forEach(b=>{b.disabled=true;b.title='Seu perfil não pode criar modelos';});};
+document.addEventListener('click',e=>{const x=e.target.closest('[data-act="side-toggle"]');if(!x)return;e.stopPropagation();const rc=$('.rcol');if(!rc)return;
+  if(getComputedStyle(rc).display==='none'){const fr=$('#frame').getBoundingClientRect();$('#menu-root').innerHTML=`<div class="peek-bg" data-act="peek-close" style="left:${fr.left}px;width:${fr.width}px"></div><aside class="peek rside" style="left:${fr.left}px;right:auto;width:${Math.min(320,fr.width-40)}px;padding:16px;overflow:auto">${rc.innerHTML}</aside>`;}else rc.scrollIntoView({behavior:'smooth'});},true);
 
 render();
 </script>
