@@ -522,6 +522,9 @@ body.m .peek-f .btn-outline{height:44px}
 @container app (max-width:1180px){.tl-ed{grid-template-columns:220px minmax(0,1fr)}.tl-r{grid-column:1/-1;position:static;max-height:none}}
 @container app (max-width:760px){.tl-ed{grid-template-columns:1fr}.tl-l{position:static;max-height:none}.tl-scroll{max-height:none;padding:22px 10px}}
 
+/* ===== v4b ===== */
+.vrow{display:flex;justify-content:flex-start;padding:16px 16px 0}
+.vrow+.mhead{padding-top:10px}
 /* ===== v4 (09/11): sem coluna esquerda, tudo na direita ===== */
 .lay.nos{grid-template-columns:minmax(0,1fr) 300px}
 .lay.nos>.side{display:none}
@@ -1220,6 +1223,8 @@ const _rl4=renderLib;renderLib=function(){_rl4();const lay=$('.lay'),rc=$('.rcol
   st.insertAdjacentHTML('beforebegin',`<button class="btn btn-primary newbtn" data-act="novo">${ic('plus',16)}Novo modelo</button>`);
   const ce=$('.side .cls-entry');const tree=$('.side .cnav');st.insertAdjacentHTML('afterend',`<div class="card clscard"></div>`);const cc=rc.querySelector('.clscard');if(ce)cc.appendChild(ce);
   const nv=rc.querySelector('.card .nav [data-act="id-open"]');if(nv)nv.parentElement.insertAdjacentHTML('afterbegin',filtrosHTML());
+  const cr=$('.crumb'),mh=$('.mhead'),sg=mh&&mh.querySelector('.seg');if(cr){const lp=cr.querySelector('[data-act="clear-cat"],[data-act="clear-cls"]');if(lp&&mh)mh.querySelector('h1').insertAdjacentElement('afterend',lp);cr.remove();}
+  if(sg){mh.insertAdjacentHTML('beforebegin','<div class="vrow"></div>');mh.previousElementSibling.appendChild(sg);}
   if(!can())$$('.rcol [data-act="novo"]').forEach(b=>{b.disabled=true;b.title='Seu perfil não pode criar modelos';});};
 document.addEventListener('click',e=>{const x=e.target.closest('[data-act="side-toggle"]');if(!x)return;e.stopPropagation();const rc=$('.rcol');if(!rc)return;
   if(getComputedStyle(rc).display==='none'){const fr=$('#frame').getBoundingClientRect();$('#menu-root').innerHTML=`<div class="peek-bg" data-act="peek-close" style="left:${fr.left}px;width:${fr.width}px"></div><aside class="peek rside" style="left:${fr.left}px;right:auto;width:${Math.min(320,fr.width-40)}px;padding:16px;overflow:auto">${rc.innerHTML}</aside>`;}else rc.scrollIntoView({behavior:'smooth'});},true);
