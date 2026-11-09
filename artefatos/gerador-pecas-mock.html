@@ -1218,7 +1218,7 @@ function filtrosHTML(){const f=S.filter,on=k=>f===k&&!S.cat&&!S.clsG?'on':'',b=(
   return b('todos','layers','Todos os modelos',TPL.length)+b('mais','chart','Mais usados','')+b('fav','star','Favoritos',TPL.filter(t=>t.fav).length)+b('esc','users','Do escritório',TPL.filter(t=>t.esc).length)+b('sis','lock','Do sistema',TPL.filter(t=>!t.esc).length)+'<hr>';}
 const _rl4=renderLib;renderLib=function(){_rl4();const lay=$('.lay'),rc=$('.rcol'),st=rc&&rc.querySelector('.store');if(!lay||!st)return;lay.classList.add('nos');
   st.insertAdjacentHTML('beforebegin',`<button class="btn btn-primary newbtn" data-act="novo">${ic('plus',16)}Novo modelo</button>`);
-  const ce=$('.side .cls-entry');const tree=$('.side .cnav');st.insertAdjacentHTML('afterend',`<div class="card clscard"></div>`);const cc=rc.querySelector('.clscard');if(ce)cc.appendChild(ce);if(tree)cc.appendChild(tree);
+  const ce=$('.side .cls-entry');const tree=$('.side .cnav');st.insertAdjacentHTML('afterend',`<div class="card clscard"></div>`);const cc=rc.querySelector('.clscard');if(ce)cc.appendChild(ce);
   const nv=rc.querySelector('.card .nav [data-act="id-open"]');if(nv)nv.parentElement.insertAdjacentHTML('afterbegin',filtrosHTML());
   if(!can())$$('.rcol [data-act="novo"]').forEach(b=>{b.disabled=true;b.title='Seu perfil não pode criar modelos';});};
 document.addEventListener('click',e=>{const x=e.target.closest('[data-act="side-toggle"]');if(!x)return;e.stopPropagation();const rc=$('.rcol');if(!rc)return;
