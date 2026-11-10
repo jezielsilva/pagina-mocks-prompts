@@ -1,0 +1,83 @@
+PROMPT — Gerador de peças: auditoria geral do back-end (SÓ ANÁLISE, não alterar código)
+
+CONTEXTO
+O back do Gerador de peças já tem o núcleo de geração (consultar modelos → preencher/revisar → gerar Word/PDF → salvar em Documentos) e acabou de receber a contagem de usos e os favoritos. Antes de eu partir para o front, quero um check geral do que existe.
+IMPORTANTE: se a tarefa de usos/favoritos ainda estiver em andamento, termine-a primeiro e só depois rode esta auditoria, já contando com ela.
+
+O QUE VOCÊ NÃO FAZ NESTA TAREFA
+- NÃO altera, cria ou apaga código. NÃO cria nem roda testes. NÃO mexe no banco.
+- Classificações estão FORA desta análise (ficam em outra branch, a de Documentos). Não aponte a ausência delas como pendência.
+- Modelos iniciais do sistema (os textos) também estão fora: aguardam meu conteúdo.
+
+O QUE ANALISAR (4 partes)
+
+PARTE 1 — Cobertura funcional do back
+Para cada item abaixo, diga: FEITO / PARCIAL / FALTA, com o arquivo e o método onde está (ou onde deveria estar) e, se PARCIAL, o que falta exatamente.
+
+Fase 1 (precisa estar fechada para o front começar):
+ 1. Listar modelos para a biblioteca (dados para grade e lista).
+ 2. Busca por nome e por conteúdo do modelo.
+ 3. Filtros: todos, mais usados, favoritos, do escritório.
+ 4. Filtro por tipo de peça.
+ 5. Favoritar / desfavoritar por usuário.
+ 6. Contagem de usos: soma só após geração confirmada, sem contar de novo em repetições.
+ 7. Dados do modelo para a pré-visualização: origem recomendada (processo ou cliente), usos, versão, campos obrigatórios, campos que preenchem sozinhos.
+ 8. Origem dos dados: processo, cliente, fornecedor ou preenchimento manual; busca e seleção do registro.
+ 9. Partes do processo: devolver autores e réus com a indicação "já é cliente".
+10. Cadastro rápido de parte como cliente (nome, pessoa física/jurídica, CPF/CNPJ com validação), usando o serviço de Clientes que já existe.
+11. Origem diferente da recomendada: o back informa quais campos ficam sem dado.
+12. Preenchimento das chaves a partir da origem + dados do escritório + advogado logado.
+13. Formatação: CPF/CNPJ, número CNJ, valor em R$ e por extenso, data por extenso, listas "A, B e C", plural ("o réu / os réus"). Gênero: só relate o estado atual (sei que depende de definirmos os dados).
+14. Campos obrigatórios: geração recusada se faltar; não obrigatórios vazios voltam marcados.
+15. Pré-visualização em HTML montada pelo back.
+16. Geração de .docx e de .pdf a partir do mesmo conteúdo.
+17. Salvar em Documentos: nome do arquivo, pasta de destino, vínculo com o registro, conta no armazenamento.
+18. Download da peça gerada (.docx / .pdf).
+19. Download do modelo em branco, separado da geração preenchida.
+20. Log das operações (geração) no log do módulo.
+
+Fases 2 e 3 (só inventário, não é para cobrar agora): diga o que JÁ existe de cada uma — modelos do escritório (criar, duplicar, editar, excluir), versões, blocos reutilizáveis, identidade e layout da folha, permissões, lote, rascunhos, aprovação, tarefa, chat, duplicar para outro processo.
+
+PARTE 2 — Aderência às regras do projeto
+Confira e aponte cada desvio com arquivo + método:
+- Front "burro": toda regra está no back? Existe regra que só funciona se o front mandar certo?
+- Nenhum controller novo: os endpoints entraram em controllers que já existiam?
+- Camadas Controller → Business → Repository respeitadas (controller sem regra, repository sem regra).
+- Banco: nenhuma migration, índice ou script criado.
+- Bibliotecas: só o que já estava instalado ou licença gratuita não-AGPL. Liste qualquer pacote novo com nome, versão e licença.
+- Permissão e escritório (tenant) validados no back em todo endpoint.
+- Erro de negócio devolvido com objeto de resultado (não exceção solta).
+- Nada de testes criados.
+
+PARTE 3 — Aderência ao meu estilo de código
+Compare o código do gerador com o bloco abaixo. Para cada regra: OK / DESVIO, com até 3 exemplos (arquivo + método + trecho curto) e como ficaria no meu estilo. Não corrija, só mostre.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
+
+PARTE 4 — Riscos e próximo passo
+- Riscos que você viu lendo o código (ex.: contagem de usos duplicando, arquivo salvo sem vínculo, endpoint sem checar escritório, geração pesada sem limite). Só o que você confirmou no código, sem suposição.
+- Contrato para o front: lista dos endpoints do gerador com verbo, o que recebe e o que devolve (formato resumido). É o que eu vou usar para começar o front.
+- Veredito: "PODE IR PARA O FRONT" ou "AINDA FALTA NO BACK", com a lista ordenada do que falta (o que trava o front primeiro).
+
+MODO DE EXECUÇÃO (um passo por vez)
+1. Localize todos os arquivos do gerador no back e me mostre a lista. Espere meu OK.
+2. Parte 1. Entregue e espere meu OK.
+3. Parte 2. Entregue e espere meu OK.
+4. Parte 3. Entregue e espere meu OK.
+5. Parte 4 com o veredito.
+Se o contexto estiver acabando, pare no fim de uma parte e avise onde parou.
+
+FORMATO DA ENTREGA
+- Tabelas curtas: item | situação | onde está | o que falta.
+- Sem elogio e sem resumo do que está certo: foque no que é PARCIAL, FALTA ou DESVIO.
+- Seção "Explicações" no fim: para cada desvio ou risco importante, o que é, por que importa e como eu confiro no código (onde pôr o breakpoint).

@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-09T15:15",
+  "atualizado": "2026-11-10T06:55",
   "itens": [
     {
       "id": "pendencias",
@@ -39,14 +39,6 @@
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
     },
     {
-      "id": "documentos-lista-card-armazenamento",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Documentos",
-      "titulo": "Prompt — Lista de categorias dentro do card de armazenamento",
-      "data": "2026-11-05T17:50",
-      "arquivo": "prompts/documentos-lista-no-card-armazenamento.txt"
-    },
-    {
       "id": "treino-2026-11-06",
       "tipo": "artefato",
       "treino": true,
@@ -65,6 +57,14 @@
       "titulo": "Treino de segunda, 09/11 — 3 perguntas",
       "data": "2026-11-09T09:30:00-03:00",
       "arquivo": "treino/index.html?d=2026-11-09"
+    },
+    {
+      "id": "gerador-auditoria-back",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Prompt — Auditoria geral do back do Gerador (só análise)",
+      "data": "2026-11-10T06:55",
+      "arquivo": "prompts/gerador-auditoria-back.txt"
     }
   ]
 }
