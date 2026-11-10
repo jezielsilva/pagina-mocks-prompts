@@ -542,6 +542,51 @@ body.m .peek-f .btn-outline{height:44px}
 .rcol .clscard .cnav{border-top:1px solid var(--border);margin-top:4px;padding-top:6px}
 .rcol .nav hr{border:0;border-top:1px solid var(--border);margin:6px 4px}
 .peek .rside{display:flex;flex-direction:column;gap:12px}
+/* ===== v5: modal de Classificações (igual a Documentos) ===== */
+.cx-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:-4px 0 14px}
+.cx-tabs button{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:0;background:none;cursor:pointer;font:600 14px var(--font-body);color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px}
+.cx-tabs button.on{color:var(--color-primary-dark);border-bottom-color:var(--color-primary)}
+.cx-tool{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.cx-search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid var(--border);border-radius:999px;color:var(--s500)}
+.cx-search input{border:0;outline:0;flex:1;font:14px var(--font-body);background:none;color:var(--text)}
+.cx-sum{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--s700);padding:10px 14px;border-radius:12px;background:var(--s50);margin-bottom:14px}.cx-sum span{display:inline-flex;align-items:center;gap:6px}
+.cx-grid{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px;align-items:start}
+.cx-nav{display:flex;flex-direction:column;gap:6px;position:sticky;top:0}
+.cx-cat{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:14px;background:#fff;cursor:pointer;font:13px var(--font-body);color:var(--text)}
+.cx-cat b{font-size:14px}.cx-cat.on{border-color:var(--color-primary);background:var(--color-primary-lightest)}
+.cx-ico{width:30px;height:30px;border-radius:9px;background:var(--color-primary-lightest);color:var(--color-primary);display:grid;place-items:center;flex-shrink:0}.cx-ico.big{width:40px;height:40px;border-radius:12px}
+.cx-main-h{display:flex;align-items:center;gap:12px;margin-bottom:12px}.cx-title{margin:0;font:700 18px var(--font-head)}
+.cx-sec{font:700 11px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--s500);margin:12px 0 6px}
+.cx-sub{border:1px solid var(--border);border-radius:14px;margin-bottom:8px;background:#fff;overflow:hidden}.cx-sub.is-open{border-color:var(--s300)}
+.cx-sub-h{display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;border:0;background:none;cursor:pointer;font:14px var(--font-body);color:var(--text)}
+.cx-mini{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;color:var(--s500)}.cx-mini:hover{background:var(--s100)}
+.cx-sub-b{display:flex;flex-direction:column;border-top:1px solid var(--s100);padding:6px}
+.cx-tipo{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;min-height:44px}
+.cx-tipo[data-cxopen]:hover{background:var(--color-primary-lightest)}.cx-tipo[data-cxopen]:focus-visible{outline:2px solid var(--color-primary)}
+.cx-tipo.is-off{opacity:.6}.cx-tipo.cx-warn{background:var(--color-warning-lightest);cursor:default;flex-wrap:wrap}
+.cx-tipo-n{flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px}
+.cx-doc{width:26px;height:26px;border-radius:7px;background:var(--s100);display:grid;place-items:center;color:var(--s700)}
+.cx-meta{font-size:12.5px;color:var(--text2);white-space:nowrap}.cx-new{display:inline-flex;align-items:center;gap:4px;color:var(--color-primary-dark);font-weight:600}
+.cx-acts{display:flex;align-items:center;gap:6px}.cx-go{color:var(--s400);display:flex}
+.cx-lock{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--s500)}
+.cx-danger{color:var(--color-negative-dark)!important}.btn-danger{background:var(--color-negative);color:#fff;border:0}
+.cx-b{font:600 11px var(--font-body);padding:2px 8px;border-radius:999px}.cx-b-info{background:var(--color-info-lightest);color:var(--color-info-dark)}.cx-b-warn{background:var(--color-warning-lightest);color:var(--color-warning-dark)}
+.cx-link{border:0;background:none;color:var(--color-primary-dark);font:600 13px var(--font-body);cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:8px 10px;align-self:flex-start}
+.cx-form{border:1px solid var(--color-primary);border-radius:14px;padding:14px;margin-bottom:14px;background:var(--color-primary-lightest)}
+.cx-form-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.cx-start{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cx-opt{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:#fff;cursor:pointer}
+.cx-opt b{display:block;font-size:13.5px}.cx-opt small{display:block;font-size:12px;color:var(--text2);margin-top:2px}.cx-opt input{margin-top:3px;accent-color:var(--color-primary)}
+.cx-opt:has(input:checked){border-color:var(--color-primary)}
+.cx-logs{display:flex;flex-direction:column;gap:4px}.cx-log{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--s100);border-radius:12px;font-size:13.5px}
+.cx-tb .tbs{display:flex;gap:2px;flex-wrap:wrap}
+.cx-a4{outline:none;cursor:text}.cx-a4:focus{box-shadow:0 0 0 2px var(--color-primary)}
+.cx-a4:has(> p:only-child > br:only-child)::before{content:attr(data-ph);position:absolute;color:var(--s400);font-style:italic;pointer-events:none}
+.cx-a4{position:relative}
+.cx-fields{display:flex;flex-direction:column;gap:2px;max-height:36vh;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:6px}
+.cx-fg{font:700 11px var(--font-body);text-transform:uppercase;letter-spacing:.05em;color:var(--s500);padding:8px 6px 2px}
+.cx-f{display:flex;align-items:center;gap:8px;border:0;background:none;padding:6px 8px;border-radius:8px;cursor:pointer;font:13px var(--font-body);color:var(--text);text-align:left}.cx-f:hover{background:var(--color-primary-lightest)}
+@media (max-width:900px){.cx-grid{grid-template-columns:1fr}.cx-nav{position:static;flex-direction:row;overflow:auto}.cx-cat{min-width:220px}.cx-form-g,.cx-start{grid-template-columns:1fr}}
+body.t .cx-grid,body.m .cx-grid{grid-template-columns:1fr}body.t .cx-nav,body.m .cx-nav{position:static;flex-direction:row;overflow:auto}body.t .cx-cat,body.m .cx-cat{min-width:220px}body.m .cx-form-g,body.m .cx-start{grid-template-columns:1fr}body.m .cx-acts .btn{padding:0 8px}
 </style>
 </head>
 <body>
@@ -1248,6 +1293,114 @@ cfgModal=function(tab){S.cfgTab=tab||S.cfgTab||'cfg';const pers=S.cfgTab==='pers
   const dg=$('#menu-root [role=dialog]');dg.style.width=pers?'min(940px,calc(100% - 32px))':'min(640px,calc(100% - 32px))';dg.children[1].style.maxHeight='72vh';if(pers)applyIdentity();};
 document.addEventListener('click',e=>{const x=e.target.closest('[data-cfgtab]');if(x){e.stopPropagation();cfgModal(x.dataset.cfgtab);return;}
   const a=e.target.closest('[data-act="id-open"]');if(a){e.stopPropagation();setTimeout(()=>cfgModal('pers'));}},true);
+
+/* ---------- v5 (10/11): modal de Classificações igual à de Documentos + clique no tipo abre a peça ---------- */
+const CX={aba:'cls',grp:0,q:'',open:new Set(),hidePad:false,showOff:false,edit:null,editSub:null,creating:false,newSub:false,conf:null};
+const GRUPO_DESC=['Peças que iniciam a ação','Peças no curso do processo','Peças para recorrer de decisões','Procurações, contratos e declarações'];
+const GRUPO_IC=['file','layers','scale','users'];
+const CAT_OF_G={'Petições iniciais':'ini','Petições intermediárias':'inter','Recursos':'rec','Documentos de apoio':'decl'};
+const CX_LOG=[{d:'09/11 16:40',u:'Jeziel Silva',a:'criado',t:'Tipo “Ação Monitória” em Direito Civil'},{d:'08/11 10:12',u:'Ana Costa',a:'renomeado',t:'“Contestação simples” → “Contestação — Rito Comum”'},{d:'05/11 09:03',u:'Jeziel Silva',a:'desativado',t:'Tipo “Reclamação pré-processual”'}];
+const cxLog=(a,t)=>CX_LOG.unshift({d:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).replace(',',''),u:'Jeziel Silva',a,t});
+const nrm=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const modelosDoTipo=id=>TPL.filter(t=>t.cls&&t.cls.t===id);
+const bdg=(k,t)=>`<span class="cx-b cx-b-${k}">${t}</span>`;
+function cxTipoRow(G,s,t){const off=t.off,mine=t.own,ms=modelosDoTipo(t.id),n=ms.length;
+  if(mine&&CX.edit===t.id)return `<div class="cx-tipo"><input class="input input-sm" data-cxename="${t.id}" value="${esc(t.n)}" aria-label="Nome do tipo"><span class="cx-acts"><button class="btn btn-sm btn-outline" data-cxecancel>Cancelar</button><button class="btn btn-sm btn-primary" data-cxesave="${t.id}">Salvar</button></span></div>`;
+  if(CX.conf===t.id)return `<div class="cx-tipo cx-warn"><span>${ic('alert',15)} <b>${n} modelo${n>1?'s usam':' usa'}</b> “${esc(t.n)}”. Desativado, ${n>1?'eles somem':'ele some'} da biblioteca até reativar.</span><span class="cx-acts"><button class="btn btn-sm btn-outline" data-cxconfno>Cancelar</button><button class="btn btn-sm btn-danger" data-cxconfok="${t.id}">Desativar</button></span></div>`;
+  return `<div class="cx-tipo ${off?'is-off':''}" data-cxopen="${t.id}" role="button" tabindex="0" title="${n?'Abrir a peça':'Criar a peça deste tipo'}"><span class="cx-tipo-n"><span class="cx-doc">${ic('file',14)}</span><b>${esc(t.n)}</b>${mine?bdg('info','Criado pelo escritório'):''}${off?bdg('warn','Desativado'):''}</span>
+    <span class="cx-meta">${n?`${n} modelo${n>1?'s':''}`:`<span class="cx-new">${ic('plus',12)}Criar peça</span>`}</span>
+    <span class="cx-acts">${!mine?`<span class="cx-lock" title="Tipo padrão do sistema: não pode ser alterado">${ic('lock',13)}Padrão</span>`:off?`<button class="btn btn-sm btn-outline" data-cxreact="${t.id}">Reativar</button>`:`<button class="btn btn-sm btn-outline" data-cxedt="${t.id}">${ic('edit',13)}Renomear</button><button class="btn btn-sm btn-outline cx-danger" data-cxoff="${t.id}">Desativar</button>${n?'':`<button class="btn-icon" data-cxdel="${t.id}" title="Excluir" aria-label="Excluir ${esc(t.n)}">${ic('trash',15)}</button>`}`}<span class="cx-go">${ic('chev',15)}</span></span></div>`;}
+function cxSubCard(G,s,its,force){const o=force||CX.open.has(s.id),at=s.tipos.filter(t=>!t.off).length,nm=usoSub(s.id);
+  const head=CX.editSub===s.id?`<div class="cx-sub-h"><input class="input input-sm" data-cxsname="${s.id}" value="${esc(s.n)}" style="max-width:280px"><button class="btn btn-sm btn-outline" data-cxecancel>Cancelar</button><button class="btn btn-sm btn-primary" data-cxssave="${s.id}">Salvar</button></div>`
+   :`<button class="cx-sub-h" data-cxsub="${s.id}" aria-expanded="${!!o}"><span class="cx-ico">${ic('layers',17)}</span><span style="flex:1;text-align:left"><b>${esc(s.n)}</b>${s.own?' '+bdg('info','Do escritório'):''}<span class="small muted d-b">${at} tipo${at!==1?'s':''} · ${nm} modelo${nm!==1?'s':''}</span></span>${s.own?`<span class="cx-mini" data-cxsedt="${s.id}" title="Renomear subcategoria">${ic('edit',14)}</span>`:''}<span class="tchv ${o?'o':''}">${ic('chev',15)}</span></button>`;
+  return `<div class="cx-sub ${o?'is-open':''}">${head}${o?`<div class="cx-sub-b">${its.length?its.map(t=>cxTipoRow(G,s,t)).join(''):'<span class="small muted" style="padding:8px">Nenhum tipo para mostrar.</span>'}<button class="cx-link" data-cxnewin="${s.id}">${ic('plus',13)}Criar tipo nesta subcategoria</button></div>`:''}</div>`;}
+function cxNovoForm(){const pre=CX.creating===true?'':CX.creating;return `<div class="cx-form"><b>${ic('plus',15)} Novo tipo de peça</b><div class="cx-form-g"><div><label class="label" for="cx-nn">Nome do tipo</label><input class="input" id="cx-nn" placeholder="Ex.: Ação de Usucapião"></div><div><label class="label" for="cx-ns">Subcategoria</label><select class="select" id="cx-ns">${CLS.map(G=>`<optgroup label="${esc(G.g)}">${G.subs.map(s=>`<option value="${s.id}" ${s.id===pre?'selected':''}>${esc(s.n)}</option>`).join('')}</optgroup>`).join('')}</select></div></div>
+  <span class="label" style="margin-top:10px">Começar a peça</span><div class="cx-start"><label class="cx-opt"><input type="radio" name="cx-st" value="blank" checked><span><b>Em branco</b><small>Abre o editor com a folha vazia</small></span></label><label class="cx-opt"><input type="radio" name="cx-st" value="base"><span><b>A partir de um modelo</b><small><select class="select" id="cx-nb">${TPL.map(t=>`<option value="${t.id}">${esc(t.nome)}</option>`).join('')}</select></small></span></label></div>
+  <div class="cx-acts" style="justify-content:flex-end;margin-top:12px"><button class="btn btn-outline" data-cxnc>Cancelar</button><button class="btn btn-primary" data-cxnok>${ic('pen',15)}Criar e abrir editor</button></div></div>`;}
+function cxBody(){const tabs=`<div class="cx-tabs" role="tablist"><button role="tab" class="${CX.aba==='cls'?'on':''}" aria-selected="${CX.aba==='cls'}" data-cxaba="cls">${ic('tag',14)}Classificações</button><button role="tab" class="${CX.aba==='logs'?'on':''}" aria-selected="${CX.aba==='logs'}" data-cxaba="logs">${ic('history',14)}Logs</button></div>`;
+  if(CX.aba==='logs')return tabs+`<div class="cx-logs">${CX_LOG.map(l=>`<div class="cx-log"><span class="cx-ico">${ic(l.a==='criado'?'plus':l.a==='renomeado'?'edit':l.a==='desativado'?'lock':'history',14)}</span><span style="flex:1"><b>${esc(l.u)}</b> ${l.a} · ${esc(l.t)}</span><span class="small muted">${l.d}</span></div>`).join('')}</div>`;
+  const nq=nrm(CX.q),vis=t=>(CX.showOff||!t.off)&&(!CX.hidePad||t.own),tot=CLS.reduce((a,G)=>a+G.subs.reduce((b,s)=>b+s.tipos.filter(t=>!t.off).length,0),0),meus=CLS.reduce((a,G)=>a+G.subs.reduce((b,s)=>b+s.tipos.filter(t=>t.own).length,0),0);
+  const nav=CLS.map((G,i)=>{const nt=G.subs.reduce((a,s)=>a+s.tipos.filter(t=>!t.off).length,0);return `<button class="cx-cat ${!nq&&CX.grp===i?'on':''}" data-cxgrp="${i}" aria-pressed="${!nq&&CX.grp===i}"><span class="cx-ico big">${ic(GRUPO_IC[i],18)}</span><span style="text-align:left"><b>${esc(G.g)}</b><span class="small muted d-b">${G.subs.length} subcategorias · ${nt} tipos</span></span></button>`;}).join('');
+  let main='';
+  if(nq){CLS.forEach(G=>{const c=G.subs.map(s=>{const its=s.tipos.filter(vis).filter(t=>nrm(t.n).includes(nq)||nrm(s.n).includes(nq));return its.length?cxSubCard(G,s,its,true):'';}).join('');if(c)main+=`<div class="cx-sec">${esc(G.g)}</div>${c}`;});
+    main=`<h3 class="cx-title">Resultados para “${esc(CX.q)}”</h3>`+(main||'<div class="check">Nada encontrado. Confira a grafia ou crie um novo tipo.</div>');}
+  else{const G=CLS[CX.grp];main=`<div class="cx-main-h"><span class="cx-ico big">${ic(GRUPO_IC[CX.grp],20)}</span><div style="flex:1"><h3 class="cx-title">${esc(G.g)}</h3><span class="small muted">${GRUPO_DESC[CX.grp]} · clique num tipo para abrir a peça</span></div><button class="btn btn-sm btn-outline" data-cxnewsub>${ic('plus',13)}Nova subcategoria</button></div>`+
+    (CX.newSub?`<div class="cx-sub-h" style="border:1px solid var(--border);border-radius:12px;margin-bottom:8px"><input class="input input-sm" id="cx-subnome" placeholder="Nome da subcategoria" style="max-width:300px"><button class="btn btn-sm btn-outline" data-cxecancel>Cancelar</button><button class="btn btn-sm btn-primary" data-cxsubok>Criar</button></div>`:'')+
+    (G.subs.map(s=>{const its=s.tipos.filter(vis);return CX.hidePad&&!its.length?'':cxSubCard(G,s,its,CX.hidePad);}).join('')||'<div class="check">Nenhum tipo criado pelo escritório nesta categoria.</div>');}
+  return tabs+`<div class="cx-tool"><div class="cx-search">${ic('search',15)}<input id="cx-q" placeholder="Buscar tipo ou subcategoria…" value="${esc(CX.q)}" aria-label="Buscar classificação"></div>
+    <button class="btn btn-sm ${CX.hidePad?'btn-primary':'btn-outline'}" data-cxhide aria-pressed="${CX.hidePad}">${ic('eye',14)}${CX.hidePad?'Mostrando só do escritório':'Só os do escritório'}</button><button class="btn btn-sm ${CX.showOff?'btn-primary':'btn-outline'}" data-cxoffv aria-pressed="${CX.showOff}">${ic('history',14)}Mostrar desativados</button>
+    <button class="btn btn-primary" data-cxnew ${CX.creating?'hidden':''}>${ic('plus',15)}Novo tipo</button></div>
+    ${CX.creating?cxNovoForm():''}
+    <div class="cx-sum"><span>${ic('tag',14)}${tot} tipos · ${meus} do escritório</span><span>${ic('file',14)}${TPL.filter(t=>t.cls).length} modelos classificados</span><span class="muted">${ic('spark',13)}Clique num tipo para abrir a peça; tipo sem peça abre o editor em branco</span></div>
+    <div class="cx-grid"><nav class="cx-nav" aria-label="Categorias">${nav}</nav><div class="cx-main">${main}</div></div>`;}
+clsModal=function(){const old=$('#menu-root [role=dialog] > div:nth-child(2)'),top=old?old.scrollTop:0;
+  modal('Classificações',cxBody(),`<button class="btn btn-outline" data-act="cls-done">Fechar</button>`);
+  const dg=$('#menu-root [role=dialog]');dg.style.width='min(1120px,calc(100% - 32px))';const b=dg.children[1];b.style.maxHeight='76vh';b.scrollTop=top;if(document.body.className){const fr=$('#frame').getBoundingClientRect();dg.style.width=(fr.width-16)+'px';dg.style.left=(fr.left+fr.width/2)+'px';}};
+function cxPaint(keepQ){clsModal();if(keepQ){const i=$('#cx-q');i.focus();i.setSelectionRange(CX.q.length,CX.q.length);}}
+
+/* Drawer do editor: folha em branco (ou a partir de um modelo) para criar/editar a peça do tipo */
+function untag(html,v){return html.replace(/<span class="tag"[^>]*data-tag="([^"]+)"[^>]*>[\s\S]*?<\/span>/g,(m,k)=>fv(k,v||{}));}
+const _cp5=corpoHTML;corpoHTML=function(v){const t=S.prevT||S.tpl;return t&&t.html?untag(t.html,v):_cp5(v);};
+const _d5=docHTML;docHTML=function(v){const t=S.prevT||S.tpl;if(t&&t.html&&(!TL.on||S.view==='editor')){const b=untag(t.html,v||{});return ID.on?`<div class="doc-hdr"><span class="lg">${ini(ID.nome)}</span><span><b>${esc(ID.nome)}</b><span>${esc(ID.sub)}</span></span></div>${b}<div class="doc-ftr">${esc(ID.rod)}</div>`:b;}return _d5(v);};
+function edDrawer(o){S.ed2=o;const x=tipoById(o.tipoId),t=o.tplId&&TPL.find(z=>z.id===o.tplId),base=o.base&&TPL.find(z=>z.id===o.base);
+  let html='<p><br></p>';if(t&&t.html)html=t.html;else{const src=t||base;if(src){S.prevT=src;html=tagify(_doc({}));S.prevT=null;}}
+  const CMD=[['undo','undo','Desfazer'],['redo','redo','Refazer'],['bold','bold','Negrito'],['italic','italic','Itálico'],['under','underline','Sublinhado'],['al','justifyLeft','Esquerda'],['ac','justifyCenter','Centro'],['aj','justifyFull','Justificar'],['list','insertUnorderedList','Lista']];
+  const nome=o.nome||(t?t.nome:x?x.t.n:'Novo modelo');
+  $('#menu-root').innerHTML=`<div class="peek-bg" data-cxedclose></div><aside class="peek peek-wide" role="dialog" aria-label="Editor da peça"><div class="peek-h"><div style="flex:1;min-width:0"><span class="badge b-cat" style="--c:var(--color-primary)">${t?(t.esc?'Editar modelo':'Cópia do modelo do sistema'):'Nova peça'}</span><h2 style="margin-top:6px">${esc(nome)}</h2><span class="muted small">${x?`${esc(x.G.g)} › ${esc(x.s.n)} › ${esc(x.t.n)}`:''}</span></div><button class="btn-icon" data-cxedclose aria-label="Fechar">${ic('plus',20).replace('<svg','<svg style="transform:rotate(45deg)"')}</button></div>
+   <div class="peek-grid"><div class="peek-doc"><div class="peek-doc-bar cx-tb"><span class="tbs">${CMD.map(([i,c,l])=>`<button class="tb" data-cmd="${c}" title="${l}" aria-label="${l}">${ic(i,15)}</button>`).join('')}</span>${fzCtl()}</div>
+     <div class="peek-doc-s"><div class="a4 cx-a4" id="ed-a4" contenteditable="true" spellcheck="true" aria-label="Texto da peça" data-ph="Clique aqui e comece a escrever a peça. Os campos da direita entram no ponto do cursor.">${html}</div></div></div>
+    <div class="peek-info"><label class="label" for="cx-mn">Nome do modelo</label><input class="input" id="cx-mn" value="${esc(nome)}">
+     <div class="lp-grid"><div><label class="label" for="cx-mb">Base recomendada</label><select class="select" id="cx-mb"><option value="proc">Processo</option><option value="cli" ${x&&x.G.g==='Documentos de apoio'?'selected':''}>Cliente</option></select></div><div><span class="label">Classificação</span><div class="cpath box" style="font-size:12px">${ic('tag',13)}<span>${x?esc(x.t.n):'—'}</span></div></div></div>
+     <span class="label">Campos · clique para inserir</span><div class="cx-fields">${GROUPS.map(g=>`<span class="cx-fg">${g.n}</span>${g.f.map(([k,l])=>`<button class="fitem cx-f" data-ins="${k}">${ic(g.ic,13)}<span>${esc(l)}</span></button>`).join('')}`).join('')}</div>
+     <div class="peek-acts"><button class="btn btn-primary" data-cxsave>${ic('check',16,3)}Salvar modelo</button><button class="btn btn-outline" data-cxedclose>Cancelar</button></div></div></div></aside>`;
+  if(document.body.className){const fr=$('#frame').getBoundingClientRect(),pk=$('.peek'),bg=$('.peek-bg');pk.style.left=fr.left+'px';pk.style.width=fr.width+'px';pk.style.right='auto';bg.style.left=fr.left+'px';bg.style.width=fr.width+'px';}
+  applyIdentity();requestAnimationFrame(()=>{fitPeek();const a=$('#ed-a4');a.focus();const r=document.createRange();r.selectNodeContents(a);r.collapse(false);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);});}
+function cxSalvar(){const o=S.ed2,x=tipoById(o.tipoId),a=$('#ed-a4'),nome=($('#cx-mn').value||'').trim()||'Novo modelo',html=a.innerHTML;let t=o.tplId&&TPL.find(z=>z.id===o.tplId);
+  if(t&&!t.esc){const c=Object.assign({},t,{id:Math.max(...TPL.map(z=>z.id))+1,nome:nome===t.nome?t.nome+' (escritório)':nome,esc:'Jeziel Silva',usos:0,fav:false,html,novo:true});TPL.unshift(c);snack('Modelo do sistema não muda: salvei uma <b>cópia do escritório</b>');}
+  else if(t){t.nome=nome;t.html=html;snack('Modelo salvo: nova versão criada');}
+  else{const g=x?x.G.g:'Petições iniciais';TPL.unshift({id:Math.max(...TPL.map(z=>z.id))+1,nome,cat:CAT_OF_G[g]||'ini',area:x?x.s.n:'Geral',usos:0,esc:'Jeziel Silva',fav:false,novo:true,html,req:[],cls:x?{g,s:x.s.id,t:x.t.id}:null});cxLog('criado',`Peça “${nome}” no tipo “${x?x.t.n:'—'}”`);snack(`Peça <b>${esc(nome)}</b> criada no tipo ${x?esc(x.t.n):''}`);}
+  cxVoltar();}
+function cxVoltar(){S.ed2=null;closeMenu();if(S.fromCls){S.fromCls=false;render();clsModal();}else render();}
+
+document.addEventListener('click',e=>{const g=k=>e.target.closest(k);let x;if(!g('#menu-root'))return;
+  if(x=g('[data-cxaba]')){e.stopPropagation();CX.aba=x.dataset.cxaba;cxPaint();return;}
+  if(x=g('[data-cxgrp]')){e.stopPropagation();CX.grp=+x.dataset.cxgrp;CX.q='';CX.newSub=false;cxPaint();return;}
+  if(g('[data-cxhide]')){e.stopPropagation();CX.hidePad=!CX.hidePad;cxPaint();return;}
+  if(g('[data-cxoffv]')){e.stopPropagation();CX.showOff=!CX.showOff;cxPaint();return;}
+  if(g('[data-cxnew]')){e.stopPropagation();CX.creating=true;cxPaint();setTimeout(()=>$('#cx-nn').focus());return;}
+  if(x=g('[data-cxnewin]')){e.stopPropagation();CX.creating=x.dataset.cxnewin;cxPaint();$('#menu-root [role=dialog] > div:nth-child(2)').scrollTop=0;setTimeout(()=>$('#cx-nn').focus());return;}
+  if(g('[data-cxnc]')){e.stopPropagation();CX.creating=false;cxPaint();return;}
+  if(g('[data-cxnok]')){e.stopPropagation();const n=$('#cx-nn').value.trim();if(!n){$('#cx-nn').focus();snack('Dê um nome ao tipo');return;}const r=subById($('#cx-ns').value);if(r.s.tipos.some(t=>nrm(t.n)===nrm(n))){snack('Já existe um tipo com esse nome nesta subcategoria');return;}
+    const st=($('input[name="cx-st"]:checked')||{}).value,base=st==='base'?+$('#cx-nb').value:null,tp=clsTipo(r.s,n,true);cxLog('criado',`Tipo “${n}” em ${r.s.n}`);CX.creating=false;CX.open.add(r.s.id);CX.grp=CLS.indexOf(r.G);S.fromCls=true;edDrawer({tipoId:tp.id,base,nome:n});return;}
+  if(g('[data-cxnewsub]')){e.stopPropagation();CX.newSub=true;cxPaint();setTimeout(()=>$('#cx-subnome').focus());return;}
+  if(g('[data-cxsubok]')){e.stopPropagation();const n=$('#cx-subnome').value.trim();if(!n)return;const s=clsSub(CLS[CX.grp].g,n,true);CX.open.add(s.id);CX.newSub=false;cxLog('criado',`Subcategoria “${n}”`);cxPaint();snack('Subcategoria criada');return;}
+  if(x=g('[data-cxsedt]')){e.stopPropagation();CX.editSub=x.dataset.cxsedt;cxPaint();return;}
+  if(x=g('[data-cxssave]')){e.stopPropagation();const r=subById(x.dataset.cxssave),v=$(`[data-cxsname="${r.s.id}"]`).value.trim();if(v){cxLog('renomeado',`“${r.s.n}” → “${v}”`);r.s.n=v;}CX.editSub=null;cxPaint();return;}
+  if(x=g('[data-cxsub]')){e.stopPropagation();const id=x.dataset.cxsub;CX.open.has(id)?CX.open.delete(id):CX.open.add(id);cxPaint();return;}
+  if(x=g('[data-cxedt]')){e.stopPropagation();CX.edit=x.dataset.cxedt;cxPaint();setTimeout(()=>{const i=$(`[data-cxename="${CX.edit}"]`);i&&i.select();});return;}
+  if(g('[data-cxecancel]')){e.stopPropagation();CX.edit=CX.editSub=null;CX.newSub=false;cxPaint();return;}
+  if(x=g('[data-cxesave]')){e.stopPropagation();const r=tipoById(x.dataset.cxesave),v=$(`[data-cxename="${r.t.id}"]`).value.trim();if(!v)return;if(r.s.tipos.some(o=>o!==r.t&&nrm(o.n)===nrm(v))){snack('Já existe um tipo com esse nome nesta subcategoria');return;}cxLog('renomeado',`“${r.t.n}” → “${v}”`);r.t.n=v;CX.edit=null;cxPaint();snack('Tipo renomeado');return;}
+  if(x=g('[data-cxoff]')){e.stopPropagation();const r=tipoById(x.dataset.cxoff);if(modelosDoTipo(r.t.id).length){CX.conf=r.t.id;cxPaint();return;}r.t.off=true;cxLog('desativado',`Tipo “${r.t.n}”`);cxPaint();snack('Tipo desativado');return;}
+  if(g('[data-cxconfno]')){e.stopPropagation();CX.conf=null;cxPaint();return;}
+  if(x=g('[data-cxconfok]')){e.stopPropagation();const r=tipoById(x.dataset.cxconfok);r.t.off=true;CX.conf=null;cxLog('desativado',`Tipo “${r.t.n}”`);cxPaint();snack('Tipo desativado');return;}
+  if(x=g('[data-cxreact]')){e.stopPropagation();const r=tipoById(x.dataset.cxreact);r.t.off=false;cxLog('reativado',`Tipo “${r.t.n}”`);cxPaint();snack('Tipo reativado');return;}
+  if(x=g('[data-cxdel]')){e.stopPropagation();const r=tipoById(x.dataset.cxdel);r.s.tipos=r.s.tipos.filter(t=>t!==r.t);cxLog('excluído',`Tipo “${r.t.n}”`);cxPaint();snack('Tipo excluído');return;}
+  if(x=g('[data-cxopen]')){e.stopPropagation();const id=x.dataset.cxopen,ms=modelosDoTipo(id);S.fromCls=true;if(ms.length){closeMenu();openPeek(ms[0].id);const pa=$('.peek .peek-acts');if(pa)pa.insertAdjacentHTML('afterbegin',`<button class="btn btn-outline" data-cxedit="${ms[0].id}">${ic('edit',15)}Editar este modelo</button>`);const ph=$('.peek-h > div');if(ph)ph.insertAdjacentHTML('beforeend',`<button class="cx-link" data-cxback style="padding:6px 0 0">${ic('back',13)}Voltar às classificações</button>`);}else edDrawer({tipoId:id});return;}
+  if(x=g('[data-cxedit]')){e.stopPropagation();const t=TPL.find(z=>z.id===+x.dataset.cxedit);edDrawer({tipoId:t.cls&&t.cls.t,tplId:t.id});return;}
+  if(g('[data-cxback]')){e.stopPropagation();cxVoltar();return;}
+  if(g('[data-cxsave]')){e.stopPropagation();cxSalvar();return;}
+  if(g('[data-cxedclose]')){e.stopPropagation();cxVoltar();return;}
+  if(x=g('[data-act="peek-close"]')&&$('.peek')&&S.fromCls&&!S.ed2){e.stopPropagation();cxVoltar();return;}
+},true);
+document.addEventListener('input',e=>{if(e.target.id==='cx-q'){CX.q=e.target.value;cxPaint(true);}});
+document.addEventListener('keydown',e=>{const t=e.target;if(!t.matches)return;
+  if(t.matches('[data-cxopen]')&&(e.key==='Enter'||e.key===' ')){e.preventDefault();t.click();}
+  if(e.key==='Enter'&&t.id==='cx-nn'){e.preventDefault();$('[data-cxnok]').click();}
+  if(e.key==='Enter'&&t.matches('[data-cxename]')){e.preventDefault();$(`[data-cxesave="${t.dataset.cxename}"]`).click();}
+  if(e.key==='Enter'&&t.matches('[data-cxsname]')){e.preventDefault();$(`[data-cxssave="${t.dataset.cxsname}"]`).click();}
+  if(e.key==='Enter'&&t.id==='cx-subnome'){e.preventDefault();$('[data-cxsubok]').click();}},true);
+/* biblioteca: tipo desativado esconde os modelos dele */
+const _lo5=listOf;listOf=function(){return _lo5().filter(t=>{const x=t.cls&&tipoById(t.cls.t);return !(x&&x.t.off);});};
 
 render();
 </script>
