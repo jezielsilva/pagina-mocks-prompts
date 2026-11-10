@@ -1,0 +1,37 @@
+{
+ "data": "2026-11-10",
+ "dataExibicao": "terça, 10/11",
+ "minutos": 15,
+ "intro": "Conceito novo (2 da fila): ?. e ?? — os dois 'ifs de null' que as IAs escrevem em uma linha. Hoje você aprende a ler um por um, com tabela de casos.",
+ "feedbackAnterior": "<p><b>Treinos de 06/11 e 09/11:</b> ainda não respondidos — sem penalidade, continuam no portal. O vazamento de assinatura descansa hoje e volta depois para fechar (falta 1 acerto seguido).</p>",
+ "aula": "<p><b>1) <code>?.</code> = \"se for null, para aqui e devolve null\"</b> (em vez de estourar NullReferenceException).</p><p><b>2) <code>??</code> = \"se o da esquerda for null, usa o da direita\".</b> Se não for null, fica o da esquerda.</p><p><b>Analogia:</b> <code>?.</code> é perguntar \"tem alguém em casa?\" antes de entrar; <code>??</code> é o plano B: \"se não tiver ninguém, deixa com o porteiro\".</p><p><b>Exemplo (estilo IA):</b></p><pre>string cidade = cliente?.Endereco?.Cidade ?? \"Não informada\";</pre><p><b>A mesma coisa no seu estilo:</b></p><pre>string cidade = \"Não informada\";\nif (cliente != null &amp;&amp; cliente.Endereco != null &amp;&amp; cliente.Endereco.Cidade != null)\n    cidade = cliente.Endereco.Cidade;</pre><p><b>Tabela de casos (leia da esquerda para a direita, parando no primeiro null):</b></p><table><tr><th>Situação</th><th>cliente?.Endereco?.Cidade</th><th>Resultado final</th></tr><tr><td>cliente = null</td><td>null (parou no 1º ?.)</td><td>\"Não informada\"</td></tr><tr><td>Endereco = null</td><td>null (parou no 2º ?.)</td><td>\"Não informada\"</td></tr><tr><td>Cidade = \"Olinda\"</td><td>\"Olinda\"</td><td>\"Olinda\"</td></tr></table><p><b>Erro mais comum:</b> achar que <code>??</code> troca texto vazio. <b>Não troca:</b> <code>\"\" ?? \"Não informada\"</code> dá <code>\"\"</code>. O <code>??</code> só olha null. (Para vazio, use <code>string.IsNullOrEmpty</code> com if.)</p><p><b>Segundo erro comum:</b> esquecer um <code>?</code> no meio. Em <code>documento?.Responsavel.Nome</code>, o <code>?.</code> protege só o <code>documento</code>; o <code>.Nome</code> depois de <code>Responsavel</code> não tem proteção.</p>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "?. e ??",
+   "tipo": "Leitura (resultado concreto)",
+   "enunciado": "Diga o valor final de 'cidade' em cada caso. O caso 1 já está preenchido. Responda no formato: 1) \"Não informada\" | 2) __ | 3) __ | 4) __",
+   "codigo": "string cidade = cliente?.Endereco?.Cidade ?? \"Não informada\";\n\n// 1) cliente = null                          → \"Não informada\" (exemplo)\n// 2) cliente existe, Endereco = null\n// 3) Endereco.Cidade = \"Recife\"\n// 4) Endereco.Cidade = \"\"   (texto vazio)",
+   "gabarito": "1) \"Não informada\" | 2) \"Não informada\" | 3) \"Recife\" | 4) \"\" (vazio)",
+   "explicacao": "2: o 2º ?. encontra Endereco null e devolve null → ?? usa \"Não informada\". 3: nada é null → fica \"Recife\". 4: \"\" NÃO é null, então o ?? não troca: cidade fica vazia (pegadinha principal da aula). Erro esperado: responder \"Não informada\" no 4."
+  },
+  {
+   "id": "q2",
+   "tema": "?. e ??",
+   "tipo": "Ache o bug",
+   "enunciado": "Esta linha pode estourar NullReferenceException em UM dos casos A, B ou C. Qual? Responda a letra.",
+   "codigo": "// Devolve o nome do responsável pelo documento\nstring nomeResponsavel = documento?.Responsavel.Nome ?? \"Sem responsável\";\n\n// A) documento = null\n// B) documento existe, Responsavel = null\n// C) Responsavel existe, Nome = null",
+   "gabarito": "B (correção: documento?.Responsavel?.Nome)",
+   "explicacao": "A: o ?. depois de documento para a linha inteira e devolve null → \"Sem responsável\" (não quebra). C: Nome null → ?? usa \"Sem responsável\". B: documento existe, então segue; Responsavel é null e o .Nome sem ? tenta ler propriedade de null → NullReferenceException. Liga com o dia a dia: documento sem responsável atribuído na tela de Documentos."
+  },
+  {
+   "id": "q3",
+   "tema": "?. e ??",
+   "tipo": "Traduza (lacunas)",
+   "enunciado": "Reescreva a linha do ?? no seu estilo, completando as 3 lacunas. Responda no formato: lacuna 1 = __ | lacuna 2 = __ | lacuna 3 = __",
+   "codigo": "// Versão IA:\nstring titulo = documento.Titulo ?? \"Sem título\";\n\n// Sua versão:\nstring titulo;\nif (documento.Titulo ___1___ null)\n    titulo = ___2___;\nelse\n    titulo = ___3___;",
+   "gabarito": "lacuna 1 = == | lacuna 2 = \"Sem título\" | lacuna 3 = documento.Titulo  (também vale: != | documento.Titulo | \"Sem título\")",
+   "explicacao": "?? = 'se a esquerda for null, usa a direita'. Então: SE Titulo == null → \"Sem título\"; SENÃO → o próprio Titulo. Em 02/11 ele inverteu essa lógica (devolveu o valor padrão quando NÃO era null); aqui a ordem das lacunas força pensar no caso null primeiro. Aceitar a versão com != desde que os valores acompanhem."
+  }
+ ]
+}
