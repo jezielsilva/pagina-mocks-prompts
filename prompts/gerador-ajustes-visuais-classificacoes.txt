@@ -1,0 +1,86 @@
+PROMPT — Gerador de peças: ajustes visuais da biblioteca e da Personalização + clique nos tipos em Classificações (Angular)
+
+CONTEXTO
+O visual do Gerador já foi feito com base no mock. Agora são ajustes pontuais. Referência visual: o mock do Gerador no portal e o módulo Meus documentos (mesmo padrão de cards).
+Front "burro": nada de regra de negócio no front. NÃO criar controller, NÃO mexer no banco, NÃO criar nem rodar testes.
+Reaproveite componentes que já existem no shared antes de criar qualquer coisa nova.
+
+ITENS
+
+1. Coluna lateral da biblioteca dentro de um card branco
+- Hoje Novo modelo, Peças geradas, Classificações e o menu (Todos os modelos, Mais usados, Favoritos, Do escritório, Configurações) são cards soltos.
+- Envolver TUDO num único card branco, igual à coluna lateral de Meus documentos (mesmo fundo, borda, raio, sombra e espaçamentos). Por dentro, separar os blocos com espaço ou divisória simples, sem card dentro de card.
+
+2. Barra "Quero fazer … para …" dentro de um card branco
+- Hoje está vazada (fundo cinza). Colocar num card branco, mesmo padrão do item 1.
+
+3. Campo de processo da barra
+- O rótulo está "ProcessoBiblioteca". Deve ser só "Processo". Ele já lista os processos: manter.
+
+4. "Quero fazer [uma peça]" vira autocomplete
+- Hoje "uma peça" é texto parado. Trocar por um autocomplete IGUAL ao campo de Processo (mesmo componente, mesmo tamanho, mesmo estilo), com rótulo "Peça".
+- Ele lista os modelos (busca pelo nome). Escolher a peça + o processo leva direto para a revisão dos campos, como no mock.
+- A busca dos modelos é a que o back já oferece; o front só exibe.
+
+5. Card de Classificações (coluna lateral)
+- As contagens ficam uma por linha:
+  3 categorias
+  22 subcategorias
+  152 tipos
+
+6. Configurações › aba Configurações
+- NÃO mexer agora.
+
+7. Personalização › Cor do logo
+- Hoje o rótulo "Cor do logo" fica em cima e a amostra de cor fica solta, fora da linha do campo "Fonte das peças".
+- Deixar na MESMA linha e na MESMA altura do campo de fonte: rótulo menor (no padrão de rótulo dos outros campos) e a amostra de cor alinhada com o campo.
+- Usar o componente de cor (color picker, estilo do Mac) que já existe no shared, criado para o módulo de Tarefas. Localize-o e reaproveite. NÃO criar outro seletor de cor.
+
+8. Personalização › card "Layout da folha"
+- O switch "Usar nas peças" está desalinhado. Alinhar com a linha do título "Layout da folha" (switch à direita, na altura do título). O texto de descrição fica embaixo do título e o botão "Editar layout" embaixo de tudo, como hoje.
+- Conferir se o switch é o componente de switch padrão do sistema (estado ligado/desligado visível). Se não for, trocar pelo padrão.
+
+9. Intensidade da marca d'água e editor de layout
+- Já funcionam. NÃO mexer.
+
+10. Aviso de "Sair sem salvar" no editor de layout
+- Conferir se esse aviso usa o componente de aviso padrão do sistema ou se foi criado um novo.
+- Se foi criado um novo, REMOVER e usar o padrão do sistema: a janelinha (toast) que os módulos de Tarefas e Clientes já usam, NÃO um snack bar.
+- Localize em Tarefas ou Clientes qual é o componente/serviço usado e use o mesmo aqui.
+
+11. Modal de Classificações (a mesma de Meus documentos) — clique só nos TIPOS
+Hierarquia: Categoria (ex.: Petições iniciais) › Subcategoria (ex.: Direito Civil) › Tipo (ex.: Ação de Cobrança). O TIPO é o modelo de documento; categoria e subcategoria só organizam.
+- Categoria: clique só seleciona a categoria à esquerda (como hoje).
+- Subcategoria: clicar na linha inteira SÓ abre/fecha o acordeon para mostrar os tipos. Hoje ela abre a modal de Novo modelo: isso está ERRADO e deve sair.
+- Tipo: é o ÚNICO item clicável para abrir peça.
+  • Tipo que já tem modelo: abre o drawer da peça (o mesmo drawer de pré-visualização da biblioteca), com ela pronta para usar ou editar.
+  • Tipo sem modelo: abre o editor em branco no drawer para criar a peça do zero.
+  • A linha do tipo mostra que é clicável: hover, cursor de mão, seta à direita e foco por teclado (Enter abre). Os botões da linha (Renomear, Desativar, Reativar) continuam funcionando sem abrir a peça.
+- Botão "Novo tipo": cadastra o TIPO (nome + subcategoria + começar em branco ou a partir de um modelo) e, ao confirmar, já abre o editor no drawer. Se a pessoa sair sem salvar a peça, o tipo continua existindo, sem modelo.
+- Texto do aviso azul no topo: hoje diz "Clique em uma subcategoria para criar um modelo nela. A seta mostra os tipos." Trocar por: "Clique em um tipo para abrir a peça. Clique na subcategoria para ver os tipos."
+- A modal é compartilhada com Meus documentos. Este comportamento (tipo clicável, contagem de modelos) vale SÓ quando ela é aberta pelo Gerador. Em Meus documentos ela continua exatamente como está. Use um parâmetro de entrada da modal (ex.: modo de uso), sem duplicar o componente.
+- No modo Gerador, as contagens das linhas mostram modelos ("1 modelo", "Nenhum modelo — criar peça") em vez de arquivos, e os selos "arquivos classificados / sem classificação / Classificar agora" de Documentos não aparecem. Os números vêm do back.
+
+MODO DE EXECUÇÃO (um passo por vez)
+1. Localize no código: a tela da biblioteca do Gerador, a coluna lateral de Meus documentos (referência do card), o autocomplete de Processo, o color picker do shared (Tarefas), o componente de aviso usado em Tarefas/Clientes, o switch padrão e a modal de Classificações compartilhada. Me mostre uma mini-spec (arquivos que vai mexer e o que muda em cada um). Espere meu OK.
+2. Itens 1 a 5 (biblioteca). Entregue e espere meu OK.
+3. Itens 7, 8 e 10 (Personalização e aviso). Entregue e espere meu OK.
+4. Item 11 (Classificações). Entregue.
+Se o contexto estiver acabando, pare no fim de um passo e avise onde parou.
+
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
+
+ENTREGA
+- Lista de arquivos alterados com o diff relevante, por item.
+- O que foi reaproveitado do shared (color picker, aviso, switch, autocomplete) e de onde.
+- Seção "Explicações" (o que fez, por quê, versão simples equivalente, como debugar).
