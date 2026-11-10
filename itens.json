@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-10T16:20",
+  "atualizado": "2026-11-10T16:30",
   "itens": [
     {
       "id": "pendencias",
@@ -75,6 +75,14 @@
       "titulo": "Prompt — Front da Fase 1 a partir do mock (execução direta, Codex)",
       "data": "2026-11-10T11:40",
       "arquivo": "prompts/gerador-front-fase1-mock.txt"
+    },
+    {
+      "id": "gerador-ajustes-visuais-classificacoes",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Prompt — Ajustes visuais da biblioteca e da Personalização + clique nos tipos",
+      "data": "2026-11-10T16:30",
+      "arquivo": "prompts/gerador-ajustes-visuais-classificacoes.txt"
     }
   ]
 }
