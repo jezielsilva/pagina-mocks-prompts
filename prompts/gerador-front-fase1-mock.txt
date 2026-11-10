@@ -1,0 +1,356 @@
+PROMPT — Gerador de peças: FRONT da Fase 1 a partir do mock (execução direta)
+Modelo alvo: Codex (raciocínio médio). Execute TUDO de uma vez, sem parar para
+pedir aprovação. Só pare se o build quebrar e você não conseguir corrigir.
+
+====================================================================
+0. OBJETIVO EM UMA FRASE
+====================================================================
+Transformar o mock "Gerador de peças" (portal → item "Mock — Gerador de
+peças") em telas reais do front, usando SÓ componentes e padrões do UI-Kit do
+sistema, ligadas à API que já existe, sem quebrar nada do que está em uso.
+
+====================================================================
+1. ANTES DE ESCREVER QUALQUER CÓDIGO (leitura obrigatória)
+====================================================================
+1. Leia por inteiro: o arquivo de instruções para agentes na raiz do repo e
+   o documento do UI-Kit na pasta de agentes. Tudo que estiver lá vale mais
+   que este prompt em caso de conflito.
+2. Abra o mock no portal e leia o HTML/JS inteiro. Ele é gerado por JS: as
+   telas estão nas funções de render (biblioteca, origem, revisão, manual,
+   salvar, concluído, drawer do modelo, menu de opções, modal de troca de
+   origem, modal de cadastro de partes).
+3. Estude como o módulo de Conversas (dentro de Clientes) e a listagem de
+   Clientes (reformulada há pouco) usam: abas, menu de ações (os 3 pontinhos),
+   drawer, paginação padrão de tabela, badges, empty state, skeleton,
+   alertas inline, snackbar, switch, autocomplete, cards em mobile. Copie
+   esse jeito de usar. NÃO crie componente visual novo se existir um
+   compartilhado que faça o mesmo.
+4. No repositório vizinho do back, leia o controller do gerador de peças e os
+   view models dos modelos de peças. Monte a lista dos endpoints que EXISTEM
+   hoje (verbo, rota, request, response). O front só pode chamar endpoint que
+   existe. Ver seção 6 para o que fazer quando não existir.
+5. Leia no front a pasta da página do gerador de peças: hoje ela tem abas
+   ("Biblioteca" nova e "Gerador atual" de produção), uma biblioteca inicial
+   (grade/lista, busca, filtros, drawer com prévia), um facade, um pipe de
+   prévia segura, interfaces e types dos modelos de peças e o service do
+   gerador.
+6. Leia em /docs as regras do gerador (business-rules e flows) do front e do
+   back. Não invente regra de negócio que não esteja lá ou no back.
+
+====================================================================
+2. O QUE NÃO PODE QUEBRAR (prioridade máxima)
+====================================================================
+- A aba "Gerador atual" (gerador que está em produção) continua EXATAMENTE
+  como está: mesmo componente, mesmas rotas, mesmos services, mesma
+  contratação/pacotes. Não refatore, não renomeie, não mova.
+- A rota da página e a rota de detalhes do gerador continuam existindo com os
+  mesmos caminhos. Metadados de rota continuam vindo do catálogo de rotas do
+  Admin. Não crie rota nova; o fluxo novo vive dentro da aba "Biblioteca".
+- Nada do Portal do Cliente: o gerador é só para o escritório (titular e
+  usuários adicionais).
+- Não altere estilos globais, arquivos de variáveis gerados, nem temas além
+  de tokens de componente que realmente precisarem existir.
+- Não instale dependências. Não mexa em package.json / package-lock.json.
+- Não apague testes existentes.
+
+====================================================================
+3. ESCOPO — O QUE CONSTRUIR (Fase 1)
+====================================================================
+3.1 Biblioteca de modelos (aba "Biblioteca")
+  Layout do mock (versão final, "v4"): coluna principal com os modelos e
+  coluna lateral à DIREITA com: botão "Novo modelo" (ver 3.8), filtros
+  rápidos e o card de "Peças geradas".
+  - Cabeçalho: título dinâmico ("Todos os modelos", "Mais usados",
+    "Favoritos", "Do escritório", "Do sistema", "Resultados para “x”"),
+    contador "N modelos", alternância Lista/Grade com o seletor segmentado do
+    sistema.
+  - Busca: SOMENTE por nome do modelo, com debounce curto, mínimo de
+    caracteres coerente com o back, limpando ao apagar. Não existe busca por
+    conteúdo.
+  - Filtros rápidos (lateral): Todos, Mais usados (= ordenação por usos),
+    Favoritos, Do escritório, Do sistema — com contadores só quando a API
+    devolver o número (não calcule contador falso no front).
+  - Filtro por TIPO DE PEÇA: chips/lista com os tipos vindos da API (ver
+    seção 6). Combinável com os filtros acima. Botão "Limpar".
+  - Grade: card por modelo com tipo (badge), estrela de favorito, nome do
+    modelo no centro do "papel" (é só o título — não renderize prévia
+    dentro do card), rodapé com "Do escritório"/"Do sistema" e botão
+    "Opções" (menu de ações).
+  - Lista: tabela padrão do sistema (cabeçalho 12px maiúsculo pelos
+    tokens) com Modelo, Tipo, Origem, Usos e ações; em mobile vira cards
+    com o componente de card compartilhado.
+  - Paginação: a paginação padrão de tabela do sistema (a mesma composição
+    de barra de paginação usada nas tabelas). Nada de paginação local nova.
+  - Estados: carregando (skeleton compartilhado), vazio (empty state
+    compartilhado, com texto diferente para "sem resultado da busca/filtro"
+    e "nenhum modelo"), erro (alerta inline com botão "Tentar novamente").
+  - Favoritar/desfavoritar: na estrela, no drawer e no menu. Atualização
+    otimista com rollback se a API falhar; snackbar "Adicionado aos
+    favoritos" / "Removido dos favoritos" (é ação explícita, pode snackbar).
+  - Duplo clique ou Enter no card: inicia "Usar modelo".
+  - Card "Peças geradas" (lateral): só mostre se houver endpoint com esses
+    números; se não houver, NÃO mostre (nada de dado fixo).
+  - Frase "Quero fazer [uma peça] para [um processo]" do mock: implemente
+    apenas se for possível com os endpoints existentes (o primeiro slot
+    filtra por tipo, o segundo pré-seleciona o registro para o fluxo). Se o
+    endpoint de busca de registro não existir, omita a frase.
+
+3.2 Drawer do modelo (clique no card/linha)
+  Drawer largo do mock: documento à esquerda, informações à direita.
+  - Use o drawer compartilhado (respeite a regra de largura de drawers
+    aninhados do UI-Kit).
+  - Esquerda: prévia do conteúdo do modelo (HTML devolvido pela API,
+    passando pelo pipe de prévia segura que já existe), com controle de
+    zoom (− 100% +) e folha A4 ajustada à largura.
+  - Direita: tipo (badge), nome, origem (Escritório/Sistema), "Base"
+    (origem recomendada: Processo/Cliente/Fornecedor/Manual), "Usado N
+    vezes", "Versão N", lista "Preenche sozinho" (somente se a API informar
+    quais campos são automáticos; caso contrário, liste os campos do modelo
+    com marcação de obrigatório).
+  - Ações: "Usar este modelo" (primária), Favoritar/Desfavoritar, "Mais"
+    (menu de ações).
+  - Fechar com Esc, clique fora e botão; foco volta para o card de origem.
+
+3.3 Menu de opções do modelo
+  Use o menu de ações compartilhado (o mesmo de Conversas/Clientes). Itens
+  da Fase 1: "Usar modelo", "Pré-visualizar" (abre o drawer), "Baixar modelo
+  em branco (.docx)" e "(.pdf)" se o endpoint existir, "Favoritar/Remover
+  dos favoritos", "Ver campos usados" (modal com os campos agrupados por
+  grupo, com rótulo e formato). Itens de Fase 2 (Duplicar, Editar, Excluir)
+  NÃO aparecem.
+
+3.4 Fluxo "Usar modelo" — assistente em 3 etapas
+  Use o componente compartilhado de etapas (progress steps). Etapas:
+  "Origem dos dados" → "Revisão dos campos" → "Salvar peça". Topo com
+  "← Modelos", nome do modelo e tipo. Rodapé fixo do assistente com texto
+  de apoio à esquerda e ações à direita (primária sempre à direita).
+  Ao sair do assistente com dados preenchidos, pergunte se deseja sair
+  (modal de confirmação compartilhado). Não existe rascunho salvo (Fase 2).
+
+  Etapa 1 — Origem dos dados
+  - Opções em cards selecionáveis: Processo, Cliente, Fornecedor,
+    Preencher manualmente; a origem recomendada do modelo recebe o badge
+    "Recomendado" e já vem selecionada.
+  - Para Processo/Cliente/Fornecedor: campo de busca do registro (use o
+    autocomplete compartilhado ou a lista com busca do mock), resultado com
+    texto principal + secundário, seleção única. Número de processo
+    exibido SEMPRE com o botão de copiar via o serviço compartilhado de
+    cópia de número de processo.
+  - Troca para uma origem diferente da recomendada, ou troca de origem
+    com registro já escolhido: modal "Gerar com base em X?" / "Trocar a
+    origem dos dados?" mostrando "Este modelo foi feito para A → você vai
+    usar B" e a lista de campos que vão ficar vazios (vinda da API — ver
+    6). Ações: "Manter A" (secundária, esquerda) e "Usar B" (primária,
+    direita). Depois, alerta inline de aviso na etapa e na revisão.
+  - Origem Processo com registro escolhido: bloco "Partes do processo"
+    com Autor/Réu (badges), "Já é cliente" quando for, e checkbox para as
+    que não são clientes (autores marcados, réus desmarcados por padrão,
+    como no mock). Se houver marcadas, o botão vira "Cadastrar N e
+    continuar" e abre o modal de cadastro rápido (nome, pessoa
+    física/jurídica, CPF/CNPJ com máscara e validação) com ações "Voltar",
+    "Pular e continuar" e "Cadastrar e continuar" (primária à direita).
+    O cadastro usa o endpoint do back (reaproveita o fluxo de Conversas);
+    salvamento não bloqueante, com aviso de "salvando" e snackbar de
+    sucesso após 200.
+  - Preencher manualmente: alerta inline explicando o passo a passo e
+    segue para a etapa 2 em modo manual.
+  - Entrada pré-selecionada: aceite parâmetros de query opcionais (modelo,
+    origem, registro) para abrir o assistente já com o modelo e o registro
+    escolhidos (é o "abrindo de dentro de um processo" do mock). Sem esses
+    parâmetros, nada muda.
+
+  Etapa 2 — Revisão dos campos
+  - Chama o endpoint de revisão com origem, registro, versão do modelo e
+    os valores manuais. TODA regra (formatação, plural, extenso, pendência,
+    obrigatoriedade, "pode gerar") vem do back. O front só exibe.
+  - Esquerda: grupos de campos (Processo, Partes, Cliente, Valores e datas,
+    Escritório — conforme a API) em seções expansíveis, só UMA aberta por
+    vez (abre a primeira com pendência). Cada campo: status (ok/pendente),
+    label (fonte de título), input, badge "Obrigatório", dica de formato
+    ("máscara automática", "por extenso automático") e a mensagem de
+    validação devolvida pela API.
+  - Topo: alerta inline de aviso "N campos sem dado" ou positivo "Tudo
+    preenchido"; alerta negativo "Preencha os campos obrigatórios: …"
+    usando os rótulos visíveis.
+  - Direita: prévia A4 com o HTML devolvido pela revisão; campo pendente
+    aparece como "[Rótulo]" destacado; clicar num campo da prévia abre a
+    seção e foca o input correspondente; zoom − 100% +.
+  - Edição: ao alterar um valor, chame a revisão de novo com debounce e
+    cancele a chamada anterior (só a última resposta vale). Mostre estado
+    "atualizando prévia" sem bloquear a tela. Campos de lista (autores,
+    réus) aceitam vários valores no padrão de input do sistema.
+  - Modo manual: mesmas regras, mas em etapas por grupo (navegação lateral
+    com números/check, barra de progresso compartilhada, "Etapa X de Y",
+    "Voltar" / "Próxima etapa").
+  - "Continuar" só habilita quando a API devolver que pode gerar.
+
+  Etapa 3 — Salvar peça
+  - Checagem final (alerta inline): ok ou lista dos campos ainda vazios.
+  - Nome do arquivo (sugestão = nome do modelo + identificação do registro,
+    sem extensão, respeitando o limite e os caracteres proibidos do back).
+  - "Salvar em": a pasta é definida pelo BACK a partir do registro de
+    origem. Exiba só como informação (caminho Documentos › …), não como
+    escolha livre. Não existe "Vincular a", "Classificação", "Criar
+    tarefa" nesta fase.
+  - Formatos: Word (.docx) e PDF, seleção múltipla, pelo menos um.
+  - Prévia pequena à direita.
+  - Botão "Gerar peça": gere UMA chave de operação (GUID) ao entrar na
+    etapa e reutilize a MESMA chave em reenvios (o back usa isso para não
+    duplicar). Durante a geração: botão em estado de carregamento, sem
+    loading global, tela utilizável; não permitir duplo envio.
+  - Erros: mostre a mensagem devolvida pela API (objeto { mensagem,
+    errorId }) em alerta inline, com "Tentar novamente" reutilizando a
+    mesma chave.
+
+  Concluído
+  - Card "Peça gerada" com miniatura, "Já está em Documentos", lista
+    Arquivo(s), Salvo em, Vinculado a (registro).
+  - Ações: "Baixar .docx", "Baixar PDF" (só os formatos gerados, via
+    endpoint de download), "Ver em Documentos" (navega para a pasta, se o
+    módulo de Documentos aceitar navegação por pasta; senão omita),
+    "Voltar aos modelos". Snackbar "Peça gerada e salva em Documentos".
+  - Fora desta fase: "Enviar ao cliente", "Abrir no editor", "Duplicar para
+    outro processo", aprovação e tarefa — não exibir.
+
+3.5 Permissões
+  - Quem não tiver acesso ao gerador vê a mensagem de sem acesso (403 da
+    API). Origens cujo módulo o adicional não pode ver: desabilite o card
+    da origem com explicação no próprio card (sem tooltip redundante).
+  - Botões desabilitados com cursor padrão.
+
+3.6 Responsivo
+  - Desktop, tablet e celular como no mock: lateral vira drawer/botão de
+    filtros no mobile, grade vira 1–2 colunas, tabela vira cards, assistente
+    empilha formulário e prévia (prévia recolhível no celular), rodapé do
+    assistente fixo e sem rolagem horizontal.
+
+3.7 Acessibilidade
+  - Tudo clicável é button/link; elementos não nativos com tabindex e
+    teclado; aria-label nas ações só com ícone; aria-live no contador e nos
+    alertas; foco gerenciado ao trocar de etapa e ao fechar drawer/modal.
+
+3.8 "Novo modelo" e demais itens de Fase 2/3
+  NÃO implementar: novo modelo, editor, duplicar, editar, excluir, versões,
+  blocos, template personalizado, identidade do escritório, configurações,
+  aprovação, tarefa, lote, rascunhos, peças sugeridas por prazos, enviar ao
+  cliente, duplicar peça, classificações (estão em outra branch). Não deixe
+  botões falsos nem "em breve". Liste tudo isso na entrega como pendente.
+
+====================================================================
+4. ADAPTAÇÕES OBRIGATÓRIAS DO MOCK AO UI-KIT
+====================================================================
+O mock é referência de ESTRUTURA e FLUXO, não de CSS. Ao portar:
+- Cores por tipo de peça (as faixas/fitas coloridas do mock): NÃO usar.
+  Identifique tipo por badge do sistema. Nada de faixa colorida de um lado
+  só, nada de gradiente, nada de box-shadow novo.
+- Fonte Georgia/Times do mock: proibido. Títulos/labels com a fonte de
+  título do tema; texto com a fonte de corpo. A prévia A4 usa a fonte de
+  corpo do tema (o arquivo final sai do back).
+- Ícones: o componente de ícone do sistema (Material Icons), não os SVGs
+  do mock.
+- Modais: estrutura padrão de modal do sistema, título sem negrito,
+  primária à direita.
+- Inputs, selects (poucas opções = select do Material; muitas/busca =
+  autocomplete do sistema), switch do sistema, checkboxes pelos tokens.
+- Alertas inline: o componente de alerta do sistema só com título, tipo
+  (positive/negative/warning/info conforme UI-Kit) e mensagem.
+- Sem estilo inline, sem cor fixa, sem rgba (use oklch from var(...)), sem
+  !important, sem <strong>/<b> para peso, sem <br> para espaçamento, sem
+  float, sem font-size em em, zero sem unidade, comentários SCSS com //.
+- Tamanhos em múltiplos de 2px; texto corrido ≥ 12px.
+- Cada componente declara os próprios estilos (encapsulamento).
+
+====================================================================
+5. ARQUITETURA E ORGANIZAÇÃO
+====================================================================
+- Mantenha a página com as duas abas. A biblioteca e o assistente ficam na
+  aba "Biblioteca". Componentes novos na pasta do gerador, um por
+  responsabilidade (ex.: biblioteca, card do modelo, drawer do modelo,
+  modal de campos, assistente, etapa origem, etapa revisão, etapa salvar,
+  concluído, modal de troca de origem, modal de cadastro de partes). Não
+  crie componente shared novo a menos que o UI-Kit não tenha nada parecido.
+- Estado do fluxo em um facade/serviço do próprio gerador (signals),
+  separado dos componentes de tela. Service HTTP do gerador ganha só os
+  métodos dos endpoints existentes.
+- Interfaces de contrato em shared/interfaces; types em shared/types
+  (amplie os de modelo de peça que já existem, sem quebrar os atuais).
+- Todo texto de UI no arquivo de mensagens globais (pt-BR), com chaves
+  por contexto (prefixo do gerador já usado). Não reaproveite chave com
+  sentido diferente; não remova chave existente.
+- Controle de fluxo novo do Angular (@if/@for), ordem de atributos do
+  ESLint, sem estilo inline, OnPush.
+- Nenhuma regra de negócio no front: formatação, obrigatoriedade, plural,
+  extenso, pasta de destino, permissão — tudo vem da API. O front só
+  valida forma básica (campo vazio, tamanho) para não enviar lixo.
+- Limpeza: remova imports, variáveis e métodos mortos dos arquivos que
+  tocar. Se a biblioteca atual tiver algo que o novo layout substitui,
+  substitua (é desta mesma feature), sem tocar no gerador de produção.
+
+====================================================================
+6. QUANDO O ENDPOINT NÃO EXISTIR
+====================================================================
+O back está sendo completado em paralelo (tipos de peça, busca de registro,
+partes com "já é cliente", cadastro rápido, campos perdidos pela troca de
+origem, download da peça, download do modelo em branco). Regra:
+- Endpoint existe → implemente a funcionalidade completa.
+- Endpoint não existe → NÃO invente rota nem payload, NÃO use dado fixo.
+  Deixe a parte da tela fora (sem botão quebrado) e registre na entrega,
+  na tabela de pendências, qual tela/ação depende de qual endpoint.
+- Exceção: a busca de registro de origem é essencial. Se ela não existir,
+  permita apenas "Preencher manualmente" e a entrada pré-selecionada por
+  parâmetro de query, e registre como pendência bloqueante.
+
+====================================================================
+7. ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+====================================================================
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
+Observação para esta tarefa: como não há etapa de aprovação, escreva a
+"mini-spec" no início da entrega final (o que fez e por quê), não antes.
+Debounce + cancelamento da revisão (switchMap ou equivalente) é trecho
+avançado: comente no código e explique na entrega.
+
+====================================================================
+8. DOCUMENTAÇÃO
+====================================================================
+- Atualize/crie em /docs: regra de negócio do gerador no front (contrato
+  de cada endpoint consumido: props, tipos, valores esperados, erros) e o
+  fluxo das telas (biblioteca → drawer → assistente → concluído).
+- Log de evolução: UM por branch em docs/logs-evolucao (se já existir um
+  desta branch, acrescente uma seção datada).
+- Todo Markdown conforme markdownlint. Arquivos de regra de negócio
+  terminam com a seção "## Fontes" (caminhos relativos à raiz do repo).
+
+====================================================================
+9. VALIDAÇÃO
+====================================================================
+- Rode SOMENTE o build do front (npx ng build). Sem lint, sem testes, sem
+  navegador, sem subir servidor.
+- Se o build falhar, corrija até passar. Não altere configuração de
+  build/lint/stylelint e não use comentários de disable.
+- Não faça commit.
+
+====================================================================
+10. ENTREGA (formato)
+====================================================================
+1. Mini-spec do que foi feito (curta).
+2. Tabela: tela/funcionalidade | situação (feito / parcial / fora) |
+   arquivos | endpoint usado.
+3. Tabela de pendências: o que ficou fora e de qual endpoint/decisão depende.
+4. Diferenças conscientes em relação ao mock (o que foi adaptado ao UI-Kit
+   e por quê).
+5. Confirmação de que o "Gerador atual" não foi alterado (liste os arquivos
+   dele que NÃO foram tocados).
+6. Resultado do build.
+7. Seção "Explicações": cada trecho avançado (debounce/cancelamento da
+   revisão, favorito otimista com rollback, chave de operação reutilizada,
+   foco/teclado no drawer) — o que faz, por que, versão simples
+   equivalente e onde pôr o breakpoint.
