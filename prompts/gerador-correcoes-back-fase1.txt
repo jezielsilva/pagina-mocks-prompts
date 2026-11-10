@@ -1,0 +1,234 @@
+PROMPT — Gerador de peças: correções e complementos do BACK (Fase 1)
+Modelo alvo: Codex (raciocínio médio). Siga os passos NA ORDEM, um de cada vez.
+
+====================================================================
+CONTEXTO
+====================================================================
+O back do Gerador de peças já tem: consultar modelos → revisar/preencher →
+gerar Word/PDF → salvar em Documentos, mais favoritos e contagem de usos.
+Uma auditoria apontou o que falta e o que está fora do padrão. Esta tarefa
+corrige SÓ os itens listados abaixo. Mexa somente no BACK.
+
+Antes de começar, localize sozinho no código (não invente nomes):
+- o controller que já existe do gerador de peças e as classes de negócio,
+  repositórios e view models novos dos modelos de peças;
+- a classe de negócio que resolve a origem dos dados (processo, cliente,
+  fornecedor, manual) e a que revisa o preenchimento;
+- a classe de negócio que gera a peça e a parte do negócio de Documentos
+  que salva os arquivos gerados;
+- o fluxo de CONVERSAS do cliente que identifica as partes de um processo
+  e cadastra a parte como cliente (já com vínculo ao processo);
+- o gerador de peças que está hoje em produção (branch develop) e como ele
+  escolhe a pasta onde a peça é salva (processo, cliente, categoria).
+
+====================================================================
+FORA DO ESCOPO (não fazer)
+====================================================================
+- Front-end (nada).
+- Busca por CONTEÚDO do modelo (removida do escopo; só busca por nome).
+- Cobrança: plano, pacote ou saldo na geração (motor será feito depois).
+- Conversor de PDF (serviço interno, timeout, concorrência): não mexer.
+- Índices no banco: NÃO criar. Ver observação no item 1.
+- Classificações (estão em outra branch) e textos dos modelos iniciais.
+- Fases 2 e 3 (criar/editar modelos do escritório, versões, blocos, lote,
+  rascunho, aprovação etc.).
+- Testes: não criar. Banco: nenhuma migration, índice, coleção ou script.
+- Pacotes novos: não instalar.
+
+====================================================================
+ITENS
+====================================================================
+A) FUNCIONALIDADES
+
+1. Busca só por nome
+   - Hoje a busca da biblioteca procura em nome, descrição e no HTML do
+     modelo. Deixe SOMENTE por nome. Se já estiver assim, apenas informe.
+   - OBS (não implementar): a busca usa regex sem índice e uma contagem de
+     usos por consulta; o índice no Mongo será criado manualmente depois.
+     Deixe um comentário curto no código registrando isso.
+
+2. Filtro por tipo de peça
+   - Novo parâmetro opcional de tipo na consulta da biblioteca, combinável
+     com os filtros atuais (todos / sistema / escritório / favoritos /
+     ordenação por mais usados).
+   - Endpoint (no MESMO controller) que lista os tipos de peça existentes
+     entre os modelos visíveis ao escritório, para montar o filtro.
+
+3. Pré-visualização (card)
+   - O card da biblioteca só precisa do título da peça, e isso já vem.
+     Não criar nada novo aqui. Apenas confirme que o resumo devolve o nome.
+
+4. Origem e busca do registro
+   - Endpoint de busca para selecionar o registro de origem: processo,
+     cliente ou fornecedor, por texto (nome; número no caso de processo),
+     paginado e pequeno (id + texto de exibição + dado secundário).
+   - Respeitar a permissão do usuário adicional (mesma regra que a
+     resolução da origem já usa: acesso à lista daquele módulo e, para
+     processos, as células permitidas). Reutilize os repositórios que já
+     existem; se exigir algo grande ou nova estrutura, PARE e me pergunte.
+
+5. Partes do processo com "já é cliente"
+   - Na origem processo, devolver autores e réus com indicação "já é
+     cliente" (e o id do cliente quando for).
+   - REUTILIZE a lógica que já existe no fluxo de Conversas do cliente que
+     mapeia as partes do processo contra os clientes. Não duplique regra:
+     se precisar, extraia para um ponto comum chamado pelos dois.
+
+6. Cadastro rápido de parte como cliente
+   - Já existe no fluxo de Conversas (identifica as partes do processo e
+     cadastra como cliente, com vínculo ao processo). Exponha esse mesmo
+     fluxo para o gerador chamando a regra existente, sem reescrever.
+   - Se o fluxo existente não validar CPF/CNPJ, use a validação do item 10.
+
+7. Campos sem dado quando a origem difere da recomendada
+   - Na revisão, devolver separado dos pendentes gerais a lista de campos
+     que ficaram sem dado POR CAUSA da origem escolhida (campos que a
+     origem recomendada preencheria e a escolhida não preenche).
+
+8. Salvar sempre vinculado ao registro de origem (RISCO GRAVE)
+   - Hoje a pasta de destino e o registro são independentes: dá para gerar
+     com dados do processo A e salvar na pasta do processo B. Corrigir.
+   - Regra nova: a pasta de destino é DEFINIDA PELO BACK a partir da
+     origem, como o gerador de produção já faz:
+       origem processo   → pasta daquele processo;
+       origem cliente    → pasta daquele cliente;
+       origem fornecedor → pasta daquele fornecedor;
+       demais categorias → pasta da categoria do registro, como hoje.
+   - Se o pedido trouxer uma pasta diferente da do registro, recusar.
+   - Nesta primeira entrega a geração SEMPRE parte de uma categoria (com
+     registro). Geração avulsa (origem manual, salvando em Meus Documentos)
+     fica FORA agora: recusar com mensagem clara e deixar comentário
+     "OBS: geração avulsa em Meus Documentos — decidir depois".
+   - Registre a regra no doc de regras de negócio do gerador.
+
+9. Download
+   - Download da peça gerada (.docx e .pdf) por id do arquivo, validando
+     escritório, permissão e se o arquivo pertence a uma geração de peça.
+   - Download do modelo EM BRANCO (sem preenchimento, chaves visíveis ou
+     como rótulos), separado da geração, em .docx e .pdf, usando o mesmo
+     conversor que a geração já usa. Não conta uso nem grava log de uso.
+
+10. Formatação e validação
+   - CPF, CNPJ e número CNJ: validar dígito verificador (hoje só confere a
+     quantidade de dígitos). Inválido vira campo pendente com mensagem.
+   - Se já existir validador de CPF/CNPJ no projeto, reutilize.
+   - Gênero: não implementar; só manter como está.
+
+B) CORREÇÕES DE ESTRUTURA E RISCOS
+
+11. Trabalho repetido na geração
+   - Hoje cada geração busca o modelo 3 vezes e resolve a origem 2 vezes.
+     Buscar o modelo UMA vez e resolver a origem UMA vez, passando o
+     resultado adiante.
+
+12. Arquivo órfão no S3
+   - Se o upload subiu e a gravação no Mongo falhou, os objetos ficam no
+     storage. Regra: se não salvou de um lado, não fica do outro. Garantir
+     a remoção dos objetos enviados quando o registro não for confirmado,
+     sem apagar arquivo que de fato ficou registrado (conferir no banco
+     antes de remover). Se a remoção falhar, registrar no log de erro com
+     o identificador da operação.
+
+13. Campo de usos enganoso
+   - O modelo tem um campo de usos gravado que nunca é lido (é sempre
+     recalculado pelos logs). Remova a leitura/uso desse campo como fonte;
+     o valor exibido continua vindo da contagem. Não altere documentos no
+     banco.
+
+14. OpenXml
+   - O pacote de conversão HTML→Word depende do OpenXml. O projeto já usa
+     uma versão do OpenXml (via a biblioteca de Excel). Verifique, pelo
+     build e pelas dependências declaradas do pacote, se há conflito real.
+     Se não houver, só informe. Se houver, PARE e me pergunte.
+
+15. Controller sem regra
+   - Tirar do controller qualquer regra: o bloqueio de cliente do portal
+     deve ficar num único ponto (filtro ou negócio), não repetido em cada
+     action. O gerador é só para o escritório (titular e adicionais), nunca
+     para clientes do advogado.
+   - Controller só recebe, chama o negócio e devolve.
+
+16. Business com interface
+   - As classes de negócio novas do gerador não têm interface; o padrão do
+     projeto tem (IXxxBusiness). Criar as interfaces e registrar na
+     injeção de dependência como as demais.
+
+17. Repository sem regra / Business sem Mongo direto
+   - Repositórios novos têm regra (visibilidade sistema/escritório,
+     validação de titular/adicional ativo com exceção de acesso, validação
+     de consistência do log). Mover a regra para o negócio; repositório só
+     consulta e grava.
+   - A parte de Documentos que salva a peça monta filtro Mongo dentro do
+     negócio. Mover para repositório.
+   - Compare com o fluxo de Conversas do cliente: se lá a estrutura estiver
+     correta, siga igual; se lá também estiver fora do padrão, NÃO mexa em
+     Conversas, só me relate.
+
+18. Erro com objeto de resultado
+   - Hoje todo erro de negócio é exceção convertida em status no
+     controller. Padrão desejado: erro de negócio volta como objeto de
+     resultado (sucesso, mensagem, código) e o controller devolve o status.
+   - Antes de implementar, procure no projeto um objeto de resultado que já
+     exista e use ele. Se não existir, PARE e me mostre a proposta na
+     mini-spec. Exceção continua só para erro inesperado.
+
+19. Estilo no código do gerador (ver bloco ESTILO DE CÓDIGO)
+   - Comentário-resumo em português no topo de TODOS os métodos do gerador.
+   - Revisar e ajustar: nulos com if explícito (sem ?. ?? em regra),
+     ternários encadeados → if, switch expression → switch clássico,
+     LINQ um operador por linha, condições gigantes quebradas em ifs com
+     retorno antecipado, genéricos novos removidos (ex.: atualização de
+     favoritos e definição de valor), variáveis intermediárias nomeadas no
+     lugar de expressões longas, comentário em todo trecho avançado
+     (agregação com lookup, update em pipeline, ranges, pattern matching).
+   - Não mudar comportamento ao ajustar estilo.
+
+====================================================================
+ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
+====================================================================
+- Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
+- Comentário-resumo em português no topo de cada método.
+- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
+- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Valores fixos direto no código (constante só se repetir ou for regra configurável).
+- Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
+- Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
+- Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
+
+====================================================================
+REGRAS GERAIS
+====================================================================
+- Nenhum controller novo: endpoints novos no controller do gerador.
+- Controller → Business → Repository.
+- Toda regra no back (front "burro"), validando escritório e permissão do
+  adicional em TODO endpoint novo.
+- Atualizar o doc de regras de negócio e o de fluxo do gerador com o que
+  mudou (contrato de cada endpoint novo/alterado).
+- Validação: apenas build do back. Sem testes, sem lint, sem navegador.
+- Não commitar. Eu reviso e commito.
+
+====================================================================
+MODO DE EXECUÇÃO (um passo por vez, esperar meu OK entre eles)
+====================================================================
+1. MINI-SPEC: para cada item (1 a 19), em 2–4 linhas: onde vai mexer,
+   como, e o que reutiliza. Destaque: itens já feitos, itens em que vai
+   parar para perguntar (4, 14, 18) e a proposta do objeto de resultado.
+   Espere meu OK.
+2. Itens 11, 12, 13 e 8 (riscos). Build. Entregue. Espere meu OK.
+3. Itens 15, 16, 17 e 18 (estrutura). Build. Entregue. Espere meu OK.
+4. Itens 1, 2, 3, 7 e 10. Build. Entregue. Espere meu OK.
+5. Itens 4, 5, 6 e 9. Build. Entregue. Espere meu OK.
+6. Item 19 (estilo) em todo o código do gerador + item 14. Build.
+7. Docs atualizados + entrega final.
+Se o contexto estiver acabando, pare no fim de um passo e avise onde parou.
+
+====================================================================
+FORMATO DA ENTREGA (em cada passo)
+====================================================================
+- Tabela: item | o que foi feito | arquivo + método.
+- Contrato atualizado dos endpoints (verbo, rota, recebe, devolve).
+- Pendências e decisões que dependem de mim.
+- Seção "Explicações": para cada trecho avançado ou decisão de clean code,
+  o que faz, por que, versão simples equivalente e onde pôr o breakpoint.
