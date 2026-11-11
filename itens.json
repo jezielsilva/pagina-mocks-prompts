@@ -1,68 +1,33 @@
 {
- "atualizado": "2026-11-11T12:00",
- "itens": [
-  {
-   "id": "pendencias",
-   "tipo": "prompt",
-   "projeto": "elaw adv · Documentos",
-   "titulo": "PENDÊNCIAS — Documentos",
-   "data": "2026-10-29T10:09",
-   "arquivo": "pendencias/PENDENCIAS.txt",
-   "fixo": true
-  },
-  {
-   "id": "gerador-pecas-mock",
-   "tipo": "artefato",
-   "projeto": "elaw adv · Gerador de peças",
-   "titulo": "Mock — Gerador de peças (template por arraste, drawer largo, classificações)",
-   "data": "2026-11-10T16:20",
-   "arquivo": "artefatos/gerador-pecas-mock.html",
-   "fixo": true
-  },
-  {
-   "id": "documentos-mock",
-   "tipo": "artefato",
-   "projeto": "elaw adv · Documentos",
-   "titulo": "Mock — Documentos (lista de categorias dentro do card de armazenamento)",
-   "data": "2026-11-05T17:45",
-   "arquivo": "artefatos/documentos-mock.html",
-   "principal": true,
-   "fixo": true
-  },
-  {
-   "id": "perfil-codigo",
-   "tipo": "prompt",
-   "fixo": true,
-   "projeto": "Jeziel · Perfil",
-   "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
-   "data": "2026-10-23T11:50:00-03:00",
-   "arquivo": "perfil/PERFIL-DE-CODIGO.md"
-  },
-  {
-   "id": "gerador-front-fase1-mock",
-   "tipo": "prompt",
-   "projeto": "elaw adv · Gerador de peças",
-   "titulo": "Prompt — Front da Fase 1 a partir do mock (execução direta, Codex)",
-   "data": "2026-11-10T11:40",
-   "arquivo": "prompts/gerador-front-fase1-mock.txt"
-  },
-  {
-   "id": "gerador-ajustes-visuais-classificacoes",
-   "tipo": "prompt",
-   "projeto": "elaw adv · Gerador de peças",
-   "titulo": "Prompt — Ajustes visuais da biblioteca e da Personalização + clique nos tipos",
-   "data": "2026-11-10T16:30",
-   "arquivo": "prompts/gerador-ajustes-visuais-classificacoes.txt"
-  },
-  {
-   "id": "treino-2026-11-11",
-   "tipo": "artefato",
-   "treino": true,
-   "fixo": true,
-   "projeto": "Jeziel · Treino",
-   "titulo": "Treino de quarta, 11/11 — corrigido (overview dos 4)",
-   "data": "2026-11-11T12:00:00-03:00",
-   "arquivo": "treino/index.html?d=2026-11-11"
-  }
- ]
+  "atualizado": "2026-11-11T18:15",
+  "itens": [
+    {
+      "id": "gerador-pecas-mock",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Mock — Gerador de peças (template por arraste, drawer largo, classificações)",
+      "data": "2026-11-10T16:20",
+      "arquivo": "artefatos/gerador-pecas-mock.html",
+      "fixo": true
+    },
+    {
+      "id": "documentos-mock",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Mock — Documentos (lista de categorias dentro do card de armazenamento)",
+      "data": "2026-11-05T17:45",
+      "arquivo": "artefatos/documentos-mock.html",
+      "principal": true,
+      "fixo": true
+    },
+    {
+      "id": "perfil-codigo",
+      "tipo": "prompt",
+      "fixo": true,
+      "projeto": "Jeziel · Perfil",
+      "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
+      "data": "2026-10-23T11:50:00-03:00",
+      "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    }
+  ]
 }
