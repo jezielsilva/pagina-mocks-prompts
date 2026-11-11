@@ -43,13 +43,15 @@
   if (lista.Count == 0)
       return;
   ```
-- **Nulos com if explícito** (não usar cadeias de `?.` + `??`):
-  ```csharp
-  string cidade = "Sem cidade";
-  if (cliente != null && cliente.Endereco != null)
-      cidade = cliente.Endereco.Cidade;
-  ```
-  (`?.` isolado e simples é aceitável em template Angular, ex.: `cliente?.nome`.)
+- **Nulos** (atualizado em 11/11/2026 pelo treino — ver seção 11):
+  - `?.` e `??` LIBERADOS em C# e TypeScript em cadeia curta (até 2 `?.` + um `??` no fim), com comentário de 1 linha no código; sem seção "Explicações" obrigatória.
+    ```csharp
+    // cidade do cliente; "Não informada" se cliente/endereço/cidade forem null
+    var cidade = cliente?.Endereco?.Cidade ?? "Não informada";
+    ```
+  - Quando o valor puder ser `""` ou `0` e isso importar, NÃO confiar no `??` (ele só troca null/undefined): usar if explícito (`string.IsNullOrEmpty`) e comentar.
+  - No TypeScript, valor padrão com `??`, nunca `||` (o `||` troca 0 e "" por engano).
+  - Cadeias maiores que isso: quebrar em if explícito.
 - **Ternário só simples**: `var status = ativo ? "Ativo" : "Inativo";`. Ternário aninhado: NÃO.
 - **switch clássico** (case/break) ou if, em vez de switch expression.
 - **var** para declarar variáveis.
@@ -90,7 +92,7 @@
     this.carregando = false;
   });
   ```
-  Sempre com `takeUntilDestroyed` (ou o padrão de unsubscribe do projeto).
+  Sempre com `takeUntilDestroyed` (ou o padrão de unsubscribe do projeto). O par `private destroyRef = inject(DestroyRef);` + `.pipe(takeUntilDestroyed(this.destroyRef))` está LIBERADO sem explicação (ele escreve de memória — treino 09/11). Ainda explicar em 1 linha POR QUE aquela fonte precisa (ex.: "Subject do hub não termina sozinho"); HTTP não precisa de comentário.
 - **RxJS**: confortável com `pipe` + `map`/`filter`/`tap`. `switchMap`, `combineLatest`, `forkJoin`, `debounceTime`, `shareReplay` etc.: só quando necessário, com explicação (regra 0).
 - **Estado**: variáveis simples + subscribe. Signals/Observable+async pipe: permitido quando melhorar, explicando.
 - **Template**: só exibição + condições simples (`@if (x && y)`). Lógica maior vai para o `.ts` em getters/métodos com nome claro (ex.: `podeExcluir`). Se for preciso algo mais complexo no template, explicar.
@@ -114,12 +116,24 @@
 ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 - Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
 - Comentário-resumo em português no topo de cada método.
-- Retorno antecipado; if de uma linha sem chaves; nulos com if explícito; ternário só simples; switch clássico; var.
+- Retorno antecipado; if de uma linha sem chaves; ternário só simples; switch clássico; var.
+- Nulos: ?. e ?? liberados em cadeia curta (até 2 ?. + ?? no fim) com comentário de 1 linha; se "" ou 0 importarem, if explícito (?? só troca null/undefined); em TS nunca usar || para valor padrão.
 - LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
 - Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
-- Front: subscribe simples atribuindo em variáveis (+ takeUntilDestroyed); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Front: subscribe simples atribuindo em variáveis + takeUntilDestroyed(this.destroyRef) com inject(DestroyRef) (sem explicação; só 1 linha dizendo por que a fonte não termina sozinha); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
 - Valores fixos direto no código (constante só se repetir ou for regra configurável).
 - Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
 - Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
 - Prefira variáveis intermediárias nomeadas (bom para breakpoint) a expressões longas.
 ```
+
+## 11. Evolução pelo treino diário (atualizado a cada conceito entendido)
+> Regra: sempre que o treino mostrar que ele ENTENDEU um conceito (acertou com o porquê, ou escreveu de memória), este perfil é atualizado no mesmo dia — o recurso passa de "evitar" → "liberado com comentário de 1 linha" → "liberado sem explicação". Erro no conceito básico volta um degrau. Histórico em perfil/PROGRESSO-TREINO.md.
+
+| Data | Recurso | Antes | Agora | Evidência |
+|---|---|---|---|---|
+| 11/11/2026 | `?.` + `??` (C# e TS) | Evitar; if explícito | Liberado em cadeia curta, com comentário de 1 linha | 10–11/11: leu a cadeia, achou o `?.` faltando, traduziu `??` para if sem inverter |
+| 11/11/2026 | `??` × `\|\|` com `""`/`0` | — | Ainda NÃO domina: if explícito quando vazio/0 importar | 10–11/11: achou que `??` troca `""` e `0` |
+| 11/11/2026 | `inject(DestroyRef)` + `takeUntilDestroyed` | Com explicação | Liberado sem explicação (só 1 linha do porquê da fonte) | 09/11: escreveu as 2 linhas de memória |
+| 11/11/2026 | Classificar "termina sozinho?" (HTTP × Subject/interval/valueChanges) | — | Ainda NÃO domina: manter comentário de 1 linha em cada subscribe de fonte infinita | 06/11 e 09/11 q1 |
+| 27/10/2026 | Guard clauses / `$set` no Mongo | — | Já eram o padrão do perfil (ele usa e escolhe certo) | 27–28/10 |

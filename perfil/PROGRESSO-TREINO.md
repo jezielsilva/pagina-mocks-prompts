@@ -51,7 +51,8 @@
 | 2026-10-26 | ~1,5/5 (q1 ½, q2 ✗, q3 ¼, q4 ¼, q5 ½) | GroupBy, switchMap, unsubscribe, ReplaceOne×$set, switch expression | Lê a intenção geral, mas falta precisão no resultado. Repetir: ReplaceOne×$set, takeUntilDestroyed, switchMap (com versão sem pipe ao lado) |
 
 ## Ajustes feitos no PERFIL-DE-CODIGO.md por causa do treino
-(nenhum ainda)
+> REGRA (pedido do Jeziel em 11/11/2026): a CADA conceito que ele mostrar que entendeu (acerto com porquê ou escrito de memória), atualizar o PERFIL-DE-CODIGO.md no mesmo dia — seções afetadas, bloco da seção 10 e tabela da seção 11. Não esperar nível 3. Erro no básico volta um degrau.
+- 11/11/2026: ?. e ?? liberados em cadeia curta com comentário de 1 linha (seções 3, 10, 11); takeUntilDestroyed + inject(DestroyRef) liberado sem explicação (seções 6, 10, 11); registrado que ""/0 com ?? e 'termina sozinho?' ainda não estão dominados.
 
 ## Feedback para o próximo treino (usar em feedbackAnterior)
 - 26/10: reforçar com exercícios curtos e versão "simples equivalente" ao lado: (1) ReplaceOne apaga campos que não vieram → usar UpdateOne + $set; (2) Observable de hub/Subject nunca completa → takeUntilDestroyed; (3) switchMap cancela a busca anterior; (4) ler switch expression como switch clássico; (5) sempre dizer o RESULTADO concreto pedido no enunciado.
