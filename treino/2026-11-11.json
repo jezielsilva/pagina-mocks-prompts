@@ -1,0 +1,42 @@
+{
+ "data": "2026-11-11",
+ "dataExibicao": "quarta, 11/11",
+ "minutos": 10,
+ "intro": "?. e ?? — 2º dia, agora no front (TypeScript/Angular). Mesma ideia de ontem, com uma novidade: a diferença entre ?? e ||, que as IAs misturam o tempo todo.",
+ "feedbackAnterior": "<p><b>Treinos de 06/11, 09/11 e 10/11:</b> ainda sem resposta. Sem penalidade: continuam no portal. Se der tempo só para um, comece por este de hoje (10 min) ou pelo de 10/11, que é o mesmo tema no C#.</p>",
+ "aula": "<p><b>Revisão rápida:</b> <code>?.</code> = \"se for null/undefined, para aqui e devolve undefined\". <code>??</code> = \"se a esquerda for null/undefined, usa a direita\".</p><p><b>Novidade de hoje: <code>??</code> × <code>||</code></b></p><ul><li><code>??</code> troca <b>só</b> null e undefined.</li><li><code>||</code> troca <b>qualquer valor \"falso\"</b>: null, undefined, <code>\"\"</code>, <code>0</code> e <code>false</code>.</li></ul><p><b>Analogia:</b> o <code>??</code> é o porteiro que só recebe a encomenda quando <b>não tem ninguém</b> em casa. O <code>||</code> recebe também quando a pessoa está em casa mas \"não conta\" (está dormindo = 0, mudo = \"\").</p><p><b>Exemplo:</b></p><pre>const qtd = 0;\nqtd ?? 10   // 0   (0 não é null)\nqtd || 10   // 10  (0 conta como falso)</pre><p><b>No seu estilo:</b></p><pre>// qtd ?? 10\nlet total = qtd;\nif (qtd === null || qtd === undefined) {\n  total = 10;\n}</pre><p><b>No template Angular</b> o <code>?.</code> funciona igual: <code>{{ cliente?.endereco?.cidade }}</code> mostra vazio em vez de quebrar a tela enquanto o HTTP ainda não respondeu (no começo, <code>cliente</code> é undefined).</p><p><b>Erro mais comum:</b> usar <code>||</code> para valor padrão de número. Se o cliente tem <code>0</code> documentos pendentes, <code>pendentes || '-'</code> mostra \"-\" em vez de 0.</p>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "?. e ?? (TS)",
+   "tipo": "Leitura (resultado concreto)",
+   "enunciado": "Diga o que aparece em 'a' e em 'b' em cada caso. O caso 1 já está preenchido. Responda no formato: 1) a=10, b=10 | 2) a=__, b=__ | 3) a=__, b=__",
+   "codigo": "const a = cliente.documentosPendentes ?? 10;\nconst b = cliente.documentosPendentes || 10;\n\n// 1) documentosPendentes = undefined  → a = 10, b = 10 (exemplo)\n// 2) documentosPendentes = 0\n// 3) documentosPendentes = 4",
+   "gabarito": "1) a=10, b=10 | 2) a=0, b=10 | 3) a=4, b=4",
+   "explicacao": "2: 0 não é null/undefined, então ?? mantém 0; mas 0 é 'falso' para o ||, que troca por 10 (pegadinha da aula). 3: 4 não é null nem falso → os dois ficam 4. Erro esperado: responder a=10 no caso 2."
+  },
+  {
+   "id": "q2",
+   "tema": "?. no template Angular",
+   "tipo": "Ache o bug",
+   "enunciado": "Ao abrir a tela, o console mostra \"Cannot read properties of undefined (reading 'nome')\" por meio segundo, até o HTTP responder. Qual linha (A, B ou C) causa o erro? Responda a letra.",
+   "codigo": "// componente\ncliente?: Cliente;   // começa undefined; preenchido no subscribe do HTTP\n\n<!-- template -->\n<h2>{{ cliente?.nome }}</h2>                          <!-- A -->\n<p>Responsável: {{ cliente?.responsavel?.nome }}</p>  <!-- B -->\n<p>Escritório: {{ cliente.escritorio?.nome }}</p>     <!-- C -->",
+   "gabarito": "C (correção: cliente?.escritorio?.nome)",
+   "explicacao": "Enquanto o HTTP não responde, cliente é undefined. A e B começam com cliente?. e param ali, mostrando vazio. C lê cliente.escritorio sem ?, ou seja, tenta ler 'escritorio' de undefined → erro. É o mesmo bug do 'Responsavel.Nome' de ontem, agora no primeiro elo. Alternativa no estilo dele: envolver o bloco em @if (cliente) { ... }."
+  },
+  {
+   "id": "q3",
+   "tema": "?? (TS)",
+   "tipo": "Escolha",
+   "enunciado": "A tela de clientes mostra o total de mensagens não lidas do chat. Quando o cliente tem 0 não lidas, deve aparecer 0; quando o back não mandou o campo, deve aparecer '-'. Qual linha usar? Responda a letra e o porquê em uma frase.",
+   "codigo": "",
+   "opcoes": [
+    "A) {{ cliente.naoLidas || '-' }}",
+    "B) {{ cliente.naoLidas ?? '-' }}",
+    "C) {{ cliente.naoLidas ? cliente.naoLidas : '-' }}"
+   ],
+   "gabarito": "B",
+   "explicacao": "B troca só undefined/null por '-' e mantém o 0. A e C tratam 0 como 'falso' e mostram '-' para quem tem 0 não lidas (C é o || escrito por extenso). Um bom porquê cita que ?? só olha null/undefined, ou que 0 conta como falso no ||."
+  }
+ ]
+}
