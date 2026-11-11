@@ -1,5 +1,5 @@
 {
- "atualizado": "2026-11-11T09:25",
+ "atualizado": "2026-11-11T12:00",
  "itens": [
   {
    "id": "pendencias",
@@ -39,36 +39,6 @@
    "arquivo": "perfil/PERFIL-DE-CODIGO.md"
   },
   {
-   "id": "treino-2026-11-06",
-   "tipo": "artefato",
-   "treino": true,
-   "fixo": true,
-   "projeto": "Jeziel · Treino",
-   "titulo": "Treino de sexta, 06/11 — 3 perguntas",
-   "data": "2026-11-06T09:25:00-03:00",
-   "arquivo": "treino/index.html?d=2026-11-06"
-  },
-  {
-   "id": "treino-2026-11-09",
-   "tipo": "artefato",
-   "treino": true,
-   "fixo": true,
-   "projeto": "Jeziel · Treino",
-   "titulo": "Treino de segunda, 09/11 — 3 perguntas",
-   "data": "2026-11-09T09:30:00-03:00",
-   "arquivo": "treino/index.html?d=2026-11-09"
-  },
-  {
-   "id": "treino-2026-11-10",
-   "tipo": "artefato",
-   "treino": true,
-   "fixo": true,
-   "projeto": "Jeziel · Treino",
-   "titulo": "Treino de terça, 10/11 — 3 perguntas",
-   "data": "2026-11-10T09:30:00-03:00",
-   "arquivo": "treino/index.html?d=2026-11-10"
-  },
-  {
    "id": "gerador-front-fase1-mock",
    "tipo": "prompt",
    "projeto": "elaw adv · Gerador de peças",
@@ -90,8 +60,8 @@
    "treino": true,
    "fixo": true,
    "projeto": "Jeziel · Treino",
-   "titulo": "Treino de quarta, 11/11 — 3 perguntas",
-   "data": "2026-11-11T09:25:00-03:00",
+   "titulo": "Treino de quarta, 11/11 — corrigido (overview dos 4)",
+   "data": "2026-11-11T12:00:00-03:00",
    "arquivo": "treino/index.html?d=2026-11-11"
   }
  ]
