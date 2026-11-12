@@ -1,0 +1,42 @@
+{
+ "data": "2026-11-12",
+ "dataExibicao": "quinta, 12/11",
+ "minutos": 10,
+ "intro": "?? × || — 3º dia. Ontem você acertou o ?. no template; falta só fixar a tabela dos 4 valores (null, undefined, \"\", 0). Hoje é só isso, com 3 perguntas curtas.",
+ "feedbackAnterior": "",
+ "aula": "<p><b>Uma regra só:</b> o <code>??</code> pergunta <b>\"é null ou undefined?\"</b>. O <code>||</code> pergunta <b>\"é falso?\"</b> (e para ele <code>\"\"</code>, <code>0</code> e <code>false</code> também são falsos).</p><table><tr><th>valor da esquerda</th><th><code>valor ?? 'X'</code></th><th><code>valor || 'X'</code></th></tr><tr><td><code>null</code></td><td>'X'</td><td>'X'</td></tr><tr><td><code>undefined</code></td><td>'X'</td><td>'X'</td></tr><tr><td><code>\"\"</code> (vazio)</td><td><b>\"\"</b> (fica)</td><td>'X'</td></tr><tr><td><code>0</code></td><td><b>0</b> (fica)</td><td>'X'</td></tr><tr><td><code>'Ana'</code> / <code>5</code></td><td>'Ana' / 5</td><td>'Ana' / 5</td></tr></table><p><b>Como ler:</b> só as linhas do meio (<code>\"\"</code> e <code>0</code>) mudam de resultado. Em todas as outras os dois dão o mesmo.</p><p><b>Analogia:</b> a caixa de correio. <code>??</code> = \"não chegou carta nenhuma? então põe o aviso\". Chegou um envelope vazio (<code>\"\"</code>)? Chegou algo, o <code>??</code> não mexe. O <code>||</code> joga fora até o envelope vazio.</p><p><b>Quando usar cada um no elawadv:</b></p><ul><li><b>Número</b> (pendentes, não lidas, total): use <code>??</code>. 0 é um valor real e tem que aparecer.</li><li><b>Texto que pode vir vazio</b> (apelido, observação): se vazio também deve virar o padrão, use <code>||</code> no TS, ou no C# <code>string.IsNullOrWhiteSpace(x) ? \"padrão\" : x</code> (no C# não existe esse <code>||</code> para texto).</li></ul><p><b>No seu estilo</b> (equivalente do <code>pendentes ?? '-'</code>):</p><pre>let texto = pendentes;\nif (pendentes === null || pendentes === undefined) {\n  texto = '-';\n}</pre><p><b>Erro mais comum:</b> pensar que <code>??</code> troca o vazio. Não troca: <code>\"\" ?? 'Sem apelido'</code> dá <code>\"\"</code>.</p>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "?? × ||",
+   "tipo": "Leitura (resultado concreto)",
+   "enunciado": "Para cada valor de 'apelido', diga o que fica em 'a' e em 'b'. O caso 1 já está preenchido. Responda no formato: 1) a=Sem apelido, b=Sem apelido | 2) a=__, b=__ | 3) a=__, b=__ | 4) a=__, b=__",
+   "codigo": "const a = cliente.apelido ?? 'Sem apelido';\nconst b = cliente.apelido || 'Sem apelido';\n\n// 1) apelido = null      → a = Sem apelido, b = Sem apelido (exemplo)\n// 2) apelido = ''        (texto vazio)\n// 3) apelido = undefined\n// 4) apelido = 'Zé'",
+   "gabarito": "1) a=Sem apelido, b=Sem apelido | 2) a='' (vazio), b=Sem apelido | 3) a=Sem apelido, b=Sem apelido | 4) a=Zé, b=Zé",
+   "explicacao": "Só o caso 2 diferencia: '' não é null/undefined, então o ?? mantém o vazio; o || acha '' falso e troca. Undefined é trocado pelos dois. Erro esperado: a=Sem apelido no caso 2."
+  },
+  {
+   "id": "q2",
+   "tema": "?? × || (Angular)",
+   "tipo": "Ache o bug",
+   "enunciado": "No card do cliente, quem tem 0 mensagens não lidas aparece com \"-\" em vez de 0. Qual linha (A, B ou C) causa isso? Escolha a letra e explique com as palavras null/undefined.",
+   "codigo": "<!-- naoLidas: number | undefined (undefined enquanto o chat carrega) -->\n\n<span>{{ cliente?.nome ?? 'Sem nome' }}</span>               <!-- A -->\n<span>{{ cliente?.naoLidas || '-' }}</span>                  <!-- B -->\n<span>{{ cliente?.documentosPendentes ?? 0 }}</span>        <!-- C -->",
+   "opcoes": [
+    "Linha A",
+    "Linha B",
+    "Linha C"
+   ],
+   "gabarito": "B",
+   "explicacao": "O || troca 0 por '-' porque 0 é 'falso'. Correção: cliente?.naoLidas ?? '-' (só troca quando é null/undefined, ou seja, enquanto carrega). A e C usam ?? e estão certas."
+  },
+  {
+   "id": "q3",
+   "tema": "?? × || (C#)",
+   "tipo": "Escrever (1 linha)",
+   "enunciado": "No back, o DTO deve mostrar \"Sem observação\" quando a Observacao do documento for null OU texto vazio. A linha abaixo deixa passar o vazio. Reescreva só essa linha para tratar os dois casos. Comece assim: dto.Observacao = string.IsNullOrWhiteSpace(...",
+   "codigo": "// hoje: \"\" passa direto e o front mostra um campo em branco\ndto.Observacao = documento.Observacao ?? \"Sem observação\";",
+   "gabarito": "dto.Observacao = string.IsNullOrWhiteSpace(documento.Observacao) ? \"Sem observação\" : documento.Observacao;",
+   "explicacao": "?? só cobre null. IsNullOrWhiteSpace cobre null, \"\" e espaços. Aceitar também a versão com if (no estilo dele) ou IsNullOrEmpty. Erro esperado: inverter os lados do ternário."
+  }
+ ]
+}

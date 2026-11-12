@@ -35,6 +35,7 @@
 ## Histórico de treinos
 | Data | Acertos | Temas | Observações |
 |---|---|---|---|
+| 2026-11-12 | aguardando resposta | ?? × || — 3º dia (tabela null/undefined/""/0): q1 apelido em 4 casos, q2 || com 0 no template, q3 IsNullOrWhiteSpace no C# | Nenhum treino aberto para corrigir (11/11 já corrigido). Se acertar q1 caso 2 e q2 com o porquê null/undefined = 2º acerto seguido → fecha ?./?? e volta ao conceito 1 (classificar "termina sozinho?"). |
 | 2026-11-11 | ≈2,3/3 (q1 ½, q2 ✓, q3 ✓ c/ porquê fraco) | ?. e ?? — 2º dia, ângulo front (TS/Angular): ?? × || com 0, ?. faltando no 1º elo do template, escolha ?? para contador do chat | Sem resposta de 06, 09 e 10/11 → treino mais curto (3 perguntas, ~10 min) para facilitar retomada. |
 | 2026-11-10 | ≈1,7/3 (q1 ⅔, q2 ✗, q3 ✓) — respondido em 11/11 | ?. e ?? — 1º dia (conceito 2 da fila): aula com tabela de casos; q1 valores em 4 casos (inclui "" que o ?? não troca), q2 ?. faltando no meio da cadeia, q3 traduzir ?? para if com lacunas | Trocado de conceito porque 06/11 e 09/11 seguem sem resposta (regra: repetir um tema não praticado). Conceito 1 (vazamento) ainda aberto: falta 1 acerto seguido. |
 | 2026-11-09 | 2/3 (q1 ✗ 'não entendi', q2 ✓, q3 ✓ de memória) — respondido em 11/11 | Vazamento de assinatura — 5º dia (revisão: classificar 'termina sozinho?', bug com 2 subscribes, escrever as 2 linhas de memória) | q2 testa que cada subscribe precisa do próprio pipe. |

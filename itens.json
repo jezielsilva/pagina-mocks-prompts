@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-11T18:15",
+  "atualizado": "2026-11-12T09:30",
   "itens": [
     {
       "id": "gerador-pecas-mock",
@@ -28,6 +28,16 @@
       "titulo": "PERFIL DE CÓDIGO — como escrever para o Jeziel (fixo)",
       "data": "2026-10-23T11:50:00-03:00",
       "arquivo": "perfil/PERFIL-DE-CODIGO.md"
+    },
+    {
+      "id": "treino-2026-11-12",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de quinta, 12/11 — 3 perguntas",
+      "data": "2026-11-12T09:30:00-03:00",
+      "arquivo": "treino/index.html?d=2026-11-12"
     }
   ]
 }
