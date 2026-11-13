@@ -1,0 +1,42 @@
+{
+  "data": "2026-11-13",
+  "dataExibicao": "sexta, 13/11",
+  "minutos": 10,
+  "intro": "De volta ao conceito 1 (vazamento), só na parte que ainda falta: reconhecer se a fonte TERMINA sozinha. Você já escreve a correção de memória; hoje é treinar o olho. O treino de quinta (?? × ||) continua no portal para responder também.",
+  "feedbackAnterior": "",
+  "aula": "<p><b>Uma pergunta só:</b> antes de qualquer <code>subscribe</code>, pergunte <b>\"essa fonte tem FIM?\"</b>. Ter <code>.subscribe</code> não faz nada terminar — quem decide é a fonte.</p>\n<table><tr><th>Fonte</th><th>Termina sozinha?</th><th>Por quê</th></tr>\n<tr><td><code>this.http.get(...)</code></td><td><b>Sim</b></td><td>1 resposta e acabou (como uma ligação: atendeu, falou, desligou)</td></tr>\n<tr><td><code>Subject</code> / <code>BehaviorSubject</code> (ex.: mensagens do hub do chat)</td><td><b>Não</b></td><td>Vive no serviço, que continua vivo depois que a tela fecha</td></tr>\n<tr><td><code>interval(5000)</code> / <code>timer(0, 5000)</code></td><td><b>Não</b></td><td>Relógio que bate para sempre</td></tr>\n<tr><td><code>form.valueChanges</code> / <code>route.params</code></td><td><b>Não</b></td><td>Emite a cada mudança, não tem \"última\" mudança</td></tr></table>\n<p><b>Analogia:</b> HTTP é uma <b>carta</b>: chega uma vez e pronto. Subject/interval/valueChanges são uma <b>assinatura de jornal</b>: continua chegando todo dia, mesmo depois que você se mudou (fechou a tela). Se não cancelar, alguém continua recebendo o jornal na casa vazia = <b>vazamento</b>.</p>\n<p><b>Regra prática:</b> respondeu \"Não\" na tabela → coloque o par que você já escreve de memória:</p>\n<pre>private destroyRef = inject(DestroyRef);\n\n// hub do chat não termina sozinho\nthis.chatService.mensagens$\n  .pipe(takeUntilDestroyed(this.destroyRef))\n  .subscribe(msg => this.mensagens.push(msg));</pre>\n<p><b>Erro mais comum:</b> olhar para o <code>.subscribe</code> e não para a fonte. Truque: leia o que vem <b>antes</b> do <code>.pipe</code>/<code>.subscribe</code> — se tem <code>http</code>, termina; se é <code>$</code> de serviço, <code>interval</code> ou <code>valueChanges</code>, não termina.</p>",
+  "perguntas": [
+    {
+      "id": "q1",
+      "tema": "Termina sozinho?",
+      "tipo": "Leitura (classificar)",
+      "enunciado": "Para cada fonte, diga se TERMINA sozinha ou NÃO termina. O caso 1 já está preenchido. Responda no formato: 1) termina | 2) __ | 3) __ | 4) __",
+      "codigo": "// 1) this.http.get<Cliente>(`/clientes/${id}`)      → termina (exemplo)\n// 2) this.chatService.novaMensagem$   (Subject do hub do chat)\n// 3) this.filtroForm.valueChanges      (campo de busca de documentos)\n// 4) this.documentoService.listar(clienteId)   (por dentro faz this.http.get)",
+      "gabarito": "1) termina | 2) não termina | 3) não termina | 4) termina",
+      "explicacao": "2 é Subject no serviço (vive depois da tela); 3 emite a cada digitação, sem fim; 4 parece de serviço mas por dentro é HTTP → 1 resposta e acaba. Erro esperado: marcar o 4 como 'não termina' por ser de serviço, ou o 3 como 'termina'."
+    },
+    {
+      "id": "q2",
+      "tema": "Termina sozinho? (ache o bug)",
+      "tipo": "Ache o bug",
+      "enunciado": "Na tela do cliente, depois de abrir e fechar 3 vezes, cada mensagem nova do chat aparece 3 vezes no console. Qual subscribe (A, B ou C) causa isso? Escolha a letra e explique em 1 frase com a palavra 'termina'.",
+      "codigo": "ngOnInit() {\n  this.clienteService.obter(this.id)            // A (HTTP)\n    .subscribe(c => this.cliente = c);\n\n  this.chatService.novaMensagem$               // B (Subject do hub)\n    .subscribe(m => console.log('nova', m));\n\n  this.documentoService.listar(this.id)         // C (HTTP)\n    .subscribe(d => this.documentos = d);\n}",
+      "opcoes": [
+        "A — clienteService.obter (HTTP)",
+        "B — chatService.novaMensagem$ (Subject do hub)",
+        "C — documentoService.listar (HTTP)"
+      ],
+      "gabarito": "B",
+      "explicacao": "novaMensagem$ é Subject do serviço: não termina quando a tela fecha, então cada abertura deixa 1 assinatura viva (3 aberturas = 3 logs). A e C são HTTP: terminam após a resposta. Correção: .pipe(takeUntilDestroyed(this.destroyRef)) só no B."
+    },
+    {
+      "id": "q3",
+      "tema": "Termina sozinho? (escrever)",
+      "tipo": "Completar código",
+      "enunciado": "A busca de documentos assina o valueChanges sem proteção. Reescreva o trecho com a linha do destroyRef, o pipe e o comentário de 1 linha dizendo POR QUE essa fonte precisa. Comece assim: private destroyRef = inject(DestroyRef);",
+      "codigo": "// hoje\nngOnInit() {\n  this.filtroForm.get('busca')!.valueChanges\n    .subscribe(texto => this.filtrar(texto));\n}",
+      "gabarito": "private destroyRef = inject(DestroyRef);\n\nngOnInit() {\n  // valueChanges não termina sozinho (emite a cada digitação)\n  this.filtroForm.get('busca')!.valueChanges\n    .pipe(takeUntilDestroyed(this.destroyRef))\n    .subscribe(texto => this.filtrar(texto));\n}",
+      "explicacao": "Ele já escreve o par de memória; o ponto novo é o comentário com o porquê certo (emite a cada mudança, não tem fim). Aceitar takeUntilDestroyed() sem argumento se no construtor. Erro esperado: comentário genérico tipo 'para não vazar' sem dizer por que a fonte não termina."
+    }
+  ]
+}
