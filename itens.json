@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-16T11:50",
+  "atualizado": "2026-11-16T12:20",
   "itens": [
     {
-      "id": "prompt-gerador-ajustes-download",
+      "id": "prompt-gerador-drawer-rascunhos",
       "tipo": "prompt",
       "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt Codex — campo Peça, paginação dos Logs, Cor do logo, card branco na grade e download (peça certa, A4, margens)",
-      "data": "2026-11-16T11:50",
-      "arquivo": "prompts/2026-11-16-gerador-pecas-ajustes-download.md"
+      "titulo": "Prompt Codex — drawer da peça igual ao mock (folha com layout do usuário) + confirmação ao excluir rascunho",
+      "data": "2026-11-16T12:20",
+      "arquivo": "prompts/2026-11-16-gerador-pecas-drawer-rascunhos.md"
     },
     {
       "id": "gerador-pecas-mock",
