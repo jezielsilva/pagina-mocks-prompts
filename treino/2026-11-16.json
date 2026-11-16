@@ -1,0 +1,42 @@
+{
+  "data": "2026-11-16",
+  "dataExibicao": "segunda, 16/11",
+  "minutos": 8,
+  "intro": "Os treinos de quinta (?? × ||) e sexta (termina sozinho?) ainda estão abertos. Este junta os dois conceitos em 3 perguntas curtas (~8 min): se só tiver tempo para um, responda este.",
+  "feedbackAnterior": "",
+  "aula": "<p><b>Revisão relâmpago dos 2 conceitos abertos.</b> Duas perguntas que resolvem quase tudo:</p>\n<h3>1) <code>??</code> — \"é null?\"</h3>\n<p>O <code>??</code> só troca quando o valor é <b>null</b> (em TS, também <b>undefined</b>). Texto vazio, espaços e 0 <b>passam direto</b>.</p>\n<table><tr><th>Valor de <code>doc.Observacao</code></th><th><code>doc.Observacao ?? \"Sem observação\"</code></th></tr>\n<tr><td><code>null</code></td><td>\"Sem observação\" (trocou)</td></tr>\n<tr><td><code>\"\"</code></td><td>\"\" (passou — não é null)</td></tr>\n<tr><td><code>\"Urgente\"</code></td><td>\"Urgente\"</td></tr></table>\n<p><b>Analogia:</b> o <code>??</code> é o porteiro que só barra <b>quem não veio</b> (null). Quem veio de mãos vazias (\"\" ou 0) entra. Se o vazio também precisa ser trocado, no C# use <code>string.IsNullOrWhiteSpace(x) ? \"padrão\" : x</code>.</p>\n<h3>2) Vazamento — \"essa fonte tem FIM?\"</h3>\n<p>HTTP = <b>carta</b> (chega 1 vez e acaba). <code>Subject</code>/<code>BehaviorSubject</code> do serviço, <code>interval</code>, <code>valueChanges</code>, <code>route.paramMap</code> = <b>assinatura de jornal</b> (continua chegando depois que a tela fecha). Sem fim → o par que você já escreve:</p>\n<pre>private destroyRef = inject(DestroyRef);\n\n// clienteSelecionado$ é BehaviorSubject do serviço: não termina sozinho\nthis.clienteService.clienteSelecionado$\n  .pipe(takeUntilDestroyed(this.destroyRef))\n  .subscribe(c => this.carregarDocumentos(c.id));</pre>\n<p><b>Erro mais comum:</b> olhar para o <code>.subscribe</code> em vez da fonte. Leia o que vem <b>antes</b> do <code>.pipe</code>.</p>",
+  "perguntas": [
+    {
+      "id": "q1",
+      "tema": "?? só troca null (C#)",
+      "tipo": "Leitura (resultado)",
+      "enunciado": "No mapeamento do documento para DTO, diga o valor de 'obs' em cada caso. O caso 1 já está preenchido. Responda no formato: 1) Sem observação | 2) __ | 3) __ | 4) __",
+      "codigo": "var obs = documento.Observacao ?? \"Sem observação\";\n\n// 1) Observacao = null        → \"Sem observação\" (exemplo)\n// 2) Observacao = \"\"          (texto vazio)\n// 3) Observacao = \"Assinar até sexta\"\n// 4) Observacao = \"   \"       (só espaços)",
+      "gabarito": "1) Sem observação | 2) \"\" (vazio) | 3) Assinar até sexta | 4) \"   \" (os espaços)",
+      "explicacao": "?? só troca null. \"\" e \"   \" não são null, então passam direto (o front mostraria em branco). Para tratar vazio/espaços: string.IsNullOrWhiteSpace. Erro esperado: responder 'Sem observação' no 2 ou no 4."
+    },
+    {
+      "id": "q2",
+      "tema": "Termina sozinho? (ache o bug)",
+      "tipo": "Ache o bug",
+      "enunciado": "Na tela de documentos, depois de abrir e fechar a tela 4 vezes, cada troca de cliente chama carregarDocumentos 4 vezes. Qual subscribe (A, B ou C) causa isso? Escolha a letra e explique em 1 frase com a palavra 'termina'.",
+      "codigo": "ngOnInit() {\n  this.documentoService.obterTipos()              // A (por dentro: http.get)\n    .subscribe(t => this.tipos = t);\n\n  this.clienteService.clienteSelecionado$         // B (BehaviorSubject do serviço)\n    .subscribe(c => this.carregarDocumentos(c.id));\n\n  this.http.get<Usuario>('/usuarios/atual')       // C (HTTP)\n    .subscribe(u => this.usuario = u);\n}",
+      "opcoes": [
+        "A — documentoService.obterTipos (HTTP por dentro)",
+        "B — clienteService.clienteSelecionado$ (BehaviorSubject)",
+        "C — http.get do usuário atual"
+      ],
+      "gabarito": "B",
+      "explicacao": "clienteSelecionado$ é BehaviorSubject do serviço: não termina quando a tela fecha, então cada abertura deixa 1 assinatura viva (4 aberturas = 4 chamadas). A e C são HTTP: 1 resposta e terminam. Correção: .pipe(takeUntilDestroyed(this.destroyRef)) só no B. Erro esperado: marcar A por ser 'de serviço'."
+    },
+    {
+      "id": "q3",
+      "tema": "Os dois juntos (completar)",
+      "tipo": "Completar código",
+      "enunciado": "O contador de não lidas do chat vem de um Subject do hub e pode chegar undefined; quando vier 0, tem que mostrar 0. Preencha as 2 lacunas. Responda no formato: 1) ____ | 2) ____",
+      "codigo": "private destroyRef = inject(DestroyRef);\n\nngOnInit() {\n  // naoLidas$ é Subject do hub: não termina sozinho\n  this.chatService.naoLidas$\n    .pipe(____1____)\n    .subscribe(qtd => this.naoLidas = qtd ____2____ 0);\n}",
+      "gabarito": "1) takeUntilDestroyed(this.destroyRef) | 2) ??",
+      "explicacao": "1: o Subject do hub não termina, então precisa do takeUntilDestroyed com o destroyRef já declarado. 2: ?? troca só undefined/null e mantém o 0; com || o 0 também viraria 0 aqui (sem dano visível), mas o padrão do perfil é nunca usar || para valor padrão. Aceitar 1) takeUntilDestroyed() só se ele justificar contexto de injeção. Erro esperado: escrever || no 2."
+    }
+  ]
+}
