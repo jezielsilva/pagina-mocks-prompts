@@ -1,6 +1,15 @@
 {
-  "atualizado": "2026-11-16T12:20",
+  "atualizado": "2026-11-16T17:45",
   "itens": [
+    {
+      "id": "guia-meus-documentos",
+      "tipo": "artefato",
+      "projeto": "elaw adv · Documentos",
+      "titulo": "Guia de apresentação — Meus documentos (documentação do suporte)",
+      "data": "2026-11-16T17:45",
+      "arquivo": "docs/guia-meus-documentos.pdf",
+      "pptx": "docs/guia-meus-documentos.pptx"
+    },
     {
       "id": "prompt-gerador-drawer-rascunhos",
       "tipo": "prompt",
