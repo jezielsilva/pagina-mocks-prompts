@@ -1,6 +1,14 @@
 {
-  "atualizado": "2026-11-16T11:36",
+  "atualizado": "2026-11-16T11:50",
   "itens": [
+    {
+      "id": "prompt-gerador-ajustes-download",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Prompt Codex — campo Peça, paginação dos Logs, Cor do logo, card branco na grade e download (peça certa, A4, margens)",
+      "data": "2026-11-16T11:50",
+      "arquivo": "prompts/2026-11-16-gerador-pecas-ajustes-download.md"
+    },
     {
       "id": "gerador-pecas-mock",
       "tipo": "artefato",
