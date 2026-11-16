@@ -51,13 +51,9 @@ O drawer atual está diferente do mock aprovado. O usuário quer **o estilo exat
 - Animação de entrada deslizando da direita (~0.2s).
 - O painel é uma coluna (flex column): **cabeçalho** em cima, **grade de 2 colunas** embaixo ocupando o resto da altura.
 
-#### 2.2 Cabeçalho (NÃO é mais roxo)
-- **Remova o cabeçalho roxo.** O novo cabeçalho tem fundo **branco**, padding `20px 22px`, borda inferior `1px solid` na cor de borda do sistema (cinza claro, `#e2e8f0`).
-- Conteúdo, à esquerda, empilhado:
-  1. **Badge da categoria** (ex.: "Petição inicial"): pílula com fundo roxo bem claro e texto roxo, fonte pequena (~13px), cantos totalmente arredondados.
-  2. **Nome da peça** (ex.: "Ação de Cobrança"): fonte **serifada** (Georgia), **negrito 700**, **21px**, cor do texto principal, margem superior 6px.
-  3. Linha cinza pequena (~14px, cor de texto secundário `#64748b`): `<Área> · usado <N> vezes` (ex.: "Direito Civil · usado 48 vezes"). Se a peça for do escritório, acrescente ` · do escritório`.
-- À direita: botão só com ícone **X** (fechar), sem fundo, cinza escuro.
+#### 2.2 Cabeçalho — NÃO MEXER
+- **Mantenha o cabeçalho atual do drawer exatamente como está hoje** (faixa roxa com o nome da peça e o X branco para fechar). Não troque cor, altura, fonte nem conteúdo.
+- Tudo o que vem **abaixo** do cabeçalho segue o mock (itens 2.3 em diante).
 
 #### 2.3 Grade do corpo
 - Duas colunas: `grid-template-columns: minmax(0,1fr) 340px`. Altura: o resto do drawer (`flex:1; min-height:0`).
@@ -113,6 +109,7 @@ A folha deve ser renderizada **com as mesmas configurações de layout que o usu
        - **"Favoritar"** / **"Desfavoritar"** (com ícone de estrela, alterna conforme o estado).
        - **"Mais ⋮"** (ícone de 3 pontinhos verticais à direita do texto): abre o menu de opções.
 
+- O nome da peça continua só no cabeçalho roxo (não repetir no corpo).
 - **Remova** do drawer: o bloco "Campos do modelo" (a lista com "Número do processo / Processo · NumeroProcesso" etc.), o botão "Criar minha versão" solto e o texto cru com `{{ }}`. Agora a informação de campos está na própria folha (etiquetas) e em "Preenche sozinho".
 
 #### 2.6 Menu "Mais"
@@ -158,4 +155,4 @@ ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 ## Entrega
 1. Lista de arquivos alterados/criados, com uma linha do que mudou em cada um.
 2. Seção **"Explicações"** (conforme o ESTILO DE CÓDIGO).
-3. Checklist conferido: ☐ confirmação ao excluir rascunho (Grade e Lista) ☐ drawer sem cabeçalho roxo, igual ao mock ☐ folha A4 com logo, cor, fonte, margens, marca d'água, cabeçalho e rodapé do usuário ☐ campos como etiquetas `[Nome]` ☐ zoom em pílula ☐ coluna direita (Classificação, dados, Preenche sozinho, ações) ☐ menu "Mais" sem "Ver campos usados".
+3. Checklist conferido: ☐ confirmação ao excluir rascunho (Grade e Lista) ☐ cabeçalho roxo mantido como está; corpo do drawer igual ao mock ☐ folha A4 com logo, cor, fonte, margens, marca d'água, cabeçalho e rodapé do usuário ☐ campos como etiquetas `[Nome]` ☐ zoom em pílula ☐ coluna direita (Classificação, dados, Preenche sozinho, ações) ☐ menu "Mais" sem "Ver campos usados".
