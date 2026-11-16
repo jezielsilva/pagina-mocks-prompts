@@ -49,7 +49,7 @@
     // cidade do cliente; "Não informada" se cliente/endereço/cidade forem null
     var cidade = cliente?.Endereco?.Cidade ?? "Não informada";
     ```
-  - Quando o valor puder ser `""` ou `0` e isso importar, NÃO confiar no `??` (ele só troca null/undefined): usar if explícito (`string.IsNullOrEmpty`) e comentar.
+  - Ele já sabe que o `??` só troca null/undefined e que `""`/`0` passam (treinos 12 e 16/11). Quando vazio também precisar ser trocado, usar `string.IsNullOrWhiteSpace(x) ? "padrão" : x` com comentário de 1 linha (ele escreve essa linha — treino 12/11).
   - No TypeScript, valor padrão com `??`, nunca `||` (o `||` troca 0 e "" por engano).
   - Cadeias maiores que isso: quebrar em if explícito.
 - **Ternário só simples**: `var status = ativo ? "Ativo" : "Inativo";`. Ternário aninhado: NÃO.
@@ -92,7 +92,7 @@
     this.carregando = false;
   });
   ```
-  Sempre com `takeUntilDestroyed` (ou o padrão de unsubscribe do projeto). O par `private destroyRef = inject(DestroyRef);` + `.pipe(takeUntilDestroyed(this.destroyRef))` está LIBERADO sem explicação (ele escreve de memória — treino 09/11). Ainda explicar em 1 linha POR QUE aquela fonte precisa (ex.: "Subject do hub não termina sozinho"); HTTP não precisa de comentário.
+  Sempre com `takeUntilDestroyed` (ou o padrão de unsubscribe do projeto). Ele RECONHECE sozinho quais fontes não terminam (Subject/BehaviorSubject/valueChanges/interval × HTTP, inclusive serviço que por dentro é HTTP — treinos 13 e 16/11). O par `private destroyRef = inject(DestroyRef);` + `.pipe(takeUntilDestroyed(this.destroyRef))` voltou para "com comentário de 1 linha" (16/11 não lembrou o que vai dentro do pipe): comentar POR QUE a fonte não termina e que o pipe encerra a assinatura quando a tela fecha; HTTP não precisa de comentário.
 - **RxJS**: confortável com `pipe` + `map`/`filter`/`tap`. `switchMap`, `combineLatest`, `forkJoin`, `debounceTime`, `shareReplay` etc.: só quando necessário, com explicação (regra 0).
 - **Estado**: variáveis simples + subscribe. Signals/Observable+async pipe: permitido quando melhorar, explicando.
 - **Template**: só exibição + condições simples (`@if (x && y)`). Lógica maior vai para o `.ts` em getters/métodos com nome claro (ex.: `podeExcluir`). Se for preciso algo mais complexo no template, explicar.
@@ -117,10 +117,10 @@ ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 - Nomes mistos: domínio em português (ObterCliente, valorTotal), termos técnicos em inglês (Repository, GetById).
 - Comentário-resumo em português no topo de cada método.
 - Retorno antecipado; if de uma linha sem chaves; ternário só simples; switch clássico; var.
-- Nulos: ?. e ?? liberados em cadeia curta (até 2 ?. + ?? no fim) com comentário de 1 linha; se "" ou 0 importarem, if explícito (?? só troca null/undefined); em TS nunca usar || para valor padrão.
+- Nulos: ?. e ?? liberados em cadeia curta (até 2 ?. + ?? no fim) com comentário de 1 linha; se "" também precisar virar padrão, string.IsNullOrWhiteSpace(x) ? "padrão" : x com comentário de 1 linha; em TS nunca usar || para valor padrão.
 - LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
 - Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
-- Front: subscribe simples atribuindo em variáveis + takeUntilDestroyed(this.destroyRef) com inject(DestroyRef) (sem explicação; só 1 linha dizendo por que a fonte não termina sozinha); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
+- Front: subscribe simples atribuindo em variáveis + takeUntilDestroyed(this.destroyRef) com inject(DestroyRef) (comentário de 1 linha: por que a fonte não termina sozinha e que o pipe encerra a assinatura ao fechar a tela); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
 - Valores fixos direto no código (constante só se repetir ou for regra configurável).
 - Clean code/boas práticas: aplique, mas EXPLIQUE antes (na mini-spec) e na entrega.
 - Todo trecho avançado: comentário curto em português no código + seção "Explicações" na entrega (o que faz, por que, versão simples equivalente, como debugar).
@@ -132,6 +132,9 @@ ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 
 | Data | Recurso | Antes | Agora | Evidência |
 |---|---|---|---|---|
+| 16/11/2026 | `??` × `\|\|` com `""`/`0` | Ainda NÃO domina | Domina: sabe que `""`/espaços/`0` passam pelo `??`; `IsNullOrWhiteSpace ? :` liberado com comentário de 1 linha | 12/11 q1 4/4 e q3 escrito; 16/11 q1 4/4 |
+| 16/11/2026 | Classificar "termina sozinho?" | Ainda NÃO domina | Domina reconhecer a fonte | 13/11 q1 4/4 (inclui serviço que é HTTP) e q2 B; 16/11 q2 B |
+| 16/11/2026 | `inject(DestroyRef)` + `takeUntilDestroyed` | Liberado sem explicação | Volta 1 degrau: com comentário de 1 linha | 13/11 q3 só descreveu; 16/11 q3 lacuna do pipe errada |
 | 11/11/2026 | `?.` + `??` (C# e TS) | Evitar; if explícito | Liberado em cadeia curta, com comentário de 1 linha | 10–11/11: leu a cadeia, achou o `?.` faltando, traduziu `??` para if sem inverter |
 | 11/11/2026 | `??` × `\|\|` com `""`/`0` | — | Ainda NÃO domina: if explícito quando vazio/0 importar | 10–11/11: achou que `??` troca `""` e `0` |
 | 11/11/2026 | `inject(DestroyRef)` + `takeUntilDestroyed` | Com explicação | Liberado sem explicação (só 1 linha do porquê da fonte) | 09/11: escreveu as 2 linhas de memória |
