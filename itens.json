@@ -1,6 +1,16 @@
 {
-  "atualizado": "2026-11-16T17:45",
+  "atualizado": "2026-11-17T09:30",
   "itens": [
+    {
+      "id": "treino-2026-11-17",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de terça, 17/11 — 4 perguntas",
+      "data": "2026-11-17T09:30:00-03:00",
+      "arquivo": "treino/index.html?d=2026-11-17"
+    },
     {
       "id": "guia-meus-documentos",
       "tipo": "artefato",
