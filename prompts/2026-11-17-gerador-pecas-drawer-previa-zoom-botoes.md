@@ -28,42 +28,6 @@ O drawer já existe e funciona. Você vai **corrigir e refinar**, não recriar d
 
 ---
 
-## ITEM 1: BUG. O drawer sempre mostra o mesmo modelo ("Agravo Interno")
-
-### Sintoma
-
-Qualquer modelo que o usuário clique na biblioteca abre o drawer com o conteúdo do **Agravo Interno**: título, classificação e texto da folha. Os outros modelos nunca aparecem.
-
-### O que JÁ FOI VERIFICADO no código (linha por linha; não refaça, confie)
-
-Todo o caminho do id foi lido e **está correto**:
-
-- **Front, grade:** cada card está num `@for` com `track modelo.id` e chama a ação de clique com o **próprio** modelo do laço. Clique simples → após 250ms abre o detalhe com `modelo.id`; duplo clique/Enter → usa o modelo.
-- **Front, lista (tabela):** o botão de opções da linha abre o menu ancorado e procura a linha pelo id certo; "Pré-visualizar" chama a mesma ação de abrir detalhe.
-- **Front, facade da biblioteca:** um BehaviorSubject de "id do modelo aberto" + `switchMap` chama o GET de "obter modelo por id" com o id na URL (`encodeURIComponent`). Fechar o drawer manda `null` e zera o estado.
-- **Front, interceptor HTTP:** só põe token/refresh. **Não há cache.**
-- **Back, controller:** o GET de modelo por id repassa o id da rota para o Business.
-- **Back, Business "obter modelo":** valida o acesso, confere se o id é ObjectId válido, chama o repository e monta o detalhe (nome, conteúdo, prévia, campos, classificação) **a partir do documento que o repository devolveu**.
-- **Back, repository:** o filtro é "modelos visíveis" **E** `Id == id pedido`. O campo `Id` tem `[BsonId, BsonRepresentation(ObjectId)]`, então o Eq funciona. A agregação faz `$match` primeiro e depois o `$lookup` de usos.
-- **Back, lista:** a projeção da lista devolve o `Id` de cada documento.
-
-**Conclusão:** o código não troca o id. O defeito está nos **dados** ou no **ambiente**. Investigue nesta ordem:
-
-1. **Network do navegador (5 minutos, resolve a dúvida):** abra a biblioteca com o DevTools > Network filtrado por `modelos/`. Clique em 3 modelos diferentes e anote, para cada clique, o **id da URL** e, na resposta, o **`id`**, o **`nome`** e o começo do **`conteudoHtml`**.
-   - **Ids da URL diferentes, mas respostas com `nome` diferentes e `conteudoHtml` igual (texto do Agravo Interno):** os modelos do sistema foram cadastrados com o **mesmo conteúdo** (carga/lote copiou o texto). **Não corrija o banco.** Pare e me devolva a lista de modelos com conteúdo repetido (nome + id). A correção é recadastrar pelo gerenciador de peças.
-   - **Ids diferentes e resposta com o mesmo `id`/`nome` (Agravo Interno):** o filtro de id está sendo perdido no back. Coloque um log temporário no Business (id recebido × id devolvido) e no repository (filtro renderizado). Corrija e explique.
-   - **Mesmo id na URL em todos os cliques:** o card está mandando o id errado. Depure o clique no front.
-2. **API apontando para outro banco:** confira se o front local aponta para a API certa e se a API aponta para o banco onde estão os modelos novos (o build antigo da API pode estar rodando). Reinicie a API depois do pull.
-3. **Prévia da folha:** mesmo com o texto certo, a folha pode parecer "sempre igual" se o componente da prévia não atualizar quando o `html` muda (ex.: algo calculado só uma vez). Confirme que trocar de modelo troca o texto renderizado, e não só o título.
-
-### Como deve ficar
-
-- Clicou no modelo X → o drawer mostra **o título, a classificação, os metadados, as pílulas e a folha do modelo X**.
-- Trocou rápido de modelo → a requisição anterior é cancelada (o switchMap já faz isso; não remova) e só o último aparece.
-- Na entrega, explique **qual era a causa exata** com o trecho do código antes/depois.
-
----
-
 ## ITEM 2: Folha da pré-visualização igual ao mock, com as configurações do usuário
 
 ### Problema
@@ -220,7 +184,7 @@ O menu "Mais" do drawer (modo detalhe) tem: Criar minha versão/Editar modelo, B
 
 ## Checklist final (confira item por item antes de entregar)
 
-- [ ] Clicar em 5 modelos diferentes abre 5 conteúdos diferentes; a causa do bug foi explicada.
+
 - [ ] A folha abre inteira, em A4, com a identidade (logo/iniciais, nome, fonte, cor, rodapé, marca d'água) e, se ativado, o papel timbrado do usuário.
 - [ ] O rodapé fica no pé da folha; nada sobreposto ao texto.
 - [ ] `e-zoom` criado nos componentes compartilhados, em pílula, e usado no drawer (e onde mais houver zoom no Gerador).
@@ -253,8 +217,7 @@ ESTILO DE CÓDIGO (perfil do Jeziel, obrigatório)
 ## Entrega
 
 1. A mini-spec (antes de codar).
-2. Resumo curto do que mudou, por item (1 a 7).
-3. A causa exata do bug do item 1.
+2. Resumo curto do que mudou, por item (2 a 7).
 4. Lista de arquivos alterados/criados.
 5. Seção **"Explicações"** (o que faz, por quê, versão simples equivalente, como debugar) para cada trecho avançado.
 6. Um log de evolução da feature em `docs/logs-evolucao` (um por branch; atualize se já existir) e a documentação do `e-zoom` em `docs`.
