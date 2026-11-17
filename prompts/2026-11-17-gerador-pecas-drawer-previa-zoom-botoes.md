@@ -34,17 +34,27 @@ O drawer já existe e funciona. Você vai **corrigir e refinar**, não recriar d
 
 Qualquer modelo que o usuário clique na biblioteca abre o drawer com o conteúdo do **Agravo Interno**: título, classificação e texto da folha. Os outros modelos nunca aparecem.
 
-### O que já se sabe (não refaça essa análise, use-a)
+### O que JÁ FOI VERIFICADO no código (linha por linha; não refaça, confie)
 
-- No front, o clique chama a ação "abrir detalhe" com o id do modelo. Uma fonte reativa (BehaviorSubject + switchMap) busca o detalhe na API de "obter modelo por id".
-- No back, o fluxo é Controller → Business → Repository. O repository filtra por "modelos visíveis ao usuário" **E** "id igual ao pedido", acrescenta a contagem de usos por agregação e pega o primeiro resultado.
-- Pela leitura, o código parece correto. Então a causa está em um destes pontos, **nesta ordem de investigação**:
-  1. **O id que sai do card.** Confira se o card/linha passa o id do **próprio** modelo. Procure: id fixo, id do primeiro item da lista, variável de laço capturada errado, `track` errado, ou a lista enxuta de opções do campo "Quero fazer [peça]" sendo usada no lugar da lista da biblioteca. Coloque um `console.log` **temporário** do id no clique e no momento em que a requisição sai. Remova antes de entregar.
-  2. **O id que chega no back.** Coloque um log temporário no Business com o id recebido e o id/nome do modelo devolvido pelo repository.
-  3. **O filtro do repository.** Confira se o filtro de id está sendo aplicado de fato. Exemplos do que pode dar errado: o mapeamento do campo `_id` como string e ObjectId não bate e o filtro é ignorado; a ordem dos estágios da agregação faz o `$match` do id se perder; o "primeiro resultado" vem sem o filtro de id. Se o filtro de id não estiver funcionando, o resultado seria exatamente o sintoma: o primeiro modelo visível, que em ordem alfabética é o **Agravo Interno**.
-  4. **Os dados.** Se os 3 itens acima estiverem certos, confira no banco de homologação (**só leitura**, não altere nada) se os modelos do sistema têm o **mesmo conteúdo** (conteúdo copiado do Agravo Interno na carga). Se for isso, **não corrija o banco**: pare e me avise com a lista dos modelos afetados.
-  5. **Cache.** Confira se existe cache (no front, num interceptor, ou no back) com chave que **não inclui o id** do modelo.
-  6. **Fechamento do drawer.** Confira se, ao fechar o drawer, o estado do detalhe é zerado. Ao abrir outro modelo, o drawer **nunca** pode mostrar o conteúdo anterior nem por um instante: tem que aparecer o carregamento (skeleton) e depois o modelo certo.
+Todo o caminho do id foi lido e **está correto**:
+
+- **Front, grade:** cada card está num `@for` com `track modelo.id` e chama a ação de clique com o **próprio** modelo do laço. Clique simples → após 250ms abre o detalhe com `modelo.id`; duplo clique/Enter → usa o modelo.
+- **Front, lista (tabela):** o botão de opções da linha abre o menu ancorado e procura a linha pelo id certo; "Pré-visualizar" chama a mesma ação de abrir detalhe.
+- **Front, facade da biblioteca:** um BehaviorSubject de "id do modelo aberto" + `switchMap` chama o GET de "obter modelo por id" com o id na URL (`encodeURIComponent`). Fechar o drawer manda `null` e zera o estado.
+- **Front, interceptor HTTP:** só põe token/refresh. **Não há cache.**
+- **Back, controller:** o GET de modelo por id repassa o id da rota para o Business.
+- **Back, Business "obter modelo":** valida o acesso, confere se o id é ObjectId válido, chama o repository e monta o detalhe (nome, conteúdo, prévia, campos, classificação) **a partir do documento que o repository devolveu**.
+- **Back, repository:** o filtro é "modelos visíveis" **E** `Id == id pedido`. O campo `Id` tem `[BsonId, BsonRepresentation(ObjectId)]`, então o Eq funciona. A agregação faz `$match` primeiro e depois o `$lookup` de usos.
+- **Back, lista:** a projeção da lista devolve o `Id` de cada documento.
+
+**Conclusão:** o código não troca o id. O defeito está nos **dados** ou no **ambiente**. Investigue nesta ordem:
+
+1. **Network do navegador (5 minutos, resolve a dúvida):** abra a biblioteca com o DevTools > Network filtrado por `modelos/`. Clique em 3 modelos diferentes e anote, para cada clique, o **id da URL** e, na resposta, o **`id`**, o **`nome`** e o começo do **`conteudoHtml`**.
+   - **Ids da URL diferentes, mas respostas com `nome` diferentes e `conteudoHtml` igual (texto do Agravo Interno):** os modelos do sistema foram cadastrados com o **mesmo conteúdo** (carga/lote copiou o texto). **Não corrija o banco.** Pare e me devolva a lista de modelos com conteúdo repetido (nome + id). A correção é recadastrar pelo gerenciador de peças.
+   - **Ids diferentes e resposta com o mesmo `id`/`nome` (Agravo Interno):** o filtro de id está sendo perdido no back. Coloque um log temporário no Business (id recebido × id devolvido) e no repository (filtro renderizado). Corrija e explique.
+   - **Mesmo id na URL em todos os cliques:** o card está mandando o id errado. Depure o clique no front.
+2. **API apontando para outro banco:** confira se o front local aponta para a API certa e se a API aponta para o banco onde estão os modelos novos (o build antigo da API pode estar rodando). Reinicie a API depois do pull.
+3. **Prévia da folha:** mesmo com o texto certo, a folha pode parecer "sempre igual" se o componente da prévia não atualizar quando o `html` muda (ex.: algo calculado só uma vez). Confirme que trocar de modelo troca o texto renderizado, e não só o título.
 
 ### Como deve ficar
 
