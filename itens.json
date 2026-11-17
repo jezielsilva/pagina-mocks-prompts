@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-17T11:10",
+  "atualizado": "2026-11-17T12:30",
   "itens": [
     {
       "id": "treino-2026-11-17",
@@ -12,6 +12,14 @@
       "arquivo": "treino/index.html?d=2026-11-17"
     },
     {
+      "id": "prompt-gerador-drawer-previa-zoom",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Prompt Codex: drawer do modelo (bug do modelo fixo, folha A4 com configurações, e-zoom, drawer largo, botões quadrados, duplicar para o escritório)",
+      "data": "2026-11-17T12:30",
+      "arquivo": "prompts/2026-11-17-gerador-pecas-drawer-previa-zoom-botoes.md"
+    },
+    {
       "id": "guia-meus-documentos",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
@@ -19,14 +27,6 @@
       "data": "2026-11-17T11:10",
       "arquivo": "docs/guia-meus-documentos.pdf",
       "pptx": "docs/guia-meus-documentos.pptx"
-    },
-    {
-      "id": "prompt-gerador-drawer-rascunhos",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt Codex — drawer da peça igual ao mock (folha com layout do usuário) + confirmação ao excluir rascunho",
-      "data": "2026-11-16T12:20",
-      "arquivo": "prompts/2026-11-16-gerador-pecas-drawer-rascunhos.md"
     },
     {
       "id": "gerador-pecas-mock",
