@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-18T16:30",
+  "atualizado": "2026-11-18T19:00",
   "itens": [
     {
-      "id": "prompt-gerador-ajustes-simples-front",
+      "id": "prompt-gerador-responsividade-front",
       "tipo": "prompt",
       "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt Codex: 6 ajustes simples de front (sem marca d'água, download em snackbar, sem gerar em lote, e-badge Recomendado, autocomplete cortado na origem, card Cor do logo)",
-      "data": "2026-11-18T16:30",
-      "arquivo": "prompts/2026-11-18-gerador-pecas-ajustes-simples-front.md"
+      "titulo": "Prompt Codex: 6 ajustes de responsividade e textos fora do editor (plural da checagem, passos do assistente, rodapé no celular, origem, biblioteca/lateral, botões da peça gerada)",
+      "data": "2026-11-18T19:00",
+      "arquivo": "prompts/2026-11-18-gerador-pecas-responsividade-front.md"
     },
     {
       "id": "treino-2026-11-18",
