@@ -1,6 +1,14 @@
 {
-  "atualizado": "2026-11-18T09:30",
+  "atualizado": "2026-11-18T16:30",
   "itens": [
+    {
+      "id": "prompt-gerador-ajustes-simples-front",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Prompt Codex: 6 ajustes simples de front (sem marca d'água, download em snackbar, sem gerar em lote, e-badge Recomendado, autocomplete cortado na origem, card Cor do logo)",
+      "data": "2026-11-18T16:30",
+      "arquivo": "prompts/2026-11-18-gerador-pecas-ajustes-simples-front.md"
+    },
     {
       "id": "treino-2026-11-18",
       "tipo": "artefato",
@@ -20,22 +28,6 @@
       "titulo": "Treino de terça, 17/11 — 4 perguntas",
       "data": "2026-11-17T09:30:00-03:00",
       "arquivo": "treino/index.html?d=2026-11-17"
-    },
-    {
-      "id": "prompt-gerador-drawer-previa-zoom",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt Codex: drawer do modelo (folha A4 com configurações, e-zoom, drawer largo, botões quadrados, duplicar para o escritório)",
-      "data": "2026-11-17T15:00",
-      "arquivo": "prompts/2026-11-17-gerador-pecas-drawer-previa-zoom-botoes.md"
-    },
-    {
-      "id": "prompt-gerador-fluxo-usar-modelo",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt Codex: fluxo usar modelo (erro 400 f9512c80, modal com classificação obrigatória, etapas Origem/Revisão/Salvar iguais ao mock)",
-      "data": "2026-11-17T14:20",
-      "arquivo": "prompts/2026-11-17-gerador-pecas-fluxo-usar-modelo.md"
     },
     {
       "id": "guia-meus-documentos",
