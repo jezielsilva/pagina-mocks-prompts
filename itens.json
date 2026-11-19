@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-19T09:25",
+  "atualizado": "2026-11-19T17:40",
   "itens": [
     {
-      "id": "prompt-gerador-responsividade-front",
+      "id": "prompt-gerador-layout-revisao-drawer",
       "tipo": "prompt",
       "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt Codex: 6 ajustes de responsividade e textos fora do editor (plural da checagem, passos do assistente, rodapé no celular, origem, biblioteca/lateral, botões da peça gerada)",
-      "data": "2026-11-18T19:00",
-      "arquivo": "prompts/2026-11-18-gerador-pecas-responsividade-front.md"
+      "titulo": "Prompt Codex — Revisão dos campos (avisos em cima, campos/editor embaixo) + drawer da peça mais largo, com scroll no zoom e painel fixo",
+      "data": "2026-11-19T17:40",
+      "arquivo": "prompts/2026-11-19-gerador-pecas-layout-revisao-drawer.md"
     },
     {
       "id": "treino-2026-11-19",
