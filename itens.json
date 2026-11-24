@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-23T09:30",
+  "atualizado": "2026-11-24T09:25",
   "itens": [
     {
       "id": "resposta-codex-revisao-drawer",
@@ -16,6 +16,16 @@
       "titulo": "Prompt Codex — Revisão dos campos (avisos em cima, campos/editor embaixo) + drawer da peça mais largo, com scroll no zoom e painel fixo",
       "data": "2026-11-19T17:40",
       "arquivo": "prompts/2026-11-19-gerador-pecas-layout-revisao-drawer.md"
+    },
+    {
+      "id": "treino-2026-11-24",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de terça, 24/11 — 2 perguntas",
+      "data": "2026-11-24T09:25:00-03:00",
+      "arquivo": "treino/index.html?d=2026-11-24"
     },
     {
       "id": "treino-2026-11-23",
