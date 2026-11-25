@@ -1,6 +1,14 @@
 {
-  "atualizado": "2026-11-25T17:30",
+  "atualizado": "2026-11-25T17:50",
   "itens": [
+    {
+      "id": "prompt-modal-classificacoes",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Classificações",
+      "titulo": "Prompt — Modal de Classificações em 2 níveis (igual ao mock, UI kit) — para o Antigravity",
+      "data": "2026-11-25T17:50",
+      "arquivo": "prompts/2026-11-25-modal-classificacoes-2-niveis.md"
+    },
     {
       "id": "guia-meus-documentos",
       "tipo": "artefato",
