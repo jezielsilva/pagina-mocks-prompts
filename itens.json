@@ -1,5 +1,5 @@
 {
-  "atualizado": "2026-11-19T18:10",
+  "atualizado": "2026-11-25T10:30",
   "itens": [
     {
       "id": "resposta-codex-revisao-drawer",
@@ -61,7 +61,7 @@
       "tipo": "artefato",
       "projeto": "elaw adv · Gerador de peças",
       "titulo": "Mock — Gerador de peças (template por arraste, drawer largo, classificações)",
-      "data": "2026-11-10T16:20",
+      "data": "2026-11-25T10:30",
       "arquivo": "artefatos/gerador-pecas-mock.html",
       "fixo": true
     },
