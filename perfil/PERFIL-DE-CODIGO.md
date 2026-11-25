@@ -38,6 +38,12 @@
 
   return Ok(cliente);
   ```
+- **Busca de 1 item** (atualizado em 25/11/2026 pelo treino — ver seção 11): `FirstOrDefault`/`FirstOrDefaultAsync` (TS: `find`) seguido de guard clause no OBJETO, sem comentário extra (ele domina null × exceção). `First`/`FirstAsync` só quando a ausência for bug de verdade, com comentário de 1 linha dizendo que lança exceção.
+  ```csharp
+  var cliente = await _clientes.Find(c => c.Id == clienteId).FirstOrDefaultAsync();
+  if (cliente == null)
+      return Resultado<ClienteDto>.Falha("Cliente não encontrado");
+  ```
 - **if de uma linha SEM chaves**:
   ```csharp
   if (lista.Count == 0)
@@ -66,6 +72,7 @@
       .Sum(p => p.Valor);
   ```
 - Um operador por linha quando encadear.
+- `Any` (TS: `some`): guardar em variável com nome de pergunta (`temProcuracao`, `existeConversa`) e comentário de 1 linha lembrando que devolve true/false (treino 19–20/11).
 - Avançado (`GroupBy`, `SelectMany`, `ToDictionary`, `Aggregate`, `Join`, consultas aninhadas): permitido quando for mais rápido/eficiente, COM explicação (regra 0).
 - Evitar encadeamentos longos (> 4 operações): quebrar em variáveis intermediárias com nome.
 
@@ -118,7 +125,8 @@ ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 - Comentário-resumo em português no topo de cada método.
 - Retorno antecipado; if de uma linha sem chaves; ternário só simples; switch clássico; var.
 - Nulos: ?. e ?? liberados em cadeia curta (até 2 ?. + ?? no fim) com comentário de 1 linha; se "" também precisar virar padrão, string.IsNullOrWhiteSpace(x) ? "padrão" : x com comentário de 1 linha; em TS nunca usar || para valor padrão.
-- LINQ básico encadeado (um operador por linha). Avançado só com comentário explicando.
+- Busca de 1 item: FirstOrDefault/FirstOrDefaultAsync (TS: find) + guard clause no objeto, sem comentário extra; First/FirstAsync só com comentário de 1 linha (lança exceção).
+- LINQ básico encadeado (um operador por linha); Any/some em variável com nome de pergunta + comentário de 1 linha (true/false). Avançado só com comentário explicando.
 - Back: seguir Controller → Business → Repository; sem genéricos/extension methods novos; Model→DTO manual; erro de negócio com objeto de resultado; Mongo com $set só dos campos alterados.
 - Front: subscribe simples atribuindo em variáveis + takeUntilDestroyed(this.destroyRef) com inject(DestroyRef) (comentário de 1 linha: por que a fonte não termina sozinha e que o pipe encerra a assinatura ao fechar a tela); RxJS além de map/filter/tap só com explicação; template só exibe e condições simples.
 - Valores fixos direto no código (constante só se repetir ou for regra configurável).
@@ -132,6 +140,8 @@ ESTILO DE CÓDIGO (perfil do Jeziel — obrigatório)
 
 | Data | Recurso | Antes | Agora | Evidência |
 |---|---|---|---|---|
+| 25/11/2026 | `First` × `FirstOrDefault` / `find` + guard clause no objeto | Liberado (LINQ básico), com explicação ao lado | Liberado sem explicação | 17/11 q1 4/4 e q2 com null; 18/11 q1 4/4 e q2 'tinha que ver se achou o cliente'; 20 e 23/11 q2 C |
+| 25/11/2026 | `Any` / `some` | Liberado sem explicação | Volta 1 degrau: variável com nome de pergunta + comentário de 1 linha (true/false) | 19/11 e 20/11 q1: respondeu null em vez de false |
 | 16/11/2026 | `??` × `\|\|` com `""`/`0` | Ainda NÃO domina | Domina: sabe que `""`/espaços/`0` passam pelo `??`; `IsNullOrWhiteSpace ? :` liberado com comentário de 1 linha | 12/11 q1 4/4 e q3 escrito; 16/11 q1 4/4 |
 | 16/11/2026 | Classificar "termina sozinho?" | Ainda NÃO domina | Domina reconhecer a fonte | 13/11 q1 4/4 (inclui serviço que é HTTP) e q2 B; 16/11 q2 B |
 | 16/11/2026 | `inject(DestroyRef)` + `takeUntilDestroyed` | Liberado sem explicação | Volta 1 degrau: com comentário de 1 linha | 13/11 q3 só descreveu; 16/11 q3 lacuna do pipe errada |

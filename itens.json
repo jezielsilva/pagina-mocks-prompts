@@ -18,36 +18,6 @@
       "arquivo": "prompts/2026-11-19-gerador-pecas-layout-revisao-drawer.md"
     },
     {
-      "id": "treino-2026-11-19",
-      "tipo": "artefato",
-      "treino": true,
-      "fixo": true,
-      "projeto": "Jeziel · Treino",
-      "titulo": "Treino de quinta, 19/11 — 3 perguntas",
-      "data": "2026-11-19T09:25:00-03:00",
-      "arquivo": "treino/index.html?d=2026-11-19"
-    },
-    {
-      "id": "treino-2026-11-18",
-      "tipo": "artefato",
-      "treino": true,
-      "fixo": true,
-      "projeto": "Jeziel · Treino",
-      "titulo": "Treino de quarta, 18/11 — 3 perguntas",
-      "data": "2026-11-18T09:30:00-03:00",
-      "arquivo": "treino/index.html?d=2026-11-18"
-    },
-    {
-      "id": "treino-2026-11-17",
-      "tipo": "artefato",
-      "treino": true,
-      "fixo": true,
-      "projeto": "Jeziel · Treino",
-      "titulo": "Treino de terça, 17/11 — 4 perguntas",
-      "data": "2026-11-17T09:30:00-03:00",
-      "arquivo": "treino/index.html?d=2026-11-17"
-    },
-    {
       "id": "guia-meus-documentos",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
