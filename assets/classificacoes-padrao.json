@@ -1,0 +1,500 @@
+{
+  "versao": 1,
+  "descricao": "Catálogo padrão de classificações (Categoria → Subcategoria)",
+  "totalCategorias": 25,
+  "totalSubcategorias": 41,
+  "categorias": [
+    {
+      "ordem": 1,
+      "nome": "Direito Civil",
+      "nomeNormalizado": "direito civil",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": [
+        {
+          "ordem": 1,
+          "nome": "Direito das Pessoas",
+          "nomeNormalizado": "direito das pessoas",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 2,
+          "nome": "Direito das Obrigações",
+          "nomeNormalizado": "direito das obrigacoes",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 3,
+          "nome": "Direito Contratual",
+          "nomeNormalizado": "direito contratual",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 4,
+          "nome": "Responsabilidade Civil",
+          "nomeNormalizado": "responsabilidade civil",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 5,
+          "nome": "Direito das Coisas (Direitos Reais)",
+          "nomeNormalizado": "direito das coisas (direitos reais)",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 6,
+          "nome": "Direito Imobiliário",
+          "nomeNormalizado": "direito imobiliario",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 7,
+          "nome": "Direito Condominial",
+          "nomeNormalizado": "direito condominial",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 8,
+          "nome": "Direito Possessório",
+          "nomeNormalizado": "direito possessorio",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 9,
+          "nome": "Direito de Família",
+          "nomeNormalizado": "direito de familia",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 10,
+          "nome": "Direito das Sucessões",
+          "nomeNormalizado": "direito das sucessoes",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 11,
+          "nome": "Direito Notarial e Registral",
+          "nomeNormalizado": "direito notarial e registral",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 12,
+          "nome": "Direitos da Personalidade",
+          "nomeNormalizado": "direitos da personalidade",
+          "padraoSistema": true,
+          "ativo": true
+        }
+      ]
+    },
+    {
+      "ordem": 2,
+      "nome": "Direito Trabalhista",
+      "nomeNormalizado": "direito trabalhista",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 3,
+      "nome": "Direito Previdenciário",
+      "nomeNormalizado": "direito previdenciario",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": [
+        {
+          "ordem": 1,
+          "nome": "Aposentadoria",
+          "nomeNormalizado": "aposentadoria",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 2,
+          "nome": "Pensão",
+          "nomeNormalizado": "pensao",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 3,
+          "nome": "Auxílio por incapacidade temporária",
+          "nomeNormalizado": "auxilio por incapacidade temporaria",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 4,
+          "nome": "Auxílio por incapacidade permanente",
+          "nomeNormalizado": "auxilio por incapacidade permanente",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 5,
+          "nome": "BPC",
+          "nomeNormalizado": "bpc",
+          "padraoSistema": true,
+          "ativo": true
+        }
+      ]
+    },
+    {
+      "ordem": 4,
+      "nome": "Direito Empresarial (Comercial)",
+      "nomeNormalizado": "direito empresarial (comercial)",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": [
+        {
+          "ordem": 1,
+          "nome": "Direito Societário",
+          "nomeNormalizado": "direito societario",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 2,
+          "nome": "Direito Cambiário e Títulos de Crédito",
+          "nomeNormalizado": "direito cambiario e titulos de credito",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 3,
+          "nome": "Direito Falimentar",
+          "nomeNormalizado": "direito falimentar",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 4,
+          "nome": "Recuperação Judicial e Extrajudicial",
+          "nomeNormalizado": "recuperacao judicial e extrajudicial",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 5,
+          "nome": "Contratos Empresariais",
+          "nomeNormalizado": "contratos empresariais",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 6,
+          "nome": "Propriedade Intelectual",
+          "nomeNormalizado": "propriedade intelectual",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 7,
+          "nome": "Propriedade Industrial",
+          "nomeNormalizado": "propriedade industrial",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 8,
+          "nome": "Direito Concorrencial",
+          "nomeNormalizado": "direito concorrencial",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 9,
+          "nome": "Direito Bancário",
+          "nomeNormalizado": "direito bancario",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 10,
+          "nome": "Direito do Mercado de Capitais",
+          "nomeNormalizado": "direito do mercado de capitais",
+          "padraoSistema": true,
+          "ativo": true
+        }
+      ]
+    },
+    {
+      "ordem": 5,
+      "nome": "Direito do Consumidor",
+      "nomeNormalizado": "direito do consumidor",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": [
+        {
+          "ordem": 1,
+          "nome": "Relações de consumo",
+          "nomeNormalizado": "relacoes de consumo",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 2,
+          "nome": "Responsabilidade pelo fato do produto ou serviço",
+          "nomeNormalizado": "responsabilidade pelo fato do produto ou servico",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 3,
+          "nome": "Vícios de produtos e serviços",
+          "nomeNormalizado": "vicios de produtos e servicos",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 4,
+          "nome": "Práticas comerciais abusivas",
+          "nomeNormalizado": "praticas comerciais abusivas",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 5,
+          "nome": "Contratos de consumo",
+          "nomeNormalizado": "contratos de consumo",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 6,
+          "nome": "Superendividamento",
+          "nomeNormalizado": "superendividamento",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 7,
+          "nome": "Publicidade enganosa",
+          "nomeNormalizado": "publicidade enganosa",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 8,
+          "nome": "Proteção do consumidor bancário",
+          "nomeNormalizado": "protecao do consumidor bancario",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 9,
+          "nome": "Comércio eletrônico",
+          "nomeNormalizado": "comercio eletronico",
+          "padraoSistema": true,
+          "ativo": true
+        }
+      ]
+    },
+    {
+      "ordem": 6,
+      "nome": "Direito Internacional Privado",
+      "nomeNormalizado": "direito internacional privado",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": [
+        {
+          "ordem": 1,
+          "nome": "Conflitos internacionais de leis",
+          "nomeNormalizado": "conflitos internacionais de leis",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 2,
+          "nome": "Contratos internacionais",
+          "nomeNormalizado": "contratos internacionais",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 3,
+          "nome": "Família e sucessões internacionais",
+          "nomeNormalizado": "familia e sucessoes internacionais",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 4,
+          "nome": "Homologação de decisões estrangeiras",
+          "nomeNormalizado": "homologacao de decisoes estrangeiras",
+          "padraoSistema": true,
+          "ativo": true
+        },
+        {
+          "ordem": 5,
+          "nome": "Arbitragem internacional",
+          "nomeNormalizado": "arbitragem internacional",
+          "padraoSistema": true,
+          "ativo": true
+        }
+      ]
+    },
+    {
+      "ordem": 7,
+      "nome": "Direito Constitucional",
+      "nomeNormalizado": "direito constitucional",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 8,
+      "nome": "Direito Administrativo",
+      "nomeNormalizado": "direito administrativo",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 9,
+      "nome": "Direito Tributário",
+      "nomeNormalizado": "direito tributario",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 10,
+      "nome": "Direito Penal",
+      "nomeNormalizado": "direito penal",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 11,
+      "nome": "Direito Eleitoral",
+      "nomeNormalizado": "direito eleitoral",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 12,
+      "nome": "Direito Financeiro",
+      "nomeNormalizado": "direito financeiro",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 13,
+      "nome": "Direito Internacional Público",
+      "nomeNormalizado": "direito internacional publico",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 14,
+      "nome": "Direito Econômico",
+      "nomeNormalizado": "direito economico",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 15,
+      "nome": "Direito Militar",
+      "nomeNormalizado": "direito militar",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 16,
+      "nome": "Direito Agrário",
+      "nomeNormalizado": "direito agrario",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 17,
+      "nome": "Direito Médico",
+      "nomeNormalizado": "direito medico",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 18,
+      "nome": "Direito Desportivo",
+      "nomeNormalizado": "direito desportivo",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 19,
+      "nome": "Direito Marítimo",
+      "nomeNormalizado": "direito maritimo",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 20,
+      "nome": "Direito Aeronáutico",
+      "nomeNormalizado": "direito aeronautico",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 21,
+      "nome": "Direito da Criança e do Adolescente",
+      "nomeNormalizado": "direito da crianca e do adolescente",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 22,
+      "nome": "Direito da Pessoa Idosa",
+      "nomeNormalizado": "direito da pessoa idosa",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 23,
+      "nome": "Direito da Pessoa com Deficiência",
+      "nomeNormalizado": "direito da pessoa com deficiencia",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 24,
+      "nome": "Direito Migratório",
+      "nomeNormalizado": "direito migratorio",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    },
+    {
+      "ordem": 25,
+      "nome": "Direito Aduaneiro",
+      "nomeNormalizado": "direito aduaneiro",
+      "padraoSistema": true,
+      "ativo": true,
+      "subcategorias": []
+    }
+  ]
+}
