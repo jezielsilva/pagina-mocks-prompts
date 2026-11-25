@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-25T11:20",
+  "atualizado": "2026-11-25T12:00",
   "itens": [
     {
-      "id": "prompt-gerador-card-folha",
+      "id": "prompt-docs-investigacao-pasta-upload",
       "tipo": "prompt",
-      "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt — card de modelo como folha escrita (14 estruturas, estrela sem caixa)",
-      "data": "2026-11-25T11:20",
-      "arquivo": "prompts/2026-11-25-gerador-pecas-card-folha.md"
+      "projeto": "elaw adv · Meus documentos",
+      "titulo": "Prompt — investigação: falhas intermitentes ao criar pasta e no upload",
+      "data": "2026-11-25T12:00",
+      "arquivo": "prompts/2026-11-25-documentos-investigacao-pasta-upload.md"
     },
     {
       "id": "guia-meus-documentos",
