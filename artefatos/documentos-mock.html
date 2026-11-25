@@ -830,6 +830,7 @@ body.framed #device.t:not(.m){width:820px}
 .cls-summary{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:13px;padding:8px 2px;border-bottom:1px solid var(--border-color)}.cls-summary>span{display:inline-flex;gap:6px;align-items:center}
 .cls-grid{display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;align-items:start}
 .cls-cats{display:flex;flex-direction:column;gap:8px;position:sticky;top:0}
+@media(min-width:992px){.cls-cats--long{max-height:62vh;overflow:auto;padding-right:4px}}
 .cls-sec-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-color-secondary);margin-top:4px}
 .cls-cat{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid var(--border-color);border-radius:14px;background:#fff;cursor:pointer;transition:.15s}
 .cls-cat:hover{border-color:var(--color-primary-light)}.cls-cat.is-active{border:2px solid var(--color-primary);background:var(--color-primary-lightest);padding:13px}
@@ -1378,7 +1379,7 @@ function renderNav(){
   /* Favoritos (borda de destaque) e Lixeira lado a lado */
   $('#fav-slot').innerHTML=`<button type="button" class="fav-hi ${S.area==='fav'?'on':''}" data-area="fav" aria-current="${S.area==='fav'?'page':'false'}"><span class="fi">${ic('star',16)}</span><span><b>Favoritos</b><small>${fv} ${fv===1?'item':'itens'}</small></span></button>
     <button type="button" class="lix-q ${S.area==='lix'?'on':''}" data-area="lix" aria-current="${S.area==='lix'?'page':'false'}"><span class="li">${ic('trash',15)}</span><span><b>Lixeira</b><small>${lx} ${lx===1?'item':'itens'} · ${fmtSize(bytes('lix'))}</small></span></button>`;
-  $('#cls-slot').innerHTML=`<button type="button" class="cls-entry" data-act="manage-cls"><span class="tpi">${ic('tag',15)}</span><span><b>Classificações</b><small>${GRUPOS.length} categorias · ${CATS.length} subcategorias · ${SUBS.length} tipos</small></span>${pend?`<span class="hot" aria-label="${pend} arquivos sem classificação">${pend}</span>`:''}<span class="go">${ic('chev',15)}</span></button>`;
+  $('#cls-slot').innerHTML=`<button type="button" class="cls-entry" data-act="manage-cls"><span class="tpi">${ic('tag',15)}</span><span><b>Classificações</b><small>${CL2.length} categorias · ${CL2.reduce((a,c)=>a+c.subs.length,0)} subcategorias</small></span>${pend?`<span class="hot" aria-label="${pend} arquivos sem classificação">${pend}</span>`:''}<span class="go">${ic('chev',15)}</span></button>`;
 }
 function prazoStrip(){
   const k=S.home?null:S.area;if(k==='lix'||k==='fav')return '';
@@ -2110,7 +2111,7 @@ function dlgClassify(files){
       ${conf?`<button type="button" class="btn btn-sm btn-success rounded-pill" data-bulk>${ic('spark',14)}Aplicar ${conf} sugest${conf>1?'ões':'ão'} confiáve${conf>1?'is':'l'} (≥ 80%)</button>`:''}</div>`;};
   const paint=a=>{a.body.innerHTML=head()+(pend.size?`<div class="classify-list border-top">${[...pend.values()].map(row).join('')}</div>`:eAlert('positive',{titulo:'Tudo classificado!',html:learned.length?`O sistema aprendeu: ${learned.map(l=>`“${esc(l.w)}” → ${esc(l.t)}`).join(', ')}.`:''}));
     if(editing){const box=$(`[data-pk="${editing}"]`,a.body),p=pend.get(editing);if(box&&p)mountPicker(box,{q:'',pick:p.pick,sug:p.sug,open:new Set()},id=>{p.pick=id;editing=null;paint(a);});}};
-  const apply=(id,tipo)=>{const p=pend.get(id);if(!p||!tipo)return;const sug=p.sug[0]&&p.sug[0].tipo;p.f.tipo=tipo;log('tipado',p.f,curto(tipoById(tipo).nome));clsLog('classificado',SUBS.find(x=>x.id===tipo),'',p.f.name);const w=aprender(p.f,tipo,sug);if(w)learned.push({w,t:curto(tipoById(tipo).nome)});pend.delete(id);done++;};
+  const apply=(id,tipo)=>{const p=pend.get(id);if(!p||!tipo)return;const sug=p.sug[0]&&p.sug[0].tipo;p.f.tipo=tipo;log('tipado',p.f,curto(tipoById(tipo).nome));clsLog('classificado',SUBS.find(x=>x.id===tipo),null,'',p.f.name);const w=aprender(p.f,tipo,sug);if(w)learned.push({w,t:curto(tipoById(tipo).nome)});pend.delete(id);done++;};
   dialog({title:'Classificar arquivos',icon:'tag',wide:true,body:'',
     actions:[{label:`${ic('settings',13)}Gerenciar classificações`,fn:()=>dlgTipos()},{label:'Concluir',kind:'pri',fn:a=>{a.close();render();if(done)toast(`${done} arquivo${done>1?'s':''} classificado${done>1?'s':''}`,{kind:'ok'});}}],
     onMount:a=>{paint(a);
@@ -2128,26 +2129,49 @@ function dlgSetTipo(items){
   const st={q:'',pick:files.length===1?(files[0].tipo||''):'',sug,open:new Set()};
   dialog({title:files.length===1?`Classificar “${files[0].name}”`:`Classificar ${files.length} arquivos`,icon:'tag',wide:true,
     body:`<div class="d-flex align-items-center gap-2" id="pk-cur"></div><div id="pk-root"></div>`,
-    actions:[{label:`${ic('settings',13)}Gerenciar classificações`,fn:()=>dlgTipos()},{label:'Cancelar',fn:a=>a.close()},{label:'Salvar classificação',kind:'save',id:'pk-save',fn:a=>{if(!st.pick)return;files.forEach(f=>{const s=sugerirTipos(f)[0];f.tipo=st.pick;log('tipado',f,curto(tipoById(st.pick).nome));clsLog('classificado',SUBS.find(x=>x.id===st.pick),'',f.name);aprender(f,st.pick,s&&s.tipo);});a.close();toast('Classificação salva',{kind:'ok'});render();}}],
+    actions:[{label:`${ic('settings',13)}Gerenciar classificações`,fn:()=>dlgTipos()},{label:'Cancelar',fn:a=>a.close()},{label:'Salvar classificação',kind:'save',id:'pk-save',fn:a=>{if(!st.pick)return;files.forEach(f=>{const s=sugerirTipos(f)[0];f.tipo=st.pick;log('tipado',f,curto(tipoById(st.pick).nome));clsLog('classificado',SUBS.find(x=>x.id===st.pick),null,'',f.name);aprender(f,st.pick,s&&s.tipo);});a.close();toast('Classificação salva',{kind:'ok'});render();}}],
     onMount:()=>{const show=()=>{const t=st.pick&&tipoById(st.pick);$('#pk-cur').innerHTML=t?`<span class="small text-secondary">Selecionada:</span>${catBadge(t.cor,esc(t.nome),t.ic)}<span class="small text-secondary">${esc(t.cat.grupo)} › ${esc(t.cat.nome)}</span>`:'<span class="text-secondary">Nenhuma classificação escolhida</span>';};
       show();mountPicker($('#pk-root'),st,show);}});
 }
 /* ---------- Logs das classificações (produção: collection de logs, paginado no back) ---------- */
 const CLS_LOG=[];
-const CLS_ACAO={criado:{ic:'plus',v:'criou o tipo'},renomeado:{ic:'edit',v:'renomeou o tipo'},desativado:{ic:'alert',v:'desativou o tipo'},reativado:{ic:'restore',v:'reativou o tipo'},classificado:{ic:'tag',v:'classificou'}};
-function clsLog(acao,tipo,extra='',arquivo=null,user=ME,date=new Date()){CLS_LOG.push({acao,tipo:tipo?tipo.nome:'',sub:tipo?tipo.cat.nome:'',extra,arquivo,user,date});}
-(function seedClsLog(){const h=Date.now(),d=n=>new Date(h-n*36e5);const s=SUBS[2],t=SUBS[5],r=SUBS[90]||SUBS[9];
-  CLS_LOG.push({acao:'criado',tipo:'Ação de Cobrança de Condomínio',sub:'Direito Civil',extra:'',user:'ana',date:d(70)},
-   {acao:'renomeado',tipo:'Ação de Cobrança de Condomínio',sub:'Direito Civil',extra:'antes: “Cobrança condomínio”',user:'ana',date:d(66)},
-   {acao:'classificado',tipo:s.nome,sub:s.cat.nome,extra:'',arquivo:'Contrato de locação — Souza.pdf',user:'bru',date:d(40)},
-   {acao:'desativado',tipo:'Notificação extrajudicial (modelo antigo)',sub:'Outras Iniciais Específicas',extra:'3 arquivos desvinculados',user:ME,date:d(20)},
-   {acao:'reativado',tipo:'Notificação extrajudicial (modelo antigo)',sub:'Outras Iniciais Específicas',extra:'',user:ME,date:d(8)},
-   {acao:'classificado',tipo:t.nome,sub:t.cat.nome,extra:'',arquivo:'Petição inicial — Lima.docx',user:ME,date:d(2)});})();
+const CLS_ACAO={criado:{ic:'plus',v:'criou a subcategoria'},renomeado:{ic:'edit',v:'renomeou a subcategoria'},desativado:{ic:'alert',v:'desativou a subcategoria'},reativado:{ic:'restore',v:'reativou a subcategoria'},excluido:{ic:'trash',v:'excluiu a subcategoria'},classificado:{ic:'tag',v:'classificou'}};
+function clsLog(acao,item,cat,extra='',arquivo=null,user=ME,date=new Date()){CLS_LOG.push({acao,tipo:item?item.nome:'',sub:cat?cat.nome:(item&&item.cat?item.cat.nome:''),extra,arquivo,user,date});}
+(function seedClsLog(){const h=Date.now(),d=n=>new Date(h-n*36e5);
+  CLS_LOG.push({acao:'criado',tipo:'Reclamatória trabalhista',sub:'Direito Trabalhista',extra:'',user:'ana',date:d(70)},
+   {acao:'criado',tipo:'Acordos extrajudiciais',sub:'Direito Trabalhista',extra:'',user:'ana',date:d(66)},
+   {acao:'classificado',tipo:'Direito de Família',sub:'Direito Civil',extra:'',arquivo:'Contrato de locação — Souza.pdf',user:'bru',date:d(40)},
+   {acao:'desativado',tipo:'Acordos extrajudiciais',sub:'Direito Trabalhista',extra:'',user:ME,date:d(20)},
+   {acao:'classificado',tipo:'Direito Trabalhista',sub:'só a categoria',extra:'',arquivo:'Petição inicial — Lima.docx',user:ME,date:d(2)});})();
 const clsLogItem=l=>`<div class="list-group-item"><span class="section-icon">${ic(CLS_ACAO[l.acao].ic,15)}</span><div class="flex-fill min-w-0"><b>${esc(userName(l.user))}</b> ${CLS_ACAO[l.acao].v} ${l.arquivo?`<b>${esc(l.arquivo)}</b> como `:''}<span class="fw-semibold">${esc(l.tipo)}</span> <span class="text-secondary">em ${esc(l.sub)}</span>${l.extra?` <span class="small text-secondary">· ${esc(l.extra)}</span>`:''}<span class="d-block small text-secondary tabular-nums">${fmtDate(l.date)}</span></div></div>`;
-/* ---------- Classificações: central de gestão (Categoria › Subcategoria › Tipo) ---------- */
+/* ---------- Classificações: central de gestão (Categoria › Subcategoria) ----------
+   2 níveis. O arquivo recebe só a categoria OU categoria + subcategoria (f.cls={cat,sub}). */
+const CL2_BASE={"Direito Civil":["Direito das Pessoas","Direito das Obrigações","Direito Contratual","Responsabilidade Civil","Direito das Coisas (Direitos Reais)","Direito Imobiliário","Direito Condominial","Direito Possessório","Direito de Família","Direito das Sucessões","Direito Notarial e Registral","Direitos da Personalidade"],"Direito Trabalhista":[],"Direito Previdenciário":["Aposentadoria","Pensão","Auxílio por incapacidade temporária","Auxílio por incapacidade permanente","BPC"],"Direito Empresarial (Comercial)":["Direito Societário","Direito Cambiário e Títulos de Crédito","Direito Falimentar","Recuperação Judicial e Extrajudicial","Contratos Empresariais","Propriedade Intelectual","Propriedade Industrial","Direito Concorrencial","Direito Bancário","Direito do Mercado de Capitais"],"Direito do Consumidor":["Relações de consumo","Responsabilidade pelo fato do produto ou serviço","Vícios de produtos e serviços","Práticas comerciais abusivas","Contratos de consumo","Superendividamento","Publicidade enganosa","Proteção do consumidor bancário","Comércio eletrônico"],"Direito Internacional Privado":["Conflitos internacionais de leis","Contratos internacionais","Família e sucessões internacionais","Homologação de decisões estrangeiras","Arbitragem internacional"]};
+'Constitucional;Administrativo;Tributário;Penal;Eleitoral;Financeiro;Internacional Público;Econômico;Militar;Agrário;Médico;Desportivo;Marítimo;Aeronáutico;da Criança e do Adolescente;da Pessoa Idosa;da Pessoa com Deficiência;Migratório;Aduaneiro'.split(';').forEach(n=>CL2_BASE['Direito '+n]=[]);
+let CL2_SEQ=0;
+const CL2=Object.keys(CL2_BASE).sort((a,b)=>a.localeCompare(b,'pt')).map((n,i)=>({id:'k'+i,nome:n,cor:chartColor(i),ic:CAT_ICS[i%CAT_ICS.length],subs:CL2_BASE[n].map(s=>({id:'q'+(++CL2_SEQ),nome:s,pad:true,ativo:true}))}));
+const cl2Cat=id=>CL2.find(c=>c.id===id);
+(function seedCl2(){
+  const civ=CL2.find(c=>c.nome==='Direito Civil'),trab=CL2.find(c=>c.nome==='Direito Trabalhista');
+  trab.subs.push({id:'q'+(++CL2_SEQ),nome:'Reclamatória trabalhista',pad:false,ativo:true},{id:'q'+(++CL2_SEQ),nome:'Acordos extrajudiciais',pad:false,ativo:false});
+  const fs=allFiles();fs.forEach(f=>f.cls=null);
+  if(fs[0])fs[0].cls={cat:civ.id,sub:civ.subs[8].id};
+  if(fs[1])fs[1].cls={cat:trab.id,sub:null};
+})();
+const semCls=()=>allFiles().filter(f=>!f.cls);
 const GRUPO_IC=['filetext','layers','up'];
-const GRUPO_DESC=['Peças que dão início ao processo','Peças apresentadas durante o processo','Peças para recorrer de decisões'];
 const clsIc=(cor,icn,sz=32)=>`<span class="cls-ic" style="--c:${esc(cor)};width:${sz}px;height:${sz}px">${ic(icn,Math.round(sz*.5))}</span>`;
+const catSelect=(sel='',attr='')=>`<select class="form-select" ${attr} aria-label="Categoria"><option value="">Selecione a categoria…</option>${CL2.map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${esc(c.nome)}</option>`).join('')}</select>`;
+const novaSubForm=(cat='')=>`<div class="cls-new"><span class="cls-new__title">${ic('plus',15)}Nova subcategoria do escritório</span>
+  <div class="cls-new__row"><div class="flex-fill"><label class="form-label small">Nome da subcategoria</label><input type="text" class="form-control" data-nt-nome placeholder="Ex.: Reclamatória trabalhista"></div>
+  <div class="flex-fill"><label class="form-label small">Dentro da categoria</label>${catSelect(cat,'data-nt-cat')}</div>
+  <div class="cls-new__btns"><button type="button" class="btn btn-outline-secondary rounded-pill" data-nt-cancel>Cancelar</button><button type="button" class="btn btn-success rounded-pill" data-nt-ok>Criar subcategoria</button></div></div></div>`;
+function criarSub(root){const n=$('[data-nt-nome]',root).value.trim(),cid=$('[data-nt-cat]',root).value;
+  if(!n){toast('Informe o nome da subcategoria',{kind:'err'});$('[data-nt-nome]',root).focus();return null;}
+  if(!cid){toast('Selecione a categoria',{kind:'err'});return null;}
+  const cat=cl2Cat(cid);if(cat.subs.some(s=>norm(s.nome)===norm(n))){toast('Já existe uma subcategoria com esse nome nesta categoria',{kind:'err'});return null;}
+  const s={id:'q'+(++CL2_SEQ),nome:n,pad:false,ativo:true};cat.subs.push(s);clsLog('criado',s,cat);toast(`Subcategoria “${esc(n)}” criada em ${esc(cat.nome)}`,{kind:'ok'});return {s,cat};}
+/* legado: seletor de classificação do arquivo (ainda no modelo antigo) */
 const subSelect=(sel='',attr='')=>`<select class="form-select" ${attr} aria-label="Subcategoria"><option value="">Selecione a subcategoria…</option>${GRUPOS.map(g=>`<optgroup label="${esc(g)}">${CATS.filter(c=>c.grupo===g).map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${esc(c.nome)}</option>`).join('')}</optgroup>`).join('')}</select>`;
 const novoTipoForm=(sub='')=>`<div class="cls-new"><span class="cls-new__title">${ic('plus',15)}Novo tipo do escritório</span>
   <div class="cls-new__row"><div class="flex-fill"><label class="form-label small">Nome do tipo</label><input type="text" class="form-control" data-nt-nome placeholder="Ex.: Ação de Cobrança de Condomínio"></div>
@@ -2157,77 +2181,81 @@ function criarTipo(root){const n=$('[data-nt-nome]',root).value.trim(),cid=$('[d
   if(!n){toast('Informe o nome do tipo',{kind:'err'});$('[data-nt-nome]',root).focus();return null;}
   if(!cid){toast('Selecione a subcategoria',{kind:'err'});return null;}
   const cat=CATS.find(x=>x.id===cid);if(cat.itens.some(s=>norm(s.nome)===norm(n))){toast('Já existe um tipo com esse nome nesta subcategoria',{kind:'err'});return null;}
-  const s=addSub(cat,n);recalcIdf();clsLog('criado',s);toast(`Tipo “${esc(n)}” criado em ${esc(cat.nome)}`,{kind:'ok'});return s;}
+  const s=addSub(cat,n);recalcIdf();clsLog('criado',s,s.cat);toast(`Tipo “${esc(n)}” criado em ${esc(cat.nome)}`,{kind:'ok'});return s;}
 function dlgTipos(){
-  let aba='cls',lpg=1,lfil='todos',q='',grp=0,open=new Set(),hidePad=false,showOff=false,editing=null,creating=false;
+  let aba='cls',lpg=1,lfil='todos',q='',sel=CL2.find(c=>c.nome==='Direito Civil').id,hidePad=false,showOff=false,editing=null,creating=false;
   const files=()=>allFiles();
-  const countSub=id=>files().filter(f=>f.tipo===id).length;
-  const vis=s=>(showOff||s.ativo!==false)&&(!hidePad||proprio(s));
-  const tipoRow=s=>{const off=s.ativo===false,mine=proprio(s),n=countSub(s.id);
-    if(mine&&editing===s.id)return `<div class="cls-tipo"><input type="text" class="form-control form-control-sm" value="${esc(s.nome)}" data-ename="${s.id}" aria-label="Nome do tipo"><span class="d-flex gap-1"><button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-ecancel>Cancelar</button><button type="button" class="btn btn-sm btn-success rounded-pill" data-esave="${s.id}">Salvar</button></span></div>`;
-    return `<div class="cls-tipo ${off?'is-off':''}"><span class="cls-tipo__name"><span>${esc(s.nome)}</span>${mine?badge('info','Criado pelo escritório'):''}${off?badge('warning','Desativado'):''}</span>
+  const nSub=id=>files().filter(f=>f.cls&&f.cls.sub===id).length;
+  const nSoCat=c=>files().filter(f=>f.cls&&f.cls.cat===c.id&&!f.cls.sub).length;
+  const nCat=c=>files().filter(f=>f.cls&&f.cls.cat===c.id).length;
+  const vis=s=>(showOff||s.ativo)&&(!hidePad||!s.pad);
+  const subRow=(s,c)=>{const off=!s.ativo,n=nSub(s.id);
+    if(!s.pad&&editing===s.id)return `<div class="cls-tipo"><input type="text" class="form-control form-control-sm" value="${esc(s.nome)}" data-ename="${s.id}" aria-label="Nome da subcategoria"><span class="d-flex gap-1"><button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-ecancel>Cancelar</button><button type="button" class="btn btn-sm btn-success rounded-pill" data-esave="${s.id}" data-cat="${c.id}">Salvar</button></span></div>`;
+    return `<div class="cls-tipo ${off?'is-off':''}"><span class="cls-tipo__name"><span>${esc(s.nome)}</span>${s.pad?'':badge('info','Criada pelo escritório')}${off?badge('warning','Desativada'):''}</span>
       <span class="cls-tipo__meta">${n?`${n} arquivo${n>1?'s':''}`:'Nenhum arquivo'}</span>
-      <span class="cls-tipo__acts">${!mine?`<span class="cls-lock" title="Tipo padrão do sistema: não pode ser alterado">${ic('lock',13)}Padrão</span>`
-        :off?`<button type="button" class="btn btn-sm btn-outline-success rounded-pill" data-react="${s.id}">Reativar</button>`
-        :`<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-edt="${s.id}">${ic('edit',13)}Renomear</button><button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-off="${s.id}">Desativar</button>`}</span></div>`;};
-  const subCard=(c,its,forceOpen)=>{const o=forceOpen||open.has(c.id),ativos=c.itens.filter(s=>s.ativo!==false).length,nf=files().filter(f=>tipoById(f.tipo)?.cat===c).length;
-    return `<div class="cls-sub ${o?'is-open':''}"><button type="button" class="cls-sub__head" data-tcat="${c.id}" aria-expanded="${!!o}">${clsIc(c.cor,c.ic,36)}<span class="flex-fill text-start"><span class="fw-semibold d-block">${esc(c.nome)}</span><span class="small text-secondary">${ativos} tipos · ${nf} arquivo${nf!==1?'s':''}</span></span>${ic(o?'up':'chevDown',16)}</button>
-      ${o?`<div class="cls-sub__body">${its.length?its.map(tipoRow).join(''):'<span class="small text-secondary p-2">Nenhum tipo para mostrar.</span>'}<button type="button" class="btn btn-sm btn-link text-success align-self-start" data-newin="${c.id}">${ic('plus',13)}Criar tipo nesta subcategoria</button></div>`:''}</div>`;};
+      <span class="cls-tipo__acts">${s.pad?`<span class="cls-lock" title="Subcategoria padrão do sistema: não pode ser alterada">${ic('lock',13)}Padrão</span>`
+        :off?`<button type="button" class="btn btn-sm btn-outline-success rounded-pill" data-react="${s.id}" data-cat="${c.id}">Reativar</button>`
+        :`<button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-edt="${s.id}">${ic('edit',13)}Renomear</button><button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" data-off="${s.id}" data-cat="${c.id}">Desativar</button><button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-del="${s.id}" data-cat="${c.id}" aria-label="Excluir">${ic('trash',13)}</button>`}</span></div>`;};
   const tabsHTML=()=>`<ul class="nav nav-tabs cls-tabs" role="tablist"><li class="nav-item"><button type="button" class="nav-link ${aba==='cls'?'active':''}" data-aba="cls" role="tab" aria-selected="${aba==='cls'}">${ic('tag',14)}Classificações</button></li><li class="nav-item"><button type="button" class="nav-link ${aba==='logs'?'active':''}" data-aba="logs" role="tab" aria-selected="${aba==='logs'}">${ic('history',14)}Logs <span class="badge badge-sm badge-secondary">${CLS_LOG.length}</span></button></li></ul>`;
   const logsHTML=()=>{const fil={todos:()=>true,tipos:l=>l.acao!=='classificado',arquivos:l=>l.acao==='classificado'}[lfil];const all=CLS_LOG.filter(fil).sort((a,b)=>b.date-a.date);
     const chip=(k,l)=>`<button type="button" class="btn btn-sm rounded-pill ${lfil===k?'btn-primary':'btn-outline-secondary'}" data-lfil="${k}">${l}</button>`;
-    return `<div class="d-flex gap-2 flex-wrap align-items-center">${chip('todos','Todos')}${chip('tipos','Tipos (criar, renomear, desativar, reativar)')}${chip('arquivos','Arquivos classificados')}</div>`+
+    return `<div class="d-flex gap-2 flex-wrap align-items-center">${chip('todos','Todos')}${chip('tipos','Subcategorias (criar, renomear, desativar, excluir)')}${chip('arquivos','Arquivos classificados')}</div>`+
       (all.length?`<div class="list-group log-list">${all.slice((lpg-1)*LOG_PAGE,lpg*LOG_PAGE).map(clsLogItem).join('')}</div>${logPager(lpg,all.length)}`:`<div class="grid-empty text-secondary">${ic('history',36)}<span class="card-title">Nenhum registro</span></div>`);};
   const body=()=>tabsHTML()+(aba==='logs'?logsHTML():bodyCls());
-  const bodyCls=()=>{const nq=norm(q),pend=semTipo().length,meus=SUBS.filter(proprio).length;
-    const catsNav=GRUPOS.map((g,i)=>{const subs=CATS.filter(c=>c.grupo===g),nt=subs.reduce((a,c)=>a+c.itens.filter(s=>s.ativo!==false).length,0);
-      return `<button type="button" class="cls-cat ${!nq&&grp===i?'is-active':''}" data-grp="${i}" aria-pressed="${!nq&&grp===i}">${clsIc('var(--color-primary)',GRUPO_IC[i],40)}<span class="text-start"><span class="cls-cat__name">${esc(g)}</span><span class="small text-secondary d-block">${subs.length} subcategorias · ${nt} tipos</span></span></button>`;}).join('');
+  const catBlock=(c,its)=>`<div class="cls-sub is-open"><div class="cls-sub__head">${clsIc(c.cor,c.ic,32)}<span class="flex-fill text-start fw-semibold">${esc(c.nome)}</span></div><div class="cls-sub__body">${its.map(s=>subRow(s,c)).join('')}</div></div>`;
+  const bodyCls=()=>{const nq=norm(q),pend=semCls().length,todas=CL2.flatMap(c=>c.subs),meus=todas.filter(s=>!s.pad).length;
+    const lista=CL2.filter(c=>!hidePad||c.subs.some(s=>!s.pad));
+    const catsNav=lista.map(c=>{const ns=c.subs.filter(vis).length,nf=nCat(c);
+      return `<button type="button" class="cls-cat ${!nq&&sel===c.id?'is-active':''}" data-kc="${c.id}" aria-pressed="${!nq&&sel===c.id}">${clsIc(c.cor,c.ic,36)}<span class="text-start"><span class="cls-cat__name">${esc(c.nome)}</span><span class="small text-secondary d-block">${ns} subcategoria${ns!==1?'s':''} · ${nf} arquivo${nf!==1?'s':''}</span></span></button>`;}).join('');
     let main='';
     if(nq){
-      GRUPOS.forEach(g=>{const cards=CATS.filter(c=>c.grupo===g).map(c=>{const its=c.itens.filter(vis).filter(s=>norm(s.nome).includes(nq)||norm(c.nome).includes(nq));return its.length?subCard(c,its,true):'';}).join('');
-        if(cards)main+=`<div class="cls-sec-label">${esc(g)}</div>${cards}`;});
-      main=`<h3 class="cls-title">Resultados para “${esc(q)}”</h3>`+(main||eAlert('light',{html:'Nada encontrado. Confira a grafia ou crie um novo tipo.'}));
+      main=CL2.map(c=>{const its=c.subs.filter(vis).filter(s=>norm(s.nome).includes(nq)||norm(c.nome).includes(nq));return its.length||norm(c.nome).includes(nq)?(its.length?catBlock(c,its):`<button type="button" class="cls-cat" data-kc="${c.id}">${clsIc(c.cor,c.ic,32)}<span class="cls-cat__name">${esc(c.nome)}</span><span class="small text-secondary ms-auto">sem subcategorias</span></button>`):'';}).join('');
+      main=`<h3 class="cls-title">Resultados para “${esc(q)}”</h3>`+(main||eAlert('light',{html:'Nada encontrado. Confira a grafia ou crie uma nova subcategoria.'}));
     }else{
-      const g=GRUPOS[grp],cards=CATS.filter(c=>c.grupo===g).map(c=>{const its=c.itens.filter(vis);return hidePad&&!its.length?'':subCard(c,its,hidePad);}).join('');
-      main=`<div class="cls-main-head">${clsIc('var(--color-primary)',GRUPO_IC[grp],44)}<div><h3 class="cls-title">${esc(g)}</h3><span class="text-secondary">${GRUPO_DESC[grp]} · escolha uma subcategoria para ver os tipos</span></div></div>`+(cards||eAlert('light',{html:'Nenhum tipo criado pelo escritório nesta categoria.'}));
+      const c=cl2Cat(sel),its=c.subs.filter(vis),tot=nCat(c),so=nSoCat(c);
+      main=`<div class="cls-main-head">${clsIc(c.cor,c.ic,44)}<div><h3 class="cls-title">${esc(c.nome)} ${badge('secondary','Padrão')}</h3><span class="text-secondary">Os arquivos podem ser classificados só com a categoria ou com uma subcategoria dela</span></div></div>
+        <div class="cls-summary"><span>${ic('file',14)}${tot} arquivo${tot!==1?'s':''} no total</span><span>${ic('tag',14)}${so} só na categoria</span><span>${ic('layers',14)}${c.subs.filter(s=>s.ativo).length} subcategorias ativas</span></div>
+        <div class="d-flex align-items-center justify-content-between"><span class="cls-sec-label">Subcategorias</span><button type="button" class="btn btn-sm btn-link text-success" data-newin="${c.id}">${ic('plus',13)}Criar subcategoria nesta categoria</button></div>
+        ${its.length?`<div class="cls-sub is-open"><div class="cls-sub__body">${its.map(s=>subRow(s,c)).join('')}</div></div>`:eAlert('light',{html:hidePad?'Nenhuma subcategoria criada pelo escritório nesta categoria.':'Esta categoria não tem subcategorias. Os arquivos são classificados só com a categoria — ou crie uma subcategoria do escritório.'})}`;
     }
-    return `<div class="cls-toolbar"><div class="input-group flex-fill cls-search"><span class="input-group-text">${ic('search',15)}</span><input type="text" class="form-control" id="tt-q" placeholder="Buscar tipo ou subcategoria…" value="${esc(q)}" aria-label="Buscar classificação"></div>
-        <button type="button" class="btn btn-sm rounded-pill ${hidePad?'btn-primary':'btn-outline-secondary'}" data-hidepad aria-pressed="${hidePad}" title="Só muda a visualização">${ic('eye',14)}${hidePad?'Mostrando só do escritório':'Só os do escritório'}</button>
-        <button type="button" class="btn btn-sm rounded-pill ${showOff?'btn-primary':'btn-outline-secondary'}" data-showoff aria-pressed="${showOff}">${ic('history',14)}Mostrar desativados</button>
-        <button type="button" class="btn btn-success rounded-pill" data-newtipo ${creating?"hidden":""}>${ic("plus",15)}Novo tipo</button></div>
-      ${creating?novoTipoForm(creating===true?'':creating):''}
-      <div class="cls-summary"><span>${ic('tag',14)}${SUBS.filter(s=>s.ativo!==false).length} tipos · ${meus} do escritório</span><span>${ic('check',14)}${files().length-pend} arquivos classificados</span>${pend?`<span class="text-warning-emphasis">${ic('alert',14)}${pend} sem classificação <button type="button" class="btn btn-sm btn-link p-0" data-mgclassify>Classificar agora</button></span>`:''}<span class="ms-auto text-secondary cls-note">${ic('lock',13)}Itens “Padrão” são do sistema e não mudam</span></div>
-      <div class="cls-grid"><div class="cls-cats-wrap"><div class="cls-cats-nav"><span class="cls-sec-label">Categorias · arraste para o lado</span><span class="cls-cats-nav__btns"><button type="button" class="btn btn-outline-secondary" data-catscroll="-1" aria-label="Categorias anteriores">${ic('back',16)}</button><button type="button" class="btn btn-outline-secondary" data-catscroll="1" aria-label="Próximas categorias">${ic('chev',16)}</button></span></div><nav class="cls-cats" aria-label="Categorias"><span class="cls-sec-label">Categorias</span>${catsNav}</nav><div class="cls-dots" aria-hidden="true">${GRUPOS.map((_,i)=>`<i class="${!q&&grp===i?'on':''}"></i>`).join('')}</div></div><section class="cls-main">${main}</section></div>`;};
+    return `<div class="cls-toolbar"><div class="input-group flex-fill cls-search"><span class="input-group-text">${ic('search',15)}</span><input type="text" class="form-control" id="tt-q" placeholder="Buscar categoria ou subcategoria…" value="${esc(q)}" aria-label="Buscar classificação"></div>
+        <button type="button" class="btn btn-sm rounded-pill ${hidePad?'btn-primary':'btn-outline-secondary'}" data-hidepad aria-pressed="${hidePad}" title="Só muda a visualização">${ic('eye',14)}${hidePad?'Mostrando só do escritório':'Só as do escritório'}</button>
+        <button type="button" class="btn btn-sm rounded-pill ${showOff?'btn-primary':'btn-outline-secondary'}" data-showoff aria-pressed="${showOff}">${ic('history',14)}Mostrar desativadas</button>
+        <button type="button" class="btn btn-success rounded-pill" data-newtipo ${creating?"hidden":""}>${ic("plus",15)}Nova subcategoria</button></div>
+      ${creating?novaSubForm(creating===true?'':creating):''}
+      <div class="cls-summary"><span>${ic('tag',14)}${CL2.length} categorias · ${todas.filter(s=>s.ativo).length} subcategorias · ${meus} do escritório</span><span>${ic('check',14)}${files().length-pend} arquivos classificados</span>${pend?`<span class="text-warning-emphasis">${ic('alert',14)}${pend} sem classificação <button type="button" class="btn btn-sm btn-link p-0" data-mgclassify>Classificar agora</button></span>`:''}<span class="ms-auto text-secondary cls-note">${ic('lock',13)}Itens “Padrão” são do sistema e não mudam</span></div>
+      <div class="cls-grid"><div class="cls-cats-wrap"><div class="cls-cats-nav"><span class="cls-sec-label">Categorias · arraste para o lado</span><span class="cls-cats-nav__btns"><button type="button" class="btn btn-outline-secondary" data-catscroll="-1" aria-label="Categorias anteriores">${ic('back',16)}</button><button type="button" class="btn btn-outline-secondary" data-catscroll="1" aria-label="Próximas categorias">${ic('chev',16)}</button></span></div><nav class="cls-cats cls-cats--long" aria-label="Categorias"><span class="cls-sec-label">Categorias</span>${catsNav}</nav></div><section class="cls-main">${main}</section></div>`;};
   dialog({title:'Classificações',icon:'tag',wide:'xl',body:'',
     actions:[{label:'Fechar',fn:a=>{a.close();render();}}],
     onMount:a=>{
       const paint=(keepQ)=>{a.body.innerHTML=body();bindQ();if(keepQ){const n=$('#tt-q');n.focus();n.setSelectionRange(q.length,q.length);}};
       const bindQ=()=>{const n=$('#tt-q');if(n)n.oninput=e=>{q=e.target.value;paint(true);};};
-      const openNew=sub=>{creating=sub||true;paint();setTimeout(()=>$('[data-nt-nome]',a.body)?.focus(),0);};
+      const openNew=cat=>{creating=cat||true;paint();setTimeout(()=>$('[data-nt-nome]',a.body)?.focus(),0);};
+      const pick=t=>{const c=cl2Cat(t.dataset.cat);return {c,s:c.subs.find(x=>x.id===(t.dataset.off||t.dataset.react||t.dataset.del||t.dataset.esave))};};
       paint();
       a.body.addEventListener('click',async e=>{
         const t=e.target;
         const ab=t.closest('[data-aba]');if(ab){aba=ab.dataset.aba;lpg=1;paint();return;}
         const lf=t.closest('[data-lfil]');if(lf){lfil=lf.dataset.lfil;lpg=1;paint();return;}
         const lp=t.closest('[data-lpg]');if(lp&&!lp.closest('.disabled')){lpg=+lp.dataset.lpg;paint();return;}
-        if(t.closest('[data-newtipo]')){openNew();return;}
+        if(t.closest('[data-newtipo]')){openNew(q?'':sel);return;}
         const ni=t.closest('[data-newin]');if(ni){openNew(ni.dataset.newin);a.body.scrollTop=0;return;}
         if(t.closest('[data-nt-cancel]')){creating=false;paint();return;}
-        if(t.closest('[data-nt-ok]')){const s=criarTipo(a.body);if(!s)return;creating=false;q='';grp=GRUPOS.indexOf(s.cat.grupo);open.add(s.cat.id);paint();return;}
-        const g=t.closest('[data-grp]');if(g){grp=+g.dataset.grp;q='';paint();return;}
+        if(t.closest('[data-nt-ok]')){const r=criarSub(a.body);if(!r)return;creating=false;q='';sel=r.cat.id;paint();return;}
+        const kc=t.closest('[data-kc]');if(kc){sel=kc.dataset.kc;q='';editing=null;paint();return;}
         if(t.closest('[data-hidepad]')){hidePad=!hidePad;paint();return;}
         if(t.closest('[data-showoff]')){showOff=!showOff;paint();return;}
         if(t.closest('[data-mgclassify]')){a.close();render();dlgClassify();return;}
-        const c=t.closest('[data-tcat]');if(c){open.has(c.dataset.tcat)?open.delete(c.dataset.tcat):open.add(c.dataset.tcat);paint();return;}
         const ed=t.closest('[data-edt]');if(ed){editing=ed.dataset.edt;paint();setTimeout(()=>$(`[data-ename="${editing}"]`)?.select(),0);return;}
         if(t.closest('[data-ecancel]')){editing=null;paint();return;}
-        const es=t.closest('[data-esave]');if(es){const s=SUBS.find(x=>x.id===es.dataset.esave),v=$(`[data-ename="${s.id}"]`).value.trim();if(!v)return;
-          if(s.cat.itens.some(o=>o!==s&&norm(o.nome)===norm(v))){toast('Já existe um tipo com esse nome nesta subcategoria',{kind:'err'});return;}const antes=s.nome;s.nome=v;clsLog('renomeado',s,`antes: “${antes}”`);editing=null;paint();toast('Tipo renomeado',{kind:'ok'});return;}
-        const of=t.closest('[data-off]');if(of){const s=SUBS.find(x=>x.id===of.dataset.off),n=countSub(s.id);
-          if(n){const ok=await confirmDlg({title:'Desativar tipo',icon:'alert',text:`<b>${n} arquivo${n>1?'s usam':' usa'}</b> o tipo <b>${esc(s.nome)}</b>. Para desativar, ${n>1?'eles serão desvinculados e ficarão':'ele será desvinculado e ficará'} sem classificação.`,ok:'Desvincular e desativar',danger:true});
-            if(!ok){dlgTipos();return;}allFiles().filter(f=>f.tipo===s.id).forEach(f=>f.tipo=null);s.ativo=false;clsLog('desativado',s,`${n} arquivo${n>1?'s':''} desvinculado${n>1?'s':''}`);render();dlgTipos();toast('Tipo desativado',{kind:'ok'});return;}
-          s.ativo=false;clsLog('desativado',s);paint();toast('Tipo desativado',{kind:'ok'});return;}
-        const re=t.closest('[data-react]');if(re){const sr=SUBS.find(x=>x.id===re.dataset.react);sr.ativo=true;clsLog('reativado',sr);paint();toast('Tipo reativado',{kind:'ok'});return;}});
+        const es=t.closest('[data-esave]');if(es){const {c,s}=pick(es),v=$(`[data-ename="${s.id}"]`).value.trim();if(!v)return;
+          if(c.subs.some(o=>o!==s&&norm(o.nome)===norm(v))){toast('Já existe uma subcategoria com esse nome nesta categoria',{kind:'err'});return;}const antes=s.nome;s.nome=v;clsLog('renomeado',s,c,`antes: “${antes}”`);editing=null;paint();toast('Subcategoria renomeada',{kind:'ok'});return;}
+        const of=t.closest('[data-off]');if(of){const {c,s}=pick(of),n=nSub(s.id);s.ativo=false;clsLog('desativado',s,c,n?`${n} arquivo${n>1?'s':''} mantido${n>1?'s':''}`:'');paint();toast(n?'Subcategoria desativada. Os arquivos continuam classificados com ela.':'Subcategoria desativada',{kind:'ok'});return;}
+        const re=t.closest('[data-react]');if(re){const {c,s}=pick(re);s.ativo=true;clsLog('reativado',s,c);paint();toast('Subcategoria reativada',{kind:'ok'});return;}
+        const dl=t.closest('[data-del]');if(dl){const {c,s}=pick(dl),n=nSub(s.id);
+          if(n){toast(`Não dá para excluir: ${n} arquivo${n>1?'s usam':' usa'} esta subcategoria. Desative-a.`,{kind:'err'});return;}
+          const ok=await confirmDlg({title:'Excluir subcategoria',icon:'alert',text:`Excluir <b>${esc(s.nome)}</b> de ${esc(c.nome)}?`,ok:'Excluir',danger:true});
+          if(ok){c.subs=c.subs.filter(x=>x!==s);clsLog('excluido',s,c);toast('Subcategoria excluída',{kind:'ok'});}dlgTipos();return;}});
       a.body.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-nt-nome]')){e.preventDefault();$('[data-nt-ok]',a.body).click();}if(e.key==='Enter'&&e.target.matches('[data-ename]')){e.preventDefault();$(`[data-esave="${e.target.dataset.ename}"]`).click();}});}});
 }
 </script>

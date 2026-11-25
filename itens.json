@@ -1,15 +1,6 @@
 {
-  "atualizado": "2026-11-25T17:00",
+  "atualizado": "2026-11-25T17:30",
   "itens": [
-    {
-      "id": "classificacoes-mock",
-      "tipo": "artefato",
-      "projeto": "elaw adv · Classificações",
-      "titulo": "Mock — Classificações (categorias e subcategorias, sem tipos)",
-      "data": "2026-11-25T17:00",
-      "arquivo": "artefatos/classificacoes-mock.html",
-      "principal": true
-    },
     {
       "id": "guia-meus-documentos",
       "tipo": "artefato",
@@ -32,10 +23,11 @@
       "id": "documentos-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Documentos",
-      "titulo": "Mock — Documentos (lista de categorias dentro do card de armazenamento)",
-      "data": "2026-11-05T17:45",
+      "titulo": "Mock — Documentos (Classificações em 2 níveis: categorias e subcategorias)",
+      "data": "2026-11-25T17:30",
       "arquivo": "artefatos/documentos-mock.html",
-      "fixo": true
+      "fixo": true,
+      "principal": true
     },
     {
       "id": "perfil-codigo",
