@@ -642,6 +642,9 @@ body{font-size:16px}
 .paper .sk i.sh{height:4px;background:#cfcfd5;margin-top:2px}
 .paper .sk b{display:block;height:5px;flex:none}
 .paper .pn{position:relative;z-index:1}
+.paper .sk i.lh{height:2px;background:#d4d4d8;margin-bottom:2px}
+.paper .sk i.q{background:#ececef;border-left:2px solid #cfcfd5}
+.paper .sk i.li{position:relative;margin-left:10%}.paper .sk i.li::before{content:"";position:absolute;left:-9px;top:0;width:4px;height:3px;border-radius:2px;background:#c9c9cf}
 </style>
 </head>
 <body>
@@ -730,8 +733,21 @@ function tplCard(t){const c=CATS[t.cat];return `<article class="tpl" style="--c:
 const PICK={cat:null,rec:null};
 S.mode='grid';S.cat=null;S.selT=null;
 const STORE=[['ini',14.2],['proc',3.1],['cont',8.4],['rec',6.0],['contr',2.9],['not',1.8]];
-function skel(id){let r=id*9301+49297;const rnd=()=>(r=(r*9301+49297)%233280)/233280;let h='<span class="sk" aria-hidden="true"><i class="t" style="width:'+(40+rnd()*30|0)+'%"></i>';if(rnd()>.4)h+='<i class="st" style="width:'+(25+rnd()*25|0)+'%"></i>';let n=0;const max=13+(rnd()*4|0);while(n<max){const k=2+(rnd()*4|0);if(rnd()>.7&&n)h+='<i class="sh" style="width:'+(20+rnd()*20|0)+'%"></i>',n++;for(let j=0;j<k&&n<max;j++,n++)h+='<i style="width:'+(j===k-1?30+rnd()*45|0:88+rnd()*12|0)+'%'+(j===0&&rnd()>.5?';margin-left:8%':'')+'"></i>';h+='<b></b>';}return h+'</span>';}
-function paperCard(t){const c=CATS[t.cat];return `<div class="paper ${S.selT===t.id?'sel':''}" data-peek="${t.id}" style="--c:${c.c}" tabindex="0" role="button" aria-label="Modelo ${esc(t.nome)}"><span class="pg2">${skel(t.id)}<button class="pa-star ${t.fav?'on':''}" data-fav="${t.id}" aria-label="${t.fav?'Remover dos':'Adicionar aos'} favoritos">${t.fav?ic('star',15).replace('fill="none"','fill="currentColor"'):ic('star',15)}</button><span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><button class="kebab" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}">${ic('more',15)}</button><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></div>`;}
+function skel(id,ix){let r=(id*7919+ix*104729)%233280+1;const R=()=>(r=(r*9301+49297)%233280)/233280,w=(a,b)=>(a+R()*(b-a))|0;
+  const L=ix%8;let h='',n=0;const max=15,ln=(c,st)=>{h+=`<i${c?` class="${c}"`:''} style="${st}"></i>`;n++;},gap=()=>h+='<b></b>';
+  const par=(k,ind)=>{for(let j=0;j<k&&n<max;j++)ln('',`width:${j===k-1?w(25,70):w(86,100)}%${j===0&&ind?';margin-left:8%':''}`);gap();};
+  if(L===1||L===5){ln('lh','width:100%');gap();}
+  if(L===2){for(let j=0;j<3;j++)ln('',`width:${w(35,55)}%`);gap();}
+  if(L===5)ln('',`width:${w(25,35)}%;align-self:flex-end`),gap();
+  ln('t',`width:${w(35,75)}%${L===6?';align-self:flex-start':''}`);if(L%3!==0)ln('st',`width:${w(20,50)}%`);gap();
+  while(n<max-2){const m=R();
+    if(L===3&&m<.35){for(let j=0;j<w(3,5)&&n<max;j++)ln('li',`width:${w(55,80)}%`);gap();}
+    else if(L===4&&m<.3){for(let j=0;j<w(2,4)&&n<max;j++)ln('q',`width:${w(60,78)}%;margin-left:12%`);gap();}
+    else if((L===7||L===0)&&m<.3){ln('sh',`width:${w(18,40)}%`);par(w(2,4),0);}
+    else par(w(2,6),R()>.5);}
+  if(L===4||L===6||L===2){ln('',`width:${w(25,40)}%;align-self:center;margin-top:6px`);ln('',`width:${w(18,30)}%;align-self:center`);}
+  return `<span class="sk" aria-hidden="true">${h}</span>`;}
+function paperCard(t,ix){const c=CATS[t.cat];return `<div class="paper ${S.selT===t.id?'sel':''}" data-peek="${t.id}" style="--c:${c.c}" tabindex="0" role="button" aria-label="Modelo ${esc(t.nome)}"><span class="pg2">${skel(t.id,ix||0)}<button class="pa-star ${t.fav?'on':''}" data-fav="${t.id}" aria-label="${t.fav?'Remover dos':'Adicionar aos'} favoritos">${t.fav?ic('star',15).replace('fill="none"','fill="currentColor"'):ic('star',15)}</button><span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><button class="kebab" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}">${ic('more',15)}</button><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></div>`;}
 function storeHTML(){const tot=STORE.reduce((a,x)=>a+x[1],0);return `<div class="card store"><span class="small muted">Peças geradas</span><div><b>${tot.toFixed(1).replace('.',',')} MB</b> <span class="small muted">· 148 arquivos</span></div><div class="bar">${STORE.map(([k,v])=>`<i style="width:${v/tot*100}%;background:${CATS[k].c}"></i>`).join('')}</div><div class="leg">${STORE.map(([k,v])=>`<span><span class="cdot" style="--c:${CATS[k].c};width:8px;height:8px;border-radius:50%;background:${CATS[k].c}"></span>${esc(CATS[k].n)}<em>${v.toFixed(1).replace('.',',')} MB</em></span>`).join('')}</div><span class="small muted" style="display:block;margin-top:8px">Conta no armazenamento de Documentos</span></div>`;}
 function listOf(){let l=TPL.slice();const gq=(S.gq||'').trim().toLowerCase();if(gq)l=l.filter(t=>(t.nome+' '+t.area+' '+CATS[t.cat].n+' '+(t.txt||'')).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(gq.normalize('NFD').replace(/[\u0300-\u036f]/g,'')));const f=S.filter;if(S.cat)l=l.filter(t=>t.cat===S.cat);if(f==='sis')l=l.filter(t=>!t.esc);if(f==='esc')l=l.filter(t=>t.esc);if(f==='fav')l=l.filter(t=>t.fav);if(f==='mais')l.sort((a,b)=>b.usos-a.usos);return l;}
 function panelHTML(){const t=TPL.find(x=>x.id===S.selT);S.prevT=t;setTimeout(()=>S.prevT=null);if(!t)return `<aside class="card panel"><div class="empty-panel"><div class="mini-sheet"></div><b style="color:var(--text)">Selecione um modelo</b><br>para ver a peça e usá-la.</div></aside>`;
