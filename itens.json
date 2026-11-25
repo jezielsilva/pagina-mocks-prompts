@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-25T12:00",
+  "atualizado": "2026-11-25T14:40",
   "itens": [
     {
-      "id": "prompt-docs-investigacao-pasta-upload",
+      "id": "prompt-classificacoes-analise",
       "tipo": "prompt",
-      "projeto": "elaw adv · Meus documentos",
-      "titulo": "Prompt — investigação: falhas intermitentes ao criar pasta e no upload",
-      "data": "2026-11-25T12:00",
-      "arquivo": "prompts/2026-11-25-documentos-investigacao-pasta-upload.md"
+      "projeto": "elaw adv · Classificações",
+      "titulo": "Prompt — análise da estrutura atual de Classificações (categoria → subcategoria)",
+      "data": "2026-11-25T14:40",
+      "arquivo": "prompts/2026-11-25-classificacoes-analise-estrutura.md"
     },
     {
       "id": "guia-meus-documentos",
