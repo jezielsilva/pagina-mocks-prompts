@@ -1,6 +1,15 @@
 {
-  "atualizado": "2026-11-25T17:50",
+  "atualizado": "2026-11-25T18:20",
   "itens": [
+    {
+      "id": "asset-icones-categorias",
+      "tipo": "artefato",
+      "asset": true,
+      "projeto": "elaw adv · Classificações",
+      "titulo": "Ícones e cores das 25 categorias (Material Icons e mdi) + script de atualização",
+      "data": "2026-11-25T18:20",
+      "arquivo": "assets/icones-categorias.html"
+    },
     {
       "id": "prompt-modal-classificacoes",
       "tipo": "prompt",
