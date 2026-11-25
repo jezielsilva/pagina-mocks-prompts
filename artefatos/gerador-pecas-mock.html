@@ -645,6 +645,9 @@ body{font-size:16px}
 .paper .sk i.lh{height:2px;background:#d4d4d8;margin-bottom:2px}
 .paper .sk i.q{background:#ececef;border-left:2px solid #cfcfd5}
 .paper .sk i.li{position:relative;margin-left:10%}.paper .sk i.li::before{content:"";position:absolute;left:-9px;top:0;width:4px;height:3px;border-radius:2px;background:#c9c9cf}
+.paper .sk .rw{display:flex;gap:6px;width:100%;flex:none}.paper .sk .rw i{height:3px;border-radius:2px;background:#e4e4e7}
+.paper .sk .rw.c2{gap:10%}.paper .sk .rw.th i{background:#cfcfd5;height:4px}.paper .sk .rw.td{border-bottom:1px solid #eeeef0;padding-bottom:3px}
+.paper .sk i.ck{position:relative;margin-left:10%}.paper .sk i.ck::before{content:"";position:absolute;left:-10px;top:-1px;width:4px;height:4px;border:1px solid #c9c9cf;border-radius:1px}
 </style>
 </head>
 <body>
@@ -734,18 +737,25 @@ const PICK={cat:null,rec:null};
 S.mode='grid';S.cat=null;S.selT=null;
 const STORE=[['ini',14.2],['proc',3.1],['cont',8.4],['rec',6.0],['contr',2.9],['not',1.8]];
 function skel(id,ix){let r=(id*7919+ix*104729)%233280+1;const R=()=>(r=(r*9301+49297)%233280)/233280,w=(a,b)=>(a+R()*(b-a))|0;
-  const L=ix%8;let h='',n=0;const max=15,ln=(c,st)=>{h+=`<i${c?` class="${c}"`:''} style="${st}"></i>`;n++;},gap=()=>h+='<b></b>';
+  const L=ix%14;let h='',n=0;const max=15,ln=(c,st)=>{h+=`<i${c?` class="${c}"`:''} style="${st}"></i>`;n++;},gap=()=>h+='<b></b>';
   const par=(k,ind)=>{for(let j=0;j<k&&n<max;j++)ln('',`width:${j===k-1?w(25,70):w(86,100)}%${j===0&&ind?';margin-left:8%':''}`);gap();};
   if(L===1||L===5){ln('lh','width:100%');gap();}
   if(L===2){for(let j=0;j<3;j++)ln('',`width:${w(35,55)}%`);gap();}
   if(L===5)ln('',`width:${w(25,35)}%;align-self:flex-end`),gap();
-  ln('t',`width:${w(35,75)}%${L===6?';align-self:flex-start':''}`);if(L%3!==0)ln('st',`width:${w(20,50)}%`);gap();
-  while(n<max-2){const m=R();
+  ln('t',`width:${w(35,75)}%${L===6?';align-self:flex-start':''}`);if(L%3!==0&&L!==13)ln('st',`width:${w(20,50)}%`);gap();
+  const row=(c,k)=>{h+=`<span class="rw ${c}">${Array.from({length:k},()=>`<i style="flex:${w(2,6)}"></i>`).join('')}</span>`;n++;};
+  if(L===8){while(n<max-2){for(let j=0;j<w(3,5)&&n<max;j++)row('c2',2);gap();}}
+  if(L===9){row('th',3);for(let j=0;j<w(5,8);j++)row('td',3);gap();par(w(2,3),0);}
+  if(L===10){while(n<max-2){for(let j=0;j<w(2,4)&&n<max;j++)ln('',`width:${w(45,85)}%;align-self:center`);gap();}}
+  if(L===11){par(w(3,4),1);gap();gap();par(w(2,3),1);}
+  if(L===12){while(n<max-3){for(let j=0;j<w(2,4)&&n<max;j++)ln('ck',`width:${w(50,80)}%`);gap();}}
+  if(L===13){for(let j=0;j<max;j++)ln('',`width:${j%6===5?w(30,60):100}%`);}
+  while(L<8&&n<max-2){const m=R();
     if(L===3&&m<.35){for(let j=0;j<w(3,5)&&n<max;j++)ln('li',`width:${w(55,80)}%`);gap();}
     else if(L===4&&m<.3){for(let j=0;j<w(2,4)&&n<max;j++)ln('q',`width:${w(60,78)}%;margin-left:12%`);gap();}
     else if((L===7||L===0)&&m<.3){ln('sh',`width:${w(18,40)}%`);par(w(2,4),0);}
     else par(w(2,6),R()>.5);}
-  if(L===4||L===6||L===2){ln('',`width:${w(25,40)}%;align-self:center;margin-top:6px`);ln('',`width:${w(18,30)}%;align-self:center`);}
+  if(L===4||L===6||L===2||L===11){ln('',`width:${w(25,40)}%;align-self:center;margin-top:6px`);ln('',`width:${w(18,30)}%;align-self:center`);}
   return `<span class="sk" aria-hidden="true">${h}</span>`;}
 function paperCard(t,ix){const c=CATS[t.cat];return `<div class="paper ${S.selT===t.id?'sel':''}" data-peek="${t.id}" style="--c:${c.c}" tabindex="0" role="button" aria-label="Modelo ${esc(t.nome)}"><span class="pg2">${skel(t.id,ix||0)}<button class="pa-star ${t.fav?'on':''}" data-fav="${t.id}" aria-label="${t.fav?'Remover dos':'Adicionar aos'} favoritos">${t.fav?ic('star',15).replace('fill="none"','fill="currentColor"'):ic('star',15)}</button><span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><button class="kebab" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}">${ic('more',15)}</button><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></div>`;}
 function storeHTML(){const tot=STORE.reduce((a,x)=>a+x[1],0);return `<div class="card store"><span class="small muted">Peças geradas</span><div><b>${tot.toFixed(1).replace('.',',')} MB</b> <span class="small muted">· 148 arquivos</span></div><div class="bar">${STORE.map(([k,v])=>`<i style="width:${v/tot*100}%;background:${CATS[k].c}"></i>`).join('')}</div><div class="leg">${STORE.map(([k,v])=>`<span><span class="cdot" style="--c:${CATS[k].c};width:8px;height:8px;border-radius:50%;background:${CATS[k].c}"></span>${esc(CATS[k].n)}<em>${v.toFixed(1).replace('.',',')} MB</em></span>`).join('')}</div><span class="small muted" style="display:block;margin-top:8px">Conta no armazenamento de Documentos</span></div>`;}
