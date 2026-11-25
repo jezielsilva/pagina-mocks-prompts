@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-25T14:40",
+  "atualizado": "2026-11-25T15:10",
   "itens": [
     {
-      "id": "prompt-classificacoes-analise",
+      "id": "prompt-gerenciador-classificacoes-analise",
       "tipo": "prompt",
-      "projeto": "elaw adv · Classificações",
-      "titulo": "Prompt — análise da estrutura atual de Classificações (categoria → subcategoria)",
-      "data": "2026-11-25T14:40",
-      "arquivo": "prompts/2026-11-25-classificacoes-analise-estrutura.md"
+      "projeto": "Gerenciador de Classificações",
+      "titulo": "Prompt — análise do Gerenciador de Classificações (reforma para 2 níveis + promover/mover/mesclar)",
+      "data": "2026-11-25T15:10",
+      "arquivo": "prompts/2026-11-25-gerenciador-classificacoes-analise.md"
     },
     {
       "id": "guia-meus-documentos",
