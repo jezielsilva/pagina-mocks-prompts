@@ -627,8 +627,13 @@ body{font-size:16px}
 
 /* card: folha com linhas de texto + título centralizado */
 .paper .pn::before,.paper .pn::after{display:none}
-.paper .pg2{background-color:#fff;background-image:repeating-linear-gradient(to bottom,transparent 0 11px,#efeae2 11px 12px);background-clip:content-box;background-origin:content-box;padding:14% 13%}
+.paper .pg2{background-color:#fff;background-image:repeating-linear-gradient(to bottom,transparent 0 11px,#e3edf9 11px 12px);background-clip:content-box;background-origin:content-box;padding:14% 13%}
 .paper .pn{background:#fff;padding:6px 4px;box-shadow:0 0 0 6px #fff}
+.paper .rib{display:none}
+.paper .pa-star{position:absolute;top:6px;right:6px;z-index:1;border:0;background:none;padding:2px;display:grid;place-items:center;cursor:pointer;color:var(--s400,#94a3b8)}
+.paper .pa-star.on{color:var(--color-warning)}
+.paper .pa-star:hover{color:var(--color-warning)}
+.paper .kebab{top:auto!important;bottom:4px;right:4px}
 </style>
 </head>
 <body>
@@ -717,7 +722,7 @@ function tplCard(t){const c=CATS[t.cat];return `<article class="tpl" style="--c:
 const PICK={cat:null,rec:null};
 S.mode='grid';S.cat=null;S.selT=null;
 const STORE=[['ini',14.2],['proc',3.1],['cont',8.4],['rec',6.0],['contr',2.9],['not',1.8]];
-function paperCard(t){const c=CATS[t.cat];return `<div class="paper ${S.selT===t.id?'sel':''}" data-peek="${t.id}" style="--c:${c.c}" tabindex="0" role="button" aria-label="Modelo ${esc(t.nome)}"><span class="pg2"><span class="rib"></span>${t.fav?`<span class="fav">${ic('star',13).replace('fill="none"','fill="currentColor"')}</span>`:''}<span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><button class="kebab" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}">${ic('more',15)}</button><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></div>`;}
+function paperCard(t){const c=CATS[t.cat];return `<div class="paper ${S.selT===t.id?'sel':''}" data-peek="${t.id}" style="--c:${c.c}" tabindex="0" role="button" aria-label="Modelo ${esc(t.nome)}"><span class="pg2"><button class="pa-star ${t.fav?'on':''}" data-fav="${t.id}" aria-label="${t.fav?'Remover dos':'Adicionar aos'} favoritos">${t.fav?ic('star',15).replace('fill="none"','fill="currentColor"'):ic('star',15)}</button><span class="pn">${esc(t.nome)}</span>${t.esc?'<span class="esc">Do escritório</span>':''}</span><button class="kebab" data-menu="${t.id}" aria-label="Opções de ${esc(t.nome)}">${ic('more',15)}</button><span class="cap"><b>${esc(c.n)}</b>${esc(t.area)}</span></div>`;}
 function storeHTML(){const tot=STORE.reduce((a,x)=>a+x[1],0);return `<div class="card store"><span class="small muted">Peças geradas</span><div><b>${tot.toFixed(1).replace('.',',')} MB</b> <span class="small muted">· 148 arquivos</span></div><div class="bar">${STORE.map(([k,v])=>`<i style="width:${v/tot*100}%;background:${CATS[k].c}"></i>`).join('')}</div><div class="leg">${STORE.map(([k,v])=>`<span><span class="cdot" style="--c:${CATS[k].c};width:8px;height:8px;border-radius:50%;background:${CATS[k].c}"></span>${esc(CATS[k].n)}<em>${v.toFixed(1).replace('.',',')} MB</em></span>`).join('')}</div><span class="small muted" style="display:block;margin-top:8px">Conta no armazenamento de Documentos</span></div>`;}
 function listOf(){let l=TPL.slice();const gq=(S.gq||'').trim().toLowerCase();if(gq)l=l.filter(t=>(t.nome+' '+t.area+' '+CATS[t.cat].n+' '+(t.txt||'')).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(gq.normalize('NFD').replace(/[\u0300-\u036f]/g,'')));const f=S.filter;if(S.cat)l=l.filter(t=>t.cat===S.cat);if(f==='sis')l=l.filter(t=>!t.esc);if(f==='esc')l=l.filter(t=>t.esc);if(f==='fav')l=l.filter(t=>t.fav);if(f==='mais')l.sort((a,b)=>b.usos-a.usos);return l;}
 function panelHTML(){const t=TPL.find(x=>x.id===S.selT);S.prevT=t;setTimeout(()=>S.prevT=null);if(!t)return `<aside class="card panel"><div class="empty-panel"><div class="mini-sheet"></div><b style="color:var(--text)">Selecione um modelo</b><br>para ver a peça e usá-la.</div></aside>`;
@@ -877,7 +882,7 @@ document.addEventListener('click',e=>{
   if(x=g('[data-menu]')){openMenu(+x.dataset.menu,x);return;}
   if(x=g('[data-cat]')){S.cat=S.cat===x.dataset.cat?null:x.dataset.cat;render();return;}
   if(x=g('[data-mode]')){S.mode=x.dataset.mode;render();return;}
-  if(x=g('[data-peek]')){if(e.target.closest('[data-menu]'))return;const id=+x.dataset.peek;S.selT=id;render();openPeek(id);return;}
+  if(!e.target.closest('.pa-star')&&(x=g('[data-peek]'))){if(e.target.closest('[data-menu]'))return;const id=+x.dataset.peek;S.selT=id;render();openPeek(id);return;}
   if(x=g('[data-filter]')){S.filter=x.dataset.filter;S.cat=null;render();return;}
   if(x=g('[data-fav]')){const t=TPL.find(t=>t.id===+x.dataset.fav);t.fav=!t.fav;const inPeek=!!x.closest('.peek');render();if(inPeek)openPeek(t.id);snack(t.fav?'Adicionado aos favoritos':'Removido dos favoritos');return;}
   if(x=g('[data-use]')){startTpl(+x.dataset.use);return;}
