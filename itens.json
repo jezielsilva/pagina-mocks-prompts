@@ -1,31 +1,14 @@
 {
-  "atualizado": "2026-11-25T16:30",
+  "atualizado": "2026-11-25T17:00",
   "itens": [
     {
-      "id": "prompt-classificacoes-importacao",
-      "tipo": "prompt",
-      "projeto": "Classificações",
-      "titulo": "Prompt — análise: como importar o catálogo padrão (estrutura e mecanismo)",
-      "data": "2026-11-25T16:30",
-      "arquivo": "prompts/2026-11-25-classificacoes-analise-importacao.md"
-    },
-    {
-      "id": "asset-classificacoes-json",
+      "id": "classificacoes-mock",
       "tipo": "artefato",
-      "asset": true,
-      "projeto": "Classificações",
-      "titulo": "Catálogo padrão de classificações — JSON (25 categorias, 41 subcategorias)",
-      "data": "2026-11-25T16:30",
-      "arquivo": "assets/classificacoes-padrao.json"
-    },
-    {
-      "id": "asset-classificacoes-csv",
-      "tipo": "artefato",
-      "asset": true,
-      "projeto": "Classificações",
-      "titulo": "Catálogo padrão de classificações — CSV",
-      "data": "2026-11-25T16:30",
-      "arquivo": "assets/classificacoes-padrao.csv"
+      "projeto": "elaw adv · Classificações",
+      "titulo": "Mock — Classificações (categorias e subcategorias, sem tipos)",
+      "data": "2026-11-25T17:00",
+      "arquivo": "artefatos/classificacoes-mock.html",
+      "principal": true
     },
     {
       "id": "guia-meus-documentos",
@@ -52,7 +35,6 @@
       "titulo": "Mock — Documentos (lista de categorias dentro do card de armazenamento)",
       "data": "2026-11-05T17:45",
       "arquivo": "artefatos/documentos-mock.html",
-      "principal": true,
       "fixo": true
     },
     {
