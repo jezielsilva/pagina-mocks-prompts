@@ -1,6 +1,14 @@
 {
-  "atualizado": "2026-11-26T15:45",
+  "atualizado": "2026-11-26T16:05",
   "itens": [
+    {
+      "id": "prompt-scroll-modal-editor",
+      "tipo": "prompt",
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Prompt — Scroll no modal de pré-visualização + investigação (rascunho, permissões, personalizações)",
+      "data": "2026-11-26T16:05",
+      "arquivo": "prompts/2026-11-26-scroll-modal-editor-e-investigacao.md"
+    },
     {
       "id": "treino-2026-11-26",
       "tipo": "artefato",
@@ -10,14 +18,6 @@
       "titulo": "Treino de quinta, 26/11 — 3 perguntas",
       "data": "2026-11-26T09:25-03:00",
       "arquivo": "treino/index.html?d=2026-11-26"
-    },
-    {
-      "id": "prompt-miniatura-pecas",
-      "tipo": "prompt",
-      "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt — Miniaturas da Grade sempre preenchidas",
-      "data": "2026-11-26T15:45",
-      "arquivo": "prompts/2026-11-26-miniatura-pecas-preenchida.md"
     },
     {
       "id": "guia-meus-documentos",
