@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-26T17:20",
+  "atualizado": "2026-11-26T17:50",
   "itens": [
     {
       "id": "agents-md",
       "tipo": "prompt",
       "fixo": true,
       "projeto": "Jeziel · Codex",
-      "titulo": "AGENTS.md v3 — multiagentes (copiar para a raiz do projeto ou $env:USERPROFILE\\.codex\\AGENTS.md)",
-      "data": "2026-11-26T17:20",
+      "titulo": "AGENTS.md v3.1 — multiagentes com subagentes reais (colar nas instruções do Codex)",
+      "data": "2026-11-26T17:50",
       "arquivo": "agents/AGENTS.md"
     },
     {

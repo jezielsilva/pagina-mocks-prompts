@@ -22,13 +22,18 @@ Você TEM leitura do sistema de arquivos local. Nunca diga "não tenho acesso" s
 
 Na dúvida, o porte maior.
 3. Primeira linha da resposta:
-`[Área: X | Porte: P/M/G | Equipe: <papéis> | Regras: <notas lidas> | Skills: <usadas>]`
+`[Área: X | Porte: P/M/G | Modo: subagentes reais (N) / sequencial | Equipe: <papéis> | Regras: <notas lidas> | Skills: <usadas>]`
 
 **Prompt já detalhado** (traz decisões, critérios de aceite, investigação): não repita perguntas respondidas; alinhe só o que ficou aberto, ou diga "Alinhamento: sem pontos em aberto".
 **"executa direto" / "sem perguntas"**: pule o alinhamento e registre as suposições no início.
 
 ## 2. Equipe de agentes
-Se o ambiente não suportar subagentes, execute os MESMOS papéis em sequência, sem misturar.
+- **Porte M e G: CRIE SUBAGENTES REAIS** (o recurso multi_agent está ligado). O agente principal é o Coordenador; ele cria um subagente por papel (Leitor, Arquiteto no G, Back, Front, Testes, Revisor), espera os resultados e consolida.
+- Rode em PARALELO o que não depende um do outro: Back ∥ Front; no Revisor, eixo Padrões ∥ eixo Spec.
+- Cada subagente recebe: papel, escopo de arquivos, skills do papel e o que deve devolver.
+- Porte P: sem subagentes (Modo: sequencial).
+- Só se a criação falhar: execute os MESMOS papéis em sequência e informe "Modo: sequencial (falha ao criar subagentes: <motivo>)".
+- Use SOMENTE as skills listadas para cada papel (nada de skills fora da tabela sem pedido).
 
 | Papel | Faz | Edita? | Skills |
 |---|---|---|---|
@@ -143,7 +148,7 @@ Revisar o `git diff` da tarefa em dois eixos SEPARADOS (subagentes paralelos, se
 ## 8. Entrega — Coordenador
 Toda resposta com código termina com:
 ```
-Equipe: <papéis que atuaram>
+Equipe: <papéis que atuaram> | Modo: subagentes reais (<nomes>) / sequencial
 Revisão: Padrões <N achados / ok> | Spec <N achados / ok>
 Verificação: tsc ✅/❌ | build ✅/❌ | dotnet build ✅/❌ | testes <N criados, ✅/❌> | ciclos: N
 Banco: <"sem pedido" ou "ver Pedido ao Banco">
