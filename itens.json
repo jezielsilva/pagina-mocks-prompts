@@ -1,22 +1,13 @@
 {
-  "atualizado": "2026-11-25T18:20",
+  "atualizado": "2026-11-26T15:45",
   "itens": [
     {
-      "id": "asset-icones-categorias",
-      "tipo": "artefato",
-      "asset": true,
-      "projeto": "elaw adv · Classificações",
-      "titulo": "Ícones e cores das 25 categorias (Material Icons e mdi) + script de atualização",
-      "data": "2026-11-25T18:20",
-      "arquivo": "assets/icones-categorias.html"
-    },
-    {
-      "id": "prompt-modal-classificacoes",
+      "id": "prompt-miniatura-pecas",
       "tipo": "prompt",
-      "projeto": "elaw adv · Classificações",
-      "titulo": "Prompt — Modal de Classificações em 2 níveis (igual ao mock, UI kit) — para o Antigravity",
-      "data": "2026-11-25T17:50",
-      "arquivo": "prompts/2026-11-25-modal-classificacoes-2-niveis.md"
+      "projeto": "elaw adv · Gerador de peças",
+      "titulo": "Prompt — Miniaturas da Grade sempre preenchidas",
+      "data": "2026-11-26T15:45",
+      "arquivo": "prompts/2026-11-26-miniatura-pecas-preenchida.md"
     },
     {
       "id": "guia-meus-documentos",
@@ -31,10 +22,11 @@
       "id": "gerador-pecas-mock",
       "tipo": "artefato",
       "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Mock — Gerador de peças (template por arraste, drawer largo, classificações)",
-      "data": "2026-11-25T10:30",
+      "titulo": "Mock — Gerador de peças (Grade com miniaturas sempre preenchidas)",
+      "data": "2026-11-26T15:45",
       "arquivo": "artefatos/gerador-pecas-mock.html",
-      "fixo": true
+      "fixo": true,
+      "principal": true
     },
     {
       "id": "documentos-mock",
@@ -43,8 +35,7 @@
       "titulo": "Mock — Documentos (Classificações em 2 níveis: categorias e subcategorias)",
       "data": "2026-11-25T17:30",
       "arquivo": "artefatos/documentos-mock.html",
-      "fixo": true,
-      "principal": true
+      "fixo": true
     },
     {
       "id": "perfil-codigo",
