@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-26T16:05",
+  "atualizado": "2026-11-26T16:20",
   "itens": [
     {
-      "id": "prompt-scroll-modal-editor",
+      "id": "prompt-estilo-escritorio",
       "tipo": "prompt",
       "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt — Scroll no modal de pré-visualização + investigação (rascunho, permissões, personalizações)",
-      "data": "2026-11-26T16:05",
-      "arquivo": "prompts/2026-11-26-scroll-modal-editor-e-investigacao.md"
+      "titulo": "Prompt — Personalização do escritório no editor e nos downloads (PDF/Word)",
+      "data": "2026-11-26T16:20",
+      "arquivo": "prompts/2026-11-26-estilo-escritorio-editor-e-download.md"
     },
     {
       "id": "treino-2026-11-26",
