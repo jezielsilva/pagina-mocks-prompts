@@ -1,13 +1,13 @@
 {
-  "atualizado": "2026-11-26T16:20",
+  "atualizado": "2026-11-26T16:35",
   "itens": [
     {
-      "id": "prompt-estilo-escritorio",
+      "id": "prompt-estrela-favorito",
       "tipo": "prompt",
       "projeto": "elaw adv · Gerador de peças",
-      "titulo": "Prompt — Personalização do escritório no editor e nos downloads (PDF/Word)",
-      "data": "2026-11-26T16:20",
-      "arquivo": "prompts/2026-11-26-estilo-escritorio-editor-e-download.md"
+      "titulo": "Prompt — Estrela de favorito igual ao mock",
+      "data": "2026-11-26T16:35",
+      "arquivo": "prompts/2026-11-26-estrela-favorito.md"
     },
     {
       "id": "treino-2026-11-26",
