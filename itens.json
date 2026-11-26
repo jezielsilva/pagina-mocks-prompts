@@ -1,6 +1,15 @@
 {
-  "atualizado": "2026-11-26T16:35",
+  "atualizado": "2026-11-26T17:20",
   "itens": [
+    {
+      "id": "agents-md",
+      "tipo": "prompt",
+      "fixo": true,
+      "projeto": "Jeziel · Codex",
+      "titulo": "AGENTS.md v3 — multiagentes (copiar para a raiz do projeto ou $env:USERPROFILE\\.codex\\AGENTS.md)",
+      "data": "2026-11-26T17:20",
+      "arquivo": "agents/AGENTS.md"
+    },
     {
       "id": "prompt-estrela-favorito",
       "tipo": "prompt",

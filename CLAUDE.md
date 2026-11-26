@@ -26,3 +26,5 @@
 - Pendências: `pendencias/PENDENCIAS.txt` (item FIXO `"id":"pendencias"`); atualizar sempre que o usuário fechar/abrir pendências.
 - Mock do Gerador de peças: `artefatos/gerador-pecas-mock.html` (item FIXO `"id":"gerador-pecas-mock"`); nunca apagar na limpeza.
 - Template de apresentação: `templates/template-apresentacao-projetos.pptx` (item FIXO `"id":"template-apresentacao"`; publicado por decisão do usuário); nunca apagar na limpeza.
+- AGENTS.md do Codex: `agents/AGENTS.md` (item FIXO `"id":"agents-md"`; nunca apagar na limpeza). Ao atualizar o PERFIL (treino), atualizar também a seção 10 do AGENTS.md. Banco é sempre do usuário: agentes nunca alteram banco.
+- Todo prompt de implementação começa com o bloco "EQUIPE DE AGENTES" (porte P/M/G + papéis que atuam, conforme o AGENTS.md) e manda seguir o AGENTS.md; o bloco ESTILO DE CÓDIGO continua no prompt até o usuário confirmar que o AGENTS v3 está instalado.
