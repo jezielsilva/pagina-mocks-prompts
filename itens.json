@@ -2,6 +2,16 @@
   "atualizado": "2026-11-26T15:45",
   "itens": [
     {
+      "id": "treino-2026-11-26",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de quinta, 26/11 — 3 perguntas",
+      "data": "2026-11-26T09:25-03:00",
+      "arquivo": "treino/index.html?d=2026-11-26"
+    },
+    {
       "id": "prompt-miniatura-pecas",
       "tipo": "prompt",
       "projeto": "elaw adv · Gerador de peças",

@@ -1,0 +1,37 @@
+{
+ "data": "2026-11-26",
+ "dataExibicao": "quinta, 26/11",
+ "intro": "Quinta (~10 min, 3 perguntas): guard clauses — 2º dia, agora com o PORQUÊ. A aula responde a sua pergunta de 24/11 (\"o que poderia mudar?\") e as perguntas treinam inverter condição e escrever o método inteiro. No fim, 1 revisão rápida do Any.",
+ "minutos": 10,
+ "feedbackAnterior": "<p><b>Correção de 17 a 25/11 (resumo):</b></p>\n<ul>\n<li>✅ <b>Parabéns:</b> First × FirstOrDefault está fechado — null × exceção certo em todos os casos e você achou o NullReference da linha de baixo em 4 de 5 treinos.</li>\n<li>⚠️ <code>Any</code>/<code>some</code> <b>não</b> dá null: devolve <code>true</code>/<code>false</code> (é a pergunta \"existe?\"). Tem revisão disso na pergunta 3.</li>\n<li>⚠️ Checar o id da tela não protege: a guard clause é no <b>objeto</b> que o FirstOrDefault devolveu.</li>\n<li>⚠️ Ao escrever, entregue o método <b>inteiro</b>: <code>await ...FirstOrDefaultAsync()</code>, <code>Resultado.Falha(\"mensagem\")</code> completo e o <code>return</code> final.</li>\n<li>💡 25/11 q1: A é o <code>??</code> e B é o <code>||</code> — com <code>naoLidas = 0</code>, A dá 0 e B dá 99.</li>\n<li>💡 24/11 q2 você perguntou \"o que poderia mudar?\" no if aninhado. A aula de hoje responde isso.</li>\n</ul>",
+ "aula": "<p><b>Por que trocar o aninhado por guard clauses, se os dois funcionam?</b> O resultado é o mesmo. O ganho é na hora de <b>ler e debugar</b>.</p>\n<table><tr><th></th><th>Aninhado (if dentro de if)</th><th>Guard clauses</th></tr>\n<tr><td>Onde está o erro \"Conversa encerrada\"?</td><td>Lá embaixo, num <code>else</code> longe do <code>if</code> que o causou</td><td>Na linha logo abaixo do <code>if</code></td></tr>\n<tr><td>Breakpoint</td><td>Precisa achar qual <code>else</code> casa com qual <code>if</code> contando chaves</td><td>1 breakpoint em cada <code>return</code> do topo: o que parar é o motivo</td></tr>\n<tr><td>Chaves para fechar</td><td>3 níveis = 6 pares de <code>{ }</code></td><td>Nenhuma no caminho feliz</td></tr>\n<tr><td>Nova regra amanhã</td><td>Mais um nível para dentro</td><td>Mais 2 linhas no topo</td></tr></table>\n<p><b>Analogia:</b> checklist de protocolar petição. Você não abre uma \"pasta dentro da pasta\" para cada item: risca um por um de cima para baixo e, se faltar algo, para ali mesmo.</p>\n<p><b>O truque é INVERTER a condição</b> (o if do aninhado pergunta \"está tudo bem?\"; a guard clause pergunta \"deu problema?\"):</p>\n<table><tr><th>Aninhado (caminho feliz)</th><th>Guard clause (erro)</th></tr>\n<tr><td><code>x != null</code></td><td><code>x == null</code></td></tr>\n<tr><td><code>conversa.Aberta</code></td><td><code>!conversa.Aberta</code></td></tr>\n<tr><td><code>!documento.Arquivado</code></td><td><code>documento.Arquivado</code> (tira o <code>!</code>)</td></tr>\n<tr><td><code>a == b</code></td><td><code>a != b</code></td></tr>\n<tr><td><code>tamanho &lt;= limite</code></td><td><code>tamanho &gt; limite</code> (o contrário de <code>&lt;=</code> é <code>&gt;</code>, não <code>&gt;=</code>)</td></tr></table>\n<p><b>Exemplo mínimo (seu estilo):</b></p>\n<pre>var cliente = await _clientes.Find(c => c.Id == clienteId).FirstOrDefaultAsync();\n\nif (cliente == null)\n    return Resultado.Falha(\"Cliente não encontrado\");\n\nif (!cliente.Ativo)\n    return Resultado.Falha(\"Cliente inativo\");\n\nreturn Resultado.Ok(cliente.Nome);</pre>\n<p><b>Erro mais comum:</b> inverter só \"meio\" (<code>&lt;=</code> virar <code>&gt;=</code>) ou esquecer o <code>return</code> final do caminho feliz.</p>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "Guard clauses (inverter condição)",
+   "tipo": "Leitura (resultado)",
+   "enunciado": "Cada linha é a condição de um if do caminho feliz. Escreva a condição INVERTIDA para virar guard clause. O caso 1 já está preenchido. Formato: 1) cliente == null | 2) __ | 3) __ | 4) __",
+   "codigo": "// condição do aninhado                       → condição da guard clause\n// 1) cliente != null                          → cliente == null (exemplo)\n// 2) conversa.Aberta\n// 3) documento.TamanhoBytes <= LimiteBytes\n// 4) !string.IsNullOrWhiteSpace(email)",
+   "gabarito": "1) cliente == null | 2) !conversa.Aberta | 3) documento.TamanhoBytes > LimiteBytes | 4) string.IsNullOrWhiteSpace(email)",
+   "explicacao": "Inverter = perguntar o contrário. 2) bool sozinho ganha o !; aceitar 'conversa.Aberta == false'. 3) o contrário de <= é > (com >= o arquivo com exatamente o limite seria bloqueado sem motivo). 4) quando já tem !, inverter é TIRAR o !. Erro típico: 3) >= ou 4) !!string..."
+  },
+  {
+   "id": "q2",
+   "tema": "Guard clauses (escrever o método inteiro)",
+   "tipo": "Escrever",
+   "enunciado": "Reescreva o método INTEIRO com guard clauses (sem else), com a mensagem de cada Falha e o return final. A 1ª linha já está pronta. Formato: var documento = await _documentos.Find(d => d.Id == documentoId).FirstOrDefaultAsync(); | if (...) return Resultado.Falha(\"...\"); | ... | return Resultado.Ok(\"...\");",
+   "codigo": "public async Task<Resultado> ArquivarDocumento(string documentoId, string usuarioId)\n{\n    var documento = await _documentos.Find(d => d.Id == documentoId).FirstOrDefaultAsync();\n\n    if (documento != null)\n    {\n        if (documento.DonoId == usuarioId)\n        {\n            if (!documento.Arquivado)\n            {\n                await ArquivarNoBanco(documentoId);\n                return Resultado.Ok(\"Documento arquivado\");\n            }\n            else\n            {\n                return Resultado.Falha(\"Documento já está arquivado\");\n            }\n        }\n        else\n        {\n            return Resultado.Falha(\"Só o dono pode arquivar\");\n        }\n    }\n    else\n    {\n        return Resultado.Falha(\"Documento não encontrado\");\n    }\n}",
+   "gabarito": "var documento = await _documentos.Find(d => d.Id == documentoId).FirstOrDefaultAsync();\nif (documento == null) return Resultado.Falha(\"Documento não encontrado\");\nif (documento.DonoId != usuarioId) return Resultado.Falha(\"Só o dono pode arquivar\");\nif (documento.Arquivado) return Resultado.Falha(\"Documento já está arquivado\");\nawait ArquivarNoBanco(documentoId);\nreturn Resultado.Ok(\"Documento arquivado\");",
+   "explicacao": "Cada if vira guard clause com a condição invertida (!= null → == null; == → !=; !Arquivado → Arquivado, tirando o !) e o else de cada nível sobe para logo abaixo do if com a MESMA mensagem. A ordem tem que ser a mesma: primeiro checar null (senão documento.DonoId dá NullReferenceException). Sobra só o caminho feliz: await ArquivarNoBanco + return Ok. Avaliar: as 3 mensagens completas, o await mantido e o return final presentes. Aceitar 'is null' e '== false'."
+  },
+  {
+   "id": "q3",
+   "tema": "Revisão: Any devolve true/false",
+   "tipo": "Leitura (resultado)",
+   "enunciado": "Diga o valor de temProcuracao em cada caso. O caso 1 já está preenchido. Formato: 1) true | 2) __ | 3) __",
+   "codigo": "var temProcuracao = documentos.Any(d => d.Tipo == \"Procuracao\");\n\n// 1) documentos tem 2 procurações e 1 contrato → true (exemplo)\n// 2) documentos tem só 3 contratos\n// 3) documentos é uma lista vazia",
+   "gabarito": "1) true | 2) false | 3) false",
+   "explicacao": "Any responde 'existe algum?' e devolve SEMPRE bool: true ou false, nunca null. Lista vazia → false (não dá erro nem null). No TS, some funciona igual. Errou em 19 e 20/11 dizendo null; acertar aqui com false nos dois conta como revisão do Any."
+  }
+ ]
+}
