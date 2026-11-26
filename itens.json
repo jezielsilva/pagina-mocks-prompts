@@ -1,6 +1,16 @@
 {
-  "atualizado": "2026-11-25T18:20",
+  "atualizado": "2026-11-26T09:25",
   "itens": [
+    {
+      "id": "treino-2026-11-26",
+      "tipo": "artefato",
+      "treino": true,
+      "fixo": true,
+      "projeto": "Jeziel · Treino",
+      "titulo": "Treino de quinta, 26/11 — 3 perguntas",
+      "data": "2026-11-26T09:25-03:00",
+      "arquivo": "treino/index.html?d=2026-11-26"
+    },
     {
       "id": "asset-icones-categorias",
       "tipo": "artefato",
