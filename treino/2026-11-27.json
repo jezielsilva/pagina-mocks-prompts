@@ -1,0 +1,28 @@
+{
+ "data": "2026-11-27",
+ "dataExibicao": "sexta, 27/11",
+ "intro": "Sexta (~5 min, 2 perguntas): guard clauses, ângulo novo — ACHAR O BUG. Treino curtinho para fechar a semana. Se der tempo, o de quinta (26/11) continua no portal esperando você.",
+ "minutos": 5,
+ "feedbackAnterior": "",
+ "aula": "<p><b>Os 2 bugs mais comuns em guard clause</b> (é o que você vai caçar hoje no código que a IA escreve):</p>\n<table><tr><th>Bug</th><th>O que acontece</th><th>Correção</th></tr>\n<tr><td><b>1. Esqueceu o <code>return</code></b></td><td>O if \"avisa\" o erro mas o código <b>continua</b> e executa o caminho feliz mesmo assim</td><td>Todo if de erro termina com <code>return Resultado.Falha(\"...\")</code></td></tr>\n<tr><td><b>2. Ordem errada</b></td><td>Usa <code>cliente.Ativo</code> ANTES de checar <code>cliente == null</code> → <code>NullReferenceException</code></td><td>Primeiro o null, depois as propriedades</td></tr></table>\n<p><b>Analogia:</b> no protocolo de petição, se falta a procuração você <b>para</b> ali (return). Anotar \"falta procuração\" e protocolar assim mesmo é o bug 1. Conferir a assinatura do documento antes de ver se o documento existe é o bug 2.</p>\n<p><b>Exemplo do bug 1:</b></p>\n<pre>if (cliente == null)\n    _logger.LogWarning(\"Cliente não encontrado\"); // ⚠️ sem return: segue para a linha de baixo\n\nreturn Resultado.Ok(cliente.Nome); // 💥 cliente é null aqui</pre>\n<p><b>Dica de debug:</b> breakpoint no if. Se ele entrou no if e mesmo assim chegou no <code>return Resultado.Ok</code>, faltou o <code>return</code>.</p>",
+ "perguntas": [
+  {
+   "id": "q1",
+   "tema": "Guard clauses (achar o bug: return faltando)",
+   "tipo": "Achar o bug",
+   "enunciado": "O usuário tenta enviar mensagem numa conversa ENCERRADA (conversa existe, Aberta = false) e a mensagem é salva mesmo assim. Diga o número da linha com o bug e como fica a linha corrigida. Formato: linha __ → ________",
+   "codigo": "1  public async Task<Resultado> EnviarMensagem(string conversaId, string texto)\n2  {\n3      var conversa = await _conversas.Find(c => c.Id == conversaId).FirstOrDefaultAsync();\n4  \n5      if (conversa == null)\n6          return Resultado.Falha(\"Conversa não encontrada\");\n7  \n8      if (!conversa.Aberta)\n9          _logger.LogWarning(\"Conversa encerrada\");\n10 \n11     await SalvarMensagem(conversaId, texto);\n12     return Resultado.Ok(\"Mensagem enviada\");\n13 }",
+   "gabarito": "linha 9 → return Resultado.Falha(\"Conversa encerrada\");",
+   "explicacao": "Na linha 9 o if só registra o log e não sai do método, então o código segue para SalvarMensagem (linha 11). Guard clause precisa de return. Aceitar manter o log junto, com chaves: { _logger.LogWarning(...); return Resultado.Falha(\"Conversa encerrada\"); }. Errado: apontar a linha 8 (a condição !conversa.Aberta está certa)."
+  },
+  {
+   "id": "q2",
+   "tema": "Guard clauses (achar o bug: ordem)",
+   "tipo": "Achar o bug",
+   "enunciado": "Quando o documentoId não existe no banco, este método dá NullReferenceException em vez de devolver \"Documento não encontrado\". Escreva as 3 guard clauses na ORDEM certa (só os ifs, não precisa do resto). A 1ª já está preenchida. Formato: 1) if (documento == null) return Resultado.Falha(\"Documento não encontrado\"); | 2) __ | 3) __",
+   "codigo": "var documento = await _documentos.Find(d => d.Id == documentoId).FirstOrDefaultAsync();\n\nif (documento.Excluido)\n    return Resultado.Falha(\"Documento excluído\");\n\nif (documento == null)\n    return Resultado.Falha(\"Documento não encontrado\");\n\nif (documento.DonoId != usuarioId)\n    return Resultado.Falha(\"Só o dono pode compartilhar\");\n\nawait Compartilhar(documentoId, email);\nreturn Resultado.Ok(\"Documento compartilhado\");",
+   "gabarito": "1) if (documento == null) return Resultado.Falha(\"Documento não encontrado\"); | 2) if (documento.Excluido) return Resultado.Falha(\"Documento excluído\"); | 3) if (documento.DonoId != usuarioId) return Resultado.Falha(\"Só o dono pode compartilhar\");",
+   "explicacao": "documento.Excluido (1º if) lê uma propriedade de um objeto que pode ser null → NullReferenceException antes de chegar no if do null. O null tem que ser o PRIMEIRO; depois as propriedades. A ordem entre Excluido e DonoId não importa para o bug (aceitar 2 e 3 trocados). Se ele explicar 'o null tem que vir antes de usar documento.' = entendeu o porquê."
+  }
+ ]
+}
