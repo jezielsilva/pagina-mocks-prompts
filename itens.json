@@ -1,6 +1,15 @@
 {
-  "atualizado": "2026-11-27T09:25",
+  "atualizado": "2026-11-27T09:30",
   "itens": [
+    {
+      "id": "claude-pack",
+      "tipo": "prompt",
+      "fixo": true,
+      "projeto": "Jeziel · Claude Code",
+      "titulo": "Pacote Claude Code — CLAUDE.md global + 7 subagentes (instalar pelo INSTALAR.md)",
+      "data": "2026-11-27T09:30",
+      "arquivo": "claude-pack/INSTALAR.md"
+    },
     {
       "id": "agents-md",
       "tipo": "prompt",
